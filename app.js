@@ -864,6 +864,51 @@ function computePackagesLocally(dest, from, to, nights, days, adults, flags){
   return pkgs;
 }
 
+/* ==========================================================
+   "IZNENADI ME" — pretraga samo po budžetu, bez destinacije.
+   Korisnik unese samo iznos; sajt proba svih ~100 gradova iz
+   POPULAR_DESTINATIONS na 'best' tieru (isti flagovi kao u glavnoj
+   formi) i vrati 3 nasumične koje se uklapaju u budžet.
+
+   Namerno koristi ISTI seed kao computePackagesLocally za 'best'
+   tier (hashSeed(dest+dest.length+nights+adults), pa rng potrošen
+   redom best->comfort->budget) — cena koju "Iznenadi me" pokaže za
+   neki grad je BIT-ZA-BIT ista kao kad bi korisnik taj grad ukucao
+   ručno u glavnu pretragu. Nema dupliranja logike, samo poziva
+   buildPackage direktno za jedan tier umesto sva tri.
+========================================================== */
+function computeSurpriseCandidates(from, to, adults, flags){
+  const nights = nightsBetween(from, to);
+  const days = nights;
+  return POPULAR_DESTINATIONS.map(d => {
+    const seed = hashSeed(d.name.toLowerCase()+d.name.length+nights+adults);
+    const rng = seededRandom(seed);
+    const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags);
+    attachAffiliateLinks(pkg, d.name, from, to, adults);
+    return {dest:d.name, country:d.extra||'', pkg};
+  });
+}
+
+// Bira 3 grada. Ako manje od 3 uopšte stane u budžet, umesto da vrati
+// prazno (razočaravajuće), vraća 3 NAJJEFTINIJE opcije uz jasnu napomenu —
+// sajt nikad ne sme da ostavi korisnika bez ijednog predloga.
+function pickSurpriseDestinations(budget, candidates, count){
+  const fitting = candidates.filter(c => c.pkg.total <= budget);
+  const usedFallback = fitting.length < count;
+  const pool = usedFallback ? candidates.slice().sort((a,b)=>a.pkg.total-b.pkg.total).slice(0, Math.max(count*3, count)) : fitting;
+
+  // Obično (Fisher-Yates) mešanje — namerno NIJE seed-ovano kao ostatak
+  // cenovne logike, jer ovde želimo da svaki klik na "Probaj ponovo" da
+  // drugačiju trojku. Cena svakog grada ostaje deterministička, samo je
+  // IZBOR koja 3 grada se prikazuju nasumičan.
+  const shuffled = pool.slice();
+  for (let i = shuffled.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return {picks: shuffled.slice(0, count), usedFallback};
+}
+
 async function renderResults(dest, from, to, nights, days, adults, flags, originCode){
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
@@ -969,6 +1014,170 @@ function pkgHtml(pkg){
       Javi mi kad padne cena
     </button>
   </div>`;
+}
+
+/* ==========================================================
+   Prikaz rezultata za "Iznenadi me" — 3 RAZLIČITE destinacije
+   (uvek 'best' tier) umesto 3 tier-a ISTE destinacije. Deli
+   #resultsHead/#resultsBody sa običnom pretragom (isti kontejner),
+   samo drugačiji sadržaj.
+========================================================== */
+function surprisePkgHtml(pick, idx, budget){
+  const {dest, country, pkg} = pick;
+  const itemsRow = [
+    itemCardHtml(pkg.flight,'flight'),
+    itemCardHtml(pkg.hotel,'hotel'),
+    itemCardHtml(pkg.car,'car')
+  ].filter(Boolean).join('');
+  const fits = pkg.total <= budget;
+
+  return `
+  <div class="pkg surprise-pkg" data-base-total="${pkg.total}">
+    <div class="pkg-head">
+      <div>
+        <span class="pkg-badge surprise-badge">🎲 Predlog</span>
+        <h3>${escapeHtml(dest)}</h3>
+        <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px;">${escapeHtml(country)} · Best Value</div>
+      </div>
+      <div class="pkg-total">
+        <div class="num tabular">${fmtEUR(pkg.total)}</div>
+        <div class="cur">ukupno</div>
+        <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
+      </div>
+    </div>
+    ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
+    <div class="confirm-banner">
+      <span>${iconSvg('check')} ${fits ? 'Uklapa se u tvoj budžet od ' + fmtEUR(budget) + '.' : 'Malo iznad budžeta, ali najbliža opcija koju imamo.'}</span>
+      <span><span class="amt-lab">Ukupno:</span><span class="amt tabular">${fmtEUR(pkg.total)}</span></span>
+    </div>
+    <button type="button" class="pkg-save-btn" onclick="exploreSurpriseDestination(${idx})">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M9 18l6-6-6-6"/></svg>
+      Vidi sve opcije za ${escapeHtml(dest)}
+    </button>
+    <button type="button" class="pkg-save-btn" onclick="saveSurprisePackage(${idx})">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+      Sačuvaj ovu ponudu
+    </button>
+    <button type="button" class="pkg-alert-btn" onclick="openAlertModal('search', 'best', ${pkg.total}, '${escapeHtml(dest).replace(/'/g,"\\'")}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.75-.98 2.4L4.6 15h14.8l-1.42-1.4a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 19a2.6 2.6 0 005 0"/></svg>
+      Javi mi kad padne cena
+    </button>
+  </div>`;
+}
+
+function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
+  window._lastSurprisePicks = picks;
+  window._lastSurpriseCtx = ctxBase;
+
+  const head = document.getElementById('resultsHead');
+  head.innerHTML = `
+    <div class="status-banner">
+      <div class="status-left">
+        <div class="status-check">🎲</div>
+        <div><h3>3 predloga za budžet od ${fmtEUR(budget)}.</h3><p>${usedFallback ? 'Nijedan grad se u potpunosti nije uklopio u budžet — evo 3 najjeftinije opcije koje imamo.' : 'Nasumično odabrano od preko 100 gradova koji se uklapaju u tvoj budžet.'}</p></div>
+      </div>
+      <div class="status-pills">
+        <div class="pill">${iconSvg('calendar')} ${fmtDate(ctxBase.from)} – ${fmtDate(ctxBase.to)}</div>
+        <div class="pill">${iconSvg('people')} ${ctxBase.adults} putnik${ctxBase.adults==='1'?'':'a'}</div>
+      </div>
+    </div>
+  `;
+
+  const body = document.getElementById('resultsBody');
+  body.innerHTML = `
+    <div class="packages">${picks.map((p,i)=>surprisePkgHtml(p, i, budget)).join('')}</div>
+    <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
+    <p class="disclaimer">⚠️ Skoknica je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
+  `;
+}
+
+async function runSurpriseSearch(isReroll){
+  const budget = Number(document.getElementById('surpriseBudget').value);
+  if (!budget || budget <= 0){ showToast('Unesi budžet veći od 0.'); return; }
+
+  const from = document.getElementById('dateFrom').value;
+  const to = document.getElementById('dateTo').value;
+  const adults = document.getElementById('adults').value;
+  const flags = {
+    flight:    document.querySelector('.toggle[data-t="flight"]').classList.contains('on'),
+    hotel:     document.querySelector('.toggle[data-t="hotel"]').classList.contains('on'),
+    car:       document.querySelector('.toggle[data-t="car"]').classList.contains('on'),
+    activity:  document.querySelector('.toggle[data-t="activity"]').classList.contains('on'),
+  };
+
+  if (!isReroll) closeSurpriseModal();
+
+  const results = document.getElementById('results');
+  results.classList.add('visible');
+  if (!isReroll){
+    document.getElementById('resultsHead').innerHTML = '';
+    document.getElementById('resultsBody').innerHTML = '<div class="loading"><div class="spin"></div>Tražimo 3 destinacije koje se uklapaju u tvoj budžet…</div>';
+    results.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  state.searches += 1;
+  document.getElementById('statLast').textContent = '🎲 ' + fmtEUR(budget);
+  updateStats();
+
+  setTimeout(()=>{
+    const candidates = computeSurpriseCandidates(from, to, adults, flags);
+    const {picks, usedFallback} = pickSurpriseDestinations(budget, candidates, 3);
+    renderSurpriseResults(picks, {from, to, adults}, budget, usedFallback);
+  }, isReroll ? 0 : 700);
+}
+
+// Klik na "Vidi sve opcije za {grad}" — prebacuje na normalnu pretragu
+// (sva 3 tier-a) za taj konkretni grad, umesto samo 'best' predloga.
+function exploreSurpriseDestination(idx){
+  const pick = (window._lastSurprisePicks || [])[idx];
+  if (!pick) return;
+  document.getElementById('dest').value = pick.dest;
+  runSearch(true);
+}
+
+async function saveSurprisePackage(idx){
+  const user = await getCurrentUser();
+  if (!user){
+    _authBarExpanded = true;
+    renderSavedTrips();
+    document.getElementById('authBar').scrollIntoView({behavior:'smooth', block:'center'});
+    showToast('Prijavi se emailom da sačuvaš ponudu.');
+    return;
+  }
+  const pick = (window._lastSurprisePicks || [])[idx];
+  const ctx = window._lastSurpriseCtx;
+  if (!pick || !ctx){ showToast('Ponuda više nije dostupna — probaj ponovo.'); return; }
+
+  const summaryTags = [
+    '🎲 Iznenadi me',
+    pick.pkg.flight ? pick.pkg.flight.name : 'Bez leta',
+    pick.pkg.hotel ? pick.pkg.hotel.name : 'Bez hotela',
+    pick.pkg.car ? 'Sa autom' : 'Bez auta'
+  ];
+
+  const { error } = await sb.from('trips').insert({
+    user_id: user.id,
+    dest: pick.dest,
+    date_from: ctx.from,
+    date_to: ctx.to,
+    adults: Number(ctx.adults),
+    selection: {kind:'search', tier:'best', tierLabel:'Best Value (Iznenadi me)', summaryTags},
+    total: pick.pkg.total
+  });
+  if (error){ showToast('Greška pri čuvanju: ' + error.message); return; }
+  renderSavedTrips();
+  showToast(pick.dest + ' sačuvan (' + fmtEUR(pick.pkg.total) + ').');
+}
+
+function openSurpriseModal(){
+  document.getElementById('surpriseBudget').value = '';
+  document.getElementById('surpriseModalBackdrop').classList.add('open');
+  document.getElementById('surpriseModal').classList.add('open');
+  document.getElementById('surpriseBudget').focus();
+}
+function closeSurpriseModal(){
+  document.getElementById('surpriseModalBackdrop').classList.remove('open');
+  document.getElementById('surpriseModal').classList.remove('open');
 }
 
 /* Uživo sabiranje dodataka (osiguranje/eSIM) na cenu paketa — bez ponovne
@@ -1825,14 +2034,15 @@ renderSavedTrips();
 ========================================================== */
 let _alertCtx = null;
 
-function openAlertModal(kind, tierOrNull, currentPrice){
+function openAlertModal(kind, tierOrNull, currentPrice, destOverride){
   const ctx = builderCtx();
+  const dest = destOverride || ctx.dest;
   const selection = (kind === 'search')
     ? {kind:'search', tier:tierOrNull, tierLabel:(TIER_META[tierOrNull]||{}).label || ''}
     : Object.assign({kind:'builder'}, builderState);
 
   _alertCtx = {
-    dest: ctx.dest,
+    dest: dest,
     from: document.getElementById('dateFrom').value,
     to: document.getElementById('dateTo').value,
     adults: Number(document.getElementById('adults').value) || 2,
@@ -1841,7 +2051,7 @@ function openAlertModal(kind, tierOrNull, currentPrice){
   };
 
   document.getElementById('alertModalSub').textContent =
-    'Trenutna procena za ' + ctx.dest + ': ' + fmtEUR(_alertCtx.price) + '. Javićemo ti mejlom kad procenjena cena padne ispod praga koji postaviš.';
+    'Trenutna procena za ' + dest + ': ' + fmtEUR(_alertCtx.price) + '. Javićemo ti mejlom kad procenjena cena padne ispod praga koji postaviš.';
   document.getElementById('alertThreshold').value = Math.max(1, Math.round(_alertCtx.price * 0.9));
   document.getElementById('alertEmail').value = '';
 
@@ -1897,3 +2107,16 @@ document.getElementById('alertModalSubmit').addEventListener('click', async ()=>
   showToast('Gotovo — javićemo ti na ' + email + ' kad cena padne ispod ' + fmtEUR(threshold) + '.');
 });
 
+/* ==========================================================
+   "IZNENADI ME" — wiring dugmeta i modala
+========================================================== */
+document.getElementById('surpriseModalBackdrop').addEventListener('click', closeSurpriseModal);
+document.getElementById('surpriseModalClose').addEventListener('click', closeSurpriseModal);
+document.addEventListener('keydown', (e)=>{
+  if (e.key === 'Escape' && document.getElementById('surpriseModal').classList.contains('open')) closeSurpriseModal();
+});
+document.getElementById('surpriseTriggerBtn').addEventListener('click', openSurpriseModal);
+document.getElementById('surpriseModalSubmit').addEventListener('click', ()=> runSurpriseSearch(false));
+document.getElementById('surpriseBudget').addEventListener('keydown', (e)=>{
+  if (e.key === 'Enter'){ e.preventDefault(); runSurpriseSearch(false); }
+});
