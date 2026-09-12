@@ -1847,6 +1847,7 @@ function renderSavedTripsMarkup(trips){
       <div class="sc-total"><span class="lab">procenjeno ukupno</span><span class="num tabular">${fmtEUR(t.total)}</span></div>
       <div class="sc-actions">
         <button type="button" class="sc-btn load" onclick="loadSavedTrip('${t.id}')">Učitaj</button>
+        <button type="button" class="sc-btn share" onclick="shareTrip('${t.id}')">🔗 Podeli</button>
         <button type="button" class="sc-btn del" onclick="deleteSavedTrip('${t.id}')">Obriši</button>
       </div>
     </div>`).join('') + '</div>';
@@ -1872,7 +1873,8 @@ async function fetchSavedTrips(){
     to: row.date_to,
     adults: String(row.adults),
     sel: row.selection,
-    total: row.total
+    total: row.total,
+    shareToken: row.share_token || null
   }));
 }
 
@@ -2120,3 +2122,9 @@ document.getElementById('surpriseModalSubmit').addEventListener('click', ()=> ru
 document.getElementById('surpriseBudget').addEventListener('keydown', (e)=>{
   if (e.key === 'Enter'){ e.preventDefault(); runSurpriseSearch(false); }
 });
+
+/* ==========================================================
+   DELJENJE SA PRIJATELJIMA ("🔗 Podeli")
+   Generiše (ili ponovo koristi) share_token na sačuvanom aranžmanu i
+   pravi javni link ka zajedno.html — ta stranica radi bez naloga i
+   bez app.js (sopstveni inline skript), pristupa bazi isključivo
