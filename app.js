@@ -1,3 +1,4 @@
+window.onerror = function(msg, src, line, col){ alert('GRESKA: ' + msg + ' | linija ' + line + ':' + col); };
 /* ==========================================================
    I18N — srpski (podrazumevano) i engleski
    ==========================================================
