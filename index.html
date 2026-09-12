@@ -251,6 +251,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
         Sačuvaj aranžman
       </button>
+      <button type="button" class="btn-alert" id="alertBuilderBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.75-.98 2.4L4.6 15h14.8l-1.42-1.4a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 19a2.6 2.6 0 005 0"/></svg>
+        Javi mi kad padne cena
+      </button>
       <div class="builder-book-links" id="builderBookLinks"></div>
     </div>
 
@@ -406,6 +410,27 @@
       <button type="button" class="cookie-btn accept" id="cookieAccept">Prihvatam</button>
     </div>
   </div>
+</div>
+
+
+<div class="alert-modal-backdrop" id="alertModalBackdrop"></div>
+<div class="alert-modal" id="alertModal" role="dialog" aria-modal="true" aria-labelledby="alertModalTitle">
+  <button type="button" class="alert-modal-close" id="alertModalClose" aria-label="Zatvori">✕</button>
+  <div class="alert-modal-ic">🔔</div>
+  <h3 id="alertModalTitle">Javi mi kad padne cena</h3>
+  <p class="alert-modal-sub" id="alertModalSub"></p>
+  <div class="alert-modal-row">
+    <label for="alertEmail">Email</label>
+    <input type="email" id="alertEmail" class="auth-input" placeholder="tvoj@email.com" autocomplete="email" required style="width:100%;">
+  </div>
+  <div class="alert-modal-row">
+    <label for="alertThreshold">Javi mi kad ukupna procenjena cena padne ispod</label>
+    <div class="builder-budget-row">
+      <span>€</span><input type="number" id="alertThreshold" class="builder-input" min="1" step="1" style="max-width:none;">
+    </div>
+  </div>
+  <button type="button" class="btn-primary" id="alertModalSubmit" style="width:100%;margin-top:8px;">Postavi alert</button>
+  <p class="alert-modal-disclaimer">⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.</p>
 </div>
 
 <div id="toast"><div class="dot"></div><span id="toastText"></span></div>
