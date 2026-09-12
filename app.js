@@ -1021,14 +1021,34 @@ function updateStats(){
 /* ==========================================================
    FORM WIRING
 ========================================================== */
+/* ---- "Polazak" (poreklo/origin) je bitno SAMO kad se traži let — za
+   hotel/auto/aktivnosti nema smisla pitati odakle korisnik kreće. Polje
+   se sakriva kad je "Letovi" toggle isključen (i to je podrazumevano
+   stanje pri učitavanju stranice), a ponovo se pojavljuje čim se let
+   uključi. Required atribut prati isto stanje, da prazno polje ne
+   blokira slanje forme kad let uopšte nije deo pretrage. ---- */
+function updateOriginVisibility(showOrigin){
+  const stub = document.getElementById('originStub');
+  const originInput = document.getElementById('origin');
+  if (!stub || !originInput) return;
+  stub.style.display = showOrigin ? '' : 'none';
+  if (showOrigin) originInput.setAttribute('required', 'required');
+  else originInput.removeAttribute('required');
+}
+
 document.querySelectorAll('.toggle').forEach(t=>{
   t.addEventListener('click', (e)=>{
     e.preventDefault();
     const input = t.querySelector('input');
     input.checked = !input.checked;
     t.classList.toggle('on', input.checked);
+    if (t.dataset.t === 'flight') updateOriginVisibility(input.checked);
   });
 });
+
+// Postavi početno stanje u skladu sa checkbox-om koji je već markiran u HTML-u
+// (trenutno "Letovi" nije uključen po default-u, pa se polje krije od starta).
+updateOriginVisibility(document.querySelector('.toggle[data-t="flight"] input').checked);
 
 async function runSearch(shouldScroll){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
