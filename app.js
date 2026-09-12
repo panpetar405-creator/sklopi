@@ -730,17 +730,12 @@ function matchPopularDestinations(query){
 
 let _destSuggestTimer = null;
 let _originSuggestTimer = null;
-// Sekvencijalni brojač po datalistId — sprečava da spor odgovor za stariji
-// upit prepiše rezultate novijeg (npr. korisnik brzo otkuca "Rim", pa "Riga",
-// a odgovor za "Rim" stigne posle odgovora za "Riga").
-const _suggestReqSeq = {};
 async function fetchLocationSuggestions(q, datalistId){
   const query = q.trim();
   const inputEl = document.querySelector(`input[list="${datalistId}"]`);
   const stubEl = inputEl ? inputEl.closest('.stub') : null;
   if (query.length < 2){ renderLocationSuggestions([], datalistId); if (stubEl) stubEl.classList.remove('is-loading'); return; }
   if (stubEl) stubEl.classList.add('is-loading');
-  const mySeq = (_suggestReqSeq[datalistId] = (_suggestReqSeq[datalistId] || 0) + 1);
 
   try {
     const combined = [];
@@ -786,10 +781,9 @@ async function fetchLocationSuggestions(q, datalistId){
       }
     }
 
-    if (mySeq !== _suggestReqSeq[datalistId]) return; // stariji odgovor stigao kasnije — zastareo, ignoriši
     renderLocationSuggestions(combined.slice(0, 6), datalistId);
   } finally {
-    if (mySeq === _suggestReqSeq[datalistId] && stubEl) stubEl.classList.remove('is-loading');
+    if (stubEl) stubEl.classList.remove('is-loading');
   }
 }
 function renderLocationSuggestions(results, datalistId){
@@ -1443,21 +1437,9 @@ document.getElementById('makeBuilderBtn').addEventListener('click', ()=>{
    Ako Supabase iz nekog razloga ne odgovori (mreza, pogresan kljuc),
    sekcija samo ostaje prazna — ne obara ostatak sajta.
 ========================================================== */
-// Ako config.js nije učitan (ili SKOKNICA_SUPABASE_URL/KEY nisu podešeni),
-// createClient() baca grešku SINHRONO — bez try/catch bi to prekinulo izvršavanje
-// ostatka fajla (hamburger meni, dropdown za nalog, dugme "Sačuvaj aranžman" ne bi
-// ni dobili svoje click listener-e). Umesto toga, "sb" ostaje null i sve auth-zavisne
-// funkcije ispod se ponašaju kao da korisnik nije prijavljen — po istom principu
-// "sekcija ostaje prazna, ne obara ostatak sajta" koji je već primenjen svuda drugde.
-let sb = null;
-try {
-  sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
-} catch(err){
-  console.warn('[skoknica] Supabase klijent nije mogao da se napravi (proveri config.js):', err.message);
-}
+const sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
 
 async function getCurrentUser(){
-  if (!sb) return null;
   try {
     const { data } = await sb.auth.getUser();
     return (data && data.user) || null;
@@ -1486,7 +1468,7 @@ function renderAuthPanel(containerId, user){
         <button type="button" class="auth-btn" id="${logoutBtnId}">Izloguj se</button>
       </div>`;
     document.getElementById(logoutBtnId).addEventListener('click', async ()=>{
-      if (sb) await sb.auth.signOut();
+      await sb.auth.signOut();
       renderSavedTrips();
     });
   } else if (compact && !_authBarExpanded){
@@ -1510,7 +1492,6 @@ function renderAuthPanel(containerId, user){
       const password = document.getElementById(pwId).value;
       if (!email || !password){ showToast('Unesi email i lozinku.'); return; }
       if (password.length < 6){ showToast('Lozinka mora imati bar 6 karaktera.'); return; }
-      if (!sb){ showToast('Nalozi trenutno nisu dostupni — pokušaj kasnije.'); return; }
 
       const { error: signInError } = await sb.auth.signInWithPassword({ email, password });
       if (!signInError){
@@ -1566,7 +1547,6 @@ function tierLabelsForSaved(sel){
 }
 
 async function fetchSavedTrips(){
-  if (!sb) return [];
   const { data, error } = await sb.from('trips').select('*').order('created_at', {ascending:false});
   if (error){ console.warn('[skoknica] ucitavanje putovanja nije uspelo:', error.message); return []; }
   return data.map(row => ({
@@ -1724,12 +1704,24 @@ async function loadSavedTrip(id){
 }
 
 async function deleteSavedTrip(id){
-  if (!sb) return;
   const { error } = await sb.from('trips').delete().eq('id', id);
   if (error){ showToast('Greška pri brisanju: ' + error.message); return; }
   renderSavedTrips();
 }
 
 document.getElementById('saveTripBtn').addEventListener('click', saveSavedTrip);
-if (sb) sb.auth.onAuthStateChange(()=> renderSavedTrips());
+sb.auth.onAuthStateChange(()=> renderSavedTrips());
 renderSavedTrips();
+
+/* ==========================================================
+   POPULARNE DESTINACIJE — statične kartice u HTML-u (SEO sadržaj
+   vidljiv i bez JS-a); klik samo puni postojeću formu i pokreće
+   isti runSearch() koji se koristi za "Pronađi najbolje putovanje".
+========================================================== */
+document.querySelectorAll('.popular-dest-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.getElementById('dest').value = card.dataset.dest;
+    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+    runSearch(false);
+  });
+});
