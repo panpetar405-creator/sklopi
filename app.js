@@ -1273,40 +1273,90 @@ document.getElementById('budgetInput').addEventListener('input', (e)=>{
   document.getElementById(id).addEventListener('change', renderBuilder);
 });
 
+/* ---- Optimizacija: proba SVE dostupne poluge (hotel, auto, aktivnosti),
+   ne samo hotel — i predlaže onu sa najvećom uštedom. "Već optimalno" se
+   sada prikazuje samo ako ni jedna poluga stvarno ne postoji ili ni jedna
+   ne donosi uštedu, ne čim prva proverena poluga (hotel) padne na 3★. ---- */
 document.getElementById('optimizeBtn').addEventListener('click', ()=>{
   const ctx = builderCtx();
   const current = window._lastBuilderPkg || computeCustomPackage(builderState, ctx);
+  const candidates = [];
 
-  // Try one star down on the hotel — the classic "almost the same, cheaper" swap.
-  if (builderState.hotelStars <= 3) {
-    const box = document.getElementById('optimizeResult');
-    box.style.display = 'block';
-    box.innerHTML = '<span class="save">Aranžman je već optimalan</span>Već si na najnižoj kategoriji smeštaja — nema očiglednog mesta za uštedu bez gubitka udobnosti.';
-    return;
+  // Poluga 1: hotel jednu zvezdicu niže.
+  if (builderState.hotelStars > 3) {
+    const testSel = Object.assign({}, builderState, {hotelStars: builderState.hotelStars - 1});
+    const alt = computeCustomPackage(testSel, ctx);
+    candidates.push({
+      testSel,
+      savings: current.total - alt.total,
+      message: `Ako promeniš hotel na ${testSel.hotelStars}★, zadržavaš skoro istu lokaciju uz malo nižu ocenu (${alt.hotel.rating} umesto ${current.hotel.rating}).`,
+      toastMsg: 'hotel promenjen na ' + testSel.hotelStars + '★.',
+      apply(){
+        document.querySelectorAll('.chip-row[data-group="hotelStars"] .chip').forEach(c=>{
+          c.classList.toggle('on', Number(c.dataset.value) === testSel.hotelStars);
+        });
+      }
+    });
   }
-  const testSel = Object.assign({}, builderState, {hotelStars: builderState.hotelStars - 1});
-  const alt = computeCustomPackage(testSel, ctx);
-  const savings = current.total - alt.total;
+
+  // Poluga 2: manji auto (SUV → mali auto → bez auta).
+  const carDowngrade = {suv:'small', small:'none'}[builderState.carPref];
+  if (carDowngrade) {
+    const testSel = Object.assign({}, builderState, {carPref: carDowngrade});
+    const alt = computeCustomPackage(testSel, ctx);
+    candidates.push({
+      testSel,
+      savings: current.total - alt.total,
+      message: carDowngrade === 'none'
+        ? 'Ako odustaneš od iznajmljivanja auta, gubiš deo fleksibilnosti u kretanju, ali štediš i na gorivu i putarinama.'
+        : 'Ako uzmeš manji auto umesto SUV-a, uštedu dobijaš uz nešto manje prtljažnog prostora.',
+      toastMsg: 'auto promenjen na ' + (carDowngrade === 'none' ? 'bez auta' : 'mali auto') + '.',
+      apply(){
+        document.querySelectorAll('.chip-row[data-group="carPref"] .chip').forEach(c=>{
+          c.classList.toggle('on', c.dataset.value === testSel.carPref);
+        });
+      }
+    });
+  }
+
+  // Poluga 3: jedna aktivnost manje.
+  if (builderState.activityCount > 0) {
+    const testSel = Object.assign({}, builderState, {activityCount: builderState.activityCount - 1});
+    const alt = computeCustomPackage(testSel, ctx);
+    candidates.push({
+      testSel,
+      savings: current.total - alt.total,
+      message: `Ako smanjiš broj aktivnosti na ${testSel.activityCount}, ostaje ti i dalje dovoljno vremena za slobodno istraživanje.`,
+      toastMsg: 'broj aktivnosti smanjen na ' + testSel.activityCount + '.',
+      apply(){
+        document.getElementById('actCount').textContent = testSel.activityCount;
+      }
+    });
+  }
 
   const box = document.getElementById('optimizeResult');
   box.style.display = 'block';
-  if (savings > 0) {
-    box.innerHTML = `
-      <span class="save">Možeš uštedeti ${fmtEUR(savings)}</span>
-      Ako promeniš hotel na ${testSel.hotelStars}★, zadržavaš skoro istu lokaciju uz malo nižu ocenu (${alt.hotel.rating} umesto ${current.hotel.rating}).
-      <button type="button" class="optimize-apply" id="applyOptimize">Primeni ovu izmenu</button>
-    `;
-    document.getElementById('applyOptimize').addEventListener('click', ()=>{
-      builderState.hotelStars = testSel.hotelStars;
-      document.querySelectorAll('.chip-row[data-group="hotelStars"] .chip').forEach(c=>{
-        c.classList.toggle('on', Number(c.dataset.value) === testSel.hotelStars);
-      });
-      renderBuilder();
-      showToast('Aranžman ažuriran — hotel promenjen na ' + testSel.hotelStars + '★.');
-    });
-  } else {
-    box.innerHTML = '<span class="save">Aranžman je već optimalan</span>Trenutna kombinacija je već najbolja za odabrane kriterijume.';
+
+  const viable = candidates.filter(c => c.savings > 0).sort((a,b) => b.savings - a.savings);
+  if (!viable.length) {
+    box.innerHTML = candidates.length
+      ? '<span class="save">Aranžman je već optimalan</span>Proverili smo hotel, auto i broj aktivnosti — trenutna kombinacija je već najjeftinija za odabrane kriterijume.'
+      : '<span class="save">Aranžman je već optimalan</span>Već si na najnižim opcijama za sve stavke — nema očiglednog mesta za uštedu bez gubitka udobnosti.';
+    return;
   }
+
+  const best = viable[0];
+  box.innerHTML = `
+    <span class="save">Možeš uštedeti ${fmtEUR(best.savings)}</span>
+    ${best.message}
+    <button type="button" class="optimize-apply" id="applyOptimize">Primeni ovu izmenu</button>
+  `;
+  document.getElementById('applyOptimize').addEventListener('click', ()=>{
+    Object.assign(builderState, best.testSel);
+    best.apply();
+    renderBuilder();
+    showToast('Aranžman ažuriran — ' + best.toastMsg);
+  });
 });
 
 document.getElementById('makeBuilderBtn').addEventListener('click', ()=>{
