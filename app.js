@@ -1432,6 +1432,21 @@ document.getElementById('makeBuilderBtn').addEventListener('click', ()=>{
 });
 
 /* ==========================================================
+   POPULARNE DESTINACIJE — statične kartice u HTML-u (SEO sadržaj
+   vidljiv i bez JS-a); klik samo puni postojeću formu i pokreće
+   isti runSearch() koji se koristi za "Pronađi najbolje putovanje".
+   Namerno stoji PRE Supabase inicijalizacije ispod — ako config.js
+   nedostane ili baci grešku, ovo i dalje treba da radi.
+========================================================== */
+document.querySelectorAll('.popular-dest-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.getElementById('dest').value = card.dataset.dest;
+    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+    runSearch(false);
+  });
+});
+
+/* ==========================================================
    MOJA PUTOVANJA — Supabase (auth.users + trips tabela).
    Prijava je email magic-link (OTP), ne treba Google/OAuth podesavanje.
    Ako Supabase iz nekog razloga ne odgovori (mreza, pogresan kljuc),
@@ -1713,15 +1728,3 @@ document.getElementById('saveTripBtn').addEventListener('click', saveSavedTrip);
 sb.auth.onAuthStateChange(()=> renderSavedTrips());
 renderSavedTrips();
 
-/* ==========================================================
-   POPULARNE DESTINACIJE — statične kartice u HTML-u (SEO sadržaj
-   vidljiv i bez JS-a); klik samo puni postojeću formu i pokreće
-   isti runSearch() koji se koristi za "Pronađi najbolje putovanje".
-========================================================== */
-document.querySelectorAll('.popular-dest-card').forEach(card => {
-  card.addEventListener('click', () => {
-    document.getElementById('dest').value = card.dataset.dest;
-    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
-    runSearch(false);
-  });
-});
