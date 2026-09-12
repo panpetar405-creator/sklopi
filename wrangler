@@ -1,0 +1,17 @@
+name = "skoknica-price-alerts"
+main = "price-alert-worker.js"
+compatibility_date = "2025-09-01"
+
+# Svaki dan u 08:00 UTC (~10:00 po srednjoevropskom letnjem vremenu).
+# Prilagodi po potrebi — https://developers.cloudflare.com/workers/configuration/cron-triggers/
+[triggers]
+crons = ["0 8 * * *"]
+
+# Ovo su samo NEOSETLJIVE vrednosti (URL-ovi). Tajne (ključevi) NIKAD ne idu
+# ovde — postavljaju se preko `wrangler secret put <ime>`:
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#   wrangler secret put RESEND_API_KEY
+[vars]
+SUPABASE_URL = "https://qmiyaaepdvmgwesagnar.supabase.co"
+ALERT_FROM_EMAIL = "Skoknica <alerti@skoknica.rs>"
+SITE_URL = "https://skoknica.rs"
