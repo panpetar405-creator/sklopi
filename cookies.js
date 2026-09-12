@@ -1,43 +1,28 @@
+// PRIVREMENI minimalni stub za lokalno testiranje banera za kolačiće.
+// Originalni cookies.js (sa pravom GA integracijom) nije bio deo fajlova
+// koje si poslao na analizu — ovo samo omogućava da dugmad rade vizuelno.
 (function(){
-  const GA_MEASUREMENT_ID = ''; // TODO: upiši npr. 'G-XXXXXXXXXX' kad se registruješ na Google Analytics
-  const CONSENT_KEY = 'skoknica_cookie_consent'; // 'accepted' | 'declined'
+  var banner = document.getElementById('cookieBanner');
+  var accept = document.getElementById('cookieAccept');
+  var decline = document.getElementById('cookieDecline');
+  var settingsLink = document.getElementById('cookieSettingsLink');
+  if (!banner) return;
 
-  const banner  = document.getElementById('cookieBanner');
-  const accept  = document.getElementById('cookieAccept');
-  const decline = document.getElementById('cookieDecline');
-  const settingsLink = document.getElementById('cookieSettingsLink');
+  var choice = localStorage.getItem('skoknica_cookie_choice');
+  if (!choice) banner.classList.add('show');
 
-  function loadGA(){
-    if (!GA_MEASUREMENT_ID) { console.warn('[skoknica] GA_MEASUREMENT_ID nije podešen — analitika se ne učitava.'); return; }
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
-  }
+  function hide(){ banner.classList.remove('show'); }
 
-  function showBanner(){ banner.classList.add('show'); }
-  function hideBanner(){ banner.classList.remove('show'); }
-
-  const saved = localStorage.getItem(CONSENT_KEY);
-  if (saved === 'accepted') loadGA();
-  else if (saved !== 'declined') showBanner();
-
-  accept.addEventListener('click', ()=>{
-    localStorage.setItem(CONSENT_KEY, 'accepted');
-    hideBanner();
-    loadGA();
+  if (accept) accept.addEventListener('click', function(){
+    localStorage.setItem('skoknica_cookie_choice', 'accepted');
+    hide();
   });
-  decline.addEventListener('click', ()=>{
-    localStorage.setItem(CONSENT_KEY, 'declined');
-    hideBanner();
+  if (decline) decline.addEventListener('click', function(){
+    localStorage.setItem('skoknica_cookie_choice', 'declined');
+    hide();
   });
-  settingsLink.addEventListener('click', (e)=>{
+  if (settingsLink) settingsLink.addEventListener('click', function(e){
     e.preventDefault();
-    showBanner();
+    banner.classList.add('show');
   });
 })();
