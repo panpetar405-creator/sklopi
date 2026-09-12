@@ -10,6 +10,11 @@
     --aqua:#6E9C9C;
     --line:#DDD6C6;
     --line-deep:rgba(255,255,255,0.18);
+    /* Malo jača od --line — koristi se SAMO za razdvajanje polja u
+       "ticket" pretrazi (Destinacija/Datumi/Putnika), gde je originalna
+       --line bila preslabog kontrasta na skoro-belom --paper pozadini
+       i teško se videla na mobilnom (linije između polja "nestajale"). */
+    --line-form:rgba(22,36,42,0.16);
     --coral:#C1573C;
     --coral-text:#A34430;
     --coral-soft:#F1DCD3;
@@ -183,7 +188,7 @@
   .ticket::after{right:-13px;}
   .ticket .stub{
     padding:26px 24px;
-    border-right:1px dashed var(--line);
+    border-right:1px dashed var(--line-form);
     transition:background .15s ease;
     position:relative;
   }
@@ -866,7 +871,7 @@
   @media (max-width:760px){
     .topbar,.hero,.section{padding-left:20px;padding-right:20px;}
     .ticket{grid-template-columns:1fr;margin-bottom:20px;}
-    .ticket .stub{border-right:none;border-bottom:1px dashed var(--line);}
+    .ticket .stub{border-right:none;border-bottom:1px dashed var(--line-form);}
     .ticket .stub:last-of-type{border-bottom:none;}
     .ticket .go{padding:18px 24px 24px;}
     .transport-row{padding:0 4px;transform:none;margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
