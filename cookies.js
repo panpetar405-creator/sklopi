@@ -26,3 +26,4 @@
     banner.classList.add('show');
   });
 })();
+
