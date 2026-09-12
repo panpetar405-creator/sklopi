@@ -1561,6 +1561,94 @@ function tierLabelsForSaved(sel){
   ];
 }
 
+/* ---------- Poređenje sačuvanih aranžmana ----
+   Korisnik čekira do 3 kartice; čim su 2+ čekirane, ispod liste se
+   pojavljuje tabela koja ih upoređuje jednu pored druge. Ne pravi se
+   novi network poziv pri čekiranju — koristi se _lastSavedTripsCache
+   iz poslednjeg fetchSavedTrips() poziva. ---------- */
+let compareIds = new Set();
+let _lastSavedTripsCache = [];
+const COMPARE_MAX = 3;
+
+function renderCompareTable(){
+  const wrap = document.getElementById('compareWrap');
+  if (!wrap) return;
+  const selected = _lastSavedTripsCache.filter(t => compareIds.has(t.id));
+  if (selected.length < 2){
+    wrap.style.display = 'none';
+    wrap.innerHTML = '';
+    return;
+  }
+  const cheapest = Math.min(...selected.map(t => t.total));
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div class="compare-head">
+      <div class="eyebrow">Poređenje</div>
+      <h3>Uporedi ${selected.length} sačuvana aranžmana</h3>
+    </div>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            ${selected.map(t => `<th>${escapeHtml(t.dest)}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Datumi</td>${selected.map(t => `<td>${fmtDate(t.from)} – ${fmtDate(t.to)}</td>`).join('')}</tr>
+          <tr><td>Putnika</td>${selected.map(t => `<td>${t.adults}</td>`).join('')}</tr>
+          <tr><td>Detalji</td>${selected.map(t => `<td>${tierLabelsForSaved(t.sel).map(l => escapeHtml(l)).join('<br>')}</td>`).join('')}</tr>
+          <tr class="compare-total-row">
+            <td>Procenjeno ukupno</td>
+            ${selected.map(t => `<td class="tabular${t.total === cheapest ? ' compare-best' : ''}">${fmtEUR(t.total)}${t.total === cheapest ? '<span class="compare-badge">najjeftinije</span>' : ''}</td>`).join('')}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button type="button" class="compare-clear" id="compareClearBtn">Očisti poređenje</button>
+  `;
+  document.getElementById('compareClearBtn').addEventListener('click', () => {
+    compareIds.clear();
+    renderSavedTripsMarkup(_lastSavedTripsCache);
+  });
+}
+
+function renderSavedTripsMarkup(trips){
+  const wrap = document.getElementById('savedTripsList');
+  if (!trips.length){
+    wrap.innerHTML = '<div class="saved-empty">Još nema sačuvanih aranžmana. Podesi izbore u builderu iznad i klikni <strong>„Sačuvaj aranžman“</strong>.</div>';
+    renderCompareTable();
+    return;
+  }
+  wrap.innerHTML = '<div class="saved-grid">' + trips.map(t => `
+    <div class="saved-card" data-id="${t.id}">
+      <label class="sc-compare">
+        <input type="checkbox" class="sc-compare-cb" data-id="${t.id}"
+          ${compareIds.has(t.id) ? 'checked' : ''}
+          ${(!compareIds.has(t.id) && compareIds.size >= COMPARE_MAX) ? 'disabled' : ''}>
+        <span>Uporedi</span>
+      </label>
+      <div class="sc-dest">${escapeHtml(t.dest)}</div>
+      <div class="sc-meta">${fmtDate(t.from)} – ${fmtDate(t.to)} · ${t.adults} putnik${t.adults==='1'?'':'a'}</div>
+      <div class="sc-tags">${tierLabelsForSaved(t.sel).map(l => `<span class="sc-tag">${escapeHtml(l)}</span>`).join('')}</div>
+      <div class="sc-total"><span class="lab">procenjeno ukupno</span><span class="num tabular">${fmtEUR(t.total)}</span></div>
+      <div class="sc-actions">
+        <button type="button" class="sc-btn load" onclick="loadSavedTrip('${t.id}')">Učitaj</button>
+        <button type="button" class="sc-btn del" onclick="deleteSavedTrip('${t.id}')">Obriši</button>
+      </div>
+    </div>`).join('') + '</div>';
+
+  wrap.querySelectorAll('.sc-compare-cb').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) compareIds.add(cb.dataset.id);
+      else compareIds.delete(cb.dataset.id);
+      renderSavedTripsMarkup(_lastSavedTripsCache);
+    });
+  });
+
+  renderCompareTable();
+}
+
 async function fetchSavedTrips(){
   const { data, error } = await sb.from('trips').select('*').order('created_at', {ascending:false});
   if (error){ console.warn('[skoknica] ucitavanje putovanja nije uspelo:', error.message); return []; }
@@ -1584,25 +1672,19 @@ async function renderSavedTrips(){
 
   if (!user){
     wrap.innerHTML = '<div class="saved-empty">Prijavi se emailom iznad da vidiš i čuvaš svoje aranžmane — čuvaju se na nalogu, ne u ovom pregledaču.</div>';
+    _lastSavedTripsCache = [];
+    compareIds.clear();
+    renderCompareTable();
     return;
   }
 
   const trips = await fetchSavedTrips();
-  if (!trips.length){
-    wrap.innerHTML = '<div class="saved-empty">Još nema sačuvanih aranžmana. Podesi izbore u builderu iznad i klikni <strong>„Sačuvaj aranžman“</strong>.</div>';
-    return;
-  }
-  wrap.innerHTML = '<div class="saved-grid">' + trips.map(t => `
-    <div class="saved-card" data-id="${t.id}">
-      <div class="sc-dest">${escapeHtml(t.dest)}</div>
-      <div class="sc-meta">${fmtDate(t.from)} – ${fmtDate(t.to)} · ${t.adults} putnik${t.adults==='1'?'':'a'}</div>
-      <div class="sc-tags">${tierLabelsForSaved(t.sel).map(l => `<span class="sc-tag">${escapeHtml(l)}</span>`).join('')}</div>
-      <div class="sc-total"><span class="lab">procenjeno ukupno</span><span class="num tabular">${fmtEUR(t.total)}</span></div>
-      <div class="sc-actions">
-        <button type="button" class="sc-btn load" onclick="loadSavedTrip('${t.id}')">Učitaj</button>
-        <button type="button" class="sc-btn del" onclick="deleteSavedTrip('${t.id}')">Obriši</button>
-      </div>
-    </div>`).join('') + '</div>';
+  _lastSavedTripsCache = trips;
+  // ukloni iz poređenja sve id-jeve koji više ne postoje (npr. obrisan aranžman)
+  const stillExists = new Set(trips.map(t => t.id));
+  compareIds.forEach(id => { if (!stillExists.has(id)) compareIds.delete(id); });
+
+  renderSavedTripsMarkup(trips);
 }
 
 async function saveSavedTrip(){
