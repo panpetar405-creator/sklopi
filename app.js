@@ -1712,3 +1712,4 @@ async function deleteSavedTrip(id){
 document.getElementById('saveTripBtn').addEventListener('click', saveSavedTrip);
 sb.auth.onAuthStateChange(()=> renderSavedTrips());
 renderSavedTrips();
+
