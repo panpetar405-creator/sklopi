@@ -1089,12 +1089,17 @@ function builderCtx(){
 }
 
 function computeCustomPackage(sel, ctx){
-  // Seed zavisi SAMO od izbora koji stvarno utiču na sastav aranžmana
-  // (let, hotel, auto, aktivnosti) — budžet je isključen namerno, jer je
-  // to samo prag za poređenje, ne treba da menja generisane cene.
+  // Seed zavisi SAMO od izbora koji stvarno utiču na SASTAV aranžmana
+  // (let, hotel, auto, aktivnosti) — budžet je isključen iz istog razloga
+  // kao i pre (samo prag za poređenje, ne treba da menja generisane cene).
+  // airlineName je TAKOĐE namerno isključen: to je slobodan tekst koji
+  // korisnik kuca slovo po slovo, i kad bi bio deo seed-a, svaki novi
+  // karakter bi generisao potpuno nov seed → hotel/auto/aktivnosti cene
+  // bi "treperele" i menjale se pri svakom tasteru, iako se ništa
+  // semantički bitno za njih nije promenilo. Ime avio-kompanije i dalje
+  // utiče na PRIKAZ leta (flightName ispod), samo ne na seed generatora.
   const seedSel = {
     flightPref: sel.flightPref,
-    airlineName: sel.airlineName,
     hotelStars: sel.hotelStars,
     prioritizeRating: sel.prioritizeRating,
     prioritizeLocation: sel.prioritizeLocation,
@@ -1109,6 +1114,13 @@ function computeCustomPackage(sel, ctx){
   const flightMult = {direct:1.05, cheapest:0.72, airline:1.15}[sel.flightPref];
   const flightPrice = Math.round(flightBase * flightMult * ctx.adults);
   const carriers = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
+  // NAPOMENA: ako je flightPref==='airline' i ime je uneto, grana ispod
+  // NE zove rng() (carriers[...] se preskače) — to je namerno, jer inače
+  // bi svaki prelaz prazno/popunjeno polje pomerio redosled sledećih
+  // rng() poziva (hotel, auto...) za jedno mesto. Pošto je ova grana
+  // stabilna za SVAKI neprazan unos (bilo koje slovo znači "preskoči"),
+  // cene se ne pomeraju dok korisnik kuca — samo pri prvom i poslednjem
+  // karakteru (prazno ↔ nije prazno), što je prihvatljivo i retko.
   const flightName = sel.flightPref === 'airline' && sel.airlineName
     ? sel.airlineName + ' → ' + ctx.dest
     : carriers[Math.floor(rng()*carriers.length)] + ' → ' + ctx.dest;
