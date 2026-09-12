@@ -1261,9 +1261,28 @@ document.getElementById('actPlus').addEventListener('click', ()=>{
   renderBuilder();
 });
 
+// Gornja granica je namerno velikodušna (niko realno ne planira izlet
+// preko ovoga), samo sprečava apsurdne unose tipa "1e10" ili slučajno
+// dodat nepotreban nule. Budžet mora biti ceo broj > 0, ne negativan
+// i ne decimalan — sve ostalo se ili odbacuje (null) ili zaokružuje/seče.
+const MAX_BUDGET = 50000;
+
 document.getElementById('budgetInput').addEventListener('input', (e)=>{
-  const v = Number(e.target.value);
-  builderState.budget = (e.target.value && v > 0) ? v : null;
+  const raw = e.target.value;
+  if (!raw) { builderState.budget = null; renderBuilder(); return; }
+
+  const n = Math.floor(Number(raw));
+  if (!Number.isFinite(n) || n <= 0) {
+    // Prazno/nevalidno/negativno dok korisnik još kuca (npr. samo "-") —
+    // ne diramo polje, samo privremeno ignorišemo budžet u proračunu.
+    builderState.budget = null;
+  } else {
+    const clamped = Math.min(n, MAX_BUDGET);
+    // Ako je uneta decimala ili broj veći od granice, ispravi i prikaz
+    // u polju da korisnik vidi tačno koja vrednost se zapravo koristi.
+    if (String(clamped) !== raw) e.target.value = clamped;
+    builderState.budget = clamped;
+  }
   renderBuilder();
 });
 
