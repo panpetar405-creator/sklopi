@@ -1905,3 +1905,4 @@ function renderAuthPanel(containerId, user){
         <span class="auth-status">Ulogovan kao <strong>${escapeHtml(user.email)}</strong></span>
         <button type="button" class="auth-btn" id="${logoutBtnId}">Izloguj se</button>
  
+
