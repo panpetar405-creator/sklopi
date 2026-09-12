@@ -14,6 +14,16 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1747571443369-e21d1e2ce292?w=1200&q=80&auto=format&fit=crop">
 <!-- TODO: kad sajt bude na domenu, upisati pravi og:url (npr. https://skoknica.rs/) -->
 <meta property="og:url" content="https://skoknica.rs/">
+<link rel="canonical" href="https://skoknica.rs/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TravelAgency",
+  "name": "Skoknica",
+  "description": "Skoknica pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu.",
+  "url": "https://skoknica.rs/"
+}
+</script>
 
 <!-- Twitter/X Card -->
 <meta name="twitter:card" content="summary_large_image">
@@ -41,7 +51,7 @@
       Skoknica<em>.</em>
     </div>
     <nav>
-      <span>Kako radi</span><span>Destinacije</span><span>O nama</span>
+      <a href="#faq">Kako radi</a><a href="#results">Destinacije</a><a href="#about">O nama</a>
     </nav>
     <div class="topbar-right">
       <button type="button" class="avatar" id="topAvatarBtn" aria-label="Nalog">
@@ -57,7 +67,7 @@
       <div class="mp-nav">
         <a href="#faq">Kako radi</a>
         <a href="#results">Destinacije</a>
-        <a href="#faq">O nama</a>
+        <a href="#about">O nama</a>
       </div>
     </div>
   </div>
@@ -87,8 +97,8 @@
           <span class="dd-range" id="dateDisplayText">1. okt – 5. okt</span>
           <span class="dd-meta" id="dateNightsText">4 noći</span>
         </button>
-        <input type="hidden" id="dateFrom" value="2026-10-01" required>
-        <input type="hidden" id="dateTo" value="2026-10-05" required>
+        <input type="hidden" id="dateFrom" value="2026-10-01">
+        <input type="hidden" id="dateTo" value="2026-10-05">
 
         <div class="cal-card" id="calCard">
           <div class="cal-inner">
@@ -329,17 +339,17 @@
   </div>
 </div>
 
-<footer>
+<footer id="about">
   <div class="footer-inner">
     <div class="footer-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></div>Skoknica<em>.</em></div>
-    <div class="flinks"><a href="#faq">Pomoć</a><a href="#faq">FAQ</a><a href="mailto:panpetar405@gmail.com">Kontakt</a><a href="privatnost.html">Privatnost</a><a href="uslovi-koriscenja.html">Uslovi</a><a href="kolacici.html">Kolačići</a></div>
+    <div class="flinks"><a href="#faq">Pomoć i FAQ</a><a href="mailto:panpetar405@gmail.com">Kontakt</a><a href="privatnost.html">Privatnost</a><a href="uslovi-koriscenja.html">Uslovi</a><a href="kolacici.html">Kolačići</a></div>
     <div class="fsocial">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/></svg>
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c2.7 0 3 0 4.1.06 1.1.05 1.8.22 2.2.36.5.2.9.44 1.3.84.4.4.63.8.84 1.3.14.4.31 1.1.36 2.2.06 1.1.06 1.4.06 4.1s0 3-.06 4.1c-.05 1.1-.22 1.8-.36 2.2-.2.5-.44.9-.84 1.3-.4.4-.8.63-1.3.84-.4.14-1.1.31-2.2.36-1.1.06-1.4.06-4.1.06s-3 0-4.1-.06c-1.1-.05-1.8-.22-2.2-.36-.5-.2-.9-.44-1.3-.84-.4-.4-.63-.8-.84-1.3-.14-.4-.31-1.1-.36-2.2C2.2 15 2.2 14.7 2.2 12s0-3 .06-4.1c.05-1.1.22-1.8.36-2.2.2-.5.44-.9.84-1.3.4-.4.8-.63 1.3-.84.4-.14 1.1-.31 2.2-.36C8.99 2.2 9.3 2.2 12 2.2zm0 1.8a4.4 4.4 0 100 8.8 4.4 4.4 0 000-8.8zm0 1.8a2.6 2.6 0 110 5.2 2.6 2.6 0 010-5.2zm4.6-2a1.03 1.03 0 110 2.06 1.03 1.03 0 010-2.06z"/></svg>
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a8.5 8.5 0 01-2.45.67A4.3 4.3 0 0022.4 1.5a8.6 8.6 0 01-2.72 1.04A4.28 4.28 0 0016.1 1c-2.36 0-4.28 1.92-4.28 4.28 0 .34.04.66.11.98A12.13 12.13 0 013 2.1a4.28 4.28 0 001.33 5.71 4.24 4.24 0 01-1.94-.54v.05c0 2.07 1.47 3.8 3.43 4.19a4.3 4.3 0 01-1.93.07 4.29 4.29 0 004 2.98A8.6 8.6 0 011 17.54 12.1 12.1 0 007.55 19.5c7.86 0 12.16-6.51 12.16-12.16 0-.19 0-.37-.01-.55A8.7 8.7 0 0023 3z"/></svg>
     </div>
   </div>
-  <div class="foot-note">Skoknica — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="privatnost.html">Politika privatnosti</a> · <a href="uslovi-koriscenja.html">Uslovi korišćenja</a> · <a href="kolacici.html">Kolačići</a> · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a></div>
+  <div class="foot-note">Skoknica — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a></div>
 </footer>
 
 <div class="cookie-banner" id="cookieBanner">
