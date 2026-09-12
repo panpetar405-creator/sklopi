@@ -1044,3 +1044,21 @@
   @media (max-width:480px){
     .alert-modal{padding:24px 18px 20px;}
   }
+
+  /* ---------- "Iznenadi me" (budget-only surprise search) ---------- */
+  .surprise-trigger{
+    display:block;width:100%;text-align:center;margin-top:14px;padding:10px;
+    background:transparent;border:none;cursor:pointer;
+    font-family:'Work Sans',sans-serif;font-size:14px;color:var(--ink-soft);
+  }
+  .surprise-trigger span{color:var(--gold-text);font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+  .surprise-trigger:hover span{color:var(--gold);}
+
+  .surprise-badge{border-style:solid;}
+  .surprise-reroll-btn{
+    display:block;width:auto;margin:4px auto 22px;padding:12px 26px;
+  }
+
+  @media (max-width:640px){
+    .surprise-trigger{font-size:13.5px;}
+  }
