@@ -1,5 +1,5 @@
-window.onerror = function(msg, src, line, col){ alert('GRESKA: ' + msg + ' | linija ' + line + ':' + col); };
-/* ==========================================================
+window.onerror = function(msg, src, line, col){ alert('GRESKA: ' + msg + ' | linija ' + line + ':' + col); }; 
+window.addEventListener('unhandledrejection', function(e){ alert('PROMISE GRESKA: ' + (e.reason && e.reason.message ? e.reason.message : e.reason)); }); alert('APP.JS SE UCITAO');/* ==========================================================
    I18N — srpski (podrazumevano) i engleski
    ==========================================================
    Princip: statički tekst u HTML-u se prevodi preko data-i18n /
