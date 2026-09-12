@@ -118,3 +118,4 @@ begin
 end;
 $$;
 grant execute on function public.add_trip_response(uuid, text, text, text) to anon, authenticated;
+
