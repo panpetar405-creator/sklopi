@@ -1869,9 +1869,15 @@ document.querySelectorAll('.popular-dest-card').forEach(card => {
    Ako Supabase iz nekog razloga ne odgovori (mreza, pogresan kljuc),
    sekcija samo ostaje prazna — ne obara ostatak sajta.
 ========================================================== */
-const sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
+let sb = null;
+try {
+  sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
+} catch (err) {
+  console.warn('[skoknica] Supabase init nije uspeo — nalog/sačuvani aranžmani neće raditi, ali ostatak sajta hoće:', err.message);
+}
 
 async function getCurrentUser(){
+  if (!sb) return null;
   try {
     const { data } = await sb.auth.getUser();
     return (data && data.user) || null;
@@ -1898,9 +1904,4 @@ function renderAuthPanel(containerId, user){
       <div class="auth-row">
         <span class="auth-status">Ulogovan kao <strong>${escapeHtml(user.email)}</strong></span>
         <button type="button" class="auth-btn" id="${logoutBtnId}">Izloguj se</button>
-      </div>`;
-    document.getElementById(logoutBtnId).addEventListener('click', async ()=>{
-      await sb.auth.signOut();
-      renderSavedTrips();
-    });
-  } else if (compact && !_authBar
+ 
