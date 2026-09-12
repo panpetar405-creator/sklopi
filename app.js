@@ -1088,7 +1088,14 @@ document.getElementById('searchForm').addEventListener('submit', function(e){
 /* ==========================================================
    BUILD-YOUR-OWN ("Napravi svoj aranžman")
 ========================================================== */
-const builderState = {
+// Jedini izvor default vrednosti — čuvamo posebno od builderState (koji se
+// mutira tokom rada) da bismo mogli da RESETUJEMO na siguran default pre
+// učitavanja sačuvanog aranžmana (vidi loadSavedTrip). Bez ovog reseta,
+// polje koje nedostaje u starom sačuvanom zapisu (npr. jer je dodato tek
+// kasnije u builderState) ne bi dobilo fallback — ostalo bi kakvo je bilo
+// pre poziva (stanje iz prethodno učitanog aranžmana ili undefined), što bi
+// computeCustomPackage moglo da pretvori u NaN cene.
+const BUILDER_DEFAULTS = {
   flightPref: 'direct',
   airlineName: '',
   hotelStars: 4,
@@ -1098,6 +1105,7 @@ const builderState = {
   activityCount: 2,
   budget: null
 };
+const builderState = Object.assign({}, BUILDER_DEFAULTS);
 
 function builderCtx(){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
@@ -1666,7 +1674,10 @@ async function loadSavedTrip(id){
     return;
   }
 
-  Object.assign(builderState, t.sel);
+  // Prvo reset na BUILDER_DEFAULTS, pa tek onda t.sel preko toga — tako
+  // svako polje koje nedostaje u starom sačuvanom zapisu dobije siguran
+  // fallback umesto da nasledi stanje iz prethodno učitanog aranžmana.
+  Object.assign(builderState, BUILDER_DEFAULTS, t.sel);
 
   document.querySelectorAll('.chip-row[data-group="flightPref"] .chip').forEach(c=>{
     c.classList.toggle('on', c.dataset.value === builderState.flightPref);
