@@ -28,7 +28,13 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (url.pathname === '/unsubscribe' && request.method === 'GET') {
+    // Prihvata OBA oblika putanje:
+    //  - /go/unsubscribe  — kad je podešen Cloudflare Route sa skoknica.rs
+    //    (Route prosleđuje PUNU putanju Worker-u, ne skida "/go" prefiks;
+    //    ovo mora da se poklapa sa unsubUrl koji gradi sendAlertEmail()).
+    //  - /unsubscribe     — kad se link u mejlu direktno gradi na
+    //    *.workers.dev adresi (fallback opisan u komentaru iznad unsubUrl).
+    if ((url.pathname === '/go/unsubscribe' || url.pathname === '/unsubscribe') && request.method === 'GET') {
       return handleUnsubscribe(url, env);
     }
 
