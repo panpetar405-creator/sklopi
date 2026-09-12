@@ -145,10 +145,15 @@
   }
   .hero-photo{
     position:absolute;inset:0;
-    background-image:
-      linear-gradient(175deg, rgba(18,49,56,0.78) 0%, rgba(29,69,80,0.32) 48%, rgba(18,49,56,0.82) 100%),
-      url('https://images.unsplash.com/photo-1747571443369-e21d1e2ce292?w=2000&q=80&auto=format&fit=crop');
-    background-size:cover;background-position:center 62%;
+    overflow:hidden;
+  }
+  .hero-photo::before{
+    content:"";position:absolute;inset:0;z-index:1;
+    background-image:linear-gradient(175deg, rgba(18,49,56,0.78) 0%, rgba(29,69,80,0.32) 48%, rgba(18,49,56,0.82) 100%);
+  }
+  .hero-photo img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 62%;display:block;
   }
   .hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:2;}
   .hero h1{
@@ -379,6 +384,28 @@
   .faq-item p{margin:0 0 18px;font-size:16px;line-height:1.6;color:var(--ink-soft);}
   .faq-item p a{color:var(--gold-text);font-weight:600;}
 
+  /* ---------- Popular destinations (static SEO content) ---------- */
+  .popular-dest-grid{
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;
+  }
+  .popular-dest-card{
+    text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:18px 20px;cursor:pointer;font-family:inherit;
+    transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  }
+  .popular-dest-card:hover{
+    border-color:var(--gold);box-shadow:0 14px 28px -18px rgba(18,49,56,0.35);transform:translateY(-2px);
+  }
+  .popular-dest-card .pd-name{
+    display:block;font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--deep);margin-bottom:6px;
+  }
+  .popular-dest-card .pd-desc{
+    display:block;font-size:13.5px;line-height:1.5;color:var(--ink-soft);
+  }
+  @media (max-width:760px){
+    .popular-dest-grid{grid-template-columns:1fr;}
+  }
+
   /* ---------- Feature strip (what a trip includes) ---------- */
   .feature-strip{
     margin-top:28px;
@@ -423,8 +450,12 @@
   }
   .postcard:hover{transform:rotate(0deg);box-shadow:0 30px 56px -28px rgba(18,49,56,0.45);}
   .postcard-photo{
-    width:100%;aspect-ratio:4/3;background-size:cover;background-position:center;
+    width:100%;aspect-ratio:4/3;
     border:1.5px dashed var(--gold);
+    overflow:hidden;position:relative;
+  }
+  .postcard-photo img{
+    width:100%;height:100%;object-fit:cover;display:block;
   }
   .postcard-stamp{
     position:absolute;top:-16px;right:-14px;width:48px;height:48px;border-radius:50%;
@@ -819,10 +850,15 @@
   /* ---------- CTA banner (photo) ---------- */
   .cta-banner{position:relative;margin-top:10px;padding:54px 40px;color:var(--on-dark);overflow:hidden;}
   .cta-photo{
-    position:absolute;inset:0;
-    background-image:linear-gradient(100deg, rgba(18,49,56,0.93) 32%, rgba(18,49,56,0.55) 100%),
-      url('https://images.unsplash.com/photo-1595190613644-68ce8e2a9814?w=1600&q=70&auto=format&fit=crop');
-    background-size:cover;background-position:center 55%;
+    position:absolute;inset:0;overflow:hidden;
+  }
+  .cta-photo::before{
+    content:"";position:absolute;inset:0;z-index:1;
+    background-image:linear-gradient(100deg, rgba(18,49,56,0.93) 32%, rgba(18,49,56,0.55) 100%);
+  }
+  .cta-photo img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 55%;display:block;
   }
   .cta-inner{max-width:1180px;margin:0 auto;position:relative;z-index:2;
     display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
