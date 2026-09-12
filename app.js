@@ -1411,6 +1411,13 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
 });
 
 document.getElementById('makeBuilderBtn').addEventListener('click', ()=>{
+  const destInput = document.getElementById('dest');
+  if (!destInput.value.trim()){
+    showToast('Unesi destinaciju da bismo napravili aranžman.');
+    destInput.focus();
+    destInput.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
   renderBuilder();
   document.getElementById('builderSummary').style.display = 'block';
   document.getElementById('builderPlaceholder').style.display = 'none';
