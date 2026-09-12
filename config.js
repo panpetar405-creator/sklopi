@@ -1,6 +1,1 @@
-// PRIVREMENI stub za lokalno testiranje — zameni pravim vrednostima
-// pre postavljanja na produkciju. Ovaj fajl namerno NIJE deo git/deploy-a
-// sa pravim ključevima; on samo sprečava da createClient() baci grešku
-// dok testiraš izgled sajta lokalno.
-window.SKOKNICA_SUPABASE_URL = 'https://qmiyaaepdvmgwesagnar.supabase.co';
-window.SKOKNICA_SUPABASE_KEY = 'PASTE_YOUR_ANON_PUBLIC_KEY_HERE';
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtaXlhYWVwZHZtZ3dlc2FnbmFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NDMwMzEsImV4cCI6MjEwNDUxOTAzMX0.L6M7fHEkZwTt7v78QVtzvrEFJ-4fcS9Jx3NF8WANRlI
