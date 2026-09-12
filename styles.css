@@ -79,6 +79,8 @@
   }
   .logo .mark svg{width:16px;height:16px;color:var(--gold-soft);}
   .topbar nav{display:flex;align-items:center;gap:28px;font-size:15.5px;color:var(--ink-soft);}
+  .topbar nav a{text-decoration:none;color:inherit;transition:color .15s ease;}
+  .topbar nav a:hover{color:var(--ink);}
   .topbar .avatar{
     width:36px;height:36px;border-radius:50%;border:1.5px dashed var(--gold);
     display:flex;align-items:center;justify-content:center;color:var(--gold);flex:none;
@@ -97,7 +99,7 @@
   .hamburger svg{width:18px;height:18px;}
   .topbar-right{display:flex;align-items:center;gap:10px;}
   @media (max-width:760px){
-    .topbar nav span{display:none;}
+    .topbar nav a{display:none;}
     .hamburger{display:flex;}
   }
   .mobile-panel{
