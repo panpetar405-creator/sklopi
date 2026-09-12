@@ -43,6 +43,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Skoknica">
 
+<link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -80,7 +81,9 @@
 </div>
 
 <div class="hero">
-  <div class="hero-photo"></div>
+  <div class="hero-photo">
+    <img src="https://images.unsplash.com/photo-1747571443369-e21d1e2ce292?w=2000&q=80&auto=format&fit=crop" alt="Obala grčkog ostrva u kasno popodne — primer destinacije koju Skoknica pronalazi" loading="eager" fetchpriority="high">
+  </div>
   <div class="hero-inner">
     <h1>Uneseš mesto.<br>Dobiješ <span class="accent">ceo izlet</span>.</h1>
     <p class="lede">Let, hotel, auto i aktivnosti — sastavljeni u tri gotova paketa, s jednom cenom na dnu. Bez otvaranja deset kartica u pretraživaču.</p>
@@ -187,7 +190,7 @@
           <button type="button" class="chip" data-value="cheapest">Najjeftiniji</button>
           <button type="button" class="chip" data-value="airline">Određena kompanija</button>
         </div>
-        <input type="text" id="airlineName" class="builder-input" placeholder="npr. Lufthansa" aria-label="Naziv avio-kompanije" style="display:none;">
+        <input type="text" id="airlineName" class="builder-input" placeholder="npr. Lufthansa" style="display:none;">
       </div>
 
       <div class="builder-group">
@@ -224,7 +227,7 @@
       <div class="builder-group" style="border-bottom:none;">
         <label class="builder-label"><span class="builder-ic ic-budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.3 9.6c0-1.2 1.1-2.1 2.7-2.1s2.7.8 2.7 1.9-1.2 1.6-2.5 1.9c-1.4.3-2.7.8-2.7 1.9s1.2 1.9 2.7 1.9 2.7-.7 2.7-1.9M12 6.3v1.2M12 16.5v1.2"/></svg></span> Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></label>
         <div class="builder-budget-row">
-          <span>€</span><input type="number" id="budgetInput" class="builder-input" placeholder="npr. 700" min="0" max="50000" step="1" aria-label="Budžet u evrima">
+          <span>€</span><input type="number" id="budgetInput" class="builder-input" placeholder="npr. 700" min="0" max="50000" step="1">
         </div>
       </div>
 
@@ -282,9 +285,44 @@
 
 <div class="postcard-section">
   <div class="postcard">
-    <div class="postcard-photo" style="background-image:url('https://images.unsplash.com/photo-1566650517863-068ba41d345c?w=700&q=75&auto=format&fit=crop');"></div>
+    <div class="postcard-photo">
+      <img src="https://images.unsplash.com/photo-1566650517863-068ba41d345c?w=700&q=75&auto=format&fit=crop" alt="Razglednica sa plažom i palmama" loading="lazy">
+    </div>
     <div class="postcard-stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></div>
     <p class="postcard-caption">Uvek postoji sledeći izlet.</p>
+  </div>
+</div>
+
+<div class="section" id="popular-destinations">
+  <div class="section-head">
+    <div class="eyebrow">Ideje za sledeći izlet</div>
+    <h2>Popularne destinacije iz Srbije i regiona</h2>
+  </div>
+  <div class="popular-dest-grid">
+    <button type="button" class="popular-dest-card" data-dest="Atina">
+      <span class="pd-name">Atina, Grčka</span>
+      <span class="pd-desc">Antika, ostrvski trajekti i vrhunska kuhinja — popularna letnja destinacija sa čestim direktnim letovima.</span>
+    </button>
+    <button type="button" class="popular-dest-card" data-dest="Rim">
+      <span class="pd-name">Rim, Italija</span>
+      <span class="pd-desc">Koloseum, Vatikan i ulična kuhinja — grad koji se obilazi peške, uz kratak let iz Beograda.</span>
+    </button>
+    <button type="button" class="popular-dest-card" data-dest="Barselona">
+      <span class="pd-name">Barselona, Španija</span>
+      <span class="pd-desc">Gaudijeva arhitektura, plaža i tapas bary — omiljena kombinacija grada i mora.</span>
+    </button>
+    <button type="button" class="popular-dest-card" data-dest="Budva">
+      <span class="pd-name">Budva, Crna Gora</span>
+      <span class="pd-desc">Najbliže more autom ili autobusom iz Srbije — stara varoš i duge plaže.</span>
+    </button>
+    <button type="button" class="popular-dest-card" data-dest="Istanbul">
+      <span class="pd-name">Istanbul, Turska</span>
+      <span class="pd-desc">Spoj Evrope i Azije, bazari i Bosfor — pristupačan izlet van sezone.</span>
+    </button>
+    <button type="button" class="popular-dest-card" data-dest="Beč">
+      <span class="pd-name">Beč, Austrija</span>
+      <span class="pd-desc">Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.</span>
+    </button>
   </div>
 </div>
 
@@ -296,7 +334,9 @@
 </div>
 
 <div class="cta-banner">
-  <div class="cta-photo"></div>
+  <div class="cta-photo">
+    <img src="https://images.unsplash.com/photo-1595190613644-68ce8e2a9814?w=1600&q=70&auto=format&fit=crop" alt="Popularna evropska destinacija u sumrak" loading="lazy">
+  </div>
   <div class="cta-inner">
     <div class="cta-left">
       <h3 id="ctaTitle">Atina te čeka.</h3>
