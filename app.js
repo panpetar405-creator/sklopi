@@ -964,6 +964,10 @@ function pkgHtml(pkg){
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
       Sačuvaj ovu ponudu
     </button>
+    <button type="button" class="pkg-alert-btn" onclick="openAlertModal('search', '${pkg.tier}', ${pkg.total})">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.75-.98 2.4L4.6 15h14.8l-1.42-1.4a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 19a2.6 2.6 0 005 0"/></svg>
+      Javi mi kad padne cena
+    </button>
   </div>`;
 }
 
@@ -1809,4 +1813,87 @@ async function deleteSavedTrip(id){
 document.getElementById('saveTripBtn').addEventListener('click', saveSavedTrip);
 sb.auth.onAuthStateChange(()=> renderSavedTrips());
 renderSavedTrips();
+
+/* ==========================================================
+   PRICE ALERTS — "Javi mi kad padne cena"
+   Otvara se sa dugmeta na svakoj gotovoj ponudi (Budget/Best/Comfort)
+   ili sa dugmeta u builderu. Upisuje red direktno u price_alerts preko
+   anon ključa (RLS na toj tabeli dozvoljava SAMO insert — vidi
+   supabase/price_alerts.sql), bez potrebe za nalogom/prijavom.
+   Periodičnu proveru i slanje mejla radi poseban Cloudflare Worker
+   (worker/price-alert-worker.js), ne ovaj fajl.
+========================================================== */
+let _alertCtx = null;
+
+function openAlertModal(kind, tierOrNull, currentPrice){
+  const ctx = builderCtx();
+  const selection = (kind === 'search')
+    ? {kind:'search', tier:tierOrNull, tierLabel:(TIER_META[tierOrNull]||{}).label || ''}
+    : Object.assign({kind:'builder'}, builderState);
+
+  _alertCtx = {
+    dest: ctx.dest,
+    from: document.getElementById('dateFrom').value,
+    to: document.getElementById('dateTo').value,
+    adults: Number(document.getElementById('adults').value) || 2,
+    selection,
+    price: Math.round(currentPrice)
+  };
+
+  document.getElementById('alertModalSub').textContent =
+    'Trenutna procena za ' + ctx.dest + ': ' + fmtEUR(_alertCtx.price) + '. Javićemo ti mejlom kad procenjena cena padne ispod praga koji postaviš.';
+  document.getElementById('alertThreshold').value = Math.max(1, Math.round(_alertCtx.price * 0.9));
+  document.getElementById('alertEmail').value = '';
+
+  document.getElementById('alertModalBackdrop').classList.add('open');
+  document.getElementById('alertModal').classList.add('open');
+  document.getElementById('alertEmail').focus();
+}
+
+function closeAlertModal(){
+  document.getElementById('alertModalBackdrop').classList.remove('open');
+  document.getElementById('alertModal').classList.remove('open');
+}
+
+document.getElementById('alertBuilderBtn').addEventListener('click', ()=>{
+  const ctx = builderCtx();
+  const pkg = window._lastBuilderPkg || computeCustomPackage(builderState, ctx);
+  openAlertModal('builder', null, pkg.total);
+});
+
+document.getElementById('alertModalBackdrop').addEventListener('click', closeAlertModal);
+document.getElementById('alertModalClose').addEventListener('click', closeAlertModal);
+document.addEventListener('keydown', (e)=>{
+  if (e.key === 'Escape' && document.getElementById('alertModal').classList.contains('open')) closeAlertModal();
+});
+
+document.getElementById('alertModalSubmit').addEventListener('click', async ()=>{
+  if (!_alertCtx) return;
+  const email = document.getElementById('alertEmail').value.trim();
+  const threshold = Number(document.getElementById('alertThreshold').value);
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Unesi ispravan email.'); return; }
+  if (!threshold || threshold <= 0){ showToast('Unesi ispravan prag u evrima.'); return; }
+
+  const submitBtn = document.getElementById('alertModalSubmit');
+  submitBtn.disabled = true;
+
+  const { error } = await sb.from('price_alerts').insert({
+    email,
+    dest: _alertCtx.dest,
+    date_from: _alertCtx.from,
+    date_to: _alertCtx.to,
+    adults: _alertCtx.adults,
+    selection: _alertCtx.selection,
+    threshold,
+    last_price: _alertCtx.price
+  });
+
+  submitBtn.disabled = false;
+
+  if (error){ showToast('Greška pri postavljanju alerta: ' + error.message); return; }
+
+  closeAlertModal();
+  showToast('Gotovo — javićemo ti na ' + email + ' kad cena padne ispod ' + fmtEUR(threshold) + '.');
+});
 
