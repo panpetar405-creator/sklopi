@@ -27,11 +27,11 @@ const I18N = {
     opt_1adult:'1 odrasla osoba', opt_2adults:'2 odrasla', opt_3adults:'3 odrasla', opt_4adults:'4 odrasla',
     btn_search:'PronaД‘i najbolje putovanje',
     toggle_flight:'Letovi', toggle_hotel:'SmeЕЎtaj', toggle_car:'Rent a car', toggle_activity:'Aktivnost',
-    surprise_trigger:'рџЋІ NemaЕЎ ideju kuda? <span>Iznenadi me za dati budЕѕet в†’</span>',
-    h2_no_idea:'Ne znaЕЎ gde bi iЕЎao?', sub_no_idea:'Reci nam koliko ЕѕeliЕЎ da potroЕЎiЕЎ, a mi Д‡emo pronaД‡i destinacije koje se uklapaju.',
+    eyebrow_no_idea:'NemaЕЎ plan', h2_no_idea:'Ne znaЕЎ gde bi iЕЎao?', sub_no_idea:'Reci nam koliko ЕѕeliЕЎ da potroЕЎiЕЎ, a mi Д‡emo pronaД‡i destinacije koje se uklapaju.',
     btn_no_idea_cta:'рџЋІ Iznenadi me',
     eyebrow_more_control:'ViЕЎe kontrole', h2_build_own:'ЕЅeliЕЎ viЕЎe kontrole?',
     sub_build_own:'BiraЕЎ let, smeЕЎtaj, auto i aktivnosti вЂ” mi raДЌunamo koliko sve zajedno koЕЎta.',
+    eyebrow_features:'Sve ukljuДЌeno',
     builder_flight_label:'Let', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'OdreД‘ena kompanija',
     placeholder_airline:'npr. Lufthansa',
     chip_priority_rating:'Prioritet: ocena', chip_priority_location:'Prioritet: lokacija',
@@ -40,20 +40,20 @@ const I18N = {
     aria_fewer_activities:'Manje aktivnosti', aria_more_activities:'ViЕЎe aktivnosti',
     builder_budget_label_html:'BudЕѕet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span>',
     placeholder_budget:'npr. 700',
-    btn_make_arrangement:'Napravi aranЕѕman',
-    builder_summary_head:'Tvoj aranЕѕman', builder_total_sub:'ukupno',
+    btn_make_arrangement:'Napravi izlet',
+    builder_summary_head:'Tvoj izlet', builder_total_sub:'ukupno',
     builder_total_hint:'Zbir procena za let, hotel, auto i aktivnosti вЂ” svaka stavka se plaД‡a zasebno kod partnera, ne u jednom plaД‡anju.',
     disclaimer_illustrative:'вљ пёЏ Ilustrativna procena, ne stvarna ponuda вЂ” sajt je u razvoju.',
-    btn_optimize:'Optimizuj moj aranЕѕman', btn_save_trip:'SaДЌuvaj aranЕѕman', btn_price_alert:'Javi mi kad padne cena',
+    btn_optimize:'Optimizuj moj izlet', btn_save_trip:'SaДЌuvaj izlet', btn_price_alert:'Javi mi kad padne cena',
     builder_placeholder_text:'Ovde Д‡eЕЎ videti procenjenu cenu ДЌim poДЌneЕЎ da biraЕЎ вЂ” promeni bilo koju opciju levo.',
     eyebrow_for_later:'Za kasnije', h2_saved_trips:'Vrati se kad budeЕЎ spreman',
     sub_saved_trips:'SaДЌuvaj opcije koje ti se dopadaju i nastavi kasnije.',
     h2_features:'Sve ЕЎto ti treba za put', sub_features:'Od leta i smeЕЎtaja do auta, aktivnosti, osiguranja i interneta.',
-    f_flight_sub:'Najbolje cene', f_hotel_sub:'Provereni objekti',
-    f_car_name:'Auto', f_car_sub:'Pouzdani rentвЂ‘aвЂ‘car',
-    f_tolls_name:'Putarine', f_tolls_sub:'TaДЌna kalkulacija',
-    f_activity_name:'Aktivnosti', f_activity_sub:'Top doЕѕivljaji',
-    f_insurance_name:'Osiguranje', f_insurance_sub:'Sigurnost na putu',
+    f_flight_sub:'Direktni i sa presedanjem', f_hotel_sub:'Hoteli, apartmani, hosteli',
+    f_car_name:'Auto', f_car_sub:'Preuzimanje na aerodromu',
+    f_tolls_name:'Putarine', f_tolls_sub:'Procena po ruti i drЕѕavi',
+    f_activity_name:'Aktivnosti', f_activity_sub:'Karte i ture unapred',
+    f_insurance_name:'Osiguranje', f_insurance_sub:'Zdravstveno i za otkazivanje',
     f_esim_sub:'Internet od sletanja',
     postcard_caption:'Uvek postoji sledeД‡i izlet.',
     eyebrow_ideas:'Ideje za sledeД‡i izlet', h2_popular_dest:'Gde bi sledeД‡e?',
@@ -69,10 +69,10 @@ const I18N = {
     sub_faq:'Odgovori na najДЌeЕЎД‡a pitanja o cenama, rezervaciji i promenama.',
     faq_q1:'Da li su prikazane cene stvarne?',
     faq_a1:'Skoknica je trenutno u razvoju. Cene koje vidiЕЎ u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uЕѕivo sa sajtova partnera. Pre rezervacije uvek proveri taДЌnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
-    faq_q2:'Kako radi builder aranЕѕmana?',
-    faq_a2:'Sam biraЕЎ tip leta, kategoriju hotela, auto i broj aktivnosti, a Skoknica sabira procenjenu cenu za ceo paket. Dugme вЂћOptimizuj moj aranЕѕman" predlaЕѕe izmenu koja moЕѕe da smanji cenu uz sliДЌan kvalitet.',
-    faq_q3:'Kako se ДЌuvaju moji saДЌuvani aranЕѕmani?',
-    faq_a3:'NapraviЕЎ nalog emailom i lozinkom u sekciji вЂћSaДЌuvani aranЕѕmani". Tvoji podaci se ДЌuvaju vezano za tvoj nalog, ne za ovaj ureД‘aj, tako da im moЕѕeЕЎ pristupiti i sa drugog telefona ili raДЌunara вЂ” samo se prijavi istim emailom i lozinkom.',
+    faq_q2:'Kako radi builder izleta?',
+    faq_a2:'Sam biraЕЎ tip leta, kategoriju hotela, auto i broj aktivnosti, a Skoknica sabira procenjenu cenu za ceo paket. Dugme вЂћOptimizuj moj izlet" predlaЕѕe izmenu koja moЕѕe da smanji cenu uz sliДЌan kvalitet.',
+    faq_q3:'Kako se ДЌuvaju moji saДЌuvani izleti?',
+    faq_a3:'NapraviЕЎ nalog emailom i lozinkom u sekciji saДЌuvanih izleta. Tvoji podaci se ДЌuvaju vezano za tvoj nalog, ne za ovaj ureД‘aj, tako da im moЕѕeЕЎ pristupiti i sa drugog telefona ili raДЌunara вЂ” samo se prijavi istim emailom i lozinkom.',
     faq_q4:'Da li Skoknica naplaД‡uje rezervaciju?',
     faq_a4:'Ne. Skoknica ne naplaД‡uje niЕЎta direktno вЂ” klikom na вЂћRezerviЕЎi" ili вЂћPretraЕѕi" odlaziЕЎ na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaД‡anje obavljaju.',
     faq_q5:'ImaЕЎ pitanje koje nije ovde?',
@@ -117,10 +117,10 @@ const I18N = {
     opt_1adult:'1 adult', opt_2adults:'2 adults', opt_3adults:'3 adults', opt_4adults:'4 adults',
     btn_search:'Find the best trip',
     toggle_flight:'Flights', toggle_hotel:'Stay', toggle_car:'Rent a car', toggle_activity:'Activity',
-    surprise_trigger:'рџЋІ No idea where to go? <span>Surprise me for a budget в†’</span>',
-    h2_no_idea:'Not sure where to go?', sub_no_idea:'Tell us how much you want to spend, and weвЂ™ll find destinations that fit.',
+    eyebrow_no_idea:'No plan yet', h2_no_idea:'Not sure where to go?', sub_no_idea:'Tell us how much you want to spend, and weвЂ™ll find destinations that fit.',
     btn_no_idea_cta:'рџЋІ Surprise me',
     eyebrow_more_control:'More control', h2_build_own:'Want more control?',
+    eyebrow_features:'All included',
     sub_build_own:'You choose the flight, stay, car and activities вЂ” we add up how much it all costs together.',
     builder_flight_label:'Flight', chip_direct:'Direct', chip_cheapest:'Cheapest', chip_airline:'Specific airline',
     placeholder_airline:'e.g. Lufthansa',
@@ -139,11 +139,11 @@ const I18N = {
     eyebrow_for_later:'For later', h2_saved_trips:'Come back when youвЂ™re ready',
     sub_saved_trips:'Save the options you like and pick up later.',
     h2_features:'Everything you need for the trip', sub_features:'From flights and stays to cars, activities, insurance and internet.',
-    f_flight_sub:'Best prices', f_hotel_sub:'Verified properties',
-    f_car_name:'Car', f_car_sub:'Reliable rentвЂ‘aвЂ‘car',
-    f_tolls_name:'Tolls', f_tolls_sub:'Accurate calculation',
-    f_activity_name:'Activities', f_activity_sub:'Top experiences',
-    f_insurance_name:'Insurance', f_insurance_sub:'Safety on the road',
+    f_flight_sub:'Direct and with stopovers', f_hotel_sub:'Hotels, apartments, hostels',
+    f_car_name:'Car', f_car_sub:'Airport pickup',
+    f_tolls_name:'Tolls', f_tolls_sub:'Estimated by route and country',
+    f_activity_name:'Activities', f_activity_sub:'Tickets and tours in advance',
+    f_insurance_name:'Insurance', f_insurance_sub:'Medical and cancellation cover',
     f_esim_sub:'Internet from landing',
     postcard_caption:'ThereвЂ™s always a next trip.',
     eyebrow_ideas:'Ideas for your next trip', h2_popular_dest:'Where to next?',
@@ -206,7 +206,7 @@ function applyStaticI18n(){
   if (titleEl) titleEl.textContent = lang === 'sr' ? 'Skoknica вЂ” ceo izlet, jedna cena' : 'Skoknica вЂ” one whole trip, one price';
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', lang === 'sr'
-    ? 'Skoknica pronalazi let, hotel, auto i aktivnosti za tvoj sledeД‡i izlet i sabira ih u jednu cenu. Napravi sopstveni aranЕѕman ili poreД‘aj gotove pakete po budЕѕetu.'
+    ? 'Skoknica pronalazi let, hotel, auto i aktivnosti za tvoj sledeД‡i izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poreД‘aj gotove pakete po budЕѕetu.'
     : 'Skoknica finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.');
 }
 function setLang(lang){
@@ -1830,8 +1830,8 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
   const viable = candidates.filter(c => c.savings > 0).sort((a,b) => b.savings - a.savings);
   if (!viable.length) {
     box.innerHTML = candidates.length
-      ? '<span class="save">AranЕѕman je veД‡ optimalan</span>Proverili smo hotel, auto i broj aktivnosti вЂ” trenutna kombinacija je veД‡ najjeftinija za odabrane kriterijume.'
-      : '<span class="save">AranЕѕman je veД‡ optimalan</span>VeД‡ si na najniЕѕim opcijama za sve stavke вЂ” nema oДЌiglednog mesta za uЕЎtedu bez gubitka udobnosti.';
+      ? '<span class="save">Izlet je veД‡ optimalan</span>Proverili smo hotel, auto i broj aktivnosti вЂ” trenutna kombinacija je veД‡ najjeftinija za odabrane kriterijume.'
+      : '<span class="save">Izlet je veД‡ optimalan</span>VeД‡ si na najniЕѕim opcijama za sve stavke вЂ” nema oДЌiglednog mesta za uЕЎtedu bez gubitka udobnosti.';
     return;
   }
 
@@ -1845,14 +1845,14 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
     Object.assign(builderState, best.testSel);
     best.apply();
     renderBuilder();
-    showToast('AranЕѕman aЕѕuriran вЂ” ' + best.toastMsg);
+    showToast('Izlet aЕѕuriran вЂ” ' + best.toastMsg);
   });
 });
 
 document.getElementById('makeBuilderBtn').addEventListener('click', ()=>{
   const destInput = document.getElementById('dest');
   if (!destInput.value.trim()){
-    showToast('Unesi destinaciju da bismo napravili aranЕѕman.');
+    showToast('Unesi destinaciju da bismo napravili izlet.');
     destInput.focus();
     destInput.scrollIntoView({behavior:'smooth', block:'center'});
     return;
@@ -1887,7 +1887,7 @@ let sb = null;
 try {
   sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
 } catch (err) {
-  console.warn('[skoknica] Supabase init nije uspeo вЂ” nalog/saДЌuvani aranЕѕmani neД‡e raditi, ali ostatak sajta hoД‡e:', err.message);
+  console.warn('[skoknica] Supabase init nije uspeo вЂ” nalog/saДЌuvani izleti neД‡e raditi, ali ostatak sajta hoД‡e:', err.message);
 }
 
 async function getCurrentUser(){
@@ -1924,7 +1924,7 @@ function renderAuthPanel(containerId, user){
       renderSavedTrips();
     });
   } else if (compact && !_authBarExpanded){
-    bar.innerHTML = `<button type="button" class="auth-link" id="${loginBtnId}_reveal">Prijavi se da saДЌuvaЕЎ aranЕѕmane в†’</button>`;
+    bar.innerHTML = `<button type="button" class="auth-link" id="${loginBtnId}_reveal">Prijavi se da saДЌuvaЕЎ izlete в†’</button>`;
     document.getElementById(loginBtnId + '_reveal').addEventListener('click', ()=>{
       _authBarExpanded = true;
       renderAuthPanel(containerId, user);
@@ -2021,7 +2021,7 @@ function renderCompareTable(){
   wrap.innerHTML = `
     <div class="compare-head">
       <div class="eyebrow">PoreД‘enje</div>
-      <h3>Uporedi ${selected.length} saДЌuvana aranЕѕmana</h3>
+      <h3>Uporedi ${selected.length} saДЌuvana izleta</h3>
     </div>
     <div class="compare-table-wrap">
       <table class="compare-table">
@@ -2053,7 +2053,7 @@ function renderCompareTable(){
 function renderSavedTripsMarkup(trips){
   const wrap = document.getElementById('savedTripsList');
   if (!trips.length){
-    wrap.innerHTML = '<div class="saved-empty">JoЕЎ nema saДЌuvanih aranЕѕmana. Podesi izbore u builderu iznad i klikni <strong>вЂћSaДЌuvaj aranЕѕmanвЂњ</strong>.</div>';
+    wrap.innerHTML = '<div class="saved-empty">JoЕЎ nema saДЌuvanih izleta. Podesi izbore u builderu iznad i klikni <strong>вЂћSaДЌuvaj izletвЂњ</strong>.</div>';
     renderCompareTable();
     return;
   }
@@ -2110,7 +2110,7 @@ async function renderSavedTrips(){
   const wrap = document.getElementById('savedTripsList');
 
   if (!user){
-    wrap.innerHTML = '<div class="saved-empty">Prijavi se emailom iznad da vidiЕЎ i ДЌuvaЕЎ svoje aranЕѕmane вЂ” ДЌuvaju se na nalogu, ne u ovom pregledaДЌu.</div>';
+    wrap.innerHTML = '<div class="saved-empty">Prijavi se emailom iznad da vidiЕЎ i ДЌuvaЕЎ svoje izlete вЂ” ДЌuvaju se na nalogu, ne u ovom pregledaДЌu.</div>';
     _lastSavedTripsCache = [];
     compareIds.clear();
     renderCompareTable();
@@ -2132,7 +2132,7 @@ async function saveSavedTrip(){
     _authBarExpanded = true;
     renderSavedTrips();
     document.getElementById('authBar').scrollIntoView({behavior:'smooth', block:'center'});
-    showToast('Prijavi se emailom da saДЌuvaЕЎ aranЕѕman.');
+    showToast('Prijavi se emailom da saДЌuvaЕЎ izlet.');
     return;
   }
   const ctx = builderCtx();
@@ -2148,7 +2148,7 @@ async function saveSavedTrip(){
   });
   if (error){ showToast('GreЕЎka pri ДЌuvanju: ' + error.message); return; }
   renderSavedTrips();
-  showToast('AranЕѕman za ' + ctx.dest + ' saДЌuvan (' + fmtEUR(pkg.total) + ').');
+  showToast('Izlet za ' + ctx.dest + ' saДЌuvan (' + fmtEUR(pkg.total) + ').');
 }
 
 /* ---- ДЊuvanje jedne od 3 gotove ponude iz pretrage (Budget/Best/Comfort) ----
@@ -2236,7 +2236,7 @@ async function loadSavedTrip(id){
   document.getElementById('builderSummary').style.display = 'block';
   document.getElementById('builderPlaceholder').style.display = 'none';
   document.querySelector('.builder-wrap').scrollIntoView({behavior:'smooth', block:'start'});
-  showToast('UДЌitan saДЌuvani aranЕѕman za ' + t.dest + '.');
+  showToast('UДЌitan saДЌuvani izlet za ' + t.dest + '.');
 }
 
 async function deleteSavedTrip(id){
@@ -2341,8 +2341,7 @@ document.getElementById('surpriseModalClose').addEventListener('click', closeSur
 document.addEventListener('keydown', (e)=>{
   if (e.key === 'Escape' && document.getElementById('surpriseModal').classList.contains('open')) closeSurpriseModal();
 });
-document.getElementById('surpriseTriggerBtn').addEventListener('click', openSurpriseModal);
-document.getElementById('surpriseSectionBtn').addEventListener('click', openSurpriseModal);
+document.getElementById('noIdeaCtaBtn').addEventListener('click', openSurpriseModal);
 document.getElementById('surpriseModalSubmit').addEventListener('click', ()=> runSurpriseSearch(false));
 document.getElementById('surpriseBudget').addEventListener('keydown', (e)=>{
   if (e.key === 'Enter'){ e.preventDefault(); runSurpriseSearch(false); }
@@ -2362,7 +2361,7 @@ function buildShareUrl(token){
 
 async function shareTrip(id){
   const trip = (_lastSavedTripsCache || []).find(t => t.id === id);
-  if (!trip){ showToast('AranЕѕman viЕЎe nije dostupan вЂ” osveЕѕi listu.'); return; }
+  if (!trip){ showToast('Izlet viЕЎe nije dostupan вЂ” osveЕѕi listu.'); return; }
 
   let token = trip.shareToken;
   if (!token){
@@ -2437,6 +2436,3 @@ window.onLangChange = async function(){
     renderAuthPanel('authDropdown', user);
   }
 };
- 
-
- 
