@@ -457,4 +457,4 @@ if (surpriseModalSubmit) surpriseModalSubmit.addEventListener('click', () => run
 applyStaticI18n();
 updateStats();
 renderSavedTrips();
-renderAccountMenu();
+renderAccountMenu(); 
