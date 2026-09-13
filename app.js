@@ -15,7 +15,7 @@ const I18N = {
     nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
     aria_account:'Nalog', aria_menu:'Meni',
     hero_title:'Uneseš mesto.<br>Dobiješ <span class="accent">ceo izlet</span>.',
-    hero_lede:'Let, hotel, auto i aktivnosti — sastavljeni u tri gotova paketa, s jednom cenom na dnu. Bez otvaranja deset kartica u pretraživaču.',
+    hero_lede:'Let, smeštaj, prevoz i aktivnosti spojeni u jedan plan i jednu ukupnu cenu.',
     label_origin:'Polazak', placeholder_origin:'npr. Beograd, Niš, Podgorica',
     label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
     label_dates:'Od — Do',
@@ -28,7 +28,10 @@ const I18N = {
     btn_search:'Pronađi najbolje putovanje',
     toggle_flight:'Letovi', toggle_hotel:'Smeštaj', toggle_car:'Rent a car', toggle_activity:'Aktivnost',
     surprise_trigger:'🎲 Nemaš ideju kuda? <span>Iznenadi me za dati budžet →</span>',
-    eyebrow_more_control:'Više kontrole', h2_build_own:'Napravi svoj aranžman',
+    h2_no_idea:'Ne znaš gde bi išao?', sub_no_idea:'Reci nam koliko želiš da potrošiš, a mi ćemo pronaći destinacije koje se uklapaju.',
+    btn_no_idea_cta:'🎲 Iznenadi me',
+    eyebrow_more_control:'Više kontrole', h2_build_own:'Želiš više kontrole?',
+    sub_build_own:'Biraš let, smeštaj, auto i aktivnosti — mi računamo koliko sve zajedno košta.',
     builder_flight_label:'Let', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'Određena kompanija',
     placeholder_airline:'npr. Lufthansa',
     chip_priority_rating:'Prioritet: ocena', chip_priority_location:'Prioritet: lokacija',
@@ -43,7 +46,9 @@ const I18N = {
     disclaimer_illustrative:'⚠️ Ilustrativna procena, ne stvarna ponuda — sajt je u razvoju.',
     btn_optimize:'Optimizuj moj aranžman', btn_save_trip:'Sačuvaj aranžman', btn_price_alert:'Javi mi kad padne cena',
     builder_placeholder_text:'Ovde ćeš videti procenjenu cenu čim počneš da biraš — promeni bilo koju opciju levo.',
-    eyebrow_for_later:'Za kasnije', h2_saved_trips:'Sačuvani aranžmani',
+    eyebrow_for_later:'Za kasnije', h2_saved_trips:'Vrati se kad budeš spreman',
+    sub_saved_trips:'Sačuvaj opcije koje ti se dopadaju i nastavi kasnije.',
+    h2_features:'Sve što ti treba za put', sub_features:'Od leta i smeštaja do auta, aktivnosti, osiguranja i interneta.',
     f_flight_sub:'Najbolje cene', f_hotel_sub:'Provereni objekti',
     f_car_name:'Auto', f_car_sub:'Pouzdani rent‑a‑car',
     f_tolls_name:'Putarine', f_tolls_sub:'Tačna kalkulacija',
@@ -51,7 +56,8 @@ const I18N = {
     f_insurance_name:'Osiguranje', f_insurance_sub:'Sigurnost na putu',
     f_esim_sub:'Internet od sletanja',
     postcard_caption:'Uvek postoji sledeći izlet.',
-    eyebrow_ideas:'Ideje za sledeći izlet', h2_popular_dest:'Popularne destinacije iz Srbije i regiona',
+    eyebrow_ideas:'Ideje za sledeći izlet', h2_popular_dest:'Gde bi sledeće?',
+    sub_popular_dest:'Pogledaj destinacije koje putnici iz Srbije i regiona najčešće biraju.',
     pd_athens_name:'Atina, Grčka', pd_athens_desc:'Antika, ostrvski trajekti i vrhunska kuhinja — popularna letnja destinacija sa čestim direktnim letovima.',
     pd_rome_name:'Rim, Italija', pd_rome_desc:'Koloseum, Vatikan i ulična kuhinja — grad koji se obilazi peške, uz kratak let iz Beograda.',
     pd_barcelona_name:'Barselona, Španija', pd_barcelona_desc:'Gaudijeva arhitektura, plaža i tapas bary — omiljena kombinacija grada i mora.',
@@ -59,7 +65,8 @@ const I18N = {
     pd_istanbul_name:'Istanbul, Turska', pd_istanbul_desc:'Spoj Evrope i Azije, bazari i Bosfor — pristupačan izlet van sezone.',
     pd_vienna_name:'Beč, Austrija', pd_vienna_desc:'Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.',
     cta_right:'Ceo izlet.<br>Jedna cena.',
-    eyebrow_faq:'Pitanja', h2_faq:'Pomoć i FAQ',
+    eyebrow_faq:'Pitanja', h2_faq:'Pre nego što rezervišeš',
+    sub_faq:'Odgovori na najčešća pitanja o cenama, rezervaciji i promenama.',
     faq_q1:'Da li su prikazane cene stvarne?',
     faq_a1:'Skoknica je trenutno u razvoju. Cene koje vidiš u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uživo sa sajtova partnera. Pre rezervacije uvek proveri tačnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
     faq_q2:'Kako radi builder aranžmana?',
@@ -98,7 +105,7 @@ const I18N = {
     nav_how:'How it works', nav_dest:'Destinations', nav_about:'About',
     aria_account:'Account', aria_menu:'Menu',
     hero_title:'Enter a place.<br>Get a <span class="accent">whole trip</span>.',
-    hero_lede:'Flight, hotel, car and activities — bundled into three ready packages, with one price at the bottom. No opening ten browser tabs.',
+    hero_lede:'Flight, stay, transport and activities combined into one plan and one total price.',
     label_origin:'From', placeholder_origin:'e.g. Belgrade, Niš, Podgorica',
     label_dest:'Destination', placeholder_dest:'e.g. Athens, Rome, Barcelona',
     label_dates:'From — To',
@@ -111,7 +118,10 @@ const I18N = {
     btn_search:'Find the best trip',
     toggle_flight:'Flights', toggle_hotel:'Stay', toggle_car:'Rent a car', toggle_activity:'Activity',
     surprise_trigger:'🎲 No idea where to go? <span>Surprise me for a budget →</span>',
-    eyebrow_more_control:'More control', h2_build_own:'Build your own trip',
+    h2_no_idea:'Not sure where to go?', sub_no_idea:'Tell us how much you want to spend, and we’ll find destinations that fit.',
+    btn_no_idea_cta:'🎲 Surprise me',
+    eyebrow_more_control:'More control', h2_build_own:'Want more control?',
+    sub_build_own:'You choose the flight, stay, car and activities — we add up how much it all costs together.',
     builder_flight_label:'Flight', chip_direct:'Direct', chip_cheapest:'Cheapest', chip_airline:'Specific airline',
     placeholder_airline:'e.g. Lufthansa',
     chip_priority_rating:'Priority: rating', chip_priority_location:'Priority: location',
@@ -126,7 +136,9 @@ const I18N = {
     disclaimer_illustrative:'⚠️ Illustrative estimate, not a real offer — the site is in development.',
     btn_optimize:'Optimize my trip', btn_save_trip:'Save trip', btn_price_alert:'Notify me when the price drops',
     builder_placeholder_text:'You’ll see an estimated price here as soon as you start choosing — change any option on the left.',
-    eyebrow_for_later:'For later', h2_saved_trips:'Saved trips',
+    eyebrow_for_later:'For later', h2_saved_trips:'Come back when you’re ready',
+    sub_saved_trips:'Save the options you like and pick up later.',
+    h2_features:'Everything you need for the trip', sub_features:'From flights and stays to cars, activities, insurance and internet.',
     f_flight_sub:'Best prices', f_hotel_sub:'Verified properties',
     f_car_name:'Car', f_car_sub:'Reliable rent‑a‑car',
     f_tolls_name:'Tolls', f_tolls_sub:'Accurate calculation',
@@ -134,7 +146,8 @@ const I18N = {
     f_insurance_name:'Insurance', f_insurance_sub:'Safety on the road',
     f_esim_sub:'Internet from landing',
     postcard_caption:'There’s always a next trip.',
-    eyebrow_ideas:'Ideas for your next trip', h2_popular_dest:'Popular destinations from Serbia and the region',
+    eyebrow_ideas:'Ideas for your next trip', h2_popular_dest:'Where to next?',
+    sub_popular_dest:'Take a look at the destinations travelers from Serbia and the region pick most often.',
     pd_athens_name:'Athens, Greece', pd_athens_desc:'Antiquity, island ferries and top-notch food — a popular summer destination with frequent direct flights.',
     pd_rome_name:'Rome, Italy', pd_rome_desc:'The Colosseum, the Vatican and street food — a walkable city, a short flight from Belgrade.',
     pd_barcelona_name:'Barcelona, Spain', pd_barcelona_desc:'Gaudí’s architecture, the beach and tapas bars — a favorite city-and-sea combination.',
@@ -142,7 +155,8 @@ const I18N = {
     pd_istanbul_name:'Istanbul, Turkey', pd_istanbul_desc:'Where Europe meets Asia, bazaars and the Bosphorus — an affordable off-season trip.',
     pd_vienna_name:'Vienna, Austria', pd_vienna_desc:'Museums, cafés and Christmas markets in winter — a practical city break.',
     cta_right:'One trip.<br>One price.',
-    eyebrow_faq:'Questions', h2_faq:'Help & FAQ',
+    eyebrow_faq:'Questions', h2_faq:'Before you book',
+    sub_faq:'Answers to the most common questions about prices, booking and changes.',
     faq_q1:'Are the prices shown real?',
     faq_a1:'Skoknica is currently in development. Prices you see in search and the builder are an illustrative estimate, generated for demonstration, and don’t come live from partner sites. Always check the exact price and availability directly with the partner (KAYAK, Booking.com, Viator) before booking.',
     faq_q2:'How does the trip builder work?',
@@ -1137,7 +1151,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
     <div class="status-banner">
       <div class="status-left">
         <div class="status-check">${iconSvg('check')}</div>
-        <div><h3>Tvoje putovanje je spremno.</h3><p>Evo 3 pažljivo odabrane kombinacije za tvoj trip u ${escapeHtml(dest)}.</p></div>
+        <div><h3>Tvoj plan za ${escapeHtml(dest)}</h3><p>Tri gotove opcije, od najpovoljnije do komfornije. Izaberi onu koja ti odgovara.</p></div>
       </div>
       <div class="status-pills">
         <div class="pill">${iconSvg('calendar')} ${fmtDate(from)} – ${fmtDate(to)}</div>
@@ -1873,553 +1887,4 @@ let sb = null;
 try {
   sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
 } catch (err) {
-  console.warn('[skoknica] Supabase init nije uspeo — nalog/sačuvani aranžmani neće raditi, ali ostatak sajta hoće:', err.message);
-}
-
-async function getCurrentUser(){
-  if (!sb) return null;
-  try {
-    const { data } = await sb.auth.getUser();
-    return (data && data.user) || null;
-  } catch(err){
-    console.warn('[skoknica] auth nedostupan:', err.message);
-    return null;
-  }
-}
-
-let _authBarExpanded = false;
-function renderAuthPanel(containerId, user){
-  const bar = document.getElementById(containerId);
-  if (!bar) return;
-  const emailId = containerId + '_email';
-  const loginBtnId = containerId + '_loginBtn';
-  const logoutBtnId = containerId + '_logoutBtn';
-  // U glavnoj sekciji ("authBar") ne guramo email formu odmah u lice —
-  // prvo je tih link, forma se otvara tek kad korisnik zaista hoće da sačuva.
-  // U dropdown-u iz topbar-a (containerId "authDropdown") forma je uvek otvorena,
-  // jer je korisnik tamo već svesno kliknuo na ikonicu naloga.
-  const compact = containerId === 'authBar';
-  if (user){
-    bar.innerHTML = `
-      <div class="auth-row">
-        <span class="auth-status">Ulogovan kao <strong>${escapeHtml(user.email)}</strong></span>
-        <button type="button" class="auth-btn" id="${logoutBtnId}">Izloguj se</button>
-      </div>`;
-    document.getElementById(logoutBtnId).addEventListener('click', async ()=>{
-      await sb.auth.signOut();
-      renderSavedTrips();
-    });
-  } else if (compact && !_authBarExpanded){
-    bar.innerHTML = `<button type="button" class="auth-link" id="${loginBtnId}_reveal">Prijavi se da sačuvaš aranžmane →</button>`;
-    document.getElementById(loginBtnId + '_reveal').addEventListener('click', ()=>{
-      _authBarExpanded = true;
-      renderAuthPanel(containerId, user);
-    });
-  } else {
-    const pwId = emailId + '_pw';
-    bar.innerHTML = `
-      <div class="auth-row">
-        <input type="email" id="${emailId}" class="auth-input" placeholder="tvoj@email.com" autocomplete="email">
-        <input type="password" id="${pwId}" class="auth-input" placeholder="lozinka (min 6 karaktera)" autocomplete="current-password">
-        <button type="button" class="auth-btn" id="${loginBtnId}">Prijavi se / Napravi nalog</button>
-      </div>
-      <p class="auth-hint">Prva prijava sa ovim emailom i lozinkom automatski pravi nalog — zapamti lozinku, nema linka za oporavak dok sajt ne bude na pravom domenu.</p>`;
-    document.getElementById(emailId).focus();
-    document.getElementById(loginBtnId).addEventListener('click', async ()=>{
-      const email = document.getElementById(emailId).value.trim();
-      const password = document.getElementById(pwId).value;
-      if (!email || !password){ showToast('Unesi email i lozinku.'); return; }
-      if (password.length < 6){ showToast('Lozinka mora imati bar 6 karaktera.'); return; }
-
-      const { error: signInError } = await sb.auth.signInWithPassword({ email, password });
-      if (!signInError){
-        renderSavedTrips();
-        showToast('Prijavljen kao ' + email + '.');
-        return;
-      }
-
-      // Ako prijava ne uspe (nalog jos ne postoji), probaj da ga napravis odmah.
-      const { error: signUpError } = await sb.auth.signUp({ email, password });
-      if (signUpError){ showToast('Greška: ' + signUpError.message); return; }
-      renderSavedTrips();
-      showToast('Nalog napravljen i prijavljen kao ' + email + '.');
-    });
-  }
-}
-
-/* ---- Topbar: hamburger meni (mobilni) + dropdown za prijavu ---- */
-const mobilePanel = document.getElementById('mobilePanel');
-const authDropdown = document.getElementById('authDropdown');
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const topAvatarBtn = document.getElementById('topAvatarBtn');
-
-hamburgerBtn.addEventListener('click', ()=>{
-  authDropdown.classList.remove('open');
-  mobilePanel.classList.toggle('open');
-  hamburgerBtn.classList.toggle('open', mobilePanel.classList.contains('open'));
-});
-topAvatarBtn.addEventListener('click', ()=>{
-  mobilePanel.classList.remove('open');
-  hamburgerBtn.classList.remove('open');
-  authDropdown.classList.toggle('open');
-});
-document.addEventListener('click', (e)=>{
-  if (!e.target.closest('#authDropdown') && !e.target.closest('#topAvatarBtn')) authDropdown.classList.remove('open');
-  if (!e.target.closest('#mobilePanel') && !e.target.closest('#hamburgerBtn')){
-    mobilePanel.classList.remove('open');
-    hamburgerBtn.classList.remove('open');
-  }
-});
-
-
-function tierLabelsForSaved(sel){
-  if (sel.summaryTags) return sel.summaryTags;
-  const flightLabels = {direct:'Direktan let', cheapest:'Najjeftiniji let', airline: sel.airlineName || 'Određena kompanija'};
-  const carLabels = {none:'Bez auta', small:'Mali auto', suv:'SUV'};
-  return [
-    flightLabels[sel.flightPref] || 'Let',
-    sel.hotelStars + '★ hotel',
-    carLabels[sel.carPref] || 'Auto',
-    sel.activityCount + ' aktivnosti'
-  ];
-}
-
-/* ---------- Poređenje sačuvanih aranžmana ----
-   Korisnik čekira do 3 kartice; čim su 2+ čekirane, ispod liste se
-   pojavljuje tabela koja ih upoređuje jednu pored druge. Ne pravi se
-   novi network poziv pri čekiranju — koristi se _lastSavedTripsCache
-   iz poslednjeg fetchSavedTrips() poziva. ---------- */
-let compareIds = new Set();
-let _lastSavedTripsCache = [];
-const COMPARE_MAX = 3;
-
-function renderCompareTable(){
-  const wrap = document.getElementById('compareWrap');
-  if (!wrap) return;
-  const selected = _lastSavedTripsCache.filter(t => compareIds.has(t.id));
-  if (selected.length < 2){
-    wrap.style.display = 'none';
-    wrap.innerHTML = '';
-    return;
-  }
-  const cheapest = Math.min(...selected.map(t => t.total));
-  wrap.style.display = 'block';
-  wrap.innerHTML = `
-    <div class="compare-head">
-      <div class="eyebrow">Poređenje</div>
-      <h3>Uporedi ${selected.length} sačuvana aranžmana</h3>
-    </div>
-    <div class="compare-table-wrap">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th></th>
-            ${selected.map(t => `<th>${escapeHtml(t.dest)}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Datumi</td>${selected.map(t => `<td>${fmtDate(t.from)} – ${fmtDate(t.to)}</td>`).join('')}</tr>
-          <tr><td>Putnika</td>${selected.map(t => `<td>${t.adults}</td>`).join('')}</tr>
-          <tr><td>Detalji</td>${selected.map(t => `<td>${tierLabelsForSaved(t.sel).map(l => escapeHtml(l)).join('<br>')}</td>`).join('')}</tr>
-          <tr class="compare-total-row">
-            <td>Procenjeno ukupno</td>
-            ${selected.map(t => `<td class="tabular${t.total === cheapest ? ' compare-best' : ''}">${fmtEUR(t.total)}${t.total === cheapest ? '<span class="compare-badge">najjeftinije</span>' : ''}</td>`).join('')}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <button type="button" class="compare-clear" id="compareClearBtn">Očisti poređenje</button>
-  `;
-  document.getElementById('compareClearBtn').addEventListener('click', () => {
-    compareIds.clear();
-    renderSavedTripsMarkup(_lastSavedTripsCache);
-  });
-}
-
-function renderSavedTripsMarkup(trips){
-  const wrap = document.getElementById('savedTripsList');
-  if (!trips.length){
-    wrap.innerHTML = '<div class="saved-empty">Još nema sačuvanih aranžmana. Podesi izbore u builderu iznad i klikni <strong>„Sačuvaj aranžman“</strong>.</div>';
-    renderCompareTable();
-    return;
-  }
-  wrap.innerHTML = '<div class="saved-grid">' + trips.map(t => `
-    <div class="saved-card" data-id="${t.id}">
-      <label class="sc-compare">
-        <input type="checkbox" class="sc-compare-cb" data-id="${t.id}"
-          ${compareIds.has(t.id) ? 'checked' : ''}
-          ${(!compareIds.has(t.id) && compareIds.size >= COMPARE_MAX) ? 'disabled' : ''}>
-        <span>Uporedi</span>
-      </label>
-      <div class="sc-dest">${escapeHtml(t.dest)}</div>
-      <div class="sc-meta">${fmtDate(t.from)} – ${fmtDate(t.to)} · ${t.adults} ${passengerLabel(t.adults)}</div>
-      <div class="sc-tags">${tierLabelsForSaved(t.sel).map(l => `<span class="sc-tag">${escapeHtml(l)}</span>`).join('')}</div>
-      <div class="sc-total"><span class="lab">procenjeno ukupno</span><span class="num tabular">${fmtEUR(t.total)}</span></div>
-      <div class="sc-actions">
-        <button type="button" class="sc-btn load" onclick="loadSavedTrip('${t.id}')">Učitaj</button>
-        <button type="button" class="sc-btn share" onclick="shareTrip('${t.id}')">🔗 Podeli</button>
-        <button type="button" class="sc-btn del" onclick="deleteSavedTrip('${t.id}')">Obriši</button>
-      </div>
-    </div>`).join('') + '</div>';
-
-  wrap.querySelectorAll('.sc-compare-cb').forEach(cb => {
-    cb.addEventListener('change', () => {
-      if (cb.checked) compareIds.add(cb.dataset.id);
-      else compareIds.delete(cb.dataset.id);
-      renderSavedTripsMarkup(_lastSavedTripsCache);
-    });
-  });
-
-  renderCompareTable();
-}
-
-async function fetchSavedTrips(){
-  const { data, error } = await sb.from('trips').select('*').order('created_at', {ascending:false});
-  if (error){ console.warn('[skoknica] ucitavanje putovanja nije uspelo:', error.message); return []; }
-  return data.map(row => ({
-    id: row.id,
-    dest: row.dest,
-    from: row.date_from,
-    to: row.date_to,
-    adults: String(row.adults),
-    sel: row.selection,
-    total: row.total,
-    shareToken: row.share_token || null
-  }));
-}
-
-async function renderSavedTrips(){
-  const user = await getCurrentUser();
-  renderAuthPanel('authBar', user);
-  renderAuthPanel('authDropdown', user);
-  topAvatarBtn.classList.toggle('logged-in', !!user);
-  const wrap = document.getElementById('savedTripsList');
-
-  if (!user){
-    wrap.innerHTML = '<div class="saved-empty">Prijavi se emailom iznad da vidiš i čuvaš svoje aranžmane — čuvaju se na nalogu, ne u ovom pregledaču.</div>';
-    _lastSavedTripsCache = [];
-    compareIds.clear();
-    renderCompareTable();
-    return;
-  }
-
-  const trips = await fetchSavedTrips();
-  _lastSavedTripsCache = trips;
-  // ukloni iz poređenja sve id-jeve koji više ne postoje (npr. obrisan aranžman)
-  const stillExists = new Set(trips.map(t => t.id));
-  compareIds.forEach(id => { if (!stillExists.has(id)) compareIds.delete(id); });
-
-  renderSavedTripsMarkup(trips);
-}
-
-async function saveSavedTrip(){
-  const user = await getCurrentUser();
-  if (!user){
-    _authBarExpanded = true;
-    renderSavedTrips();
-    document.getElementById('authBar').scrollIntoView({behavior:'smooth', block:'center'});
-    showToast('Prijavi se emailom da sačuvaš aranžman.');
-    return;
-  }
-  const ctx = builderCtx();
-  const pkg = window._lastBuilderPkg || computeCustomPackage(builderState, ctx);
-  const { error } = await sb.from('trips').insert({
-    user_id: user.id,
-    dest: ctx.dest,
-    date_from: document.getElementById('dateFrom').value,
-    date_to: document.getElementById('dateTo').value,
-    adults: Number(document.getElementById('adults').value),
-    selection: Object.assign({kind:'builder'}, builderState),
-    total: pkg.total
-  });
-  if (error){ showToast('Greška pri čuvanju: ' + error.message); return; }
-  renderSavedTrips();
-  showToast('Aranžman za ' + ctx.dest + ' sačuvan (' + fmtEUR(pkg.total) + ').');
-}
-
-/* ---- Čuvanje jedne od 3 gotove ponude iz pretrage (Budget/Best/Comfort) ----
-   Za razliku od buildera, ovde nema builderState da se sačuva/vrati — pamtimo
-   samo prikazne oznake (summaryTags) i tier, dovoljno da se kartica lepo prikaže
-   na listi. "Učitaj" za ovaj tip ponovo pokreće pretragu sa istim parametrima,
-   umesto da puni builder (jer selekcija nije builder-oblika). */
-async function saveSearchPackage(tier){
-  const user = await getCurrentUser();
-  if (!user){
-    _authBarExpanded = true;
-    renderSavedTrips();
-    document.getElementById('authBar').scrollIntoView({behavior:'smooth', block:'center'});
-    showToast('Prijavi se emailom da sačuvaš ponudu.');
-    return;
-  }
-  const pkg = (window._lastSearchPkgs || []).find(p => p.tier === tier);
-  const ctx = window._lastSearchCtx;
-  if (!pkg || !ctx){ showToast('Ponuda više nije dostupna — pretraži ponovo.'); return; }
-
-  const summaryTags = [
-    TIER_META[tier].label,
-    pkg.flight ? pkg.flight.name : 'Bez leta',
-    pkg.hotel ? pkg.hotel.name : 'Bez hotela',
-    pkg.car ? 'Sa autom' : 'Bez auta'
-  ];
-
-  const { error } = await sb.from('trips').insert({
-    user_id: user.id,
-    dest: ctx.dest,
-    date_from: ctx.from,
-    date_to: ctx.to,
-    adults: Number(ctx.adults),
-    selection: {kind:'search', tier, tierLabel: TIER_META[tier].label, summaryTags},
-    total: pkg.total
-  });
-  if (error){ showToast('Greška pri čuvanju: ' + error.message); return; }
-  renderSavedTrips();
-  showToast(TIER_META[tier].label + ' ponuda za ' + ctx.dest + ' sačuvana (' + fmtEUR(pkg.total) + ').');
-}
-
-async function loadSavedTrip(id){
-  const trips = await fetchSavedTrips();
-  const t = trips.find(x => x.id === id);
-  if (!t) return;
-
-  document.getElementById('dest').value = t.dest;
-  document.getElementById('dateFrom').value = t.from;
-  document.getElementById('dateTo').value = t.to;
-  document.getElementById('adults').value = t.adults;
-
-  // Sačuvane ponude iz pretrage (Budget/Best/Comfort) nisu builder-oblika —
-  // za njih nema šta da se "vrati" u builder chipove, samo ponovo pretražujemo
-  // sa istim parametrima i korisnik opet vidi sve 3 ponude.
-  if (t.sel && t.sel.kind === 'search'){
-    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
-    showToast('Ponovo pretražujem za ' + t.dest + ' (' + (t.sel.tierLabel||'') + ')…');
-    runSearch(false);
-    return;
-  }
-
-  // Prvo reset na BUILDER_DEFAULTS, pa tek onda t.sel preko toga — tako
-  // svako polje koje nedostaje u starom sačuvanom zapisu dobije siguran
-  // fallback umesto da nasledi stanje iz prethodno učitanog aranžmana.
-  Object.assign(builderState, BUILDER_DEFAULTS, t.sel);
-
-  document.querySelectorAll('.chip-row[data-group="flightPref"] .chip').forEach(c=>{
-    c.classList.toggle('on', c.dataset.value === builderState.flightPref);
-  });
-  document.getElementById('airlineName').style.display = (builderState.flightPref === 'airline') ? 'block' : 'none';
-  document.getElementById('airlineName').value = builderState.airlineName || '';
-
-  document.querySelectorAll('.chip-row[data-group="hotelStars"] .chip').forEach(c=>{
-    c.classList.toggle('on', Number(c.dataset.value) === builderState.hotelStars);
-  });
-  document.querySelectorAll('.chip-row[data-group="carPref"] .chip').forEach(c=>{
-    c.classList.toggle('on', c.dataset.value === builderState.carPref);
-  });
-  document.querySelectorAll('.toggle-chip').forEach(chip=>{
-    chip.classList.toggle('on', !!builderState[chip.dataset.toggle]);
-  });
-  document.getElementById('actCount').textContent = builderState.activityCount;
-
-  renderBuilder();
-  document.getElementById('builderSummary').style.display = 'block';
-  document.getElementById('builderPlaceholder').style.display = 'none';
-  document.querySelector('.builder-wrap').scrollIntoView({behavior:'smooth', block:'start'});
-  showToast('Učitan sačuvani aranžman za ' + t.dest + '.');
-}
-
-async function deleteSavedTrip(id){
-  const { error } = await sb.from('trips').delete().eq('id', id);
-  if (error){ showToast('Greška pri brisanju: ' + error.message); return; }
-  renderSavedTrips();
-}
-
-document.getElementById('saveTripBtn').addEventListener('click', saveSavedTrip);
-if (sb) sb.auth.onAuthStateChange(()=> renderSavedTrips());
-renderSavedTrips();
-
-/* ==========================================================
-   PRICE ALERTS — "Javi mi kad padne cena"
-   Otvara se sa dugmeta na svakoj gotovoj ponudi (Budget/Best/Comfort)
-   ili sa dugmeta u builderu. Upisuje red direktno u price_alerts preko
-   anon ključa (RLS na toj tabeli dozvoljava SAMO insert — vidi
-   supabase/price_alerts.sql), bez potrebe za nalogom/prijavom.
-   Periodičnu proveru i slanje mejla radi poseban Cloudflare Worker
-   (worker/price-alert-worker.js), ne ovaj fajl.
-========================================================== */
-let _alertCtx = null;
-
-function openAlertModal(kind, tierOrNull, currentPrice, destOverride){
-  const ctx = builderCtx();
-  const dest = destOverride || ctx.dest;
-  const selection = (kind === 'search')
-    ? {kind:'search', tier:tierOrNull, tierLabel:(TIER_META[tierOrNull]||{}).label || ''}
-    : Object.assign({kind:'builder'}, builderState);
-
-  _alertCtx = {
-    dest: dest,
-    from: document.getElementById('dateFrom').value,
-    to: document.getElementById('dateTo').value,
-    adults: Number(document.getElementById('adults').value) || 2,
-    selection,
-    price: Math.round(currentPrice)
-  };
-
-  document.getElementById('alertModalSub').textContent =
-    'Trenutna procena za ' + dest + ': ' + fmtEUR(_alertCtx.price) + '. Javićemo ti mejlom kad procenjena cena padne ispod praga koji postaviš.';
-  document.getElementById('alertThreshold').value = Math.max(1, Math.round(_alertCtx.price * 0.9));
-  document.getElementById('alertEmail').value = '';
-
-  document.getElementById('alertModalBackdrop').classList.add('open');
-  document.getElementById('alertModal').classList.add('open');
-  document.getElementById('alertEmail').focus();
-}
-
-function closeAlertModal(){
-  document.getElementById('alertModalBackdrop').classList.remove('open');
-  document.getElementById('alertModal').classList.remove('open');
-}
-
-document.getElementById('alertBuilderBtn').addEventListener('click', ()=>{
-  const ctx = builderCtx();
-  const pkg = window._lastBuilderPkg || computeCustomPackage(builderState, ctx);
-  openAlertModal('builder', null, pkg.total);
-});
-
-document.getElementById('alertModalBackdrop').addEventListener('click', closeAlertModal);
-document.getElementById('alertModalClose').addEventListener('click', closeAlertModal);
-document.addEventListener('keydown', (e)=>{
-  if (e.key === 'Escape' && document.getElementById('alertModal').classList.contains('open')) closeAlertModal();
-});
-
-document.getElementById('alertModalSubmit').addEventListener('click', async ()=>{
-  if (!_alertCtx) return;
-  const email = document.getElementById('alertEmail').value.trim();
-  const threshold = Number(document.getElementById('alertThreshold').value);
-
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Unesi ispravan email.'); return; }
-  if (!threshold || threshold <= 0){ showToast('Unesi ispravan prag u evrima.'); return; }
-
-  const submitBtn = document.getElementById('alertModalSubmit');
-  submitBtn.disabled = true;
-
-  const { error } = await sb.from('price_alerts').insert({
-    email,
-    dest: _alertCtx.dest,
-    date_from: _alertCtx.from,
-    date_to: _alertCtx.to,
-    adults: _alertCtx.adults,
-    selection: _alertCtx.selection,
-    threshold,
-    last_price: _alertCtx.price
-  });
-
-  submitBtn.disabled = false;
-
-  if (error){ showToast('Greška pri postavljanju alerta: ' + error.message); return; }
-
-  closeAlertModal();
-  showToast('Gotovo — javićemo ti na ' + email + ' kad cena padne ispod ' + fmtEUR(threshold) + '.');
-});
-
-/* ==========================================================
-   "IZNENADI ME" — wiring dugmeta i modala
-========================================================== */
-document.getElementById('surpriseModalBackdrop').addEventListener('click', closeSurpriseModal);
-document.getElementById('surpriseModalClose').addEventListener('click', closeSurpriseModal);
-document.addEventListener('keydown', (e)=>{
-  if (e.key === 'Escape' && document.getElementById('surpriseModal').classList.contains('open')) closeSurpriseModal();
-});
-document.getElementById('surpriseTriggerBtn').addEventListener('click', openSurpriseModal);
-document.getElementById('surpriseModalSubmit').addEventListener('click', ()=> runSurpriseSearch(false));
-document.getElementById('surpriseBudget').addEventListener('keydown', (e)=>{
-  if (e.key === 'Enter'){ e.preventDefault(); runSurpriseSearch(false); }
-});
-
-/* ==========================================================
-   DELJENJE SA PRIJATELJIMA ("🔗 Podeli")
-   Generiše (ili ponovo koristi) share_token na sačuvanom aranžmanu i
-   pravi javni link ka zajedno.html — ta stranica radi bez naloga i
-   bez app.js (sopstveni inline skript), pristupa bazi isključivo
-   preko RPC funkcija iz supabase/share_trip.sql.
-========================================================== */
-function buildShareUrl(token){
-  const base = location.href.replace(/[^/]*$/, ''); // sve posle poslednjeg "/" (fajl + query) odseca
-  return base + 'zajedno.html?t=' + token;
-}
-
-async function shareTrip(id){
-  const trip = (_lastSavedTripsCache || []).find(t => t.id === id);
-  if (!trip){ showToast('Aranžman više nije dostupan — osveži listu.'); return; }
-
-  let token = trip.shareToken;
-  if (!token){
-    token = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
-    const { error } = await sb.from('trips').update({share_token: token}).eq('id', id);
-    if (error){ showToast('Greška pri pravljenju linka: ' + error.message); return; }
-    trip.shareToken = token; // ažuriraj keš da ne pravi novi token pri sledećem kliku
-  }
-
-  const url = buildShareUrl(token);
-  document.getElementById('shareModalLink').value = url;
-  document.getElementById('shareModalSub').textContent =
-    'Pošalji ovaj link prijateljima za ' + trip.dest + ' — mogu da vide predlog i jave se (Idem/Možda/Ne mogu) bez pravljenja naloga.';
-  document.getElementById('shareModalBackdrop').classList.add('open');
-  document.getElementById('shareModal').classList.add('open');
-}
-
-function closeShareModal(){
-  document.getElementById('shareModalBackdrop').classList.remove('open');
-  document.getElementById('shareModal').classList.remove('open');
-}
-
-async function copyShareLink(){
-  const input = document.getElementById('shareModalLink');
-  input.select();
-  input.setSelectionRange(0, 99999);
-  try {
-    await navigator.clipboard.writeText(input.value);
-    showToast('Link kopiran u clipboard.');
-  } catch(err){
-    showToast('Nije uspelo automatsko kopiranje — kopiraj ručno iz polja.');
-  }
-}
-
-document.getElementById('shareModalBackdrop').addEventListener('click', closeShareModal);
-document.getElementById('shareModalClose').addEventListener('click', closeShareModal);
-document.getElementById('shareModalCopy').addEventListener('click', copyShareLink);
-document.addEventListener('keydown', (e)=>{
-  if (e.key === 'Escape' && document.getElementById('shareModal').classList.contains('open')) closeShareModal();
-});
-// Web Share API — na mobilnom otvara sistemski meni za deljenje (WhatsApp,
-// Viber, SMS...) umesto samo kopiranja linka. Dugme se prikazuje samo ako
-// pregledač to podržava (uglavnom mobilni).
-if (navigator.share){
-  document.getElementById('shareModalNative').style.display = '';
-  document.getElementById('shareModalNative').addEventListener('click', async ()=>{
-    try {
-      await navigator.share({title:'Predlog putovanja — Skoknica', url: document.getElementById('shareModalLink').value});
-    } catch(err){ /* korisnik otkazao deljenje — nema potrebe za toast-om */ }
-  });
-}
-
-/* ---- Jezik: primeni sacuvani izbor pri ucitavanju i kaci toggle dugme ---- */
-applyStaticI18n();
-document.getElementById('langSwitchBtn').addEventListener('click', ()=>{
-  setLang(getLang() === 'sr' ? 'en' : 'sr');
-});
-// Ponovo iscrtaj vec prikazane dinamicke delove (builder / sacuvani aranzmani /
-// auth panel) u novom jeziku. Rezultati pretrage (#resultsBody) namerno NISU
-// ovde — retroaktivni re-render bez ponovnog pretrazivanja bio bi rizican za
-// odrzavanje; nova pretraga ce vec biti na izabranom jeziku.
-window.onLangChange = async function(){
-  if (document.getElementById('builderSummary').style.display !== 'none'){
-    renderBuilder();
-  }
-  if (document.getElementById('savedTripsList').innerHTML.trim() !== ''){
-    renderSavedTrips();
-  }
-  const user = await getCurrentUser();
-  renderAuthPanel('authBar', user);
-  if (document.getElementById('authDropdown').innerHTML.trim() !== ''){
-    renderAuthPanel('authDropdown', user);
-  }
-};
-
+  console.warn('[skoknica] Supabase init nije u
