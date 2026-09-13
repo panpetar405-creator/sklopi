@@ -47,6 +47,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+/* Privremeni stil za nove podnaslove ispod H2 (dodato jer styles.css nije bio dostupan) —
+   prebaci u styles.css i doteraj po potrebi. */
+.section-sub{
+  margin:6px 0 0;
+  font-size:15px;
+  line-height:1.5;
+  color:var(--ink-soft, #6b7280);
+  max-width:520px;
+}
+.surprise-section{
+  text-align:center;
+  padding:48px 20px;
+}
+.surprise-section .section-sub{margin-left:auto;margin-right:auto;}
+</style>
 </head>
 <body>
 
@@ -178,10 +194,26 @@
   <div class="hero-spacer"></div>
 </div>
 
+<div id="results">
+  <div class="section">
+    <div id="resultsHead"></div>
+    <div id="resultsBody"></div>
+  </div>
+</div>
+
+<div class="section surprise-section">
+  <div class="section-head">
+    <h2 data-i18n="h2_no_idea">Ne znaš gde bi išao?</h2>
+    <p class="section-sub" data-i18n="sub_no_idea">Reci nam koliko želiš da potrošiš, a mi ćemo pronaći destinacije koje se uklapaju.</p>
+  </div>
+  <button type="button" class="btn-primary" id="surpriseSectionBtn" data-i18n="btn_no_idea_cta">🎲 Iznenadi me</button>
+</div>
+
 <div class="section builder-wrap">
   <div class="section-head">
     <div class="eyebrow" data-i18n="eyebrow_more_control">Više kontrole</div>
-    <h2 data-i18n="h2_build_own">Napravi svoj aranžman</h2>
+    <h2 data-i18n="h2_build_own">Želiš više kontrole?</h2>
+    <p class="section-sub" data-i18n="sub_build_own">Biraš let, smeštaj, auto i aktivnosti — mi računamo koliko sve zajedno košta.</p>
   </div>
 
   <div class="builder">
@@ -270,17 +302,11 @@
   </div>
 </div>
 
-<div class="section saved-wrap">
-  <div class="section-head">
-    <div class="eyebrow" data-i18n="eyebrow_for_later">Za kasnije</div>
-    <h2 data-i18n="h2_saved_trips">Sačuvani aranžmani</h2>
-  </div>
-  <div id="authBar" class="auth-bar"></div>
-  <div id="savedTripsList"></div>
-  <div id="compareWrap" class="compare-wrap" style="display:none;"></div>
-</div>
-
 <div class="section">
+  <div class="section-head">
+    <h2 data-i18n="h2_features">Sve što ti treba za put</h2>
+    <p class="section-sub" data-i18n="sub_features">Od leta i smeštaja do auta, aktivnosti, osiguranja i interneta.</p>
+  </div>
   <div class="feature-strip">
     <div class="feature f-flight"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></div><div class="name" data-i18n="toggle_flight">Letovi</div><div class="sub" data-i18n="f_flight_sub">Najbolje cene</div></div>
     <div class="feature f-hotel"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"/></svg></div><div class="name" data-i18n="toggle_hotel">Smeštaj</div><div class="sub" data-i18n="f_hotel_sub">Provereni objekti</div></div>
@@ -305,7 +331,8 @@
 <div class="section" id="popular-destinations">
   <div class="section-head">
     <div class="eyebrow" data-i18n="eyebrow_ideas">Ideje za sledeći izlet</div>
-    <h2 data-i18n="h2_popular_dest">Popularne destinacije iz Srbije i regiona</h2>
+    <h2 data-i18n="h2_popular_dest">Gde bi sledeće?</h2>
+    <p class="section-sub" data-i18n="sub_popular_dest">Pogledaj destinacije koje putnici iz Srbije i regiona najčešće biraju.</p>
   </div>
   <div class="popular-dest-grid">
     <button type="button" class="popular-dest-card" data-dest="Atina">
@@ -335,11 +362,15 @@
   </div>
 </div>
 
-<div id="results">
-  <div class="section">
-    <div id="resultsHead"></div>
-    <div id="resultsBody"></div>
+<div class="section saved-wrap">
+  <div class="section-head">
+    <div class="eyebrow" data-i18n="eyebrow_for_later">Za kasnije</div>
+    <h2 data-i18n="h2_saved_trips">Vrati se kad budeš spreman</h2>
+    <p class="section-sub" data-i18n="sub_saved_trips">Sačuvaj opcije koje ti se dopadaju i nastavi kasnije.</p>
   </div>
+  <div id="authBar" class="auth-bar"></div>
+  <div id="savedTripsList"></div>
+  <div id="compareWrap" class="compare-wrap" style="display:none;"></div>
 </div>
 
 <div class="cta-banner">
@@ -358,7 +389,8 @@
 <div class="section" id="faq" style="margin-top:56px;">
   <div class="section-head">
     <div class="eyebrow" data-i18n="eyebrow_faq">Pitanja</div>
-    <h2 data-i18n="h2_faq">Pomoć i FAQ</h2>
+    <h2 data-i18n="h2_faq">Pre nego što rezervišeš</h2>
+    <p class="section-sub" data-i18n="sub_faq">Odgovori na najčešća pitanja o cenama, rezervaciji i promenama.</p>
   </div>
   <div class="faq-wrap">
     <details class="faq-item">
