@@ -52,7 +52,7 @@
 Skoknica<em>.</em>
 </div>
 <nav>
-<a href="#faq" data-i18n="nav_how">Kako radi</a><a href="#results" data-i18n="nav_dest">Destinacije</a><a href="#about" data-i18n="nav_about">O nama</a>
+<a href="#faq" data-i18n="nav_how">Kako radi</a><a href="#popular-destinations" data-i18n="nav_dest">Destinacije</a><a href="#about" data-i18n="nav_about">O nama</a>
 </nav>
 <div class="topbar-right">
 <button type="button" class="lang-switch" id="langSwitchBtn" aria-label="Promeni jezik / Change language">SR<span class="ls-sep">/</span>EN</button>
@@ -68,7 +68,7 @@ Skoknica<em>.</em>
 <div class="mp-inner">
 <div class="mp-nav">
 <a href="#faq" data-i18n="nav_how">Kako radi</a>
-<a href="#results" data-i18n="nav_dest">Destinacije</a>
+<a href="#popular-destinations" data-i18n="nav_dest">Destinacije</a>
 <a href="#about" data-i18n="nav_about">O nama</a>
 </div>
 </div>
@@ -162,16 +162,28 @@ Skoknica<em>.</em>
 <span data-i18n="toggle_activity">Aktivnost</span>
 </label>
 </div>
-<button type="button" class="surprise-trigger" id="surpriseTriggerBtn" data-i18n-html="surprise_trigger">
-🎲 Nemas ideju kuda? <span>Iznenadi me za dati budzet →</span>
-</button>
 </div>
 <div class="hero-spacer"></div>
+</div>
+<div id="results">
+<div class="section">
+<div id="resultsHead"></div>
+<div id="resultsBody"></div>
+</div>
+</div>
+<div class="section no-idea-wrap" id="no-idea">
+<div class="section-head">
+<div class="eyebrow" data-i18n="eyebrow_no_idea">Nemas plan</div>
+<h2 data-i18n="h2_no_idea">Ne znas gde bi isao?</h2>
+<p class="section-sub" data-i18n="sub_no_idea">Reci nam koliko zelis da potrosis, a mi cemo pronaci destinacije koje se uklapaju.</p>
+</div>
+<button type="button" class="btn-primary" id="noIdeaCtaBtn" data-i18n="btn_no_idea_cta">🎲 Iznenadi me</button>
 </div>
 <div class="section builder-wrap">
 <div class="section-head">
 <div class="eyebrow" data-i18n="eyebrow_more_control">Vise kontrole</div>
-<h2 data-i18n="h2_build_own">Napravi svoj aranzman</h2>
+<h2 data-i18n="h2_build_own">Zelis vise kontrole?</h2>
+<p class="section-sub" data-i18n="sub_build_own">Biras let, smestaj, auto i aktivnosti — mi racunamo koliko sve zajedno kosta.</p>
 </div>
 <div class="builder">
 <div class="builder-form">
@@ -218,7 +230,7 @@ Skoknica<em>.</em>
 <span>€</span><input type="number" id="budgetInput" class="builder-input" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
 </div>
 </div>
-<button type="button" class="btn-primary" id="makeBuilderBtn" style="margin:6px 0 22px;width:100%;" data-i18n="btn_make_arrangement">Napravi aranzman</button>
+<button type="button" class="btn-primary" id="makeBuilderBtn" style="margin:6px 0 22px;width:100%;" data-i18n="btn_make_arrangement">Napravi izlet</button>
 </div>
 <div class="builder-summary" id="builderSummary" style="display:none;">
 <div class="builder-summary-head" data-i18n="builder_summary_head">Tvoj aranzman</div>
@@ -248,16 +260,12 @@ Skoknica<em>.</em>
 </div>
 </div>
 </div>
-<div class="section saved-wrap">
-<div class="section-head">
-<div class="eyebrow" data-i18n="eyebrow_for_later">Za kasnije</div>
-<h2 data-i18n="h2_saved_trips">Sacuvani aranzmani</h2>
-</div>
-<div id="authBar" class="auth-bar"></div>
-<div id="savedTripsList"></div>
-<div id="compareWrap" class="compare-wrap" style="display:none;"></div>
-</div>
 <div class="section">
+<div class="section-head">
+<div class="eyebrow" data-i18n="eyebrow_features">Sve ukljuceno</div>
+<h2 data-i18n="h2_features">Sve sto ti treba za put</h2>
+<p class="section-sub" data-i18n="sub_features">Od leta i smestaja do auta, aktivnosti, osiguranja i interneta.</p>
+</div>
 <div class="feature-strip">
 <div class="feature f-flight"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></div><div class="name" data-i18n="toggle_flight">Letovi</div><div class="sub" data-i18n="f_flight_sub">Najbolje cene</div></div>
 <div class="feature f-hotel"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"/></svg></div><div class="name" data-i18n="toggle_hotel">Smestaj</div><div class="sub" data-i18n="f_hotel_sub">Provereni objekti</div></div>
@@ -280,7 +288,8 @@ Skoknica<em>.</em>
 <div class="section" id="popular-destinations">
 <div class="section-head">
 <div class="eyebrow" data-i18n="eyebrow_ideas">Ideje za sledeci izlet</div>
-<h2 data-i18n="h2_popular_dest">Popularne destinacije iz Srbije i regiona</h2>
+<h2 data-i18n="h2_popular_dest">Gde bi sledece?</h2>
+<p class="section-sub" data-i18n="sub_popular_dest">Pogledaj destinacije koje putnici iz Srbije i regiona najcesce biraju.</p>
 </div>
 <div class="popular-dest-grid">
 <button type="button" class="popular-dest-card" data-dest="Atina">
@@ -309,11 +318,15 @@ Skoknica<em>.</em>
 </button>
 </div>
 </div>
-<div id="results">
-<div class="section">
-<div id="resultsHead"></div>
-<div id="resultsBody"></div>
+<div class="section saved-wrap">
+<div class="section-head">
+<div class="eyebrow" data-i18n="eyebrow_for_later">Za kasnije</div>
+<h2 data-i18n="h2_saved_trips">Sacuvani izleti</h2>
+<p class="section-sub" data-i18n="sub_saved_trips">Sacuvaj opcije koje ti se dopadaju i nastavi kasnije.</p>
 </div>
+<div id="authBar" class="auth-bar"></div>
+<div id="savedTripsList"></div>
+<div id="compareWrap" class="compare-wrap" style="display:none;"></div>
 </div>
 <div class="cta-banner">
 <div class="cta-photo">
@@ -331,6 +344,7 @@ Skoknica<em>.</em>
 <div class="section-head">
 <div class="eyebrow" data-i18n="eyebrow_faq">Pitanja</div>
 <h2 data-i18n="h2_faq">Pomoc i FAQ</h2>
+<p class="section-sub" data-i18n="sub_faq">Odgovori na najcesca pitanja o cenama, rezervaciji i promenama.</p>
 </div>
 <div class="faq-wrap">
 <details class="faq-item">
