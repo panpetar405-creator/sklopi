@@ -503,6 +503,13 @@
 <div id="toast"><div class="dot"></div><span id="toastText"></span></div>
 
 
+<script>
+/* PRIVREMENO — za pronalaženje JS greške koja blokira hamburger/login dugmad.
+   Ukloniti posle pronalaska greške. */
+window.addEventListener('error', function(e){
+  alert('GREŠKA:\n' + e.message + '\n' + e.filename + ':' + e.lineno);
+});
+</script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
