@@ -1,3 +1,4 @@
+window.addEventListener('error', function(e){ document.title = 'GRESKA: ' + e.message + ' (linija ' + e.lineno + ')'; }, {once:true});
 /* ==========================================================
    I18N — srpski (podrazumevano) i engleski
    ==========================================================
@@ -1885,6 +1886,4 @@ document.querySelectorAll('.popular-dest-card').forEach(card => {
 ========================================================== */
 let sb = null;
 try {
-  sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
-} catch (err) {
-  console.warn('[skoknica] Supabase init nije us
+  sb = window.supabase.cre
