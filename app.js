@@ -1,8 +1,3 @@
-window.onerror = function(msg, src, line, col){
-  if (location.search.includes('debug=1')) alert('GRESKA: ' + msg + ' | linija ' + line + ':' + col);
-  console.error('[skoknica]', msg, '| linija', line + ':' + col);
-};
-
 /* ==========================================================
    I18N вЂ” srpski (podrazumevano) i engleski
    ==========================================================
@@ -20,7 +15,7 @@ const I18N = {
     nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
     aria_account:'Nalog', aria_menu:'Meni',
     hero_title:'UneseЕЎ mesto.<br>DobijeЕЎ <span class="accent">ceo izlet</span>.',
-    hero_lede:'Let, hotel, auto i aktivnosti вЂ” sastavljeni u tri gotova paketa, s jednom cenom na dnu. Bez otvaranja deset kartica u pretraЕѕivaДЌu.',
+    hero_lede:'Let, smeЕЎtaj, prevoz i aktivnosti spojeni u jedan plan i jednu ukupnu cenu.',
     label_origin:'Polazak', placeholder_origin:'npr. Beograd, NiЕЎ, Podgorica',
     label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
     label_dates:'Od вЂ” Do',
@@ -33,7 +28,10 @@ const I18N = {
     btn_search:'PronaД‘i najbolje putovanje',
     toggle_flight:'Letovi', toggle_hotel:'SmeЕЎtaj', toggle_car:'Rent a car', toggle_activity:'Aktivnost',
     surprise_trigger:'рџЋІ NemaЕЎ ideju kuda? <span>Iznenadi me za dati budЕѕet в†’</span>',
-    eyebrow_more_control:'ViЕЎe kontrole', h2_build_own:'Napravi svoj aranЕѕman',
+    h2_no_idea:'Ne znaЕЎ gde bi iЕЎao?', sub_no_idea:'Reci nam koliko ЕѕeliЕЎ da potroЕЎiЕЎ, a mi Д‡emo pronaД‡i destinacije koje se uklapaju.',
+    btn_no_idea_cta:'рџЋІ Iznenadi me',
+    eyebrow_more_control:'ViЕЎe kontrole', h2_build_own:'ЕЅeliЕЎ viЕЎe kontrole?',
+    sub_build_own:'BiraЕЎ let, smeЕЎtaj, auto i aktivnosti вЂ” mi raДЌunamo koliko sve zajedno koЕЎta.',
     builder_flight_label:'Let', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'OdreД‘ena kompanija',
     placeholder_airline:'npr. Lufthansa',
     chip_priority_rating:'Prioritet: ocena', chip_priority_location:'Prioritet: lokacija',
@@ -48,7 +46,9 @@ const I18N = {
     disclaimer_illustrative:'вљ пёЏ Ilustrativna procena, ne stvarna ponuda вЂ” sajt je u razvoju.',
     btn_optimize:'Optimizuj moj aranЕѕman', btn_save_trip:'SaДЌuvaj aranЕѕman', btn_price_alert:'Javi mi kad padne cena',
     builder_placeholder_text:'Ovde Д‡eЕЎ videti procenjenu cenu ДЌim poДЌneЕЎ da biraЕЎ вЂ” promeni bilo koju opciju levo.',
-    eyebrow_for_later:'Za kasnije', h2_saved_trips:'SaДЌuvani aranЕѕmani',
+    eyebrow_for_later:'Za kasnije', h2_saved_trips:'Vrati se kad budeЕЎ spreman',
+    sub_saved_trips:'SaДЌuvaj opcije koje ti se dopadaju i nastavi kasnije.',
+    h2_features:'Sve ЕЎto ti treba za put', sub_features:'Od leta i smeЕЎtaja do auta, aktivnosti, osiguranja i interneta.',
     f_flight_sub:'Najbolje cene', f_hotel_sub:'Provereni objekti',
     f_car_name:'Auto', f_car_sub:'Pouzdani rentвЂ‘aвЂ‘car',
     f_tolls_name:'Putarine', f_tolls_sub:'TaДЌna kalkulacija',
@@ -56,7 +56,8 @@ const I18N = {
     f_insurance_name:'Osiguranje', f_insurance_sub:'Sigurnost na putu',
     f_esim_sub:'Internet od sletanja',
     postcard_caption:'Uvek postoji sledeД‡i izlet.',
-    eyebrow_ideas:'Ideje za sledeД‡i izlet', h2_popular_dest:'Popularne destinacije iz Srbije i regiona',
+    eyebrow_ideas:'Ideje za sledeД‡i izlet', h2_popular_dest:'Gde bi sledeД‡e?',
+    sub_popular_dest:'Pogledaj destinacije koje putnici iz Srbije i regiona najДЌeЕЎД‡e biraju.',
     pd_athens_name:'Atina, GrДЌka', pd_athens_desc:'Antika, ostrvski trajekti i vrhunska kuhinja вЂ” popularna letnja destinacija sa ДЌestim direktnim letovima.',
     pd_rome_name:'Rim, Italija', pd_rome_desc:'Koloseum, Vatikan i uliДЌna kuhinja вЂ” grad koji se obilazi peЕЎke, uz kratak let iz Beograda.',
     pd_barcelona_name:'Barselona, Е panija', pd_barcelona_desc:'Gaudijeva arhitektura, plaЕѕa i tapas bary вЂ” omiljena kombinacija grada i mora.',
@@ -64,7 +65,8 @@ const I18N = {
     pd_istanbul_name:'Istanbul, Turska', pd_istanbul_desc:'Spoj Evrope i Azije, bazari i Bosfor вЂ” pristupaДЌan izlet van sezone.',
     pd_vienna_name:'BeДЌ, Austrija', pd_vienna_desc:'Muzeji, kafei i boЕѕiД‡ne pijace zimi вЂ” praktiДЌan gradski izlet za vikend.',
     cta_right:'Ceo izlet.<br>Jedna cena.',
-    eyebrow_faq:'Pitanja', h2_faq:'PomoД‡ i FAQ',
+    eyebrow_faq:'Pitanja', h2_faq:'Pre nego ЕЎto rezerviЕЎeЕЎ',
+    sub_faq:'Odgovori na najДЌeЕЎД‡a pitanja o cenama, rezervaciji i promenama.',
     faq_q1:'Da li su prikazane cene stvarne?',
     faq_a1:'Skoknica je trenutno u razvoju. Cene koje vidiЕЎ u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uЕѕivo sa sajtova partnera. Pre rezervacije uvek proveri taДЌnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
     faq_q2:'Kako radi builder aranЕѕmana?',
@@ -103,7 +105,7 @@ const I18N = {
     nav_how:'How it works', nav_dest:'Destinations', nav_about:'About',
     aria_account:'Account', aria_menu:'Menu',
     hero_title:'Enter a place.<br>Get a <span class="accent">whole trip</span>.',
-    hero_lede:'Flight, hotel, car and activities вЂ” bundled into three ready packages, with one price at the bottom. No opening ten browser tabs.',
+    hero_lede:'Flight, stay, transport and activities combined into one plan and one total price.',
     label_origin:'From', placeholder_origin:'e.g. Belgrade, NiЕЎ, Podgorica',
     label_dest:'Destination', placeholder_dest:'e.g. Athens, Rome, Barcelona',
     label_dates:'From вЂ” To',
@@ -116,7 +118,10 @@ const I18N = {
     btn_search:'Find the best trip',
     toggle_flight:'Flights', toggle_hotel:'Stay', toggle_car:'Rent a car', toggle_activity:'Activity',
     surprise_trigger:'рџЋІ No idea where to go? <span>Surprise me for a budget в†’</span>',
-    eyebrow_more_control:'More control', h2_build_own:'Build your own trip',
+    h2_no_idea:'Not sure where to go?', sub_no_idea:'Tell us how much you want to spend, and weвЂ™ll find destinations that fit.',
+    btn_no_idea_cta:'рџЋІ Surprise me',
+    eyebrow_more_control:'More control', h2_build_own:'Want more control?',
+    sub_build_own:'You choose the flight, stay, car and activities вЂ” we add up how much it all costs together.',
     builder_flight_label:'Flight', chip_direct:'Direct', chip_cheapest:'Cheapest', chip_airline:'Specific airline',
     placeholder_airline:'e.g. Lufthansa',
     chip_priority_rating:'Priority: rating', chip_priority_location:'Priority: location',
@@ -131,7 +136,9 @@ const I18N = {
     disclaimer_illustrative:'вљ пёЏ Illustrative estimate, not a real offer вЂ” the site is in development.',
     btn_optimize:'Optimize my trip', btn_save_trip:'Save trip', btn_price_alert:'Notify me when the price drops',
     builder_placeholder_text:'YouвЂ™ll see an estimated price here as soon as you start choosing вЂ” change any option on the left.',
-    eyebrow_for_later:'For later', h2_saved_trips:'Saved trips',
+    eyebrow_for_later:'For later', h2_saved_trips:'Come back when youвЂ™re ready',
+    sub_saved_trips:'Save the options you like and pick up later.',
+    h2_features:'Everything you need for the trip', sub_features:'From flights and stays to cars, activities, insurance and internet.',
     f_flight_sub:'Best prices', f_hotel_sub:'Verified properties',
     f_car_name:'Car', f_car_sub:'Reliable rentвЂ‘aвЂ‘car',
     f_tolls_name:'Tolls', f_tolls_sub:'Accurate calculation',
@@ -139,7 +146,8 @@ const I18N = {
     f_insurance_name:'Insurance', f_insurance_sub:'Safety on the road',
     f_esim_sub:'Internet from landing',
     postcard_caption:'ThereвЂ™s always a next trip.',
-    eyebrow_ideas:'Ideas for your next trip', h2_popular_dest:'Popular destinations from Serbia and the region',
+    eyebrow_ideas:'Ideas for your next trip', h2_popular_dest:'Where to next?',
+    sub_popular_dest:'Take a look at the destinations travelers from Serbia and the region pick most often.',
     pd_athens_name:'Athens, Greece', pd_athens_desc:'Antiquity, island ferries and top-notch food вЂ” a popular summer destination with frequent direct flights.',
     pd_rome_name:'Rome, Italy', pd_rome_desc:'The Colosseum, the Vatican and street food вЂ” a walkable city, a short flight from Belgrade.',
     pd_barcelona_name:'Barcelona, Spain', pd_barcelona_desc:'GaudГ­вЂ™s architecture, the beach and tapas bars вЂ” a favorite city-and-sea combination.',
@@ -147,7 +155,8 @@ const I18N = {
     pd_istanbul_name:'Istanbul, Turkey', pd_istanbul_desc:'Where Europe meets Asia, bazaars and the Bosphorus вЂ” an affordable off-season trip.',
     pd_vienna_name:'Vienna, Austria', pd_vienna_desc:'Museums, cafГ©s and Christmas markets in winter вЂ” a practical city break.',
     cta_right:'One trip.<br>One price.',
-    eyebrow_faq:'Questions', h2_faq:'Help & FAQ',
+    eyebrow_faq:'Questions', h2_faq:'Before you book',
+    sub_faq:'Answers to the most common questions about prices, booking and changes.',
     faq_q1:'Are the prices shown real?',
     faq_a1:'Skoknica is currently in development. Prices you see in search and the builder are an illustrative estimate, generated for demonstration, and donвЂ™t come live from partner sites. Always check the exact price and availability directly with the partner (KAYAK, Booking.com, Viator) before booking.',
     faq_q2:'How does the trip builder work?',
@@ -1142,7 +1151,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
     <div class="status-banner">
       <div class="status-left">
         <div class="status-check">${iconSvg('check')}</div>
-        <div><h3>Tvoje putovanje je spremno.</h3><p>Evo 3 paЕѕljivo odabrane kombinacije za tvoj trip u ${escapeHtml(dest)}.</p></div>
+        <div><h3>Tvoj plan za ${escapeHtml(dest)}</h3><p>Tri gotove opcije, od najpovoljnije do komfornije. Izaberi onu koja ti odgovara.</p></div>
       </div>
       <div class="status-pills">
         <div class="pill">${iconSvg('calendar')} ${fmtDate(from)} вЂ“ ${fmtDate(to)}</div>
@@ -2333,6 +2342,7 @@ document.addEventListener('keydown', (e)=>{
   if (e.key === 'Escape' && document.getElementById('surpriseModal').classList.contains('open')) closeSurpriseModal();
 });
 document.getElementById('surpriseTriggerBtn').addEventListener('click', openSurpriseModal);
+document.getElementById('surpriseSectionBtn').addEventListener('click', openSurpriseModal);
 document.getElementById('surpriseModalSubmit').addEventListener('click', ()=> runSurpriseSearch(false));
 document.getElementById('surpriseBudget').addEventListener('keydown', (e)=>{
   if (e.key === 'Enter'){ e.preventDefault(); runSurpriseSearch(false); }
