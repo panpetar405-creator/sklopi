@@ -1246,6 +1246,9 @@ function pkgHtml(pkg){
 
   return `
   <div class="pkg ${pkg.tier} ${featured?'featured':''}" data-base-total="${pkg.total}">
+    <button type="button" class="pkg-close" onclick="closePkgCard(this)" aria-label="Zatvori ovu ponudu" title="Zatvori ovu ponudu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
     <div class="pkg-head">
       <div>
         ${featured ? `<span class="pkg-badge">★ Preporučeno</span>` : ''}
@@ -1288,6 +1291,28 @@ function pkgHtml(pkg){
       Javi mi kad padne cena
     </button>
   </div>`;
+}
+
+function closePkgCard(btn){
+  const card = btn.closest('.pkg');
+  if (!card) return;
+  const wrap = card.parentElement;
+  card.style.transition = 'opacity .18s ease, transform .18s ease, margin .18s ease, max-height .18s ease';
+  card.style.maxHeight = card.offsetHeight + 'px';
+  card.style.overflow = 'hidden';
+  requestAnimationFrame(() => {
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.97)';
+    card.style.maxHeight = '0px';
+    card.style.marginBottom = '0px';
+    card.style.marginTop = '0px';
+  });
+  setTimeout(() => {
+    card.remove();
+    if (wrap && wrap.classList.contains('packages') && !wrap.querySelector('.pkg')){
+      wrap.innerHTML = '<p class="disclaimer" style="text-align:center;">Sklonio si sve ponude sa liste. <button type="button" class="pkg-alert-btn" style="margin-left:6px;" onclick="runSearch(false)">Pretraži ponovo</button></p>';
+    }
+  }, 200);
 }
 
 /* ==========================================================

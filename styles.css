@@ -531,8 +531,17 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 .pkg{
     background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:6px;
     overflow:hidden;position:relative;
-    transition:box-shadow .25s ease, transform .25s ease;
+    transition:box-shadow .25s ease, transform .25s ease, opacity .2s ease;
 }
+.pkg-close{
+    position:absolute;top:12px;right:12px;z-index:3;
+    width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
+    background:var(--paper);color:var(--ink-soft);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;
+    transition:background .15s ease,color .15s ease;
+}
+.pkg-close:hover{background:var(--bg);color:var(--ink);}
+.pkg-close svg{width:14px;height:14px;}
 .pkg:hover{transform:translateY(-3px);box-shadow:0 20px 40px -26px rgba(18,49,56,0.3);}
 .pkg.best{border-left-color:var(--gold);}
 .pkg.comfort{border-left-color:var(--aqua);}
@@ -542,7 +551,7 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
     box-shadow:0 20px 46px -24px rgba(184,134,59,0.5);
 }
 .pkg-head{
-    padding:22px 24px 18px;border-bottom:1px solid var(--line);
+    padding:22px 46px 18px 24px;border-bottom:1px solid var(--line);
     display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;
 }
 .pkg.featured .pkg-head{background:linear-gradient(180deg,#FBF3DF,transparent);}
