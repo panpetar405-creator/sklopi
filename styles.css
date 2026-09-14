@@ -71,7 +71,7 @@ a{color:inherit;}
     font-family:'Fraunces',serif;font-size:24.5px;font-weight:600;
     display:flex;align-items:center;gap:10px;
 }
-.logo em{color:var(--gold-text);font-style:italic;}
+.logo em{color:var(--gold-text);font-style:italic;margin-left:3px;}
 .logo .mark{
     width:32px;height:32px;border-radius:50%;background:var(--deep);
     display:flex;align-items:center;justify-content:center;flex:none;
@@ -1123,7 +1123,7 @@ footer{
     display:flex;align-items:center;justify-content:center;
 }
 .footer-logo .mark svg{width:14px;height:14px;color:var(--gold-soft);}
-.footer-logo em{color:var(--gold-soft);font-style:italic;}
+.footer-logo em{color:var(--gold-soft);font-style:italic;margin-left:3px;}
 .flinks{display:flex;gap:22px;color:var(--on-dark-soft);flex-wrap:wrap;}
 .flinks a{text-decoration:none;transition:color .15s ease;}
 .flinks a:hover{color:var(--gold-soft);}
