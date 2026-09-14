@@ -200,6 +200,7 @@ a{color:inherit;}
     position:relative;
     overflow:clip;
     border-radius:6px;
+    isolation:isolate;
 }
 .ticket .stub::before{
     content:"";
