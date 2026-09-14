@@ -111,6 +111,12 @@ const I18N = {
     share_modal_title:'Podeli sa prijateljima', share_modal_label_link:'Link za deljenje',
     share_modal_copy:'📋 Kopiraj link', share_modal_native:'📤 Podeli preko aplikacija',
     share_modal_disclaimer:'Svako ko otvori link vidi predlog i može da ostavi odgovor (Idem/Možda/Ne mogu) — bez pravljenja naloga.',
+    passport_check_link:'🛂 Proveri da li ti pasoš važi za ovaj put',
+    passport_modal_sub:'Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.',
+    passport_modal_title:'Da li ti pasoš važi za ovaj put?',
+    passport_modal_label_expiry:'Do kog datuma važi tvoj pasoš?',
+    passport_modal_btn:'Proveri',
+    passport_modal_disclaimer:'⚠️ Opšta pravila po zemlji, radi orijentacije — pred put uvek dodatno proveri na sajtu ambasade/konzulata ili sa aviokompanijom.',
     // ---- dinamički stringovi (koristi ih JS preko t()) ----
     ac_searching:'Tražim…', ac_no_results:'Nema predloga za taj naziv.',
     night:'noć', nights:'noći', passenger:'putnik', passengers:'putnika',
@@ -207,6 +213,12 @@ const I18N = {
     share_modal_title:'Share with friends', share_modal_label_link:'Share link',
     share_modal_copy:'📋 Copy link', share_modal_native:'📤 Share via apps',
     share_modal_disclaimer:'Anyone who opens the link can see the plan and RSVP (Going/Maybe/Can’t make it) — no account needed.',
+    passport_check_link:'🛂 Check if your passport is valid for this trip',
+    passport_modal_sub:'Many countries require your passport to stay valid for a while after your return — otherwise you can be turned away at the border or check-in, even if your travel dates themselves are fine.',
+    passport_modal_title:'Is your passport valid for this trip?',
+    passport_modal_label_expiry:'When does your passport expire?',
+    passport_modal_btn:'Check',
+    passport_modal_disclaimer:'⚠️ General rules per country, for guidance only — always double-check with the embassy/consulate or your airline before you travel.',
     ac_searching:'Searching…', ac_no_results:'No suggestions for that name.',
     night:'night', nights:'nights', passenger:'traveler', passengers:'travelers',
     fuel_estimate:'Fuel (estimate)', tolls_estimate:'Tolls (estimate)', insurance:'Insurance', esim_internet:'eSIM / internet',
@@ -1034,6 +1046,53 @@ function matchPopularDestinations(query){
   }).filter(x => x.score !== null);
   scored.sort((a, b) => a.score - b.score);
   return scored.map(x => x.d);
+}
+
+/* ---- Provera važenja pasoša za odabranu destinaciju ----
+   Srpski biometrijski pasoš je bezvizan za Šengen zonu (90 dana u periodu
+   od 180 dana), pa "da li mi treba viza" nije stvarni problem za većinu
+   traženih destinacija. Pravi, dokumentovan problem je KOLIKO DUGO pasoš
+   mora da važi nakon (ili za Tursku: od) putovanja — turisti bivaju vraćeni
+   sa granice ili čekiranja zbog ovoga, iako je sam datum putovanja u redu. */
+const SCHENGEN_COUNTRIES = new Set([
+  'Austrija','Belgija','Hrvatska','Češka','Danska','Estonija','Finska','Francuska',
+  'Nemačka','Grčka','Mađarska','Italija','Letonija','Litvanija','Luksemburg','Malta',
+  'Holandija','Poljska','Portugalija','Slovačka','Slovenija','Španija','Švedska',
+  'Island','Lihtenštajn','Norveška','Švajcarska'
+]);
+function getPassportRule(country){
+  const c = (country || '').trim();
+  if (SCHENGEN_COUNTRIES.has(c)){
+    return {basis:'to', months:3, days:null, label:c || 'Šengen zona', confident:true,
+      why:'Za Šengen zonu pasoš mora da važi još najmanje 3 meseca nakon planiranog datuma povratka.'};
+  }
+  if (c === 'Turska'){
+    return {basis:'from', months:null, days:150, label:'Turska', confident:true,
+      why:'Za Tursku pasoš mora da važi još najmanje 150 dana (cca 5 meseci) od datuma ulaska u zemlju.'};
+  }
+  if (c === 'Egipat' || c === 'Tunis'){
+    return {basis:'to', months:6, days:null, label:c, confident:true,
+      why:'Za ' + c + ' pasoš mora da važi još najmanje 6 meseci nakon planiranog datuma povratka.'};
+  }
+  return {basis:'to', months:6, days:null, label:c || 'ova destinacija', confident:false,
+    why:'Nemamo potvrđeno pravilo za destinaciju „' + (c || 'ova destinacija') + '“ — mnoge zemlje van Šengena traže važenje pasoša još 6 meseci nakon povratka, ali ovo obavezno proveri kod ambasade/aviokompanije jer se pravilo razlikuje po zemlji.'};
+}
+function resolveCountryForDestination(destValue){
+  const matches = matchPopularDestinations(destValue || '');
+  return matches.length ? (matches[0].extra || '') : '';
+}
+function addMonthsToDate(date, months){
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+function addDaysToDate(date, days){
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+function fmtDateSr(d){
+  return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'long'}) + ' ' + d.getFullYear() + '.';
 }
 
 let _destSuggestTimer = null;
@@ -2606,6 +2665,73 @@ const surpriseModalBackdrop = document.getElementById('surpriseModalBackdrop');
 if (surpriseModalBackdrop) surpriseModalBackdrop.addEventListener('click', closeSurpriseModal);
 const surpriseModalSubmit = document.getElementById('surpriseModalSubmit');
 if (surpriseModalSubmit) surpriseModalSubmit.addEventListener('click', () => runSurpriseSearch(false));
+
+/* ---- Modal: da li pasoš važi za odabranu destinaciju/datume ---- */
+function openPassportModal(){
+  const destVal = (document.getElementById('dest') || {}).value || '';
+  const country = resolveCountryForDestination(destVal);
+  const rule = getPassportRule(country);
+  const box = document.getElementById('passportRuleBox');
+  if (box){
+    box.innerHTML = '<div class="passport-rule-box">'
+      + '<b>' + escapeHtml(destVal ? (destVal + (country ? ' · ' + country : '')) : 'Destinacija nije uneta') + '</b>'
+      + '<br>' + escapeHtml(rule.why)
+      + (rule.confident ? '' : '<br><span style="opacity:0.75">(opšte pravilo, ne potvrđeno za ovu zemlju)</span>')
+      + '</div>';
+  }
+  const resultEl = document.getElementById('passportResult');
+  if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
+  const submitBtn = document.getElementById('passportCheckSubmit');
+  if (submitBtn) submitBtn.dataset.country = country;
+  document.getElementById('passportModalBackdrop').classList.add('open');
+  document.getElementById('passportModal').classList.add('open');
+}
+function closePassportModal(){
+  document.getElementById('passportModalBackdrop').classList.remove('open');
+  document.getElementById('passportModal').classList.remove('open');
+}
+function runPassportCheck(){
+  const expiryVal = (document.getElementById('passportExpiryInput') || {}).value;
+  const resultEl = document.getElementById('passportResult');
+  if (!resultEl) return;
+  if (!expiryVal){
+    resultEl.className = 'passport-result warn';
+    resultEl.innerHTML = 'Unesi datum isteka pasoša da bismo mogli da proverimo.';
+    return;
+  }
+  const destVal = (document.getElementById('dest') || {}).value || '';
+  const country = resolveCountryForDestination(destVal);
+  const rule = getPassportRule(country);
+  const fromISO = (document.getElementById('dateFrom') || {}).value;
+  const toISO = (document.getElementById('dateTo') || {}).value;
+  const basisISO = rule.basis === 'from' ? fromISO : toISO;
+  if (!basisISO){
+    resultEl.className = 'passport-result warn';
+    resultEl.innerHTML = 'Nedostaju datumi putovanja — vrati se na formu i izaberi Od — Do.';
+    return;
+  }
+  const [by, bm, bd] = basisISO.split('-').map(Number);
+  const basisDate = new Date(by, bm - 1, bd);
+  const requiredExpiry = rule.days != null ? addDaysToDate(basisDate, rule.days) : addMonthsToDate(basisDate, rule.months);
+  const [ey, em, ed] = expiryVal.split('-').map(Number);
+  const expiryDate = new Date(ey, em - 1, ed);
+  if (expiryDate.getTime() >= requiredExpiry.getTime()){
+    resultEl.className = 'passport-result ok';
+    resultEl.innerHTML = '✅ Tvoj pasoš važi dovoljno dugo za ovo putovanje — destinacija „' + escapeHtml(rule.label) + '“.';
+  } else {
+    resultEl.className = 'passport-result warn';
+    resultEl.innerHTML = '⚠️ Tvoj pasoš ističe ' + fmtDateSr(expiryDate) + '. Pravilo za destinaciju „' + escapeHtml(rule.label)
+      + '“ traži da važi bar do ' + fmtDateSr(requiredExpiry) + '. Vreme je da obnoviš pasoš — MUP izdaje redovan za oko 30 dana, a uz dokaz o putovanju (kartu ili rezervaciju) moguća je i ubrzana procedura za 48h.';
+  }
+}
+const passportCheckBtn = document.getElementById('passportCheckBtn');
+if (passportCheckBtn) passportCheckBtn.addEventListener('click', openPassportModal);
+const passportModalClose = document.getElementById('passportModalClose');
+if (passportModalClose) passportModalClose.addEventListener('click', closePassportModal);
+const passportModalBackdrop = document.getElementById('passportModalBackdrop');
+if (passportModalBackdrop) passportModalBackdrop.addEventListener('click', closePassportModal);
+const passportCheckSubmit = document.getElementById('passportCheckSubmit');
+if (passportCheckSubmit) passportCheckSubmit.addEventListener('click', runPassportCheck);
 
 /* ==========================================================
    INICIJALIZACIJA

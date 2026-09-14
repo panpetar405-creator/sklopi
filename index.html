@@ -92,6 +92,7 @@ Skoknica<em>.</em>
 <label for="dest" data-i18n="label_dest">Destinacija</label>
 <input id="dest" type="text" value="" data-i18n-placeholder="placeholder_dest" placeholder="npr. Atina, Rim, Barselona" required maxlength="60" list="destSuggestions" autocomplete="off">
 <datalist id="destSuggestions"></datalist>
+<button type="button" class="passport-check-link" id="passportCheckBtn" data-i18n="passport_check_link">🛂 Proveri da li ti pasoš važi za ovaj put</button>
 </div>
 <div class="stub stub-dates" id="dateStub">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
@@ -451,6 +452,21 @@ Skoknica<em>.</em>
 <button type="button" class="btn-primary" id="shareModalCopy" style="width:100%;" data-i18n="share_modal_copy">📋 Kopiraj link</button>
 <button type="button" class="btn-alert" id="shareModalNative" style="display:none;margin-top:10px;" data-i18n="share_modal_native">📤 Podeli preko aplikacija</button>
 <p class="alert-modal-disclaimer" data-i18n="share_modal_disclaimer">Svako ko otvori link vidi predlog i može da ostavi odgovor (Idem/Možda/Ne mogu) — bez pravljenja naloga.</p>
+</div>
+<div class="alert-modal-backdrop" id="passportModalBackdrop"></div>
+<div class="alert-modal" id="passportModal" role="dialog" aria-modal="true" aria-labelledby="passportModalTitle">
+<button type="button" class="alert-modal-close" id="passportModalClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
+<div class="alert-modal-ic">🛂</div>
+<h3 id="passportModalTitle" data-i18n="passport_modal_title">Da li ti pasoš važi za ovaj put?</h3>
+<p class="alert-modal-sub" id="passportModalSub" data-i18n="passport_modal_sub">Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.</p>
+<div class="alert-modal-row" id="passportRuleBox"></div>
+<div class="alert-modal-row">
+<label for="passportExpiryInput" data-i18n="passport_modal_label_expiry">Do kog datuma važi tvoj pasoš?</label>
+<input type="date" id="passportExpiryInput" class="auth-input" style="width:100%;">
+</div>
+<button type="button" class="btn-primary" id="passportCheckSubmit" style="width:100%;margin-top:8px;" data-i18n="passport_modal_btn">Proveri</button>
+<div id="passportResult"></div>
+<p class="alert-modal-disclaimer" data-i18n="passport_modal_disclaimer">⚠️ Opšta pravila po zemlji, radi orijentacije — pred put uvek dodatno proveri na sajtu ambasade/konzulata ili sa aviokompanijom.</p>
 </div>
 <div id="toast"><div class="dot"></div><span id="toastText"></span></div>
 <script src="config.js"></script>
