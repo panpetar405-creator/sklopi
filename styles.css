@@ -388,12 +388,13 @@ font). Redizajnirano da liči na pozivnicu utisnutu u hero, u istom
 jeziku kao ostatak sajta (zlatna iskošena linija, isti krug-sa-strelicom
 kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 .surprise-trigger{
-    width:100%;margin-top:16px;
+    width:100%;
     display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
     row-gap:8px;column-gap:14px;
     padding:15px 26px;border-radius:999px;
     border:1.5px dashed rgba(231,211,172,0.45);
-    background:rgba(244,239,227,0.045);
+    background:linear-gradient(120deg,var(--deep) 0%,var(--deep2) 100%);
+    box-shadow:0 20px 44px -18px rgba(18,49,56,0.4);
     font-family:'Work Sans',sans-serif;cursor:pointer;
     -webkit-tap-highlight-color:transparent;
     transition:background .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
@@ -1120,7 +1121,6 @@ footer{
 .hero-inner > p.lede{order:2;}
 .hero-inner > .transport-row{order:3;}
 .hero-inner > form.ticket{order:4;}
-.hero-inner > .surprise-trigger{order:5;}
 .hero-inner > .hero-spacer{order:6;}
 .ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:20px;}
 .ticket .stub{border-right:none;border-bottom:1px dashed var(--line-form);}
