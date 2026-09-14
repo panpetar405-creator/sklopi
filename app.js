@@ -1078,7 +1078,8 @@ function getPassportRule(country){
     why:'Nemamo potvrđeno pravilo za destinaciju „' + (c || 'ova destinacija') + '“ — mnoge zemlje van Šengena traže važenje pasoša još 6 meseci nakon povratka, ali ovo obavezno proveri kod ambasade/aviokompanije jer se pravilo razlikuje po zemlji.'};
 }
 function resolveCountryForDestination(destValue){
-  const matches = matchPopularDestinations(destValue || '');
+  if (!destValue || !destValue.trim()) return '';
+  const matches = matchPopularDestinations(destValue);
   return matches.length ? (matches[0].extra || '') : '';
 }
 function addMonthsToDate(date, months){
@@ -2669,19 +2670,37 @@ if (surpriseModalSubmit) surpriseModalSubmit.addEventListener('click', () => run
 /* ---- Modal: da li pasoš važi za odabranu destinaciju/datume ---- */
 function openPassportModal(){
   const destVal = (document.getElementById('dest') || {}).value || '';
+  const box = document.getElementById('passportRuleBox');
+  const submitBtn = document.getElementById('passportCheckSubmit');
+  const expiryInput = document.getElementById('passportExpiryInput');
+  if (!destVal.trim()){
+    if (box){
+      box.innerHTML = '<div class="passport-rule-box">'
+        + '<b>Destinacija nije uneta</b>'
+        + '<br>Prvo upiši kuda putuješ u polje „Destinacija“ iznad, pa se vrati ovde — pravilo o pasošu zavisi od zemlje.'
+        + '</div>';
+    }
+    if (expiryInput) expiryInput.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
+    const resultEl = document.getElementById('passportResult');
+    if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
+    document.getElementById('passportModalBackdrop').classList.add('open');
+    document.getElementById('passportModal').classList.add('open');
+    return;
+  }
+  if (expiryInput) expiryInput.disabled = false;
+  if (submitBtn) submitBtn.disabled = false;
   const country = resolveCountryForDestination(destVal);
   const rule = getPassportRule(country);
-  const box = document.getElementById('passportRuleBox');
   if (box){
     box.innerHTML = '<div class="passport-rule-box">'
-      + '<b>' + escapeHtml(destVal ? (destVal + (country ? ' · ' + country : '')) : 'Destinacija nije uneta') + '</b>'
+      + '<b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b>'
       + '<br>' + escapeHtml(rule.why)
       + (rule.confident ? '' : '<br><span style="opacity:0.75">(opšte pravilo, ne potvrđeno za ovu zemlju)</span>')
       + '</div>';
   }
   const resultEl = document.getElementById('passportResult');
   if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
-  const submitBtn = document.getElementById('passportCheckSubmit');
   if (submitBtn) submitBtn.dataset.country = country;
   document.getElementById('passportModalBackdrop').classList.add('open');
   document.getElementById('passportModal').classList.add('open');
@@ -2691,15 +2710,20 @@ function closePassportModal(){
   document.getElementById('passportModal').classList.remove('open');
 }
 function runPassportCheck(){
-  const expiryVal = (document.getElementById('passportExpiryInput') || {}).value;
+  const destVal = (document.getElementById('dest') || {}).value || '';
   const resultEl = document.getElementById('passportResult');
   if (!resultEl) return;
+  if (!destVal.trim()){
+    resultEl.className = 'passport-result warn';
+    resultEl.innerHTML = 'Prvo upiši destinaciju u formi, pa probaj ponovo.';
+    return;
+  }
+  const expiryVal = (document.getElementById('passportExpiryInput') || {}).value;
   if (!expiryVal){
     resultEl.className = 'passport-result warn';
     resultEl.innerHTML = 'Unesi datum isteka pasoša da bismo mogli da proverimo.';
     return;
   }
-  const destVal = (document.getElementById('dest') || {}).value || '';
   const country = resolveCountryForDestination(destVal);
   const rule = getPassportRule(country);
   const fromISO = (document.getElementById('dateFrom') || {}).value;
