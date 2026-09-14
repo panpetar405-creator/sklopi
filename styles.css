@@ -141,11 +141,21 @@ a{color:inherit;}
     overflow:hidden;
 }
 .hero-photo{
-    position:absolute;inset:0;
-    background-image:
-      linear-gradient(175deg, rgba(18,49,56,0.78) 0%, rgba(29,69,80,0.32) 48%, rgba(18,49,56,0.82) 100%),
-      url('https://images.unsplash.com/photo-1747571443369-e21d1e2ce292?w=2000&q=80&auto=format&fit=crop');
-    background-size:cover;background-position:center 62%;
+    position:absolute;inset:0;overflow:hidden;
+}
+.hero-photo img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 62%;
+    animation:hero-drift 24s ease-in-out infinite alternate;
+}
+.hero-photo::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(175deg, rgba(18,49,56,0.82) 0%, rgba(29,69,80,0.28) 45%, rgba(18,49,56,0.55) 78%, rgba(18,49,56,0.92) 100%);
+}
+@media (prefers-reduced-motion:reduce){.hero-photo img{animation:none;}}
+@keyframes hero-drift{
+    0%{transform:scale(1.04) translate(0,0);}
+    100%{transform:scale(1.12) translate(-1.2%,-1%);}
 }
 .hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:2;}
 .hero h1{
@@ -224,15 +234,17 @@ a{color:inherit;}
     display:flex;align-items:center;justify-content:center;
 }
 .btn-primary{
-    background:var(--gold);color:var(--on-gold);border:none;
+    background:linear-gradient(155deg,#CD9A4C 0%,var(--gold) 55%,#A47730 100%);
+    color:var(--on-gold);border:none;
     font-family:'Work Sans',sans-serif;font-weight:600;font-size:16px;
-    padding:17px 28px;border-radius:10px;cursor:pointer;
+    padding:17px 28px;border-radius:14px;cursor:pointer;
     white-space:nowrap;letter-spacing:0.01em;
-    box-shadow:0 10px 24px -10px rgba(184,134,59,0.55);
-    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    box-shadow:0 12px 26px -10px rgba(184,134,59,0.6), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 2px rgba(90,60,15,0.2);
+    transition:transform .18s ease, box-shadow .18s ease, background-position .3s ease;
+    background-size:140% 140%;background-position:0% 0%;
 }
-.btn-primary:hover{background:#A47730;transform:translateY(-2px);box-shadow:0 14px 30px -10px rgba(184,134,59,0.65);}
-.btn-primary:active{transform:translateY(0);}
+.btn-primary:hover{background-position:100% 100%;transform:translateY(-2px) scale(1.015);box-shadow:0 18px 34px -12px rgba(184,134,59,0.7), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 2px rgba(90,60,15,0.2);}
+.btn-primary:active{transform:translateY(0) scale(0.99);box-shadow:0 8px 18px -10px rgba(184,134,59,0.55), inset 0 1px 2px rgba(90,60,15,0.25);}
 /* ---------- Kalendar za izbor datuma (u stub-u "Od — Do") ---------- */
 .stub-dates{position:static;}
 .date-display{
@@ -618,11 +630,11 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 .chip{
     border:1px solid var(--line);background:var(--bg);color:var(--ink-soft);
     font-family:'Work Sans',sans-serif;font-size:14px;font-weight:600;
-    padding:8px 14px;border-radius:18px;cursor:pointer;
+    padding:8px 15px;border-radius:20px;cursor:pointer;
     transition:all .15s ease;white-space:nowrap;
 }
-.chip:hover{border-color:var(--gold);color:var(--ink);}
-.chip.on{background:var(--deep);border-color:var(--deep);color:var(--on-dark-strong);}
+.chip:hover{border-color:var(--gold);color:var(--ink);transform:translateY(-1px);}
+.chip.on{background:var(--deep);border-color:var(--deep);color:var(--on-dark-strong);box-shadow:0 6px 14px -8px rgba(18,49,56,0.55);}
 .chip-row[data-group="hotelStars"] .chip.on{background:var(--gold);border-color:var(--gold);color:var(--on-gold);}
 .chip-row[data-group="carPref"] .chip.on{background:var(--coral);border-color:var(--coral);color:#FBEFE9;}
 .chip.toggle-chip.on{background:var(--gold-soft);border-color:var(--gold);color:var(--gold-on-soft);}
@@ -684,12 +696,15 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 .builder-budget-status.ok{background:rgba(110,156,156,0.18);color:#BFE0DC;}
 .builder-budget-status.over{background:rgba(193,87,60,0.22);color:#F3C4B7;}
 .btn-optimize{
-    width:100%;margin-top:18px;padding:14px;border:none;border-radius:10px;
-    background:var(--gold);color:var(--on-gold);font-family:'Work Sans',sans-serif;
+    width:100%;margin-top:18px;padding:14px;border:none;border-radius:14px;
+    background:linear-gradient(155deg,#CD9A4C 0%,var(--gold) 55%,#A47730 100%);
+    color:var(--on-gold);font-family:'Work Sans',sans-serif;
     font-weight:600;font-size:15px;cursor:pointer;
-    transition:transform .12s ease, background .15s ease;
+    box-shadow:0 10px 22px -10px rgba(184,134,59,0.55), inset 0 1px 0 rgba(255,255,255,0.3);
+    transition:transform .15s ease, box-shadow .15s ease;
 }
-.btn-optimize:hover{background:#A47730;transform:translateY(-1px);}
+.btn-optimize:hover{transform:translateY(-1.5px) scale(1.01);box-shadow:0 14px 28px -10px rgba(184,134,59,0.65), inset 0 1px 0 rgba(255,255,255,0.35);}
+.btn-optimize:active{transform:translateY(0) scale(0.99);}
 .optimize-result{
     margin-top:14px;background:rgba(255,255,255,0.06);border-left:2px solid var(--gold-soft);
     border-radius:0 4px 4px 0;padding:12px 14px;font-size:14.5px;line-height:1.55;color:#E4EDEA;
@@ -722,13 +737,14 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 @media (max-width:900px){ .builder-summary{top:8px;} }
 /* ---------- Sačuvani aranžmani (mock "Moja putovanja", localStorage) ---------- */
 .btn-save{
-    width:100%;margin-top:10px;padding:13px;border:1px solid var(--gold-soft);border-radius:4px;
+    width:100%;margin-top:10px;padding:13px;border:1.5px solid var(--gold-soft);border-radius:12px;
     background:transparent;color:var(--gold-soft);font-family:'Work Sans',sans-serif;
     font-weight:600;font-size:14.5px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;gap:8px;
-    transition:background .15s ease;
+    transition:background .15s ease, transform .15s ease;
 }
-.btn-save:hover{background:rgba(231,211,172,0.1);}
+.btn-save:hover{background:rgba(231,211,172,0.12);transform:translateY(-1px);}
+.btn-save:active{transform:translateY(0);}
 .btn-save svg{width:15px;height:15px;}
 .saved-wrap{margin-top:44px;}
 .auth-bar{margin-bottom:18px;}
