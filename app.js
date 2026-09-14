@@ -78,7 +78,7 @@ const I18N = {
     faq_a4:'Ne. Skoknica ne naplaćuje ništa direktno — klikom na „Rezerviši" ili „Pretraži" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.',
     faq_q5:'Imaš pitanje koje nije ovde?',
     faq_a5:'Piši na <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — rado odgovaramo.',
-    stat_searches:'pretraga', stat_clicks:'klikova na ponude', stat_revenue:'procenjena provizija', stat_last:'poslednja destinacija',
+    stat_searches:'pretraga', stat_clicks:'klikova na ponude', stat_last:'poslednja destinacija',
     footer_contact:'Kontakt', footer_privacy:'Privatnost', footer_terms:'Uslovi', footer_cookies:'Kolačići',
     foot_note:'Skoknica — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a>',
     cookie_text:'<b>Koristimo kolačiće za analitiku</b> (Google Analytics) da bismo razumeli kako se sajt koristi i unapredili ga. Ne koristimo ih za marketing niti ih delimo van Google-a. Detalji u <a href="kolacici.html">Politici kolačića</a>.',
@@ -86,6 +86,7 @@ const I18N = {
     aria_close:'Zatvori', label_email:'Email',
     label_alert_threshold:'Javi mi kad ukupna procenjena cena padne ispod', btn_set_alert:'Postavi alert',
     alert_modal_disclaimer:'⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.',
+    surprise_trigger:'🎲 Nemaš ideju kuda? <span>Iznenadi me za dati budžet →</span>',
     surprise_modal_title:'Iznenadi me',
     surprise_modal_sub:'Nemaš konkretnu destinaciju na umu? Reci nam samo budžet — probaćemo preko 100 gradova i predložićemo 3 koja se uklapaju. Datumi i broj putnika ostaju kao u formi iznad.',
     surprise_modal_label_budget:'Ukupan budžet (za sve putnike)', placeholder_surprise_budget:'npr. 400',
@@ -168,7 +169,7 @@ const I18N = {
     faq_a4:'No. Skoknica doesn’t charge anything directly — clicking “Book” or “Search” takes you to the partner’s site (KAYAK, Booking.com or Viator) where the booking and payment happen.',
     faq_q5:'Have a question that’s not here?',
     faq_a5:'Write to <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — we’re happy to help.',
-    stat_searches:'searches', stat_clicks:'clicks on offers', stat_revenue:'estimated commission', stat_last:'last destination',
+    stat_searches:'searches', stat_clicks:'clicks on offers', stat_last:'last destination',
     footer_contact:'Contact', footer_privacy:'Privacy', footer_terms:'Terms', footer_cookies:'Cookies',
     foot_note:'Skoknica — a product prototype in development. Prices shown are illustrative (simulated for demonstration), don’t come live from partners, and don’t represent a real offer or price commitment. · <a href="#" id="cookieSettingsLink">Cookie settings</a>',
     cookie_text:'<b>We use cookies for analytics</b> (Google Analytics) to understand how the site is used and improve it. We don’t use them for marketing or share them beyond Google. Details in the <a href="kolacici.html">Cookie Policy</a>.',
@@ -176,6 +177,7 @@ const I18N = {
     aria_close:'Close', label_email:'Email',
     label_alert_threshold:'Notify me when the total estimated price drops below', btn_set_alert:'Set alert',
     alert_modal_disclaimer:'⚠️ Still an illustrative estimate, not a real partner offer. You can unsubscribe anytime via the link in the email you receive.',
+    surprise_trigger:'🎲 No idea where to go? <span>Surprise me for a given budget →</span>',
     surprise_modal_title:'Surprise me',
     surprise_modal_sub:'No specific destination in mind? Just tell us your budget — we’ll try over 100 cities and suggest 3 that fit. Dates and traveler count stay as set in the form above.',
     surprise_modal_label_budget:'Total budget (for all travelers)', placeholder_surprise_budget:'e.g. 400',
@@ -837,7 +839,24 @@ function iconSvg(type){
 /* ==========================================================
    STATE + RENDER
 ========================================================== */
-const state = { searches:0, clicks:0, revenue:0 };
+const state = { searches:0, clicks:0, lastDest:null };
+const STATS_STORAGE_KEY = 'skoknica_stats_v1';
+function loadStats(){
+  try{
+    const raw = localStorage.getItem(STATS_STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    state.searches = saved.searches || 0;
+    state.clicks = saved.clicks || 0;
+    state.lastDest = saved.lastDest || null;
+  }catch(e){ /* localStorage nedostupan (privatni mod i sl.) — nastavi sa 0 */ }
+}
+function saveStats(){
+  try{
+    localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify({searches:state.searches, clicks:state.clicks, lastDest:state.lastDest}));
+  }catch(e){}
+}
+loadStats();
 
 function fmtEUR(n){ return '€' + n.toLocaleString('de-DE'); }
 
@@ -1334,9 +1353,7 @@ async function runSurpriseSearch(isReroll){
     results.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
-  state.searches += 1;
-  document.getElementById('statLast').textContent = '🎲 ' + fmtEUR(budget);
-  updateStats();
+  bumpSearchStat('🎲 ' + fmtEUR(budget));
 
   setTimeout(()=>{
     const candidates = computeSurpriseCandidates(from, to, adults, flags);
@@ -1422,9 +1439,7 @@ function bookItem(btn){
   const kind = btn.dataset.kind;
   const price = Number(btn.dataset.price);
   const url = btn.dataset.url;
-  state.clicks += 1;
-  state.revenue += Math.round(price * 0.04); // mock ~4% affiliate commission
-  updateStats();
+  bumpClickStat();
   const labels = {
     flight:   'let na KAYAK-u',
     hotel:    'smeštaj na Booking.com',
@@ -1447,7 +1462,53 @@ function showToast(msg){
 function updateStats(){
   document.getElementById('statSearches').textContent = state.searches;
   document.getElementById('statClicks').textContent = state.clicks;
-  document.getElementById('statRevenue').textContent = fmtEUR(state.revenue);
+  if (state.lastDest) document.getElementById('statLast').textContent = state.lastDest;
+  saveStats();
+}
+
+/* ---- Uvećanje brojača: prvo pokušaj deljeni (Supabase RPC, atomično za
+   sve posetioce), a ako ne uspe (sb nedostupan, tabela/funkcija ne postoji,
+   mreža) — padni nazad na lokalni brojač kao do sad. ---- */
+async function bumpSearchStat(destLabel){
+  if (typeof sb !== 'undefined' && sb){
+    try{
+      const { data, error } = await sb.rpc('increment_search_stat', { p_dest: destLabel });
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (row){
+        state.searches = row.searches;
+        state.clicks = row.clicks;
+        state.lastDest = row.last_dest || destLabel;
+        updateStats();
+        return;
+      }
+    }catch(err){
+      console.warn('[skoknica] Deljeni brojač pretraga nije uspeo, koristim lokalni:', err.message);
+    }
+  }
+  state.searches += 1;
+  state.lastDest = destLabel;
+  updateStats();
+}
+async function bumpClickStat(){
+  if (typeof sb !== 'undefined' && sb){
+    try{
+      const { data, error } = await sb.rpc('increment_click_stat');
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (row){
+        state.searches = row.searches;
+        state.clicks = row.clicks;
+        state.lastDest = row.last_dest || state.lastDest;
+        updateStats();
+        return;
+      }
+    }catch(err){
+      console.warn('[skoknica] Deljeni brojač klikova nije uspeo, koristim lokalni:', err.message);
+    }
+  }
+  state.clicks += 1;
+  updateStats();
 }
 
 /* ==========================================================
@@ -1503,9 +1564,7 @@ async function runSearch(shouldScroll){
   document.getElementById('resultsBody').innerHTML = '<div class="loading"><div class="spin"></div>Pretražujemo letove, smeštaj, aute i aktivnosti…</div>';
   if (shouldScroll) results.scrollIntoView({behavior:'smooth', block:'start'});
 
-  state.searches += 1;
-  document.getElementById('statLast').textContent = dest;
-  updateStats();
+  bumpSearchStat(dest);
 
   setTimeout(()=>{
     renderResults(dest, from, to, nights, days, adults, flags, originCode);
@@ -1905,6 +1964,26 @@ try {
   console.warn('[skoknica] Supabase inicijalizacija nije uspela:', err.message);
   sb = null;
 }
+
+/* ---- Deljeni (globalni) brojači — tabela "site_stats", jedan red (id=1).
+   Ako Supabase nije dostupan ili tabela/funkcije ne postoje, ostajemo na
+   lokalnom (localStorage) brojaču koji je već učitan preko loadStats(). ---- */
+async function loadStatsFromSupabase(){
+  if (!sb) return;
+  try{
+    const { data, error } = await sb.from('site_stats').select('searches,clicks,last_dest').eq('id', 1).single();
+    if (error) throw error;
+    if (data){
+      state.searches = data.searches || 0;
+      state.clicks = data.clicks || 0;
+      state.lastDest = data.last_dest || state.lastDest;
+      updateStats();
+    }
+  }catch(err){
+    console.warn('[skoknica] Deljena statistika nije dostupna (tabela site_stats?), ostajem na lokalnoj:', err.message);
+  }
+}
+loadStatsFromSupabase();
 
 /* ---- Trenutni korisnik (keširano da ne zovemo getSession na svaki klik) ---- */
 let _cachedUser = undefined; // undefined = još nije provereno, null = nije prijavljen

@@ -907,8 +907,8 @@ CTA, native-share CTA) were rendering as unstyled browser defaults. */
     background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
     padding:26px 0;
 }
-.stats-inner{max-width:1180px;margin:0 auto;padding:0 40px;display:flex;gap:44px;flex-wrap:wrap;}
-.stat{min-width:110px;}
+.stats-inner{max-width:1180px;margin:0 auto;padding:0 40px;display:flex;justify-content:center;gap:44px;flex-wrap:wrap;}
+.stat{min-width:110px;text-align:center;}
 .stat .val{font-family:'Fraunces',serif;font-size:29px;font-weight:600;transition:transform .2s ease;}
 .stat:hover .val{transform:translateY(-2px);}
 .stat .lab{font-size:13.5px;color:var(--ink-soft);margin-top:2px;}
