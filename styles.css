@@ -674,35 +674,52 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 builder stajao otvoren odmah ispod hero-a, što je delovalo pretrpano. */
 .control-teaser{
     width:100%;text-align:left;cursor:pointer;
-    display:flex;align-items:center;gap:16px;
-    background:var(--paper);border:1px solid var(--line);border-radius:6px;
-    padding:20px 24px;font-family:'Work Sans',sans-serif;
-    box-shadow:0 10px 26px -18px rgba(18,49,56,0.3);
-    transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    display:flex;align-items:center;gap:20px;
+    background:var(--paper);border:1.5px dashed var(--gold);border-radius:16px;
+    padding:30px 30px;font-family:'Work Sans',sans-serif;
+    box-shadow:0 16px 36px -20px rgba(18,49,56,0.32);
+    transition:border-color .15s ease, box-shadow .2s ease, transform .15s ease, background .15s ease;
+    -webkit-tap-highlight-color:transparent;
 }
-.control-teaser:hover{border-color:var(--gold);transform:translateY(-1px);box-shadow:0 14px 30px -16px rgba(18,49,56,0.35);}
+.control-teaser:hover{
+    border-style:solid;border-color:var(--gold);background:#FBF3E2;
+    transform:translateY(-3px);box-shadow:0 22px 44px -20px rgba(18,49,56,0.4);
+}
+.control-teaser:active{transform:translateY(-1px);}
 .control-teaser .ct-ic{
-    width:44px;height:44px;border-radius:50%;flex:none;
+    width:60px;height:60px;border-radius:50%;flex:none;
     display:flex;align-items:center;justify-content:center;
     background:var(--gold-soft);color:var(--gold-text);
+    transition:transform .2s ease;
 }
-.control-teaser .ct-ic svg{width:20px;height:20px;}
-.control-teaser .ct-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
-.control-teaser .ct-title{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--ink);}
-.control-teaser .ct-sub{font-size:14px;line-height:1.5;color:var(--ink-soft);}
+.control-teaser:hover .ct-ic{transform:scale(1.06) rotate(-4deg);}
+.control-teaser .ct-ic svg{width:27px;height:27px;}
+.control-teaser .ct-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+.control-teaser .ct-title{font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--ink);}
+.control-teaser .ct-sub{font-size:15px;line-height:1.5;color:var(--ink-soft);}
+.control-teaser .ct-cta{flex:none;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.control-teaser .ct-cta-label{
+    font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+    color:var(--gold-text);white-space:nowrap;
+}
 .control-teaser .ct-arrow{
-    flex:none;width:36px;height:36px;border-radius:50%;
+    flex:none;width:46px;height:46px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    background:var(--deep);color:var(--on-dark-strong);font-size:15px;
+    background:var(--deep);color:var(--on-dark-strong);font-size:18px;
     transition:transform .25s ease, background .2s ease;
 }
+.control-teaser:hover .ct-arrow{background:var(--gold);color:var(--on-gold);transform:translateX(3px);}
 .control-teaser[aria-expanded="true"] .ct-arrow{transform:rotate(90deg);background:var(--gold);color:var(--on-gold);}
-.control-teaser[aria-expanded="true"]{border-color:var(--gold);}
+.control-teaser[aria-expanded="true"]{border-style:solid;border-color:var(--gold);}
 .control-teaser + .builder{margin-top:22px;}
 @media (max-width:560px){
-    .control-teaser{padding:16px 18px;gap:12px;}
-    .control-teaser .ct-title{font-size:17px;}
-    .control-teaser .ct-sub{font-size:13px;}
+    .control-teaser{padding:22px 20px;gap:14px;border-radius:14px;}
+    .control-teaser .ct-ic{width:48px;height:48px;}
+    .control-teaser .ct-ic svg{width:22px;height:22px;}
+    .control-teaser .ct-title{font-size:19px;}
+    .control-teaser .ct-sub{font-size:13.5px;}
+    .control-teaser .ct-cta-label{display:none;}
+    .control-teaser .ct-arrow{width:38px;height:38px;font-size:15px;}
 }
 .builder{
     display:grid;grid-template-columns:1.35fr 1fr;gap:22px;
