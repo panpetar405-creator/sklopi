@@ -1063,8 +1063,20 @@ footer{
 .hero-spacer{height:20px;}
 .stub-dates{position:relative;}
 .cal-card{
-    position:fixed;top:calc(var(--topbar-h, 68px) + 10px);bottom:14px;
-    left:14px;right:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    position:fixed;top:calc(var(--topbar-h, 68px) + 10px);bottom:auto;
+    left:14px;right:14px;max-height:calc(100vh - var(--topbar-h, 68px) - 24px);
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.cal-backdrop{
+    display:none;position:fixed;inset:0;z-index:44;
+    background:rgba(18,49,56,0.45);backdrop-filter:blur(1px);
+    opacity:0;transition:opacity .2s ease;
+}
+.cal-backdrop.open{display:block;opacity:1;}
+.cal-quick.chip-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.cal-quick.chip-row .chip{
+    padding:8px 6px;font-size:12px;text-align:center;
+    white-space:normal;line-height:1.25;
 }
 .cta-banner{padding:40px 20px;}
 .cta-right{text-align:left;}

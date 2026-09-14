@@ -317,6 +317,7 @@ function pickBestLocationMatch(results, query){
   const hiddenFrom = document.getElementById('dateFrom');
   const hiddenTo = document.getElementById('dateTo');
   const calCard = document.getElementById('calCard');
+  const calBackdrop = document.getElementById('calBackdrop');
   const calMonths = document.getElementById('calMonths');
   const calGrids = document.getElementById('calGrids');
   const calRangeLabel = document.getElementById('calRangeLabel');
@@ -572,10 +573,12 @@ function pickBestLocationMatch(results, query){
     viewMonth = today.getMonth();
     render();
     calCard.classList.add('open');
+    if (calBackdrop) calBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
   }
   function closeCal(shouldCommit){
     calCard.classList.remove('open');
+    if (calBackdrop) calBackdrop.classList.remove('open');
     displayBtn.setAttribute('aria-expanded', 'false');
     if (shouldCommit && selStart && selEnd){
       commit();
