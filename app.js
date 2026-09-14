@@ -1730,6 +1730,10 @@ document.getElementById('controlTeaserSelectBtn').addEventListener('click', ()=>
   openControlPanel();
   document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
 });
+document.getElementById('builderCloseBtn').addEventListener('click', ()=>{
+  closeControlPanel();
+  document.getElementById('controlTeaserBtn').scrollIntoView({behavior:'smooth', block:'start'});
+});
 
 function builderCtx(){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
