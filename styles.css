@@ -197,13 +197,21 @@ a{color:inherit;}
 .ticket .stub{
     padding:26px 24px;
     border-right:1px dashed var(--line-form);
-    transition:background .15s ease;
     position:relative;
-    overflow:hidden;
+    overflow:clip;
     border-radius:6px;
-    transform:translateZ(0);
 }
-.ticket .stub:focus-within{background:var(--gold-soft);}
+.ticket .stub::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    background:var(--gold-soft);
+    opacity:0;
+    transition:opacity .15s ease;
+    pointer-events:none;
+}
+.ticket .stub:focus-within::before{opacity:1;}
 .ticket .stub:last-of-type{border-right:none;}
 .ticket .stub label{
     display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.08em;
