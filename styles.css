@@ -435,9 +435,9 @@ eSIM dugmeta, koje ima najduži tekst), što izdužuje hero sekciju. */
 }
 .postcard:hover{transform:rotate(0deg);box-shadow:0 30px 56px -28px rgba(18,49,56,0.45);}
 .postcard-photo{
-    width:100%;aspect-ratio:4/3;background-size:cover;background-position:center;
-    border:1.5px dashed var(--gold);
+    width:100%;aspect-ratio:4/3;border:1.5px dashed var(--gold);overflow:hidden;
 }
+.postcard-photo img{width:100%;height:100%;object-fit:cover;display:block;}
 .postcard-stamp{
     position:absolute;top:-16px;right:-14px;width:48px;height:48px;border-radius:50%;
     background:var(--deep);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;
@@ -452,6 +452,21 @@ eSIM dugmeta, koje ima najduži tekst), što izdužuje hero sekciju. */
     color:var(--ink-soft);text-align:center;
 }
 @media (max-width:760px){ .postcard-section{padding:6px 20px 4px;} }
+/* ---------- Popularne destinacije — nije uopšte imalo CSS (default dugmad) ---------- */
+.popular-dest-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;
+}
+.popular-dest-card{
+    text-align:left;border:1px solid var(--line);background:var(--paper);
+    border-radius:16px;padding:20px 22px 22px;cursor:pointer;
+    font-family:inherit;display:flex;flex-direction:column;gap:8px;
+    transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.popular-dest-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(18,49,56,0.3);}
+.popular-dest-card:active{transform:translateY(-1px);}
+.pd-name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--ink);}
+.pd-desc{font-size:14px;line-height:1.5;color:var(--ink-soft);}
+@media (max-width:600px){.popular-dest-grid{grid-template-columns:1fr;}}
 #results{display:none;padding-top:34px;padding-bottom:100px;}
 #results.visible{display:block;}
 /* status banner + pills */
@@ -870,10 +885,15 @@ CTA, native-share CTA) were rendering as unstyled browser defaults. */
 /* ---------- CTA banner (photo) ---------- */
 .cta-banner{position:relative;margin-top:10px;padding:54px 40px;color:var(--on-dark);overflow:hidden;}
 .cta-photo{
-    position:absolute;inset:0;
-    background-image:linear-gradient(100deg, rgba(18,49,56,0.93) 32%, rgba(18,49,56,0.55) 100%),
-      url('https://images.unsplash.com/photo-1595190613644-68ce8e2a9814?w=1600&q=70&auto=format&fit=crop');
-    background-size:cover;background-position:center 55%;
+    position:absolute;inset:0;overflow:hidden;
+}
+.cta-photo img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 55%;
+}
+.cta-photo::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(100deg, rgba(18,49,56,0.93) 32%, rgba(18,49,56,0.55) 100%);
 }
 .cta-inner{max-width:1180px;margin:0 auto;position:relative;z-index:2;
     display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
