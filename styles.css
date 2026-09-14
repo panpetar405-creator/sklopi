@@ -370,6 +370,44 @@ eSIM dugmeta, koje ima najduži tekst), što izdužuje hero sekciju. */
 }
 .toggle.on::before{background:var(--gold-soft);color:var(--on-gold);}
 .toggle svg{width:16px;height:16px;flex:none;}
+/* ---------- "Nemaš ideju kuda?" — pre nije imalo NIJEDNO CSS pravilo,
+renderovalo se kao neuređeno podrazumevano <button> (siva kutija, sistemski
+font). Redizajnirano da liči na pozivnicu utisnutu u hero, u istom
+jeziku kao ostatak sajta (zlatna iskošena linija, isti krug-sa-strelicom
+kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
+.surprise-trigger{
+    width:100%;margin-top:16px;
+    display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+    row-gap:8px;column-gap:14px;
+    padding:15px 26px;border-radius:999px;
+    border:1.5px dashed rgba(231,211,172,0.45);
+    background:rgba(244,239,227,0.045);
+    font-family:'Work Sans',sans-serif;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:background .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.surprise-trigger .dice-ic{width:19px;height:19px;flex:none;color:var(--gold-soft);transition:transform .35s ease;}
+.surprise-trigger .st-q{font-size:15px;color:var(--on-dark-soft);}
+.surprise-trigger .st-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    font-weight:600;font-size:15px;color:var(--on-dark-strong);
+}
+.surprise-trigger .st-arrow{
+    font-style:normal;flex:none;display:flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--on-gold);
+    font-size:11.5px;transition:transform .2s ease, background .2s ease;
+}
+.surprise-trigger:hover{
+    background:rgba(244,239,227,0.09);border-color:var(--gold-soft);
+    transform:translateY(-2px);box-shadow:0 16px 34px -18px rgba(0,0,0,0.5);
+}
+.surprise-trigger:hover .dice-ic{transform:rotate(-16deg) scale(1.06);}
+.surprise-trigger:hover .st-arrow{background:#CD9A4C;transform:rotate(-8deg) translateX(1px);}
+.surprise-trigger:active{transform:translateY(0);}
+@media (max-width:520px){
+    .surprise-trigger{padding:13px 18px;gap:6px 10px;}
+    .surprise-trigger .st-q,.surprise-trigger .st-cta{font-size:14px;}
+}
 .hero-spacer{height:130px;}
 /* ---------- Sections ---------- */
 .section{max-width:1180px;margin:0 auto;padding:0 40px;}
@@ -774,16 +812,20 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 .btn-save:hover{background:rgba(110,156,156,0.18);border-color:#8FC4C4;transform:translateY(-1px);}
 .btn-save:active{transform:translateY(0);}
 /* .btn-alert had no rules at all before — buttons using it (price-alert
-CTA, native-share CTA) were rendering as unstyled browser defaults. */
+CTA, native-share CTA) were rendering as unstyled browser defaults.
+Preboja u plavu paletu sajta (aqua akcent, u skladu sa .btn-save odmah
+iznad) sa zvoncetom istaknutim u žuto/zlatno — zvonce je ono na šta oko
+treba prvo da padne, tekst ostaje u drugom planu. */
 .btn-alert{
-    width:100%;margin-top:10px;padding:12px 18px;border:1.5px solid var(--coral);border-radius:999px;
-    background:transparent;color:var(--coral-text);font-family:'Work Sans',sans-serif;
+    width:100%;margin-top:10px;padding:12px 18px;border:1.5px solid var(--aqua);border-radius:999px;
+    background:rgba(110,156,156,0.1);color:var(--on-dark);font-family:'Work Sans',sans-serif;
     font-weight:600;font-size:14.5px;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:8px;
-    transition:background .15s ease, color .15s ease, transform .15s ease;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    transition:background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
-.btn-alert svg{width:15px;height:15px;flex:none;}
-.btn-alert:hover{background:var(--coral);color:#FBEFE9;transform:translateY(-1px);}
+.btn-alert svg{width:16px;height:16px;flex:none;color:var(--gold-soft);transition:color .15s ease;}
+.btn-alert:hover{background:rgba(110,156,156,0.22);border-color:#8FC4C4;transform:translateY(-1px);box-shadow:0 10px 22px -12px rgba(110,156,156,0.4);}
+.btn-alert:hover svg{color:var(--gold);}
 .btn-alert:active{transform:translateY(0);}
 /* ---------- Modali (alert / surprise / share) — nije uopšte imalo CSS ---------- */
 .alert-modal-backdrop{
