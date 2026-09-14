@@ -200,6 +200,7 @@ a{color:inherit;}
     border-right:1px dashed var(--line-form);
     transition:background .15s ease;
     position:relative;
+    overflow:hidden;
 }
 .ticket .stub:focus-within{background:var(--gold-soft);border-radius:6px;}
 .ticket .stub:last-of-type{border-right:none;}
