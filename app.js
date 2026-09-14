@@ -1,4 +1,15 @@
 window.addEventListener('error', function(e){ document.title = 'GRESKA: ' + e.message + ' (linija ' + e.lineno + ')'; }, {once:true});
+(function(){
+  const topbarWrap = document.querySelector('.topbar-wrap');
+  if (!topbarWrap) return;
+  function syncTopbarHeight(){
+    document.documentElement.style.setProperty('--topbar-h', topbarWrap.offsetHeight + 'px');
+  }
+  syncTopbarHeight();
+  window.addEventListener('resize', syncTopbarHeight);
+  window.addEventListener('orientationchange', syncTopbarHeight);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncTopbarHeight);
+})();
 /* ==========================================================
    I18N — srpski (podrazumevano) i engleski
    ==========================================================
