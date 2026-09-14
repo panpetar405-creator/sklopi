@@ -240,6 +240,23 @@ function hashSeed(str){
   for (let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) | 0; }
   return Math.abs(h) || 1;
 }
+/* ==========================================================
+   DNEVNA FLUKTUACIJA CENE ("tržišni faktor")
+   Ranije je ilustrativna cena bila FIKSNA funkcija (grad+noći+putnici) —
+   nikad se nije menjala tokom vremena, pa "Javi mi kad padne cena" nije
+   fizički mogao nikad da se ispuni. Ovaj faktor dodaje determinističku
+   ali dnevno promenljivu varijaciju (±12%), istu za sve koji tog dana
+   gledaju isti grad, nezavisnu od glavnog rng niza (ne pomera redosled
+   ostalih random poziva). Isti algoritam se koristi i na serveru
+   (Supabase Edge Function) da bi se alert mogao stvarno proveravati.
+========================================================== */
+function marketFactor(dest, dateStr){
+  const f = seededRandom(hashSeed('mkt|' + dest.toLowerCase() + '|' + dateStr));
+  return 0.88 + f() * 0.24;
+}
+function todayStr(){
+  return new Date().toISOString().slice(0, 10); // UTC YYYY-MM-DD
+}
 function nightsBetween(a,b){
   const ms = new Date(b) - new Date(a);
   return Math.max(1, Math.round(ms / 86400000));
@@ -792,15 +809,23 @@ const EXTRA_COSTS = {
 /* ==========================================================
    PRICING + SCORE ENGINE
 ========================================================== */
-function buildPackage(rng, dest, nights, days, adults, tier, flags){
+function buildPackage(rng, dest, nights, days, adults, tier, flags, factor){
+  factor = factor || 1;
   const flight = flags.flight ? fetchFlights(rng, dest, adults, tier) : null;
   const hotel  = flags.hotel  ? fetchHotel(rng, dest, nights, adults, tier) : null;
   const car    = flags.car    ? fetchCar(rng, days, tier) : null;
   const activity = flags.activity ? fetchActivity(rng, dest, tier) : null;
   const extras = EXTRA_COSTS[tier];
 
-  const fuel = (car && extras.fuel) ? extras.fuel : 0;
-  const tolls = (car && extras.tolls) ? extras.tolls : 0;
+  // Tržišni faktor menja samo cenu, ne i ime/opis stavke (ti se biraju
+  // gore, iz rng niza, pre ove linije — pa ostaju stabilni iz dana u dan).
+  if (flight) flight.price = Math.round(flight.price * factor);
+  if (hotel) hotel.price = Math.round(hotel.price * factor);
+  if (car) car.price = Math.round(car.price * factor);
+  if (activity) activity.price = Math.round(activity.price * factor);
+
+  const fuel = Math.round(((car && extras.fuel) ? extras.fuel : 0) * factor);
+  const tolls = Math.round(((car && extras.tolls) ? extras.tolls : 0) * factor);
   // Osiguranje i eSIM više NISU deo osnovne cene — to su dodaci na već
   // kupljenu uslugu, ne "proizvod" koji se pretražuje. Cena im je uvek
   // dostupna (da bi se prikazala uz čekboks u rezultatima), ali se ne
@@ -1088,8 +1113,9 @@ async function fetchPackagesFromBackend(payload){
 function computePackagesLocally(dest, from, to, nights, days, adults, flags){
   const seed = hashSeed(dest.toLowerCase()+dest.length+nights+adults);
   const rng = seededRandom(seed);
+  const factor = marketFactor(dest, todayStr());
 
-  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags));
+  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor));
   pkgs.forEach(p => attachAffiliateLinks(p, dest, from, to, adults));
 
   // Price score is relative to the cheapest of THIS run's three packages —
@@ -1127,7 +1153,8 @@ function computeSurpriseCandidates(from, to, adults, flags){
   return POPULAR_DESTINATIONS.map(d => {
     const seed = hashSeed(d.name.toLowerCase()+d.name.length+nights+adults);
     const rng = seededRandom(seed);
-    const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags);
+    const factor = marketFactor(d.name, todayStr());
+    const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags, factor);
     attachAffiliateLinks(pkg, d.name, from, to, adults);
     return {dest:d.name, country:d.extra||'', pkg};
   });
@@ -1162,7 +1189,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   // Global kontekst za "Sačuvaj ovu ponudu" dugme na svakoj kartici —
   // isti obrazac kao window._lastBuilderPkg za builder.
   window._lastSearchPkgs = pkgs;
-  window._lastSearchCtx = {dest, from, to, adults};
+  window._lastSearchCtx = {dest, from, to, adults, nights, flags};
 
   document.getElementById('ctaTitle').textContent = dest + ' te čeka.';
   document.getElementById('ctaDesc').textContent = ctaCopy(dest);
@@ -1365,9 +1392,10 @@ async function runSurpriseSearch(isReroll){
   bumpSearchStat('🎲 ' + fmtEUR(budget));
 
   setTimeout(()=>{
+    const nights = nightsBetween(from, to);
     const candidates = computeSurpriseCandidates(from, to, adults, flags);
     const {picks, usedFallback} = pickSurpriseDestinations(budget, candidates, 3);
-    renderSurpriseResults(picks, {from, to, adults}, budget, usedFallback);
+    renderSurpriseResults(picks, {from, to, adults, nights, flags}, budget, usedFallback);
   }, isReroll ? 0 : 700);
 }
 
@@ -1710,15 +1738,26 @@ function computeCustomPackage(sel, ctx){
   const insuranceCost = sel.insurance ? BUILDER_ADDON_RATES.insurance * ctx.adults : 0;
   const esimCost = sel.esim ? BUILDER_ADDON_RATES.esim * ctx.adults : 0;
 
-  const total = flightPrice + hotelPrice + carPrice + activityPrice + carExtras + bookingFee + insuranceCost + esimCost;
+  // Isti dnevni tržišni faktor kao u gotovim ponudama (vidi marketFactor) —
+  // primenjen na sve stavke osim osiguranja/eSIM-a, koji su fiksni dodaci
+  // po osobi, ne tržišna cena koja fluktuira.
+  const factor = marketFactor(ctx.dest, todayStr());
+  const flightPriceF = Math.round(flightPrice * factor);
+  const hotelPriceF = Math.round(hotelPrice * factor);
+  const carPriceF = Math.round(carPrice * factor);
+  const activityPriceF = Math.round(activityPrice * factor);
+  const carExtrasF = Math.round(carExtras * factor);
+  const bookingFeeF = Math.round(bookingFee * factor);
+
+  const total = flightPriceF + hotelPriceF + carPriceF + activityPriceF + carExtrasF + bookingFeeF + insuranceCost + esimCost;
 
   return {
-    flight: {price:flightPrice, name:flightName, sub:flightSub},
-    hotel:  {price:hotelPrice, rating:Number(hotelRating.toFixed(1)), stars:sel.hotelStars},
-    car:    {price:carPrice, pref:sel.carPref},
-    activity: {price:activityPrice, count:sel.activityCount},
-    carExtras: {price:carExtras},
-    bookingFee: {price:bookingFee},
+    flight: {price:flightPriceF, name:flightName, sub:flightSub},
+    hotel:  {price:hotelPriceF, rating:Number(hotelRating.toFixed(1)), stars:sel.hotelStars},
+    car:    {price:carPriceF, pref:sel.carPref},
+    activity: {price:activityPriceF, count:sel.activityCount},
+    carExtras: {price:carExtrasF},
+    bookingFee: {price:bookingFeeF},
     insuranceCost, esimCost,
     total
   };
@@ -2343,8 +2382,22 @@ document.getElementById('shareModalNative').addEventListener('click', async () =
 ========================================================== */
 let _pendingAlert = null;
 function openAlertModal(kind, tier, total, destOverride){
-  const dest = destOverride || document.getElementById('dest').value.trim() || 'Atina';
-  _pendingAlert = { kind, tier, currentTotal: total, dest };
+  let dest, params;
+  if (kind === 'builder') {
+    const ctx = builderCtx();
+    dest = ctx.dest;
+    // Čuvamo CEO izbor iz buildera (builderState) da bi server kasnije
+    // mogao da rekonstruiše IDENTIČAN paket i uporedi cenu — bez ovoga
+    // ne bi imao dovoljno informacija (builder ima mnogo više opcija
+    // od gotove ponude: tip leta, zvezdice hotela, tip auta...).
+    params = { kind:'builder', dest: ctx.dest, nights: ctx.nights, days: ctx.days, adults: ctx.adults, sel: builderState };
+  } else {
+    const isSurprise = !!destOverride;
+    const ctx = isSurprise ? window._lastSurpriseCtx : window._lastSearchCtx;
+    dest = destOverride || (window._lastSearchCtx && window._lastSearchCtx.dest) || document.getElementById('dest').value.trim() || 'Atina';
+    params = ctx ? { kind:'search', dest, tier, nights: ctx.nights, adults: Number(ctx.adults), flags: ctx.flags } : null;
+  }
+  _pendingAlert = { kind, tier, currentTotal: total, dest, params };
   document.getElementById('alertModalSub').textContent = 'Za ' + dest + ' — trenutna procena je ' + fmtEUR(total) + '.';
   document.getElementById('alertEmail').value = '';
   document.getElementById('alertThreshold').value = Math.max(1, Math.round(total * 0.9));
@@ -2365,27 +2418,39 @@ document.getElementById('alertBuilderBtn').addEventListener('click', () => {
 document.getElementById('alertModalSubmit').addEventListener('click', async () => {
   const email = document.getElementById('alertEmail').value.trim();
   const threshold = Number(document.getElementById('alertThreshold').value);
+  const submitBtn = document.getElementById('alertModalSubmit');
   if (!email || !email.includes('@')){ showToast('Unesi ispravnu email adresu.'); return; }
   if (!threshold || threshold <= 0){ showToast('Unesi ispravan iznos.'); return; }
   if (!_pendingAlert){ closeAlertModal(); return; }
 
-  if (sb) {
-    try {
-      const { error } = await sb.from('price_alerts').insert({
-        email,
-        dest: _pendingAlert.dest,
-        kind: _pendingAlert.kind,
-        tier: _pendingAlert.tier,
-        threshold,
-        current_total: _pendingAlert.currentTotal
-      });
-      if (error) throw error;
-    } catch(err) {
-      console.warn('[skoknica] čuvanje alerta nije uspelo (tabela price_alerts možda ne postoji):', err.message);
-    }
+  if (!sb) {
+    showToast('Alerti trenutno nisu dostupni — pokušaj kasnije.');
+    return;
   }
-  closeAlertModal();
-  showToast('Javićemo ti na ' + email + ' kad cena za ' + _pendingAlert.dest + ' padne ispod ' + fmtEUR(threshold) + '.');
+
+  submitBtn.disabled = true;
+  const originalLabel = submitBtn.textContent;
+  submitBtn.textContent = '…';
+  try {
+    const { error } = await sb.from('price_alerts').insert({
+      email,
+      dest: _pendingAlert.dest,
+      kind: _pendingAlert.kind,
+      tier: _pendingAlert.tier,
+      threshold,
+      current_total: _pendingAlert.currentTotal,
+      params: _pendingAlert.params
+    });
+    if (error) throw error;
+    closeAlertModal();
+    showToast('Javićemo ti na ' + email + ' kad cena za ' + _pendingAlert.dest + ' padne ispod ' + fmtEUR(threshold) + '.');
+  } catch(err) {
+    console.warn('[skoknica] čuvanje alerta nije uspelo:', err.message);
+    showToast('Postavljanje alerta nije uspelo — pokušaj ponovo.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+  }
 });
 
 /* ==========================================================
