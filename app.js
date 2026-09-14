@@ -1060,22 +1060,36 @@ const SCHENGEN_COUNTRIES = new Set([
   'Holandija','Poljska','Portugalija','Slovačka','Slovenija','Španija','Švedska',
   'Island','Lihtenštajn','Norveška','Švajcarska'
 ]);
-function getPassportRule(country){
+/* Zemlje van Šengena za koje je državljanima Srbije i dalje potrebna PRAVA VIZA
+   (ne samo pasoš) — ovo je veći problem od važenja pasoša jer traži prijavu,
+   dokumenta i nedelje čekanja, pa se ističe posebno, pre pravila o pasošu. */
+const VISA_REQUIRED_NOTES = {
+  'Velika Britanija':'Državljanima Srbije je potrebna prava viza za Veliku Britaniju (uključujući London i tranzit bez izlaska iz aerodroma) — ovo nije samo provera pasoša. Standardna turistička viza obično se obrađuje oko 3 nedelje, pa prijavu treba podneti mnogo pre kupovine nepovratnih karata.',
+  'Irska':'Državljanima Srbije je potrebna prava viza za Irsku — stara pogodnost putovanja preko britanske vize je ukinuta 2020. i nije vraćena. Prijavu za vizu treba podneti mnogo pre kupovine nepovratnih karata.'
+};
+function getPassportRule(country, destVal){
   const c = (country || '').trim();
+  const fallbackName = (destVal || '').trim();
+  const visaNote = VISA_REQUIRED_NOTES[c] || null;
+  let base;
   if (SCHENGEN_COUNTRIES.has(c)){
-    return {basis:'to', months:3, days:null, label:c || 'Šengen zona', confident:true,
+    base = {basis:'to', months:3, days:null, label:c || 'Šengen zona', confident:true,
       why:'Za Šengen zonu pasoš mora da važi još najmanje 3 meseca nakon planiranog datuma povratka.'};
-  }
-  if (c === 'Turska'){
-    return {basis:'from', months:null, days:150, label:'Turska', confident:true,
+  } else if (c === 'Turska'){
+    base = {basis:'from', months:null, days:150, label:'Turska', confident:true,
       why:'Za Tursku pasoš mora da važi još najmanje 150 dana (cca 5 meseci) od datuma ulaska u zemlju.'};
-  }
-  if (c === 'Egipat' || c === 'Tunis'){
-    return {basis:'to', months:6, days:null, label:c, confident:true,
+  } else if (c === 'Egipat' || c === 'Tunis'){
+    base = {basis:'to', months:6, days:null, label:c, confident:true,
       why:'Za ' + c + ' pasoš mora da važi još najmanje 6 meseci nakon planiranog datuma povratka.'};
+  } else {
+    const shownName = c || fallbackName || 'ova destinacija';
+    base = {basis:'to', months:6, days:null, label:shownName, confident: !!visaNote,
+      why: visaNote
+        ? 'Uz vizu, pasoš uglavnom mora da važi još najmanje 6 meseci nakon planiranog datuma povratka — konkretan rok proverava ambasada prilikom obrade vize.'
+        : 'Ne znamo tačnu zemlju za „' + shownName + '“, pa nemamo potvrđeno pravilo — mnoge zemlje van Šengena traže važenje pasoša još 6 meseci nakon povratka, ali ovo obavezno proveri kod ambasade/aviokompanije jer se pravilo razlikuje po zemlji.'};
   }
-  return {basis:'to', months:6, days:null, label:c || 'ova destinacija', confident:false,
-    why:'Nemamo potvrđeno pravilo za destinaciju „' + (c || 'ova destinacija') + '“ — mnoge zemlje van Šengena traže važenje pasoša još 6 meseci nakon povratka, ali ovo obavezno proveri kod ambasade/aviokompanije jer se pravilo razlikuje po zemlji.'};
+  base.visaNote = visaNote;
+  return base;
 }
 function resolveCountryForDestination(destValue){
   if (!destValue || !destValue.trim()) return '';
@@ -2691,9 +2705,12 @@ function openPassportModal(){
   if (expiryInput) expiryInput.disabled = false;
   if (submitBtn) submitBtn.disabled = false;
   const country = resolveCountryForDestination(destVal);
-  const rule = getPassportRule(country);
+  const rule = getPassportRule(country, destVal);
   if (box){
-    box.innerHTML = '<div class="passport-rule-box">'
+    box.innerHTML = (rule.visaNote
+        ? '<div class="passport-visa-box">🛂❗ <b>Potrebna je viza</b><br>' + escapeHtml(rule.visaNote) + '</div>'
+        : '')
+      + '<div class="passport-rule-box">'
       + '<b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b>'
       + '<br>' + escapeHtml(rule.why)
       + (rule.confident ? '' : '<br><span style="opacity:0.75">(opšte pravilo, ne potvrđeno za ovu zemlju)</span>')
@@ -2725,7 +2742,7 @@ function runPassportCheck(){
     return;
   }
   const country = resolveCountryForDestination(destVal);
-  const rule = getPassportRule(country);
+  const rule = getPassportRule(country, destVal);
   const fromISO = (document.getElementById('dateFrom') || {}).value;
   const toISO = (document.getElementById('dateTo') || {}).value;
   const basisISO = rule.basis === 'from' ? fromISO : toISO;

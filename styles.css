@@ -975,6 +975,10 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     background:var(--paper);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
 }
+.passport-visa-box{
+    background:rgba(190,70,50,0.08);border:1px solid rgba(190,70,50,0.3);border-radius:8px;
+    padding:12px 14px;font-size:13.5px;color:#8A3420;line-height:1.5;margin-bottom:10px;
+}
 .passport-rule-box b{color:var(--ink);}
 .passport-result{
     margin-top:14px;padding:14px;border-radius:8px;font-size:14px;line-height:1.5;
