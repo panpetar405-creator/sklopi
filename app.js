@@ -46,6 +46,7 @@ const I18N = {
     eyebrow_content_control:'Kontrola sadržaja', h2_content_control:'Sam odredi šta ti odgovara',
     control_teaser_sub:'Sam biraš let, hotel, prevoz, aktivnosti, osiguranje i eSIM — cena se sabira uživo.',
     ct_cta:'Otvori builder',
+    btn_choose:'Odaberi',
     builder_addons_label:'Dodaci',
     eyebrow_features:'Sve uključeno',
     builder_flight_label:'Let', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'Određena kompanija',
@@ -140,6 +141,7 @@ const I18N = {
     eyebrow_content_control:'Content control', h2_content_control:'Decide what works for you',
     control_teaser_sub:'Choose the flight, hotel, transport, activities, insurance and eSIM — the price adds up live.',
     ct_cta:'Open builder',
+    btn_choose:'Choose',
     builder_addons_label:'Add-ons',
     eyebrow_features:'All included',
     sub_build_own:'You choose the flight, stay, car and activities — we add up how much it all costs together.',
@@ -1723,6 +1725,10 @@ document.getElementById('controlTeaserBtn').addEventListener('click', ()=>{
     openControlPanel();
     document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
   }
+});
+document.getElementById('controlTeaserSelectBtn').addEventListener('click', ()=>{
+  openControlPanel();
+  document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
 });
 
 function builderCtx(){
