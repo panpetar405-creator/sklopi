@@ -183,7 +183,7 @@ a{color:inherit;}
     box-shadow:0 24px 60px -20px rgba(0,0,0,0.35);
     position:relative;
     display:grid;
-    grid-template-columns:0.7fr 1fr 1fr 1fr auto;
+    grid-template-columns:0.7fr 1fr 1fr 1fr 1.3fr;
     align-items:end;
 }
 .ticket::before,.ticket::after{
@@ -967,11 +967,24 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .alert-modal-row{margin-bottom:14px;}
 .alert-modal-row label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:7px;}
 .alert-modal-disclaimer{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:12px 0 0;}
-.passport-check-link{
-    display:inline-block;background:none;border:none;padding:0;margin-top:10px;
-    font-size:12.5px;color:var(--gold-text);text-decoration:underline;text-underline-offset:3px;
-    cursor:pointer;font-family:inherit;
+.passport-check-btn{
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    width:100%;height:100%;gap:2px;
+    background:var(--gold-soft);border:none;border-radius:12px;
+    color:var(--gold-text);font-family:'Work Sans',sans-serif;font-weight:600;
+    font-size:18px;line-height:1.35;padding:16px 18px;cursor:pointer;
+    transition:background .2s ease, transform .2s ease;
 }
+.passport-check-btn:hover{background:var(--gold);transform:translateY(-2px);}
+.passport-check-btn:active{transform:translateY(0);}
+/* ---------- Glavno dugme pretrage, spušteno ispod ticket-a ---------- */
+.ticket-submit-row{
+    position:relative;z-index:2;
+    display:flex;justify-content:center;
+    margin:90px 0 20px;
+}
+.btn-search-main{width:100%;max-width:420px;justify-content:center;padding:16px 8px 16px 32px;font-size:17px;}
+.btn-search-main::after{width:46px;height:46px;font-size:18px;}
 .passport-rule-box{
     background:var(--paper);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
@@ -1121,7 +1134,10 @@ footer{
 .hero-inner > p.lede{order:2;}
 .hero-inner > .transport-row{order:3;}
 .hero-inner > form.ticket{order:4;}
+.hero-inner > .ticket-submit-row{order:5;}
 .hero-inner > .hero-spacer{order:6;}
+.ticket-submit-row{margin:20px 0 16px;}
+.btn-search-main{max-width:none;}
 .ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:20px;}
 .ticket .stub{border-right:none;border-bottom:1px dashed var(--line-form);}
 .ticket .stub:last-of-type{border-bottom:none;}

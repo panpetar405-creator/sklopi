@@ -92,7 +92,6 @@ Skoknica<em>.</em>
 <label for="dest" data-i18n="label_dest">Destinacija</label>
 <input id="dest" type="text" value="" data-i18n-placeholder="placeholder_dest" placeholder="npr. Atina, Rim, Barselona" required maxlength="60" list="destSuggestions" autocomplete="off">
 <datalist id="destSuggestions"></datalist>
-<button type="button" class="passport-check-link" id="passportCheckBtn" data-i18n="passport_check_link">🛂 Proveri da li ti pasoš važi za ovaj put</button>
 </div>
 <div class="stub stub-dates" id="dateStub">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
@@ -139,9 +138,12 @@ Skoknica<em>.</em>
 </select>
 </div>
 <div class="go">
-<button type="submit" class="btn-primary" data-i18n="btn_search">Pronađi najbolje putovanje</button>
+<button type="button" class="passport-check-btn" id="passportCheckBtn" data-i18n="passport_check_link">🛂 Proveri da li ti pasoš važi za ovaj put</button>
 </div>
 </form>
+<div class="ticket-submit-row">
+<button type="submit" form="searchForm" class="btn-primary btn-search-main" data-i18n="btn_search">Pronađi najbolje putovanje</button>
+</div>
 <div class="transport-row">
 <label class="toggle" data-t="flight">
 <input type="checkbox">
