@@ -568,6 +568,25 @@ function pickBestLocationMatch(results, query){
     paintWeather();
   }
 
+  const isMobileCal = () => window.matchMedia('(max-width:760px)').matches;
+  let calScrollY = 0;
+  function lockPageScroll(){
+    calScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + calScrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+  function unlockPageScroll(){
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, calScrollY);
+  }
+
   function openCal(){
     viewYear = today.getFullYear();
     viewMonth = today.getMonth();
@@ -575,11 +594,13 @@ function pickBestLocationMatch(results, query){
     calCard.classList.add('open');
     if (calBackdrop) calBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
+    if (isMobileCal()) lockPageScroll();
   }
   function closeCal(shouldCommit){
     calCard.classList.remove('open');
     if (calBackdrop) calBackdrop.classList.remove('open');
     displayBtn.setAttribute('aria-expanded', 'false');
+    if (document.body.style.position === 'fixed') unlockPageScroll();
     if (shouldCommit && selStart && selEnd){
       commit();
     } else if (!selStart || !selEnd){
