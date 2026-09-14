@@ -170,10 +170,18 @@ Skoknica<em>.</em>
 </div>
 <div class="section builder-wrap">
 <div class="section-head">
-<div class="eyebrow" data-i18n="eyebrow_more_control">Više kontrole</div>
-<h2 data-i18n="h2_build_own">Napravi svoj aranžman</h2>
+<div class="eyebrow" data-i18n="eyebrow_content_control">Kontrola sadržaja</div>
+<h2 data-i18n="h2_content_control">Sam odredi šta ti odgovara</h2>
 </div>
-<div class="builder">
+<button type="button" class="control-teaser" id="controlTeaserBtn" aria-expanded="false" aria-controls="builderPanel">
+<span class="ct-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M17 7h3M4 17h3M10 17h10"/><circle cx="14" cy="7" r="2.4"/><circle cx="7" cy="17" r="2.4"/></svg></span>
+<span class="ct-body">
+<span class="ct-title" data-i18n="h2_build_own">Želiš više kontrole?</span>
+<span class="ct-sub" data-i18n="control_teaser_sub">Sam biraš let, hotel, prevoz, aktivnosti, osiguranje i eSIM — cena se sabira uživo.</span>
+</span>
+<span class="ct-arrow">→</span>
+</button>
+<div class="builder" id="builderPanel" style="display:none;">
 <div class="builder-form">
 <div class="builder-group">
 <label class="builder-label"><span class="builder-ic ic-flight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></span> <span data-i18n="builder_flight_label">Let</span></label>
@@ -216,6 +224,13 @@ Skoknica<em>.</em>
 <label class="builder-label"><span class="builder-ic ic-budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.3 9.6c0-1.2 1.1-2.1 2.7-2.1s2.7.8 2.7 1.9-1.2 1.6-2.5 1.9c-1.4.3-2.7.8-2.7 1.9s1.2 1.9 2.7 1.9 2.7-.7 2.7-1.9M12 6.3v1.2M12 16.5v1.2"/></svg></span> <span data-i18n-html="builder_budget_label_html">Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></span></label>
 <div class="builder-budget-row">
 <span>€</span><input type="number" id="budgetInput" class="builder-input" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
+</div>
+</div>
+<div class="builder-group" style="border-bottom:none;">
+<label class="builder-label"><span class="builder-ic ic-addons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span> <span data-i18n="builder_addons_label">Dodaci</span></label>
+<div class="chip-row secondary">
+<button type="button" class="chip toggle-chip" data-toggle="insurance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/></svg><span data-i18n="f_insurance_name">Osiguranje</span></button>
+<button type="button" class="chip toggle-chip" data-toggle="esim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8.5a8.5 8.5 0 0112 0M8.7 11.2a4.7 4.7 0 016.6 0M11.4 13.9a1 1 0 011.2 0"/><circle cx="12" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg><span>eSIM</span></button>
 </div>
 </div>
 <button type="button" class="btn-primary" id="makeBuilderBtn" style="margin:6px 0 22px;width:100%;" data-i18n="btn_make_arrangement">Napravi aranžman</button>

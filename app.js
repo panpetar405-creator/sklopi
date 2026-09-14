@@ -32,6 +32,9 @@ const I18N = {
     btn_no_idea_cta:'🎲 Iznenadi me',
     eyebrow_more_control:'Više kontrole', h2_build_own:'Želiš više kontrole?',
     sub_build_own:'Biraš let, smeštaj, auto i aktivnosti — mi računamo koliko sve zajedno košta.',
+    eyebrow_content_control:'Kontrola sadržaja', h2_content_control:'Sam odredi šta ti odgovara',
+    control_teaser_sub:'Sam biraš let, hotel, prevoz, aktivnosti, osiguranje i eSIM — cena se sabira uživo.',
+    builder_addons_label:'Dodaci',
     eyebrow_features:'Sve uključeno',
     builder_flight_label:'Let', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'Određena kompanija',
     placeholder_airline:'npr. Lufthansa',
@@ -122,6 +125,9 @@ const I18N = {
     eyebrow_no_idea:'No plan yet', h2_no_idea:'Not sure where to go?', sub_no_idea:'Tell us how much you want to spend, and we’ll find destinations that fit.',
     btn_no_idea_cta:'🎲 Surprise me',
     eyebrow_more_control:'More control', h2_build_own:'Want more control?',
+    eyebrow_content_control:'Content control', h2_content_control:'Decide what works for you',
+    control_teaser_sub:'Choose the flight, hotel, transport, activities, insurance and eSIM — the price adds up live.',
+    builder_addons_label:'Add-ons',
     eyebrow_features:'All included',
     sub_build_own:'You choose the flight, stay, car and activities — we add up how much it all costs together.',
     builder_flight_label:'Flight', chip_direct:'Direct', chip_cheapest:'Cheapest', chip_airline:'Specific airline',
@@ -1233,9 +1239,12 @@ function pkgHtml(pkg){
       const extraTiles = [
         pkg.activity ? `<div class="extra activity-extra">${iconSvg('activity')}<div><div class="lab">${escapeHtml(pkg.activity.name.split(' — ')[0])}</div><div class="val tabular">${fmtEUR(pkg.activity.price)}</div></div><button class="extra-btn" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(pkg.activity.bookUrl||'')}" onclick="bookItem(this)">Viator</button></div>` : '',
         pkg.car ? `<div class="extra fuel-extra">${iconSvg('fuel')}<div><div class="lab">${t('fuel_estimate')}</div><div class="val tabular">${fmtEUR(pkg.fuel)}</div></div></div>` : '',
-        pkg.car ? `<div class="extra tolls-extra">${iconSvg('tolls')}<div><div class="lab">${t('tolls_estimate')}</div><div class="val tabular">${fmtEUR(pkg.tolls)}</div></div></div>` : '',
-        `<label class="extra insurance-extra addon-extra">${iconSvg('insurance')}<div><div class="lab">${t('insurance')}</div><div class="val tabular">+${fmtEUR(pkg.insuranceCost)}</div></div><input type="checkbox" class="addon-checkbox" data-price="${pkg.insuranceCost}" onchange="toggleAddon(this)"></label>`,
-        `<div class="extra esim-extra addon-extra"><label class="addon-label"><input type="checkbox" class="addon-checkbox" data-price="${pkg.esimCost}" onchange="toggleAddon(this)">${iconSvg('esim')}<div><div class="lab">${t('esim_internet')}</div><div class="val tabular">+${fmtEUR(pkg.esimCost)}</div></div></label><button type="button" class="extra-btn" data-kind="esim" data-price="${pkg.esimCost}" data-url="${escapeHtml(pkg.esimBookUrl||'')}" onclick="bookItem(this)">Airalo</button></div>`
+        pkg.car ? `<div class="extra tolls-extra">${iconSvg('tolls')}<div><div class="lab">${t('tolls_estimate')}</div><div class="val tabular">${fmtEUR(pkg.tolls)}</div></div></div>` : ''
+        // Osiguranje i eSIM dodaci su uklonjeni sa ovih kartica — sad se
+        // biraju u sekciji "Kontrola sadržaja" (builder), da kartice
+        // ponude ostanu pregledne. pkg.insuranceCost/esimCost i dalje
+        // postoje u pkg objektu (koristi ih builder), samo se ovde ne
+        // renderuju.
       ].filter(Boolean).join('');
       return extraTiles ? `<div class="extras-row">${extraTiles}</div>` : '';
     })()}
@@ -1586,6 +1595,7 @@ document.getElementById('searchForm').addEventListener('submit', function(e){
 // kasnije u builderState) ne bi dobilo fallback — ostalo bi kakvo je bilo
 // pre poziva (stanje iz prethodno učitanog aranžmana ili undefined), što bi
 // computeCustomPackage moglo da pretvori u NaN cene.
+const BUILDER_ADDON_RATES = { insurance: 18, esim: 9 }; // po osobi
 const BUILDER_DEFAULTS = {
   flightPref: 'direct',
   airlineName: '',
@@ -1594,9 +1604,31 @@ const BUILDER_DEFAULTS = {
   prioritizeLocation: false,
   carPref: 'small',
   activityCount: 2,
+  insurance: false,
+  esim: false,
   budget: null
 };
 const builderState = Object.assign({}, BUILDER_DEFAULTS);
+
+// Teaser kartica "Želiš više kontrole?" — panel je zatvoren po default-u
+// (vidi style="display:none" na #builderPanel u HTML-u) da hero+ova
+// sekcija ne deluju pretrpano; klik otvara/zatvara ceo builder.
+function openControlPanel(){
+  document.getElementById('controlTeaserBtn').setAttribute('aria-expanded', 'true');
+  document.getElementById('builderPanel').style.display = 'grid';
+}
+function closeControlPanel(){
+  document.getElementById('controlTeaserBtn').setAttribute('aria-expanded', 'false');
+  document.getElementById('builderPanel').style.display = 'none';
+}
+document.getElementById('controlTeaserBtn').addEventListener('click', ()=>{
+  const isOpen = document.getElementById('controlTeaserBtn').getAttribute('aria-expanded') === 'true';
+  if (isOpen){ closeControlPanel(); }
+  else {
+    openControlPanel();
+    document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+});
 
 function builderCtx(){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
@@ -1668,7 +1700,17 @@ function computeCustomPackage(sel, ctx){
   // --- Taksa za rezervaciju ---
   const bookingFee = Math.round(10 + rng()*10);
 
-  const total = flightPrice + hotelPrice + carPrice + activityPrice + carExtras + bookingFee;
+  // --- Osiguranje i eSIM (dodaci, cena po osobi) ---
+  // NAPOMENA: namerno NE koristi rng() — ovo su uključi/isključi dodaci
+  // (vidi .toggle-chip[data-toggle="insurance"/"esim"]), i pošto nisu deo
+  // seedSel, uzimanje rng() ovde bi pomerilo redosled poziva za sve
+  // random vrednosti iznad svaki put kad se dodatak uključi/isključi —
+  // isti problem opisan gore za airlineName. Fiksna cena po osobi rešava
+  // to i drži ostatak paketa stabilnim.
+  const insuranceCost = sel.insurance ? BUILDER_ADDON_RATES.insurance * ctx.adults : 0;
+  const esimCost = sel.esim ? BUILDER_ADDON_RATES.esim * ctx.adults : 0;
+
+  const total = flightPrice + hotelPrice + carPrice + activityPrice + carExtras + bookingFee + insuranceCost + esimCost;
 
   return {
     flight: {price:flightPrice, name:flightName, sub:flightSub},
@@ -1677,6 +1719,7 @@ function computeCustomPackage(sel, ctx){
     activity: {price:activityPrice, count:sel.activityCount},
     carExtras: {price:carExtras},
     bookingFee: {price:bookingFee},
+    insuranceCost, esimCost,
     total
   };
 }
@@ -1694,6 +1737,8 @@ function renderBuilder(){
   if (builderState.activityCount > 0) rows.push(['🎟️', 'Aktivnosti', pkg.activity.price]);
   if (pkg.carExtras.price > 0) rows.push(['⛽', 'Gorivo i putarine', pkg.carExtras.price]);
   rows.push(['🧾', 'Taksa za rezervaciju', pkg.bookingFee.price]);
+  if (builderState.insurance) rows.push(['🛡️', t('f_insurance_name'), pkg.insuranceCost]);
+  if (builderState.esim) rows.push(['📶', 'eSIM', pkg.esimCost]);
 
   lines.innerHTML = rows.map(([ic,name,price]) => `
     <div class="builder-line">
@@ -2230,6 +2275,7 @@ function loadSavedTrip(tripId){
     renderBuilder();
     document.getElementById('builderSummary').style.display = 'block';
     document.getElementById('builderPlaceholder').style.display = 'none';
+    openControlPanel();
     document.querySelector('.builder-wrap').scrollIntoView({behavior:'smooth', block:'start'});
   } else {
     document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
