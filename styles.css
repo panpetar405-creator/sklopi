@@ -1096,7 +1096,14 @@ footer{
 @keyframes sp{to{transform:rotate(360deg);}}
 @media (max-width:760px){
 .topbar,.hero,.section{padding-left:20px;padding-right:20px;}
-.ticket{grid-template-columns:1fr;margin-bottom:20px;}
+.hero-inner{display:flex;flex-direction:column;}
+.hero-inner > h1{order:1;}
+.hero-inner > p.lede{order:2;}
+.hero-inner > .transport-row{order:3;}
+.hero-inner > form.ticket{order:4;}
+.hero-inner > .surprise-trigger{order:5;}
+.hero-inner > .hero-spacer{order:6;}
+.ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:20px;}
 .ticket .stub{border-right:none;border-bottom:1px dashed var(--line-form);}
 .ticket .stub:last-of-type{border-bottom:none;}
 .ticket .go{padding:18px 24px 24px;}
