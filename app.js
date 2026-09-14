@@ -85,18 +85,18 @@ const I18N = {
     eyebrow_faq:'Pitanja', h2_faq:'Pre nego što rezervišeš',
     sub_faq:'Odgovori na najčešća pitanja o cenama, rezervaciji i promenama.',
     faq_q1:'Da li su prikazane cene stvarne?',
-    faq_a1:'Skoknica je trenutno u razvoju. Cene koje vidiš u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uživo sa sajtova partnera. Pre rezervacije uvek proveri tačnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
+    faq_a1:'Sklopi je trenutno u razvoju. Cene koje vidiš u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uživo sa sajtova partnera. Pre rezervacije uvek proveri tačnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
     faq_q2:'Kako radi builder izleta?',
-    faq_a2:'Sam biraš tip leta, kategoriju hotela, auto i broj aktivnosti, a Skoknica sabira procenjenu cenu za ceo paket. Dugme „Optimizuj moj izlet" predlaže izmenu koja može da smanji cenu uz sličan kvalitet.',
+    faq_a2:'Sam biraš tip leta, kategoriju hotela, auto i broj aktivnosti, a Sklopi sabira procenjenu cenu za ceo paket. Dugme „Optimizuj moj izlet" predlaže izmenu koja može da smanji cenu uz sličan kvalitet.',
     faq_q3:'Kako se čuvaju moji sačuvani izleti?',
     faq_a3:'Napraviš nalog emailom i lozinkom u sekciji sačuvanih izleta. Tvoji podaci se čuvaju vezano za tvoj nalog, ne za ovaj uređaj, tako da im možeš pristupiti i sa drugog telefona ili računara — samo se prijavi istim emailom i lozinkom.',
-    faq_q4:'Da li Skoknica naplaćuje rezervaciju?',
-    faq_a4:'Ne. Skoknica ne naplaćuje ništa direktno — klikom na „Rezerviši" ili „Pretraži" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.',
+    faq_q4:'Da li Sklopi naplaćuje rezervaciju?',
+    faq_a4:'Ne. Sklopi ne naplaćuje ništa direktno — klikom na „Rezerviši" ili „Pretraži" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.',
     faq_q5:'Imaš pitanje koje nije ovde?',
     faq_a5:'Piši na <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — rado odgovaramo.',
     stat_searches:'pretraga', stat_clicks:'klikova na ponude', stat_last:'poslednja destinacija',
     footer_contact:'Kontakt', footer_privacy:'Privatnost', footer_terms:'Uslovi', footer_cookies:'Kolačići',
-    foot_note:'Skoknica — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a>',
+    foot_note:'Sklopi — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a>',
     cookie_text:'<b>Koristimo kolačiće za analitiku</b> (Google Analytics) da bismo razumeli kako se sajt koristi i unapredili ga. Ne koristimo ih za marketing niti ih delimo van Google-a. Detalji u <a href="kolacici.html">Politici kolačića</a>.',
     cookie_decline:'Odbijam', cookie_accept:'Prihvatam',
     aria_close:'Zatvori', label_email:'Email',
@@ -187,18 +187,18 @@ const I18N = {
     eyebrow_faq:'Questions', h2_faq:'Before you book',
     sub_faq:'Answers to the most common questions about prices, booking and changes.',
     faq_q1:'Are the prices shown real?',
-    faq_a1:'Skoknica is currently in development. Prices you see in search and the builder are an illustrative estimate, generated for demonstration, and don’t come live from partner sites. Always check the exact price and availability directly with the partner (KAYAK, Booking.com, Viator) before booking.',
+    faq_a1:'Sklopi is currently in development. Prices you see in search and the builder are an illustrative estimate, generated for demonstration, and don’t come live from partner sites. Always check the exact price and availability directly with the partner (KAYAK, Booking.com, Viator) before booking.',
     faq_q2:'How does the trip builder work?',
-    faq_a2:'You choose the flight type, hotel category, car and number of activities yourself, and Skoknica adds up an estimated price for the whole package. The “Optimize my trip” button suggests a change that can lower the price with similar quality.',
+    faq_a2:'You choose the flight type, hotel category, car and number of activities yourself, and Sklopi adds up an estimated price for the whole package. The “Optimize my trip” button suggests a change that can lower the price with similar quality.',
     faq_q3:'How are my saved trips stored?',
     faq_a3:'You create an account with an email and password in the “Saved trips” section. Your data is tied to your account, not this device, so you can access it from another phone or computer too — just log in with the same email and password.',
-    faq_q4:'Does Skoknica charge for booking?',
-    faq_a4:'No. Skoknica doesn’t charge anything directly — clicking “Book” or “Search” takes you to the partner’s site (KAYAK, Booking.com or Viator) where the booking and payment happen.',
+    faq_q4:'Does Sklopi charge for booking?',
+    faq_a4:'No. Sklopi doesn’t charge anything directly — clicking “Book” or “Search” takes you to the partner’s site (KAYAK, Booking.com or Viator) where the booking and payment happen.',
     faq_q5:'Have a question that’s not here?',
     faq_a5:'Write to <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — we’re happy to help.',
     stat_searches:'searches', stat_clicks:'clicks on offers', stat_last:'last destination',
     footer_contact:'Contact', footer_privacy:'Privacy', footer_terms:'Terms', footer_cookies:'Cookies',
-    foot_note:'Skoknica — a product prototype in development. Prices shown are illustrative (simulated for demonstration), don’t come live from partners, and don’t represent a real offer or price commitment. · <a href="#" id="cookieSettingsLink">Cookie settings</a>',
+    foot_note:'Sklopi — a product prototype in development. Prices shown are illustrative (simulated for demonstration), don’t come live from partners, and don’t represent a real offer or price commitment. · <a href="#" id="cookieSettingsLink">Cookie settings</a>',
     cookie_text:'<b>We use cookies for analytics</b> (Google Analytics) to understand how the site is used and improve it. We don’t use them for marketing or share them beyond Google. Details in the <a href="kolacici.html">Cookie Policy</a>.',
     cookie_decline:'Decline', cookie_accept:'Accept',
     aria_close:'Close', label_email:'Email',
@@ -239,11 +239,11 @@ function applyStaticI18n(){
   const btn = document.getElementById('langSwitchBtn');
   if (btn) btn.style.display = 'none'; // Engleski isključen — dugme za promenu jezika je sklonjeno
   const titleEl = document.querySelector('title');
-  if (titleEl) titleEl.textContent = lang === 'sr' ? 'Skoknica — ceo izlet, jedna cena' : 'Skoknica — one whole trip, one price';
+  if (titleEl) titleEl.textContent = lang === 'sr' ? 'Sklopi — ceo izlet, jedna cena' : 'Sklopi — one whole trip, one price';
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', lang === 'sr'
-    ? 'Skoknica pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.'
-    : 'Skoknica finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.');
+    ? 'Sklopi pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.'
+    : 'Sklopi finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.');
 }
 function setLang(lang){
   localStorage.setItem('skoknica_lang', lang === 'en' ? 'en' : 'sr');
@@ -715,7 +715,7 @@ const PARTNERS = {
 };
 
 /* ---- Airalo prodaje eSIM po DRŽAVI, ne po gradu (npr. airalo.com/greece-esim),
-   dok Skoknica destinaciju vodi kao grad ("Atina"). Mapiramo preko iste liste
+   dok Sklopi destinaciju vodi kao grad ("Atina"). Mapiramo preko iste liste
    POPULAR_DESTINATIONS koja se već koristi za predloge gradova — svaki unos
    tamo ima "extra" polje sa nazivom države na srpskom, koje ovde prevodimo
    u Airalo-ov URL slug (engleski naziv države, malim slovima, sa crticama).
@@ -1328,7 +1328,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
 
   const body = document.getElementById('resultsBody');
   body.innerHTML = `<div class="packages">${pkgs.map(pkgHtml).join('')}</div>
-    <p class="disclaimer">⚠️ Skoknica je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
+    <p class="disclaimer">⚠️ Sklopi je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
 }
 
 function itemCardHtml(item, kind){
@@ -1339,7 +1339,7 @@ function itemCardHtml(item, kind){
   <div class="item-card ${kind}">
     <div class="item-photo ${kind}">${iconSvg(kind)}</div>
     <div class="item-body">
-      <div class="item-label">${labels[kind]}${item.providerLabel!=='Skoknica' ? `<span class="item-provider">${escapeHtml(item.providerLabel)}</span>` : ''}</div>
+      <div class="item-label">${labels[kind]}${item.providerLabel!=='Sklopi' ? `<span class="item-provider">${escapeHtml(item.providerLabel)}</span>` : ''}</div>
       <div class="item-name">${escapeHtml(item.name)}</div>
       <div class="item-sub">${escapeHtml(item.sub)}</div>
       <div class="item-price tabular">${fmtEUR(item.price)}</div>
@@ -1499,7 +1499,7 @@ function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
   body.innerHTML = `
     <div class="packages">${picks.map((p,i)=>surprisePkgHtml(p, i, budget)).join('')}</div>
     <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
-    <p class="disclaimer">⚠️ Skoknica je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
+    <p class="disclaimer">⚠️ Sklopi je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
   `;
 }
 
@@ -2524,7 +2524,7 @@ document.getElementById('shareModalCopy').addEventListener('click', async () => 
 });
 document.getElementById('shareModalNative').addEventListener('click', async () => {
   try {
-    await navigator.share({ title:'Skoknica — predlog za izlet', url: window._pendingShareLink });
+    await navigator.share({ title:'Sklopi — predlog za izlet', url: window._pendingShareLink });
   } catch(err){ /* korisnik je otkazao deljenje — nema potrebe za toast-om */ }
 });
 
