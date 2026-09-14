@@ -1230,7 +1230,7 @@ function itemCardHtml(item, kind){
       <div class="item-name">${escapeHtml(item.name)}</div>
       <div class="item-sub">${escapeHtml(item.sub)}</div>
       <div class="item-price tabular">${fmtEUR(item.price)}</div>
-      <button class="item-btn ${kind}" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" onclick="bookItem(this)">${btnLabel[kind]}</button>
+      <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" onclick="bookItem(this)">${btnLabel[kind]}</a>
     </div>
   </div>`;
 }
@@ -1264,7 +1264,7 @@ function pkgHtml(pkg){
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     ${(() => {
       const extraTiles = [
-        pkg.activity ? `<div class="extra activity-extra">${iconSvg('activity')}<div><div class="lab">${escapeHtml(pkg.activity.name.split(' — ')[0])}</div><div class="val tabular">${fmtEUR(pkg.activity.price)}</div></div><button class="extra-btn" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(pkg.activity.bookUrl||'')}" onclick="bookItem(this)">Viator</button></div>` : '',
+        pkg.activity ? `<div class="extra activity-extra">${iconSvg('activity')}<div><div class="lab">${escapeHtml(pkg.activity.name.split(' — ')[0])}</div><div class="val tabular">${fmtEUR(pkg.activity.price)}</div></div><a class="extra-btn" href="${escapeHtml(pkg.activity.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(pkg.activity.bookUrl||'')}" onclick="bookItem(this)">Viator</a></div>` : '',
         pkg.car ? `<div class="extra fuel-extra">${iconSvg('fuel')}<div><div class="lab">${t('fuel_estimate')}</div><div class="val tabular">${fmtEUR(pkg.fuel)}</div></div></div>` : '',
         pkg.car ? `<div class="extra tolls-extra">${iconSvg('tolls')}<div><div class="lab">${t('tolls_estimate')}</div><div class="val tabular">${fmtEUR(pkg.tolls)}</div></div></div>` : ''
         // Osiguranje i eSIM dodaci su uklonjeni sa ovih kartica — sad se
@@ -1485,7 +1485,12 @@ function bookItem(btn){
     esim:     'eSIM na Airalo-u'
   };
   showToast('Klik zabeležen za ' + (labels[kind]||kind) + ' (' + fmtEUR(price) + ') · otvaram partnera…');
-  if (url) window.open(url, '_blank', 'noopener');
+  // Napomena: ne pozivamo window.open ovde — <a href target="_blank"> sam
+  // otvara link. Ranije smo ovde imali window.open(url,'_blank','noopener'),
+  // ali JS-generisani popup tabovi znaju da se na mobilnom Chrome-u ne povežu
+  // kako treba sa originalnim tabom, pa dugme "nazad" na partnerskom sajtu
+  // ume da zatvori ceo browser umesto da vrati korisnika na Skoknicu.
+  // Pravi <a> link je pouzdaniji način da se to izbegne.
 }
 
 function showToast(msg){
@@ -1813,14 +1818,14 @@ function renderBuilder(){
     to: document.getElementById('dateTo').value
   });
   const bookBtns = [
-    `<button type="button" class="item-btn flight" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" onclick="bookItem(this)">✈️ KAYAK</button>`,
-    `<button type="button" class="item-btn hotel" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" onclick="bookItem(this)">🏨 Booking.com</button>`
+    `<a class="item-btn flight" href="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" target="_blank" rel="noopener" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" onclick="bookItem(this)">✈️ KAYAK</a>`,
+    `<a class="item-btn hotel" href="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" onclick="bookItem(this)">🏨 Booking.com</a>`
   ];
   if (builderState.carPref !== 'none'){
-    bookBtns.push(`<button type="button" class="item-btn car" data-kind="car" data-price="${pkg.car.price}" data-url="${escapeHtml(buildAffiliateLink('car', linkCtx))}" onclick="bookItem(this)">🚗 Booking.com</button>`);
+    bookBtns.push(`<a class="item-btn car" href="${escapeHtml(buildAffiliateLink('car', linkCtx))}" target="_blank" rel="noopener" data-kind="car" data-price="${pkg.car.price}" data-url="${escapeHtml(buildAffiliateLink('car', linkCtx))}" onclick="bookItem(this)">🚗 Booking.com</a>`);
   }
   if (builderState.activityCount > 0){
-    bookBtns.push(`<button type="button" class="item-btn" style="background:var(--aqua);" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" onclick="bookItem(this)">🎟️ Viator</button>`);
+    bookBtns.push(`<a class="item-btn" style="background:var(--aqua);" href="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" onclick="bookItem(this)">🎟️ Viator</a>`);
   }
   document.getElementById('builderBookLinks').innerHTML =
     '<div class="bbl-label">Rezerviši svaku stavku direktno kod partnera:</div>' +

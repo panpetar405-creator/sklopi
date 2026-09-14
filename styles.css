@@ -597,6 +597,7 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 }
 .item-price{font-size:19px;font-weight:600;margin-top:9px;font-family:'Fraunces',serif;}
 .item-btn{
+    display:block;box-sizing:border-box;text-align:center;text-decoration:none;
     width:100%;margin-top:10px;border:none;border-radius:8px;padding:10px;
     font-family:'Work Sans',sans-serif;font-size:14px;font-weight:600;color:var(--on-dark);cursor:pointer;
     transition:opacity .15s ease;
@@ -624,6 +625,7 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 .extra .lab{font-size:12.5px;color:var(--ink-soft);}
 .extra .val{font-size:15px;font-weight:600;margin-top:1px;}
 .extra-btn{
+    display:inline-block;text-decoration:none;
     margin-left:auto;border:none;background:var(--gold-soft);color:var(--gold-on-soft);
     font-family:'Work Sans',sans-serif;font-size:12.5px;font-weight:700;
     padding:6px 10px;border-radius:12px;cursor:pointer;white-space:nowrap;
