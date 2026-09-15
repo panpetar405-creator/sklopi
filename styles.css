@@ -1029,8 +1029,18 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     display:flex;justify-content:center;
     margin:90px 0 20px;
 }
-.btn-search-main{width:100%;max-width:420px;justify-content:center;padding:16px 8px 16px 32px;font-size:17px;}
-.btn-search-main::after{width:46px;height:46px;font-size:18px;}
+.btn-search-main{
+    width:auto;max-width:none;justify-content:center;
+    padding:6px 6px 6px 28px;font-size:17px;font-weight:700;
+    background:linear-gradient(100deg,#CD9A4C 0%,var(--gold) 100%);
+    color:var(--on-gold);
+    box-shadow:0 14px 28px -12px rgba(184,134,59,0.55);
+}
+.btn-search-main::after{
+    width:46px;height:46px;font-size:18px;
+    background:var(--deep);color:var(--on-dark-strong);
+}
+.btn-search-main:hover::after{background:var(--deep2);}
 .passport-rule-box{
     background:var(--paper);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
