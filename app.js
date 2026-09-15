@@ -791,33 +791,143 @@ function buildAffiliateLink(kind, ctx){
   }
 }
 
-/* Za grad polaska bez aerodroma, vraća STVARNI aerodrom sa kog bi se
-   letelo (isto znanje kao NO_AIRPORT_ORIGINS gore u fajlu — namerno
-   odvojeno, jer ova funkcija mora da radi i kad taj blok još nije
-   izvršen zbog redosleda u fajlu). Za nepoznat/prazan grad vraća null
-   i tada se u kartici uopšte ne prikazuje grad polaska (bez nagađanja). */
-const NO_AIRPORT_ORIGIN_FALLBACK = {
-  'novi sad':'Beograd', 'subotica':'Budimpešta', 'kragujevac':'Beograd',
-  'kraljevo':'Niš', 'novi pazar':'Beograd'
+/* ==========================================================
+   JEDINSTVENA BAZA AERODROMA — gradovi Srbije i regiona koji
+   IMAJU sopstveni aerodrom (hasAirport:true, uz limited:true ako
+   je mreža linija ograničena/sezonska) i gradovi koji NEMAJU
+   sopstveni aerodrom (nearest + note = najbliži pravi aerodrom).
+   Namerno JEDNA baza za oba polja forme (Polazak i Destinacija) —
+   koristi se i za upozorenje dok korisnik kuca, i za sam prikaz
+   ponude (stvarni aerodrom umesto grada koji ga nema). Uredničko
+   geografsko znanje, ne uživo podatak o letovima/linijama.
+   NAPOMENA: obuhvata najpoznatije manje gradove — nije iscrpna
+   lista svakog mesta u regionu.
+========================================================== */
+const AIRPORT_DB = {
+  // --- Srbija: aerodromi ---
+  'beograd': {hasAirport:true},
+  'nis': {hasAirport:true, limited:true},
+  // --- Srbija: bez sopstvenog aerodroma ---
+  'novi sad': {nearest:'Beograd', note:'Novi Sad nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
+  'subotica': {nearest:'Budimpešta', note:'Subotica nema svoj aerodrom — najbliži je Budimpešta (oko 2h30 vožnje), bliže nego Beograd.'},
+  'kragujevac': {nearest:'Beograd', note:'Kragujevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
+  'kraljevo': {nearest:'Niš', note:'Kraljevo nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa za neke pravce.'},
+  'novi pazar': {nearest:'Beograd', note:'Novi Pazar nema svoj aerodrom — najbliži veći izbor letova je Beograd, a Podgorica je bliža za neke pravce.'},
+  'sabac': {nearest:'Beograd', note:'Šabac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
+  'zrenjanin': {nearest:'Beograd', note:'Zrenjanin nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
+  'pancevo': {nearest:'Beograd', note:'Pančevo nema svoj aerodrom — najbliži je Beograd (oko 30 min vožnje).'},
+  'cacak': {nearest:'Beograd', note:'Čačak nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
+  'krusevac': {nearest:'Niš', note:'Kruševac nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
+  'leskovac': {nearest:'Niš', note:'Leskovac nema svoj aerodrom — najbliži je Niš (oko 40 min vožnje).'},
+  'vranje': {nearest:'Niš', note:'Vranje nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
+  'uzice': {nearest:'Beograd', note:'Užice nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje).'},
+  'valjevo': {nearest:'Beograd', note:'Valjevo nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
+  'smederevo': {nearest:'Beograd', note:'Smederevo nema svoj aerodrom — najbliži je Beograd (oko 45 min vožnje).'},
+  'sombor': {nearest:'Beograd', note:'Sombor nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
+  'zajecar': {nearest:'Niš', note:'Zaječar nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).'},
+  'pirot': {nearest:'Niš', note:'Pirot nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
+  'loznica': {nearest:'Beograd', note:'Loznica nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
+  'pozarevac': {nearest:'Beograd', note:'Požarevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
+  'sremska mitrovica': {nearest:'Beograd', note:'Sremska Mitrovica nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
+  'vrsac': {nearest:'Beograd', note:'Vršac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
+  'kikinda': {nearest:'Beograd', note:'Kikinda nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
+  'jagodina': {nearest:'Niš', note:'Jagodina nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa.'},
+  'paracin': {nearest:'Niš', note:'Paraćin nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
+  'bor': {nearest:'Niš', note:'Bor nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).'},
+  'negotin': {nearest:'Niš', note:'Negotin nema svoj aerodrom — najbliži je Niš (oko 2h vožnje).'},
+  'prijepolje': {nearest:'Podgorica', note:'Prijepolje nema svoj aerodrom — najbliži je Podgorica (oko 1h30 vožnje), Beograd je alternativa.'},
+  'priboj': {nearest:'Podgorica', note:'Priboj nema svoj aerodrom — najbliži je Podgorica (oko 1h30 vožnje).'},
+  'sjenica': {nearest:'Beograd', note:'Sjenica nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje), Podgorica je alternativa.'},
+  'prokuplje': {nearest:'Niš', note:'Prokuplje nema svoj aerodrom — najbliži je Niš (oko 40 min vožnje).'},
+  // --- Crna Gora: aerodromi ---
+  'podgorica': {hasAirport:true},
+  'tivat': {hasAirport:true},
+  // --- Crna Gora: bez sopstvenog aerodroma ---
+  'bar': {nearest:'Tivat', note:'Bar nema svoj aerodrom — najbliži je Tivat (oko 40 min vožnje), Podgorica je alternativa (oko 1h).'},
+  'herceg novi': {nearest:'Tivat', note:'Herceg Novi nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).'},
+  'igalo': {nearest:'Tivat', note:'Igalo nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).'},
+  'niksic': {nearest:'Podgorica', note:'Nikšić nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).'},
+  'cetinje': {nearest:'Podgorica', note:'Cetinje nema svoj aerodrom — najbliži je Podgorica (oko 30 min vožnje).'},
+  'ulcinj': {nearest:'Tivat', note:'Ulcinj nema svoj aerodrom — najbliži je Tivat (oko 1h vožnje), Podgorica je alternativa.'},
+  'petrovac': {nearest:'Tivat', note:'Petrovac nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).'},
+  'sutomore': {nearest:'Tivat', note:'Sutomore nema svoj aerodrom — najbliži je Tivat (oko 45 min vožnje).'},
+  'perast': {nearest:'Tivat', note:'Perast nema svoj aerodrom — najbliži je Tivat (oko 20 min vožnje).'},
+  'risan': {nearest:'Tivat', note:'Risan nema svoj aerodrom — najbliži je Tivat (oko 25 min vožnje).'},
+  'kotor': {nearest:'Tivat', note:'Kotor nema svoj aerodrom — najbliži je Tivat (oko 15 min vožnje).'},
+  'kolasin': {nearest:'Podgorica', note:'Kolašin nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).'},
+  'zabljak': {nearest:'Podgorica', note:'Žabljak nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).'},
+  // --- Bosna i Hercegovina: aerodromi ---
+  'sarajevo': {hasAirport:true},
+  'banja luka': {hasAirport:true, limited:true},
+  'tuzla': {hasAirport:true},
+  'mostar': {hasAirport:true},
+  // --- BiH: bez sopstvenog aerodroma ---
+  'zenica': {nearest:'Sarajevo', note:'Zenica nema svoj aerodrom — najbliži je Sarajevo (oko 1h vožnje).'},
+  'prijedor': {nearest:'Banja Luka', note:'Prijedor nema svoj aerodrom — najbliži je Banja Luka (oko 40 min vožnje).'},
+  'bihac': {nearest:'Banja Luka', note:'Bihać nema svoj aerodrom — najbliži je Banja Luka (oko 2h vožnje), Zagreb je alternativa.'},
+  'doboj': {nearest:'Banja Luka', note:'Doboj nema svoj aerodrom — najbliži je Banja Luka (oko 1h vožnje), Sarajevo je alternativa.'},
+  'trebinje': {nearest:'Dubrovnik', note:'Trebinje nema svoj aerodrom — najbliži je Dubrovnik u Hrvatskoj (oko 40 min vožnje).'},
+  'foca': {nearest:'Sarajevo', note:'Foča nema svoj aerodrom — najbliži je Sarajevo (oko 1h30 vožnje).'},
+  // --- Hrvatska: aerodromi ---
+  'zagreb': {hasAirport:true}, 'split': {hasAirport:true}, 'dubrovnik': {hasAirport:true},
+  'zadar': {hasAirport:true}, 'rijeka': {hasAirport:true}, 'pula': {hasAirport:true},
+  'osijek': {hasAirport:true, limited:true},
+  // --- Hrvatska: bez sopstvenog aerodroma ---
+  'sibenik': {nearest:'Split', note:'Šibenik nema svoj aerodrom — najbliži je Split (oko 1h vožnje), Zadar je alternativa.'},
+  'makarska': {nearest:'Split', note:'Makarska nema svoj aerodrom — najbliži je Split (oko 1h vožnje).'},
+  'trogir': {nearest:'Split', note:'Trogir nema svoj aerodrom — aerodrom Split je praktično odmah pored (oko 10 min vožnje).'},
+  'hvar': {nearest:'Split', note:'Hvar nema svoj aerodrom na ostrvu — do njega se stiže trajektom iz Splita, gde je najbliži aerodrom.'},
+  'rovinj': {nearest:'Pula', note:'Rovinj nema svoj aerodrom — najbliži je Pula (oko 40 min vožnje).'},
+  'sisak': {nearest:'Zagreb', note:'Sisak nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).'},
+  'karlovac': {nearest:'Zagreb', note:'Karlovac nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).'},
+  // --- Severna Makedonija ---
+  'skoplje': {hasAirport:true}, 'ohrid': {hasAirport:true, limited:true},
+  'bitola': {nearest:'Ohrid', note:'Bitolj nema svoj aerodrom — najbliži je Ohrid (oko 1h vožnje), Skoplje je alternativa.'},
+  'tetovo': {nearest:'Skoplje', note:'Tetovo nema svoj aerodrom — najbliži je Skoplje (oko 30 min vožnje).'},
+  'kumanovo': {nearest:'Skoplje', note:'Kumanovo nema svoj aerodrom — najbliži je Skoplje (oko 30 min vožnje).'},
+  // --- Kosovo ---
+  'pristina': {hasAirport:true},
+  'prizren': {nearest:'Priština', note:'Prizren nema svoj aerodrom — najbliži je Priština (oko 1h30 vožnje).'},
+  'pec': {nearest:'Priština', note:'Peć nema svoj aerodrom — najbliži je Priština (oko 1h30 vožnje), Podgorica je alternativa.'},
+  // --- Albanija ---
+  'tirana': {hasAirport:true},
+  'skadar': {nearest:'Podgorica', note:'Skadar nema svoj aerodrom — najbliži je Podgorica u Crnoj Gori (oko 1h vožnje), bliže nego Tirana.'},
+  'sarande': {nearest:'Tirana', note:'Sarandë nema svoj aerodrom — najbliži je Tirana (oko 4h vožnje), Krf u Grčkoj je bliža alternativa trajektom.'},
+  // --- Mađarska (relevantno za sever Srbije) ---
+  'budimpesta': {hasAirport:true},
+  'segedin': {nearest:'Budimpešta', note:'Segedin nema svoj aerodrom — najbliži je Budimpešta (oko 2h vožnje).'}
 };
-const LIMITED_NETWORK_ORIGINS = new Set(['nis','banja luka']);
-function realDepartureAirportFor(originRaw){
-  const norm = normalizeSr((originRaw || '').trim());
+/* Nalazi unos u AIRPORT_DB za dati grad (poredi normalizovano ime, dozvoljava
+   da grad bude uneto kao deo dužeg stringa, npr. "Bar, Crna Gora"). Vraća null
+   za nepoznat/prazan grad — tada se ne nagađa ni na jednu ni na drugu stranu. */
+function airportInfoFor(cityRaw){
+  const norm = normalizeSr((cityRaw || '').trim());
   if (!norm) return null;
-  for (const key in NO_AIRPORT_ORIGIN_FALLBACK){
+  for (const key in AIRPORT_DB){
     if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)){
-      return NO_AIRPORT_ORIGIN_FALLBACK[key];
+      return AIRPORT_DB[key];
     }
   }
-  return originRaw.trim();
+  return null;
+}
+/* Za grad POLASKA bez aerodroma, vraća STVARNI aerodrom sa kog bi se letelo.
+   Za nepoznat/prazan grad vraća uneti tekst nepromenjen (bez nagađanja). */
+function realDepartureAirportFor(originRaw){
+  const info = airportInfoFor(originRaw);
+  if (info && !info.hasAirport && info.nearest) return info.nearest;
+  return (originRaw || '').trim();
+}
+/* Za grad DESTINACIJE bez aerodroma, vraća STVARNI aerodrom na koji bi se
+   sletelo (npr. Bar → Tivat). Za nepoznat/prazan grad ili grad koji ima
+   sopstveni aerodrom, vraća uneti tekst nepromenjen. */
+function realArrivalAirportFor(destRaw){
+  const info = airportInfoFor(destRaw);
+  if (info && !info.hasAirport && info.nearest) return info.nearest;
+  return (destRaw || '').trim();
 }
 function isLimitedNetworkOrigin(originRaw){
-  const norm = normalizeSr((originRaw || '').trim());
-  if (!norm) return false;
-  for (const key of LIMITED_NETWORK_ORIGINS){
-    if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)) return true;
-  }
-  return false;
+  const info = airportInfoFor(originRaw);
+  return !!(info && info.hasAirport && info.limited);
 }
 function fetchFlights(rng, dest, adults, tier, originCode){
   const base = 60 + Math.floor(rng()*140);
@@ -827,15 +937,22 @@ function fetchFlights(rng, dest, adults, tier, originCode){
   const carriers = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
   const carrier = (tier==='comfort' ? carriers[carriers.length-1] : carriers[Math.floor(rng()*carriers.length)]);
   const departure = realDepartureAirportFor(originCode);
+  const arrival = realArrivalAirportFor(dest);
   const limitedNetwork = isLimitedNetworkOrigin(originCode);
   let sub = (tier==='comfort' ? 'direktan let, prtljag uključen' : (tier==='budget' ? 'jedan presedanje' : 'direktan let'));
   if (limitedNetwork && sub.includes('direktan let')){
     sub = sub.replace('direktan let', 'let (proveri sezonske/direktne linije)');
   }
+  // Destinacija bez sopstvenog aerodroma (npr. Bar) -> sleće se na najbliži
+  // pravi aerodrom (npr. Tivat), ne na sam grad. Napomena ide u sub, ne u
+  // naziv linije, da kartica ostane čitljiva.
+  if (arrival !== dest.trim() && sub.includes('direktan let')){
+    sub = sub.replace('direktan let', 'let do ' + arrival + ', najbližeg aerodroma');
+  }
   sub += (adults > 1 ? ' · cena za svih ' + adults + ' putnika' : '');
   return {
     provider:p.provider, providerLabel:p.name, type:'flight',
-    name: carrier + (departure ? ' ' + departure : '') + ' → ' + dest,
+    name: carrier + (departure ? ' ' + departure : '') + ' → ' + arrival,
     sub, price, currency:'EUR'
   };
 }
@@ -1911,10 +2028,12 @@ function computeCustomPackage(sel, ctx){
   // stabilna za SVAKI neprazan unos (bilo koje slovo znači "preskoči"),
   // cene se ne pomeraju dok korisnik kuca — samo pri prvom i poslednjem
   // karakteru (prazno ↔ nije prazno), što je prihvatljivo i retko.
+  const builderArrival = realArrivalAirportFor(ctx.dest);
   const flightName = sel.flightPref === 'airline' && sel.airlineName
-    ? sel.airlineName + ' → ' + ctx.dest
-    : carriers[Math.floor(rng()*carriers.length)] + ' → ' + ctx.dest;
-  const flightSub = sel.flightPref === 'cheapest' ? 'jedno presedanje' : 'direktan let';
+    ? sel.airlineName + ' → ' + builderArrival
+    : carriers[Math.floor(rng()*carriers.length)] + ' → ' + builderArrival;
+  const flightSub = (sel.flightPref === 'cheapest' ? 'jedno presedanje' : 'direktan let')
+    + (builderArrival !== ctx.dest.trim() ? ' do ' + builderArrival + ', najbližeg aerodroma' : '');
 
   // --- Hotel ---
   const hotelBasePerNight = {3:36, 4:66, 5:122}[sel.hotelStars] + rng()*22;
@@ -2377,35 +2496,45 @@ if (originInputForRegional){
     renderOriginAirportWarning(originInputForRegional.value);
   }
 }
+let _destAirportTimer = null;
+const destInputForAirport = document.getElementById('dest');
+if (destInputForAirport){
+  destInputForAirport.addEventListener('input', (e) => {
+    clearTimeout(_destAirportTimer);
+    const val = e.target.value;
+    _destAirportTimer = setTimeout(() => renderDestAirportWarning(val), 400);
+  });
+  if (destInputForAirport.value) renderDestAirportWarning(destInputForAirport.value);
+}
 
 /* ==========================================================
-   UPOZORENJE: mesto polaska bez aerodroma — predlaže najbliži
-   pravi aerodrom umesto grada koji ga uopšte nema, direktno u
-   samoj formi za pretragu (ne tek u rezultatima). Uredničko
-   znanje o geografiji, ne uživo podatak.
+   UPOZORENJE: grad bez aerodroma — predlaže najbliži pravi
+   aerodrom umesto grada koji ga uopšte nema, direktno u samoj
+   formi za pretragu (ne tek u rezultatima). Radi na OBA polja
+   (Polazak i Destinacija), nad istom AIRPORT_DB bazom iznad u
+   fajlu. Uredničko znanje o geografiji, ne uživo podatak.
 ========================================================== */
-const NO_AIRPORT_ORIGINS = {
-  'novi sad': { suggest:'Beograd', note:'Novi Sad nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).' },
-  'subotica': { suggest:'Budimpešta', note:'Subotica nema svoj aerodrom — najbliži je Budimpešta (oko 2h30 vožnje), bliže nego Beograd.' },
-  'kragujevac': { suggest:'Beograd', note:'Kragujevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).' },
-  'kraljevo': { suggest:'Niš', note:'Kraljevo nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa za neke pravce.' },
-  'novi pazar': { suggest:'Beograd', note:'Novi Pazar nema svoj aerodrom — najbliži veći izbor letova je Beograd, a Podgorica je bliža za neke pravce.' }
-};
-function renderOriginAirportWarning(originRaw){
-  const box = document.getElementById('originAirportWarning');
+function renderAirportWarning(cityRaw, boxId, inputId){
+  const box = document.getElementById(boxId);
   if (!box) return;
-  const key = matchOriginCityKey(originRaw, NO_AIRPORT_ORIGINS);
-  if (!key){ box.innerHTML = ''; return; }
-  const info = NO_AIRPORT_ORIGINS[key];
+  const info = airportInfoFor(cityRaw);
+  if (!info || info.hasAirport || !info.nearest){ box.innerHTML = ''; return; }
+  const btnId = boxId + 'UseNearestBtn';
   box.innerHTML = '<div class="origin-airport-warning">✈️ ' + escapeHtml(info.note)
-    + '<br><button type="button" id="useNearestAirportBtn">Koristi ' + escapeHtml(info.suggest) + ' umesto</button></div>';
-  const btn = document.getElementById('useNearestAirportBtn');
+    + '<br><button type="button" id="' + btnId + '">Koristi ' + escapeHtml(info.nearest) + ' umesto</button></div>';
+  const btn = document.getElementById(btnId);
   if (btn) btn.addEventListener('click', () => {
-    const originEl = document.getElementById('origin');
-    originEl.value = info.suggest;
-    originEl.dispatchEvent(new Event('input', {bubbles:true}));
+    const inputEl = document.getElementById(inputId);
+    inputEl.value = info.nearest;
+    inputEl.dispatchEvent(new Event('input', {bubbles:true}));
     box.innerHTML = '';
   });
+}
+function renderOriginAirportWarning(originRaw){
+  renderAirportWarning(originRaw, 'originAirportWarning', 'origin');
+}
+function renderDestAirportWarning(destRaw){
+  renderAirportWarning(destRaw, 'destAirportWarning', 'dest');
 }
 
 /* ==========================================================
