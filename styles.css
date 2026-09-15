@@ -415,7 +415,7 @@ a{color:inherit;}
 .toggle .tt-icon svg{width:27px;height:27px;flex:none;}
 .toggle .tt-label{
     font-size:13.5px;font-weight:600;text-align:center;line-height:1.25;
-    color:var(--on-dark-soft);transition:color .2s ease;
+    color:var(--on-dark-soft);transition:color .2s ease;white-space:nowrap;
 }
 .toggle:hover .tt-icon{transform:translateY(-3px);}
 .toggle.on .tt-icon{
@@ -1201,14 +1201,14 @@ footer{
 .hero-inner > form.ticket{order:4;}
 .hero-inner > .ticket-submit-row{order:5;}
 .hero-inner > .hero-spacer{order:6;}
-.ticket-submit-row{margin:20px 0 16px;}
+.ticket-submit-row{margin:24px 0 16px;}
 .btn-search-main{max-width:none;}
 .ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:20px;}
-.ticket .stub{padding:14px 16px;border-right:none;border-bottom:1px dashed var(--line-form);}
+.ticket .stub{padding:20px 16px;border-right:none;border-bottom:1px dashed var(--line-form);}
 .ticket .stub:last-of-type{border-bottom:none;}
 .ticket .stub label{margin-bottom:4px;}
 .ticket .stub input,.ticket .stub select{font-size:17.5px;}
-.ticket .go{padding:12px 16px 16px;}
+.ticket .go{padding:18px 16px 22px;}
 .transport-row{padding:0 4px;transform:none;margin-top:14px;flex-wrap:nowrap;justify-content:space-between;gap:8px;}
 .toggle{width:auto;flex:1;}
 .hero-spacer{height:20px;}
