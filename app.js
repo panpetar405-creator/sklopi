@@ -899,7 +899,12 @@ const AIRPORT_DB = {
 };
 /* Nalazi unos u AIRPORT_DB za dati grad (poredi normalizovano ime, dozvoljava
    da grad bude uneto kao deo dužeg stringa, npr. "Bar, Crna Gora"). Vraća null
-   za nepoznat/prazan grad — tada se ne nagađa ni na jednu ni na drugu stranu. */
+   za nepoznat/prazan grad — tada se ne nagađa ni na jednu ni na drugu stranu.
+   Dodatno: ako korisnik JOŠ KUCA poznat grad (npr. "Suboti" dok kuca
+   "Subotica"), a uneto već NEDVOSMISLENO odgovara tačno jednom gradu u bazi,
+   upozorenje se prikazuje odmah — ne tek kad se doda i poslednje slovo. Kraći
+   unosi koji odgovaraju više gradova (npr. "su" — Subotica i Sutomore) se
+   namerno preskaču dok se ne razdvoje, da ne bi lažno pogodili pogrešan grad. */
 function airportInfoFor(cityRaw){
   const norm = normalizeSr((cityRaw || '').trim());
   if (!norm) return null;
@@ -907,6 +912,10 @@ function airportInfoFor(cityRaw){
     if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)){
       return AIRPORT_DB[key];
     }
+  }
+  if (norm.length >= 4){
+    const candidates = Object.keys(AIRPORT_DB).filter(key => key.startsWith(norm));
+    if (candidates.length === 1) return AIRPORT_DB[candidates[0]];
   }
   return null;
 }
