@@ -26,8 +26,8 @@ const I18N = {
   sr: {
     nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
     aria_account:'Nalog', aria_menu:'Meni',
-    hero_title:'Pronađi svoj <span class="accent">IZLET</span>.',
-    hero_lede:'Let, smeštaj, prevoz i aktivnosti spojeni u jedan plan i jednu ukupnu cenu.',
+    hero_title:'SKLOPI <span class="accent">izlet</span>.',
+    hero_lede:'Letovi, smeštaj i prevoz — u jednoj ceni.',
     label_origin:'Polazak', placeholder_origin:'npr. Beograd, Niš, Podgorica',
     label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
     label_dates:'Od — Do',
@@ -327,29 +327,370 @@ function pickBestLocationMatch(results, query){
 }
 
 (function(){
-  // Native date-picker "Od — Do": otvara instalirani kalendar telefona/browsera.
-  // Sprečava izbor prošlih datuma i datuma povratka pre datuma polaska.
-  const fromEl = document.getElementById('dateFrom');
-  const toEl = document.getElementById('dateTo');
-  if (!fromEl || !toEl) return;
+  const displayBtn = document.getElementById('dateDisplayBtn');
+  const rangeText = document.getElementById('dateDisplayText');
+  const nightsText = document.getElementById('dateNightsText');
+  const hiddenFrom = document.getElementById('dateFrom');
+  const hiddenTo = document.getElementById('dateTo');
+  const calCard = document.getElementById('calCard');
+  const calBackdrop = document.getElementById('calBackdrop');
+  const calMonths = document.getElementById('calMonths');
+  const calGrids = document.getElementById('calGrids');
+  const calRangeLabel = document.getElementById('calRangeLabel');
+  const prevBtn = document.getElementById('calPrev');
+  const nextBtn = document.getElementById('calNext');
+  const applyBtn = document.getElementById('calApply');
+  if (!displayBtn || !calCard) return;
 
-  function todayISO(){
-    const d = new Date();
-    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-    return d.toISOString().slice(0,10);
+  const DAY_NAMES = ['Pon','Uto','Sre','Čet','Pet','Sub','Ned'];
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  function parseISODate(iso){
+    const [y,m,d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d);
   }
+  function toISODate(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function fmtShort(d){
+    return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'short'}).replace('.', '');
+  }
+  function sameDay(a,b){ return !!a && !!b && a.getTime() === b.getTime(); }
+  function nightsCount(a,b){ return Math.max(1, Math.round((b - a) / 86400000)); }
+  function nightsWord(n){ return n === 1 ? t('night') : t('nights'); }
 
-  function syncMin(){
-    const min = todayISO();
-    fromEl.min = min;
-    toEl.min = fromEl.value || min;
-    if (toEl.value && fromEl.value && toEl.value < fromEl.value){
-      toEl.value = fromEl.value;
+  let selStart = parseISODate(hiddenFrom.value);
+  let selEnd = parseISODate(hiddenTo.value);
+  let viewYear = selStart.getFullYear();
+  let viewMonth = selStart.getMonth();
+
+  /* ---- Vremenska prognoza po danima (Open-Meteo — javno dostupan, besplatan API) ----
+     Prava prognoza postoji samo za ~16 dana unapred. Za datume dalje u budućnosti
+     ne postoji "tačna" prognoza kod nikog — zato se za njih prikazuje PROCENA na
+     osnovu istog perioda prošle godine (arhivski podaci), vizuelno zamućena ikonica,
+     da se ne stvori lažan utisak preciznosti. */
+  const WMO_ICON = {
+    0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+    45:'🌫️',48:'🌫️',
+    51:'🌦️',53:'🌦️',55:'🌦️',
+    56:'🌧️',57:'🌧️',
+    61:'🌧️',63:'🌧️',65:'🌧️',
+    66:'🌧️',67:'🌧️',
+    71:'🌨️',73:'🌨️',75:'❄️',77:'❄️',
+    80:'🌦️',81:'🌧️',82:'⛈️',
+    85:'🌨️',86:'🌨️',
+    95:'⛈️',96:'⛈️',99:'⛈️'
+  };
+  function wxIcon(code){ return WMO_ICON[code] || ''; }
+
+  const wx = {
+    geoCache: {},
+    forecastCache: {}, // key: "lat,lon" -> {iso: {code,tmax,tmin}}
+    climateCache: {},  // key: "lat,lon|minISO|maxISO" -> {iso: {code,tmax,tmin}}
+    async geocode(city){
+      const key = city.trim().toLowerCase();
+      if (!key) return {geo:null, networkError:false};
+      if (this.geoCache[key]) return {geo:this.geoCache[key], networkError:false};
+      const attempts = [
+        'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=10&language=sr&format=json',
+        'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=10&language=en&format=json',
+        'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=10&format=json'
+      ];
+      let networkError = false;
+      for (const url of attempts){
+        try{
+          const res = await fetch(url);
+          if (!res.ok){ networkError = true; continue; }
+          const data = await res.json();
+          if (data && data.results && data.results.length){
+            const r = pickBestLocationMatch(data.results, city);
+            const geo = {lat: Math.round(r.latitude*100)/100, lon: Math.round(r.longitude*100)/100};
+            this.geoCache[key] = geo;
+            return {geo, networkError:false};
+          }
+        } catch(err){
+          networkError = true;
+          console.warn('[skoknica] geokodiranje odredišta nije uspelo:', err.message);
+        }
+      }
+      return {geo:null, networkError};
+    },
+    async getForecast(geo){
+      const key = geo.lat + ',' + geo.lon;
+      if (this.forecastCache[key]) return {data:this.forecastCache[key], networkError:false};
+      try{
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + geo.lat + '&longitude=' + geo.lon + '&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=16');
+        if (!res.ok) return {data:{}, networkError:true};
+        const data = await res.json();
+        const out = {};
+        if (data && data.daily){
+          data.daily.time.forEach((iso, i) => {
+            out[iso] = {code: data.daily.weathercode[i], tmax: Math.round(data.daily.temperature_2m_max[i]), tmin: Math.round(data.daily.temperature_2m_min[i])};
+          });
+        }
+        this.forecastCache[key] = out;
+        return {data:out, networkError:false};
+      } catch(err){ console.warn('[skoknica] prognoza nije uspela:', err.message); return {data:{}, networkError:true}; }
+    },
+    async getClimateRange(geo, minISO, maxISO){
+      const key = geo.lat + ',' + geo.lon + '|' + minISO + '|' + maxISO;
+      if (this.climateCache[key]) return {data:this.climateCache[key], networkError:false};
+      // ista opsega dana, samo godinu unazad — kao osnova za procenu
+      const shiftYear = (iso, delta) => { const d = parseISODate(iso); d.setFullYear(d.getFullYear() + delta); return d; };
+      const startLastYear = shiftYear(minISO, -1);
+      const endLastYear = shiftYear(maxISO, -1);
+      const out = {};
+      try{
+        const res = await fetch('https://archive-api.open-meteo.com/v1/archive?latitude=' + geo.lat + '&longitude=' + geo.lon +
+          '&start_date=' + toISODate(startLastYear) + '&end_date=' + toISODate(endLastYear) +
+          '&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto');
+        if (!res.ok) return {data:{}, networkError:true};
+        const data = await res.json();
+        if (data && data.daily){
+          data.daily.time.forEach((lastYearISO, i) => {
+            const d = parseISODate(lastYearISO); d.setFullYear(d.getFullYear() + 1);
+            out[toISODate(d)] = {code: data.daily.weathercode[i], tmax: Math.round(data.daily.temperature_2m_max[i]), tmin: Math.round(data.daily.temperature_2m_min[i])};
+          });
+        }
+        this.climateCache[key] = out;
+        return {data:out, networkError:false};
+      } catch(err){
+        console.warn('[skoknica] istorijski podaci nisu uspeli:', err.message);
+        return {data:out, networkError:true};
+      }
+    }
+  };
+
+  let wxRequestSeq = 0;
+  async function paintWeather(){
+    const cells = Array.from(calGrids.querySelectorAll('.cal-day[data-date]:not(.is-disabled)'));
+    if (!cells.length) return;
+    const destInput = document.getElementById('dest');
+    const city = (destInput && destInput.value.trim()) || 'Atina';
+    const statusEl = document.getElementById('calWxStatus');
+    const setStatus = (msg) => { if (statusEl){ statusEl.textContent = msg; statusEl.style.display = msg ? 'block' : 'none'; } };
+
+    const mySeq = ++wxRequestSeq;
+    // odmah skini stare ikonice (mogu biti od prethodne destinacije) da ne ostane pogrešan utisak
+    cells.forEach(cell => cell.querySelectorAll('.cal-wx').forEach(n => n.remove()));
+    setStatus((getLang()==='en' ? 'Looking up weather for “' + city + '”…' : 'Tražim vreme za „' + city + '“…'));
+
+    const {geo, networkError: geoErr} = await wx.geocode(city);
+    if (mySeq !== wxRequestSeq) return; // korisnik je u međuvremenu promenio destinaciju — ovaj odgovor je zastareo
+    if (!geo){
+      setStatus(geoErr
+        ? 'Prognoza trenutno nije dostupna — zahtev ka mreži nije uspeo (provera internet konekcije ili pristupa mreži u ovom pregledaču).'
+        : 'Nije pronađena lokacija za „' + city + '” — provera pravopisa naziva mesta.');
+      return;
+    }
+
+    const isoList = cells.map(c => c.dataset.date).sort();
+    const minISO = isoList[0], maxISO = isoList[isoList.length - 1];
+
+    const [fRes, cRes] = await Promise.all([
+      wx.getForecast(geo),
+      wx.getClimateRange(geo, minISO, maxISO)
+    ]);
+    if (mySeq !== wxRequestSeq) return; // isto — zastareo odgovor, ne crtati preko novijeg stanja
+    const forecast = fRes.data, climate = cRes.data;
+
+    let painted = 0;
+    cells.forEach(cell => {
+      cell.querySelectorAll('.cal-wx').forEach(n => n.remove());
+      const iso = cell.dataset.date;
+      let rec = forecast[iso];
+      let exact = true;
+      if (!rec){ rec = climate[iso]; exact = false; }
+      if (!rec) return;
+      const icon = wxIcon(rec.code);
+      if (!icon) return;
+      const span = document.createElement('span');
+      span.className = 'cal-wx' + (exact ? '' : ' cal-wx-est');
+      span.textContent = icon;
+      span.title = (exact ? 'Prognoza za ' : 'Procena za ') + iso + ': ' + rec.tmax + '°/' + rec.tmin + '°C' + (exact ? '' : ' (na osnovu iste nedelje prošle godine)');
+      cell.appendChild(span);
+      painted++;
+    });
+
+    if (!painted){
+      setStatus((fRes.networkError || cRes.networkError)
+        ? 'Prognoza trenutno nije dostupna — zahtev ka mreži nije uspeo (provera internet konekcije ili pristupa mreži u ovom pregledaču).'
+        : 'Nema podataka o vremenu za ove datume.');
+    } else {
+      setStatus('');
     }
   }
 
-  syncMin();
-  fromEl.addEventListener('change', syncMin);
+  function updateDisplay(){
+    const n = nightsCount(selStart, selEnd);
+    rangeText.textContent = fmtShort(selStart) + ' – ' + fmtShort(selEnd);
+    nightsText.textContent = n + ' ' + nightsWord(n);
+    displayBtn.classList.remove('is-empty');
+    calRangeLabel.innerHTML = fmtShort(selStart) + ' – ' + fmtShort(selEnd) + ' <b>· ' + n + ' ' + nightsWord(n) + '</b>';
+  }
+
+  function commit(){
+    hiddenFrom.value = toISODate(selStart);
+    hiddenTo.value = toISODate(selEnd);
+    hiddenFrom.dispatchEvent(new Event('change', {bubbles:true}));
+    hiddenTo.dispatchEvent(new Event('change', {bubbles:true}));
+    updateDisplay();
+  }
+
+  function buildMonthGrid(year, month){
+    const first = new Date(year, month, 1);
+    const startOffset = (first.getDay() + 6) % 7; // ponedeljak = 0
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let head = '<div class="cal-grid-head">' + DAY_NAMES.map(d => '<span>' + d + '</span>').join('') + '</div>';
+    let body = '<div class="cal-grid-body">';
+    for (let i = 0; i < startOffset; i++) body += '<span class="cal-day is-empty"></span>';
+    for (let day = 1; day <= daysInMonth; day++){
+      const d = new Date(year, month, day);
+      const classes = ['cal-day'];
+      if (d < today) classes.push('is-disabled');
+      if (sameDay(d, selStart)) classes.push('range-start');
+      if (sameDay(d, selEnd)) classes.push('range-end');
+      if (selStart && selEnd && d > selStart && d < selEnd) classes.push('range-mid');
+      if (sameDay(d, today)) classes.push('is-today');
+      body += '<span class="' + classes.join(' ') + '" data-date="' + toISODate(d) + '">' + day + '</span>';
+    }
+    body += '</div>';
+    return '<div class="cal-grid">' + head + body + '</div>';
+  }
+
+  function render(){
+    const nextM = viewMonth === 11 ? 0 : viewMonth + 1;
+    const nextY = viewMonth === 11 ? viewYear + 1 : viewYear;
+    const monthLabel = (y, m) => {
+      const name = new Date(y, m, 1).toLocaleString('sr-Latn', {month:'long'});
+      return name.charAt(0).toUpperCase() + name.slice(1) + ' ' + y;
+    };
+    calMonths.innerHTML = '<span>' + monthLabel(viewYear, viewMonth) + '</span><span>' + monthLabel(nextY, nextM) + '</span>';
+    calGrids.innerHTML = buildMonthGrid(viewYear, viewMonth) + buildMonthGrid(nextY, nextM);
+    calGrids.querySelectorAll('.cal-day:not(.is-empty):not(.is-disabled)').forEach(el => {
+      el.addEventListener('click', () => {
+        const d = parseISODate(el.dataset.date);
+        if (!selStart || (selStart && selEnd)){
+          selStart = d; selEnd = null;
+        } else if (d < selStart){
+          selStart = d;
+        } else {
+          selEnd = d;
+        }
+        render();
+        if (selStart && selEnd) updateDisplay();
+      });
+    });
+    paintWeather();
+  }
+
+  const isMobileCal = () => window.matchMedia('(max-width:760px)').matches;
+  let calScrollY = 0;
+  function lockPageScroll(){
+    calScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + calScrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+  function unlockPageScroll(){
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, calScrollY);
+  }
+
+  function openCal(){
+    viewYear = today.getFullYear();
+    viewMonth = today.getMonth();
+    render();
+    calCard.classList.add('open');
+    if (calBackdrop) calBackdrop.classList.add('open');
+    displayBtn.setAttribute('aria-expanded', 'true');
+    if (isMobileCal()) lockPageScroll();
+  }
+  function closeCal(shouldCommit){
+    calCard.classList.remove('open');
+    if (calBackdrop) calBackdrop.classList.remove('open');
+    displayBtn.setAttribute('aria-expanded', 'false');
+    if (document.body.style.position === 'fixed') unlockPageScroll();
+    if (shouldCommit && selStart && selEnd){
+      commit();
+    } else if (!selStart || !selEnd){
+      selStart = parseISODate(hiddenFrom.value);
+      selEnd = parseISODate(hiddenTo.value);
+    }
+  }
+
+  displayBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (calCard.classList.contains('open')) closeCal(true);
+    else openCal();
+  });
+  applyBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (selStart && selEnd) closeCal(true);
+  });
+  prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    viewMonth -= 1;
+    if (viewMonth < 0){ viewMonth = 11; viewYear -= 1; }
+    render();
+  });
+  nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    viewMonth += 1;
+    if (viewMonth > 11){ viewMonth = 0; viewYear += 1; }
+    render();
+  });
+  calCard.querySelectorAll('[data-quick]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const base = (selStart && selStart >= today) ? new Date(selStart) : new Date(today);
+      let s, en;
+      if (btn.dataset.quick === 'weekend'){
+        s = new Date(today);
+        const offset = (5 - s.getDay() + 7) % 7 || 7;
+        s.setDate(s.getDate() + offset);
+        en = new Date(s); en.setDate(en.getDate() + 2);
+      } else if (btn.dataset.quick === 'week'){
+        s = base; en = new Date(s); en.setDate(en.getDate() + 7);
+      } else {
+        s = base; en = new Date(s); en.setDate(en.getDate() + 14);
+      }
+      selStart = s; selEnd = en;
+      viewYear = s.getFullYear(); viewMonth = s.getMonth();
+      render();
+      updateDisplay();
+    });
+  });
+  calCard.addEventListener('click', (e) => e.stopPropagation());
+
+  document.addEventListener('click', () => {
+    if (calCard.classList.contains('open')) closeCal(true);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && calCard.classList.contains('open')) closeCal(true);
+  });
+
+  const destInputEl = document.getElementById('dest');
+  if (destInputEl){
+    let destDebounce;
+    destInputEl.addEventListener('input', () => {
+      clearTimeout(destDebounce);
+      destDebounce = setTimeout(() => {
+        if (calCard.classList.contains('open')) paintWeather();
+      }, 500);
+    });
+  }
+
+  // Polje "Od — Do" na startu prikazuje crtice (placeholder stanje), a ne
+  // unapred izračunat opseg/broj noći iz skrivenih polja — updateDisplay()
+  // se zove tek kad korisnik stvarno potvrdi datume (Gotovo / brzi izbor).
 })();
 
 // Small heuristic list — no geo API here, just enough to stop the CTA
