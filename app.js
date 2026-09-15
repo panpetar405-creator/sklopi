@@ -2333,9 +2333,45 @@ if (originInputForRegional){
   originInputForRegional.addEventListener('input', (e) => {
     clearTimeout(_originRegionalTimer);
     const val = e.target.value;
-    _originRegionalTimer = setTimeout(() => renderRegionalPopularDestinations(val), 400);
+    _originRegionalTimer = setTimeout(() => {
+      renderRegionalPopularDestinations(val);
+      renderOriginAirportWarning(val);
+    }, 400);
   });
-  if (originInputForRegional.value) renderRegionalPopularDestinations(originInputForRegional.value);
+  if (originInputForRegional.value){
+    renderRegionalPopularDestinations(originInputForRegional.value);
+    renderOriginAirportWarning(originInputForRegional.value);
+  }
+}
+
+/* ==========================================================
+   UPOZORENJE: mesto polaska bez aerodroma — predlaže najbliži
+   pravi aerodrom umesto grada koji ga uopšte nema, direktno u
+   samoj formi za pretragu (ne tek u rezultatima). Uredničko
+   znanje o geografiji, ne uživo podatak.
+========================================================== */
+const NO_AIRPORT_ORIGINS = {
+  'novi sad': { suggest:'Beograd', note:'Novi Sad nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).' },
+  'subotica': { suggest:'Budimpešta', note:'Subotica nema svoj aerodrom — najbliži je Budimpešta (oko 2h30 vožnje), bliže nego Beograd.' },
+  'kragujevac': { suggest:'Beograd', note:'Kragujevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).' },
+  'kraljevo': { suggest:'Niš', note:'Kraljevo nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa za neke pravce.' },
+  'novi pazar': { suggest:'Beograd', note:'Novi Pazar nema svoj aerodrom — najbliži veći izbor letova je Beograd, a Podgorica je bliža za neke pravce.' }
+};
+function renderOriginAirportWarning(originRaw){
+  const box = document.getElementById('originAirportWarning');
+  if (!box) return;
+  const key = matchOriginCityKey(originRaw, NO_AIRPORT_ORIGINS);
+  if (!key){ box.innerHTML = ''; return; }
+  const info = NO_AIRPORT_ORIGINS[key];
+  box.innerHTML = '<div class="origin-airport-warning">✈️ ' + escapeHtml(info.note)
+    + '<br><button type="button" id="useNearestAirportBtn">Koristi ' + escapeHtml(info.suggest) + ' umesto</button></div>';
+  const btn = document.getElementById('useNearestAirportBtn');
+  if (btn) btn.addEventListener('click', () => {
+    const originEl = document.getElementById('origin');
+    originEl.value = info.suggest;
+    originEl.dispatchEvent(new Event('input', {bubbles:true}));
+    box.innerHTML = '';
+  });
 }
 
 /* ==========================================================
