@@ -85,18 +85,18 @@ const I18N = {
     eyebrow_faq:'Pitanja', h2_faq:'Pre nego što rezervišeš',
     sub_faq:'Odgovori na najčešća pitanja o cenama, rezervaciji i promenama.',
     faq_q1:'Da li su prikazane cene stvarne?',
-    faq_a1:'SKLOPI je trenutno u razvoju. Cene koje vidiš u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uživo sa sajtova partnera. Pre rezervacije uvek proveri tačnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
+    faq_a1:'Skoknica je trenutno u razvoju. Cene koje vidiš u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uživo sa sajtova partnera. Pre rezervacije uvek proveri tačnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
     faq_q2:'Kako radi builder izleta?',
-    faq_a2:'Sam biraš tip leta, kategoriju hotela, auto i broj aktivnosti, a SKLOPI sabira procenjenu cenu za ceo paket. Dugme „Optimizuj moj izlet" predlaže izmenu koja može da smanji cenu uz sličan kvalitet.',
+    faq_a2:'Sam biraš tip leta, kategoriju hotela, auto i broj aktivnosti, a Skoknica sabira procenjenu cenu za ceo paket. Dugme „Optimizuj moj izlet" predlaže izmenu koja može da smanji cenu uz sličan kvalitet.',
     faq_q3:'Kako se čuvaju moji sačuvani izleti?',
     faq_a3:'Napraviš nalog emailom i lozinkom u sekciji sačuvanih izleta. Tvoji podaci se čuvaju vezano za tvoj nalog, ne za ovaj uređaj, tako da im možeš pristupiti i sa drugog telefona ili računara — samo se prijavi istim emailom i lozinkom.',
-    faq_q4:'Da li SKLOPI naplaćuje rezervaciju?',
-    faq_a4:'Ne. SKLOPI ne naplaćuje ništa direktno — klikom na „Rezerviši" ili „Pretraži" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.',
+    faq_q4:'Da li Skoknica naplaćuje rezervaciju?',
+    faq_a4:'Ne. Skoknica ne naplaćuje ništa direktno — klikom na „Rezerviši" ili „Pretraži" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.',
     faq_q5:'Imaš pitanje koje nije ovde?',
     faq_a5:'Piši na <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — rado odgovaramo.',
     stat_searches:'pretraga', stat_clicks:'klikova na ponude', stat_last:'poslednja destinacija',
     footer_contact:'Kontakt', footer_privacy:'Privatnost', footer_terms:'Uslovi', footer_cookies:'Kolačići',
-    foot_note:'SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a>',
+    foot_note:'Skoknica — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a>',
     cookie_text:'<b>Koristimo kolačiće za analitiku</b> (Google Analytics) da bismo razumeli kako se sajt koristi i unapredili ga. Ne koristimo ih za marketing niti ih delimo van Google-a. Detalji u <a href="kolacici.html">Politici kolačića</a>.',
     cookie_decline:'Odbijam', cookie_accept:'Prihvatam',
     aria_close:'Zatvori', label_email:'Email',
@@ -187,18 +187,18 @@ const I18N = {
     eyebrow_faq:'Questions', h2_faq:'Before you book',
     sub_faq:'Answers to the most common questions about prices, booking and changes.',
     faq_q1:'Are the prices shown real?',
-    faq_a1:'SKLOPI is currently in development. Prices you see in search and the builder are an illustrative estimate, generated for demonstration, and don’t come live from partner sites. Always check the exact price and availability directly with the partner (KAYAK, Booking.com, Viator) before booking.',
+    faq_a1:'Skoknica is currently in development. Prices you see in search and the builder are an illustrative estimate, generated for demonstration, and don’t come live from partner sites. Always check the exact price and availability directly with the partner (KAYAK, Booking.com, Viator) before booking.',
     faq_q2:'How does the trip builder work?',
-    faq_a2:'You choose the flight type, hotel category, car and number of activities yourself, and SKLOPI adds up an estimated price for the whole package. The “Optimize my trip” button suggests a change that can lower the price with similar quality.',
+    faq_a2:'You choose the flight type, hotel category, car and number of activities yourself, and Skoknica adds up an estimated price for the whole package. The “Optimize my trip” button suggests a change that can lower the price with similar quality.',
     faq_q3:'How are my saved trips stored?',
     faq_a3:'You create an account with an email and password in the “Saved trips” section. Your data is tied to your account, not this device, so you can access it from another phone or computer too — just log in with the same email and password.',
-    faq_q4:'Does SKLOPI charge for booking?',
-    faq_a4:'No. SKLOPI doesn’t charge anything directly — clicking “Book” or “Search” takes you to the partner’s site (KAYAK, Booking.com or Viator) where the booking and payment happen.',
+    faq_q4:'Does Skoknica charge for booking?',
+    faq_a4:'No. Skoknica doesn’t charge anything directly — clicking “Book” or “Search” takes you to the partner’s site (KAYAK, Booking.com or Viator) where the booking and payment happen.',
     faq_q5:'Have a question that’s not here?',
     faq_a5:'Write to <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — we’re happy to help.',
     stat_searches:'searches', stat_clicks:'clicks on offers', stat_last:'last destination',
     footer_contact:'Contact', footer_privacy:'Privacy', footer_terms:'Terms', footer_cookies:'Cookies',
-    foot_note:'SKLOPI — a product prototype in development. Prices shown are illustrative (simulated for demonstration), don’t come live from partners, and don’t represent a real offer or price commitment. · <a href="#" id="cookieSettingsLink">Cookie settings</a>',
+    foot_note:'Skoknica — a product prototype in development. Prices shown are illustrative (simulated for demonstration), don’t come live from partners, and don’t represent a real offer or price commitment. · <a href="#" id="cookieSettingsLink">Cookie settings</a>',
     cookie_text:'<b>We use cookies for analytics</b> (Google Analytics) to understand how the site is used and improve it. We don’t use them for marketing or share them beyond Google. Details in the <a href="kolacici.html">Cookie Policy</a>.',
     cookie_decline:'Decline', cookie_accept:'Accept',
     aria_close:'Close', label_email:'Email',
@@ -239,11 +239,11 @@ function applyStaticI18n(){
   const btn = document.getElementById('langSwitchBtn');
   if (btn) btn.style.display = 'none'; // Engleski isključen — dugme za promenu jezika je sklonjeno
   const titleEl = document.querySelector('title');
-  if (titleEl) titleEl.textContent = lang === 'sr' ? 'SKLOPI — ceo izlet, jedna cena' : 'SKLOPI — one whole trip, one price';
+  if (titleEl) titleEl.textContent = lang === 'sr' ? 'Skoknica — ceo izlet, jedna cena' : 'Skoknica — one whole trip, one price';
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', lang === 'sr'
-    ? 'SKLOPI pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.'
-    : 'SKLOPI finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.');
+    ? 'Skoknica pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.'
+    : 'Skoknica finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.');
 }
 function setLang(lang){
   localStorage.setItem('skoknica_lang', lang === 'en' ? 'en' : 'sr');
@@ -715,7 +715,7 @@ const PARTNERS = {
 };
 
 /* ---- Airalo prodaje eSIM po DRŽAVI, ne po gradu (npr. airalo.com/greece-esim),
-   dok SKLOPI destinaciju vodi kao grad ("Atina"). Mapiramo preko iste liste
+   dok Skoknica destinaciju vodi kao grad ("Atina"). Mapiramo preko iste liste
    POPULAR_DESTINATIONS koja se već koristi za predloge gradova — svaki unos
    tamo ima "extra" polje sa nazivom države na srpskom, koje ovde prevodimo
    u Airalo-ov URL slug (engleski naziv države, malim slovima, sa crticama).
@@ -1020,7 +1020,19 @@ const POPULAR_DESTINATIONS = [
   {name:'Kairo', extra:'Egipat'}, {name:'Šarm El Šeik', extra:'Egipat'}, {name:'Hurgada', extra:'Egipat'}, {name:'Marakeš', extra:'Maroko'},
   // Amerika i Azija (najtraženiji daleki gradovi)
   {name:'Njujork', extra:'SAD'}, {name:'Majami', extra:'SAD'}, {name:'Los Anđeles', extra:'SAD'},
-  {name:'Bangkok', extra:'Tajland'}, {name:'Tokio', extra:'Japan'}, {name:'Bali', extra:'Indonezija'}, {name:'Singapur', extra:'Singapur'},
+  {name:'Las Vegas', extra:'SAD'}, {name:'Čikago', extra:'SAD'}, {name:'San Francisko', extra:'SAD'},
+  {name:'Boston', extra:'SAD'}, {name:'Vašington', extra:'SAD'}, {name:'Orlando', extra:'SAD'}, {name:'Honolulu', extra:'SAD'},
+  {name:'Toronto', extra:'Kanada'}, {name:'Vankuver', extra:'Kanada'}, {name:'Montreal', extra:'Kanada'},
+  {name:'Meksiko Siti', extra:'Meksiko'}, {name:'Kankun', extra:'Meksiko'},
+  {name:'Rio de Žaneiro', extra:'Brazil'}, {name:'Sao Paulo', extra:'Brazil'}, {name:'Buenos Ajres', extra:'Argentina'},
+  {name:'Bangkok', extra:'Tajland'}, {name:'Puket', extra:'Tajland'}, {name:'Tokio', extra:'Japan'}, {name:'Osaka', extra:'Japan'},
+  {name:'Bali', extra:'Indonezija'}, {name:'Džakarta', extra:'Indonezija'}, {name:'Singapur', extra:'Singapur'},
+  {name:'Peking', extra:'Kina'}, {name:'Šangaj', extra:'Kina'}, {name:'Hongkong', extra:'Kina'},
+  {name:'Seul', extra:'Južna Koreja'}, {name:'Kuala Lumpur', extra:'Malezija'}, {name:'Manila', extra:'Filipini'},
+  {name:'Nju Delhi', extra:'Indija'}, {name:'Mumbaj', extra:'Indija'},
+  {name:'Sidnej', extra:'Australija'}, {name:'Melburn', extra:'Australija'}, {name:'Okland', extra:'Novi Zeland'},
+  {name:'Doha', extra:'Katar'}, {name:'Rijad', extra:'Saudijska Arabija'},
+  {name:'Kejptaun', extra:'Južnoafrička Republika'}, {name:'Najrobi', extra:'Kenija'},
 ];
 // Uklanja srpske kvačice (č/ć/š/ž/đ) i standardne akcente, radi poređenja bez
 // obzira da li korisnik kuca sa ili bez njih (npr. "Kotor" vs "Beč"/"Bec").
@@ -1065,7 +1077,9 @@ const SCHENGEN_COUNTRIES = new Set([
    dokumenta i nedelje čekanja, pa se ističe posebno, pre pravila o pasošu. */
 const VISA_REQUIRED_NOTES = {
   'Velika Britanija':'Državljanima Srbije je potrebna prava viza za Veliku Britaniju (uključujući London i tranzit bez izlaska iz aerodroma) — ovo nije samo provera pasoša. Standardna turistička viza obično se obrađuje oko 3 nedelje, pa prijavu treba podneti mnogo pre kupovine nepovratnih karata.',
-  'Irska':'Državljanima Srbije je potrebna prava viza za Irsku — stara pogodnost putovanja preko britanske vize je ukinuta 2020. i nije vraćena. Prijavu za vizu treba podneti mnogo pre kupovine nepovratnih karata.'
+  'Irska':'Državljanima Srbije je potrebna prava viza za Irsku — stara pogodnost putovanja preko britanske vize je ukinuta 2020. i nije vraćena. Prijavu za vizu treba podneti mnogo pre kupovine nepovratnih karata.',
+  'SAD':'Državljanima Srbije je potrebna prava viza za SAD (obično turistička B1/B2) — ovo nije samo provera pasoša. Traži se obavezan intervju u ambasadi u Beogradu, taksa oko 185 USD, a na termin se čeka od par nedelja do više meseci u zavisnosti od perioda. Prijavu treba podneti mnogo pre kupovine nepovratnih karata.',
+  'Kanada':'Državljanima Srbije je potrebna prava viza za Kanadu (Kanada nema eTA olakšicu za srpski pasoš) — ovo nije samo provera pasoša. Obrada uključuje biometriju i obično traje oko 2-4 nedelje, pa prijavu treba podneti mnogo pre kupovine nepovratnih karata.'
 };
 function getPassportRule(country, destVal){
   const c = (country || '').trim();
@@ -1081,12 +1095,18 @@ function getPassportRule(country, destVal){
   } else if (c === 'Egipat' || c === 'Tunis'){
     base = {basis:'to', months:6, days:null, label:c, confident:true,
       why:'Za ' + c + ' pasoš mora da važi još najmanje 6 meseci nakon planiranog datuma povratka.'};
+  } else if (c === 'Kina'){
+    base = {basis:'to', months:6, days:null, label:'Kina', confident:true,
+      why:'Za Kinu državljanima Srbije nije potrebna viza za turistički boravak do 30 dana, ali pasoš mora da važi još najmanje 6 meseci nakon planiranog datuma povratka. (Hongkong i Makao imaju poseban, još slobodniji režim.)'};
   } else {
     const shownName = c || fallbackName || 'ova destinacija';
+    const genericWhy = c
+      ? 'Nemamo potvrđeno pravilo za zemlju „' + c + '“ — mnoge zemlje van Šengena traže važenje pasoša još 6 meseci nakon povratka, ali ovo obavezno proveri kod ambasade/aviokompanije jer se pravilo razlikuje po zemlji.'
+      : 'Ne znamo tačnu zemlju za „' + shownName + '“, pa nemamo potvrđeno pravilo — mnoge zemlje van Šengena traže važenje pasoša još 6 meseci nakon povratka, ali ovo obavezno proveri kod ambasade/aviokompanije jer se pravilo razlikuje po zemlji.';
     base = {basis:'to', months:6, days:null, label:shownName, confident: !!visaNote,
       why: visaNote
         ? 'Uz vizu, pasoš uglavnom mora da važi još najmanje 6 meseci nakon planiranog datuma povratka — konkretan rok proverava ambasada prilikom obrade vize.'
-        : 'Ne znamo tačnu zemlju za „' + shownName + '“, pa nemamo potvrđeno pravilo — mnoge zemlje van Šengena traže važenje pasoša još 6 meseci nakon povratka, ali ovo obavezno proveri kod ambasade/aviokompanije jer se pravilo razlikuje po zemlji.'};
+        : genericWhy};
   }
   base.visaNote = visaNote;
   return base;
@@ -1328,7 +1348,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
 
   const body = document.getElementById('resultsBody');
   body.innerHTML = `<div class="packages">${pkgs.map(pkgHtml).join('')}</div>
-    <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
+    <p class="disclaimer">⚠️ Skoknica je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
 }
 
 function itemCardHtml(item, kind){
@@ -1339,7 +1359,7 @@ function itemCardHtml(item, kind){
   <div class="item-card ${kind}">
     <div class="item-photo ${kind}">${iconSvg(kind)}</div>
     <div class="item-body">
-      <div class="item-label">${labels[kind]}${item.providerLabel!=='SKLOPI' ? `<span class="item-provider">${escapeHtml(item.providerLabel)}</span>` : ''}</div>
+      <div class="item-label">${labels[kind]}${item.providerLabel!=='Skoknica' ? `<span class="item-provider">${escapeHtml(item.providerLabel)}</span>` : ''}</div>
       <div class="item-name">${escapeHtml(item.name)}</div>
       <div class="item-sub">${escapeHtml(item.sub)}</div>
       <div class="item-price tabular">${fmtEUR(item.price)}</div>
@@ -1499,7 +1519,7 @@ function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
   body.innerHTML = `
     <div class="packages">${picks.map((p,i)=>surprisePkgHtml(p, i, budget)).join('')}</div>
     <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
-    <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
+    <p class="disclaimer">⚠️ Skoknica je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
   `;
 }
 
@@ -2173,6 +2193,104 @@ document.querySelectorAll('.popular-dest-card').forEach(card => {
 });
 
 /* ==========================================================
+   REGIONALNI SIGNAL — "Popularno kod putnika iz [tvog grada]"
+   umesto univerzalne top-liste. Ovo je uredničko, ručno sastavljeno
+   po realnim navikama iz svakog grada (aerodrom, sezonski čarteri,
+   praksa letenja preko bližeg stranog aerodroma) — NIJE uživo
+   statistika i ne pretvaramo se da jeste. Ako grad iz polja "Polazak"
+   nije prepoznat, ostaje originalni (Beograd-orijentisani) SEO sadržaj
+   iz HTML-a, bez ikakve promene.
+========================================================== */
+const REGIONAL_POPULAR_DESTINATIONS = {
+  'beograd': { genitiv:'Beograda', cards: [
+    {dest:'Atina', name:'Atina, Grčka', desc:'Antika, ostrvski trajekti i vrhunska kuhinja — česti direktni letovi iz Beograda.'},
+    {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja — kratak let, grad se obilazi peške.'},
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Gaudijeva arhitektura, plaža i tapas bari — omiljena kombinacija grada i mora.'},
+    {dest:'Budva', name:'Budva, Crna Gora', desc:'Najbliže more autom — 4-5h vožnje, stara varoš i duge plaže.'},
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, bazari i Bosfor — pristupačan izlet van sezone.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.'}
+  ]},
+  'novi sad': { genitiv:'Novog Sada', cards: [
+    {dest:'Budimpešta', name:'Budimpešta, Mađarska', desc:'Oko 2h vožnje — low-cost letovi odatle su često jeftiniji nego iz Beograda.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Direktan voz i autobus iz Novog Sada — praktičan gradski izlet bez presedanja.'},
+    {dest:'Atina', name:'Atina, Grčka', desc:'Za more i ostrva i dalje se najisplativije leti preko Beograda.'},
+    {dest:'Budva', name:'Budva, Crna Gora', desc:'Najbliže more autom — stara varoš i duge plaže.'},
+    {dest:'Zagreb', name:'Zagreb, Hrvatska', desc:'Kratka vožnja, praktičan vikend izlet uz adventski sadržaj zimi.'}
+  ]},
+  'nis': { genitiv:'Niša', cards: [
+    {dest:'Solun', name:'Solun, Grčka', desc:'Oko 3h vožnje — najbliže more za vikend izlet, bez potrebe za letom.'},
+    {dest:'Skoplje', name:'Skoplje, Sev. Makedonija', desc:'Blizu, praktično autom za kraći izlet.'},
+    {dest:'Antalija', name:'Antalija, Turska', desc:'Sezonski čarter letovi direktno sa aerodroma u Nišu, van glavne sezone jeftiniji.'},
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Za većinu daljih destinacija, presedanje preko Beograda ili Istanbula je i dalje najisplativije.'}
+  ]},
+  'podgorica': { genitiv:'Podgorice', cards: [
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije — praktičan let sa podgoričkog aerodroma.'},
+    {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja — kratak let preko mora.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji i kafei — praktičan gradski izlet.'},
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari.'}
+  ]}
+};
+let _defaultPopularDestState = null;
+function renderRegionalPopularDestinations(originRaw){
+  const grid = document.getElementById('popularDestGrid');
+  const head = document.getElementById('popularDestHead');
+  const eyebrow = document.getElementById('popularDestEyebrow');
+  if (!grid || !head) return;
+  if (_defaultPopularDestState === null){
+    _defaultPopularDestState = { head: head.textContent, eyebrow: eyebrow ? eyebrow.textContent : '', grid: grid.innerHTML };
+  }
+  const norm = normalizeSr((originRaw || '').trim());
+  let bucket = null;
+  if (norm){
+    for (const key in REGIONAL_POPULAR_DESTINATIONS){
+      if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key) ){
+        bucket = REGIONAL_POPULAR_DESTINATIONS[key];
+        break;
+      }
+    }
+  }
+  if (!bucket){
+    // Nepoznat ili prazan grad — vrati originalni (podrazumevani) sadržaj, ne ostavljaj "zaglavljen" prethodni grad.
+    head.textContent = _defaultPopularDestState.head;
+    if (eyebrow) eyebrow.textContent = _defaultPopularDestState.eyebrow;
+    grid.innerHTML = _defaultPopularDestState.grid;
+    grid.querySelectorAll('.popular-dest-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.getElementById('dest').value = card.dataset.dest;
+        document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+        runSearch(false);
+      });
+    });
+    return;
+  }
+  head.textContent = 'Popularno kod putnika iz ' + bucket.genitiv;
+  if (eyebrow) eyebrow.textContent = 'Predlozi prilagođeni tvom polasku';
+  grid.innerHTML = bucket.cards.map(c =>
+    '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '">'
+    + '<span class="pd-name">' + escapeHtml(c.name) + '</span>'
+    + '<span class="pd-desc">' + escapeHtml(c.desc) + '</span>'
+    + '</button>'
+  ).join('');
+  grid.querySelectorAll('.popular-dest-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.getElementById('dest').value = card.dataset.dest;
+      document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+      runSearch(false);
+    });
+  });
+}
+let _originRegionalTimer = null;
+const originInputForRegional = document.getElementById('origin');
+if (originInputForRegional){
+  originInputForRegional.addEventListener('input', (e) => {
+    clearTimeout(_originRegionalTimer);
+    const val = e.target.value;
+    _originRegionalTimer = setTimeout(() => renderRegionalPopularDestinations(val), 400);
+  });
+  if (originInputForRegional.value) renderRegionalPopularDestinations(originInputForRegional.value);
+}
+
+/* ==========================================================
    MOJA PUTOVANJA — Supabase (auth.users + trips tabela).
    Prijava je email magic-link (OTP), ne treba Google/OAuth podesavanje.
    Ako Supabase iz nekog razloga ne odgovori (mreza, pogresan kljuc),
@@ -2524,7 +2642,7 @@ document.getElementById('shareModalCopy').addEventListener('click', async () => 
 });
 document.getElementById('shareModalNative').addEventListener('click', async () => {
   try {
-    await navigator.share({ title:'SKLOPI — predlog za izlet', url: window._pendingShareLink });
+    await navigator.share({ title:'Skoknica — predlog za izlet', url: window._pendingShareLink });
   } catch(err){ /* korisnik je otkazao deljenje — nema potrebe za toast-om */ }
 });
 
