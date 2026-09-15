@@ -1569,10 +1569,7 @@ function exploreSurpriseDestination(idx){
 async function saveSurprisePackage(idx){
   const user = await getCurrentUser();
   if (!user){
-    _authBarExpanded = true;
-    renderSavedTrips();
-    document.getElementById('authBar').scrollIntoView({behavior:'smooth', block:'center'});
-    showToast('Prijavi se emailom da sačuvaš ponudu.');
+    promptLogin('Prijavi se emailom da sačuvaš ponudu.');
     return;
   }
   const pick = (window._lastSurprisePicks || [])[idx];
@@ -2370,6 +2367,19 @@ if (sb) {
 ========================================================== */
 let _authBarExpanded = false;
 
+// Zajednička funkcija za sve "Sačuvaj..." akcije kad korisnik nije
+// prijavljen — otvara login karticu u header dropdown-u (dugme za nalog
+// gore desno), umesto da skroluje na sekciju "Sačuvani izleti" na sredini
+// sajta.
+function promptLogin(message){
+  _authBarExpanded = true;
+  renderAccountMenu();
+  const dropdown = document.getElementById('authDropdown');
+  if (dropdown) dropdown.classList.add('open');
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (message) showToast(message);
+}
+
 function renderAuthBar(user){
   const bar = document.getElementById('authBar');
   if (!bar) return;
@@ -2485,10 +2495,7 @@ function tripCardHtml(trip){
 async function saveSearchPackage(tier){
   const user = await getCurrentUser();
   if (!user){
-    _authBarExpanded = true;
-    renderSavedTrips();
-    document.getElementById('authBar').scrollIntoView({behavior:'smooth', block:'center'});
-    showToast('Prijavi se emailom da sačuvaš ponudu.');
+    promptLogin('Prijavi se emailom da sačuvaš ponudu.');
     return;
   }
   const pkgs = window._lastSearchPkgs;
@@ -2526,10 +2533,7 @@ async function saveSearchPackage(tier){
 document.getElementById('saveTripBtn').addEventListener('click', async () => {
   const user = await getCurrentUser();
   if (!user){
-    _authBarExpanded = true;
-    renderSavedTrips();
-    document.getElementById('authBar').scrollIntoView({behavior:'smooth', block:'center'});
-    showToast('Prijavi se emailom da sačuvaš izlet.');
+    promptLogin('Prijavi se emailom da sačuvaš izlet.');
     return;
   }
   const pkg = window._lastBuilderPkg;
@@ -2729,16 +2733,25 @@ function renderAccountMenu(){
   const dropdown = document.getElementById('authDropdown');
   if (!dropdown) return;
   getCurrentUser().then(user => {
-    dropdown.innerHTML = user
-      ? `<div class="auth-dropdown-inner">
+    if (user) {
+      dropdown.innerHTML = `<div class="auth-dropdown-inner">
            <div class="auth-dropdown-email">${escapeHtml(user.email)}</div>
            <a href="#" id="dropdownSavedLink">Sačuvani izleti</a>
            <button type="button" id="dropdownLogoutBtn">Odjavi se</button>
-         </div>`
-      : `<div class="auth-dropdown-inner">
+         </div>`;
+    } else if (_authBarExpanded) {
+      dropdown.innerHTML = `<div class="auth-dropdown-inner">
+           <p>Prijavi se da sačuvaš izlete i primaš alerte o ceni.</p>
+           <input type="email" id="dropdownEmailInput" class="auth-input" placeholder="tvoj@email.com" autocomplete="email" required>
+           <button type="button" class="btn-primary" id="dropdownSendLinkBtn">Pošalji link za prijavu</button>
+           <p class="auth-hint">Nema lozinke — kliknućeš na link koji ti stigne na email.</p>
+         </div>`;
+    } else {
+      dropdown.innerHTML = `<div class="auth-dropdown-inner">
            <p>Prijavi se da sačuvaš izlete i primaš alerte o ceni.</p>
            <button type="button" id="dropdownLoginBtn">Prijavi se</button>
          </div>`;
+    }
     const savedLink = document.getElementById('dropdownSavedLink');
     if (savedLink) savedLink.addEventListener('click', (e) => {
       e.preventDefault();
@@ -2756,10 +2769,27 @@ function renderAccountMenu(){
     });
     const loginBtn = document.getElementById('dropdownLoginBtn');
     if (loginBtn) loginBtn.addEventListener('click', () => {
-      dropdown.classList.remove('open');
       _authBarExpanded = true;
-      renderSavedTrips();
-      document.querySelector('.saved-wrap')?.scrollIntoView({behavior:'smooth', block:'start'});
+      renderAccountMenu();
+    });
+    const sendBtn = document.getElementById('dropdownSendLinkBtn');
+    const emailInput = document.getElementById('dropdownEmailInput');
+    if (sendBtn) sendBtn.addEventListener('click', async () => {
+      const email = (emailInput.value || '').trim();
+      if (!email || !email.includes('@')) { showToast('Unesi ispravnu email adresu.'); return; }
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Šaljem…';
+      try {
+        const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
+        if (error) throw error;
+        showToast('Link za prijavu je poslat na ' + email + ' — proveri inbox.');
+        dropdown.innerHTML = '<div class="auth-dropdown-inner"><p class="auth-hint">✓ Proveri email (' + escapeHtml(email) + ') i klikni na link za prijavu.</p></div>';
+      } catch(err) {
+        console.warn('[skoknica] slanje magic linka nije uspelo:', err.message);
+        showToast('Slanje linka nije uspelo — pokušaj ponovo.');
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Pošalji link za prijavu';
+      }
     });
   });
 }
