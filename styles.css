@@ -191,6 +191,7 @@ a{color:inherit;}
 }
 .hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:2;}
 .hero h1{
+    margin:0;
     font-size:clamp(38px,4.4vw,62.5px);
     line-height:1.05;
     max-width:12.5em;
@@ -1194,8 +1195,8 @@ footer{
 @keyframes sp{to{transform:rotate(360deg);}}
 @media (max-width:760px){
 .topbar,.hero,.section{padding-left:20px;padding-right:20px;}
-.hero{padding-top:34px;}
-.hero p.lede{margin-top:14px;}
+.hero{padding-top:22px;}
+.hero p.lede{margin-top:10px;}
 .hero-inner{display:flex;flex-direction:column;}
 .hero-inner > h1{order:1;}
 .hero-inner > p.lede{order:2;}
@@ -1203,7 +1204,7 @@ footer{
 .hero-inner > form.ticket{order:4;}
 .hero-inner > .ticket-submit-row{order:5;}
 .hero-inner > .hero-spacer{order:6;}
-.ticket-submit-row{margin:24px 0 16px;}
+.ticket-submit-row{margin:24px 0 8px;}
 .btn-search-main{max-width:none;}
 .ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:20px;}
 .ticket .stub{padding:20px 16px;border-right:none;border-bottom:1px dashed var(--line-form);}
@@ -1213,7 +1214,7 @@ footer{
 .ticket .go{padding:18px 16px 22px;}
 .transport-row{padding:0 4px;transform:none;margin-top:6px;flex-wrap:nowrap;justify-content:space-between;gap:8px;}
 .toggle{width:auto;flex:1;}
-.hero-spacer{height:20px;}
+.hero-spacer{height:4px;}
 .stub-dates{position:relative;}
 .cal-card{
     position:fixed;top:calc(var(--topbar-h, 68px) + 10px);bottom:auto;
