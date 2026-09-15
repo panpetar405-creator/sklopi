@@ -1478,6 +1478,52 @@ function pickSurpriseDestinations(budget, candidates, count){
   return {picks: shuffled.slice(0, count), usedFallback};
 }
 
+/* ==========================================================
+   Loading skeleton — prikazuje se u #resultsBody dok se ponuda
+   računa (lokalno ili sa backend-a), umesto praznog ekrana ili
+   golog spinnera. Oblik prati stvarne .pkg/.item-card kartice
+   (3 paketa x 3 stavke) da ne dođe do skoka layout-a kad prava
+   ponuda stigne. ========================================================== */
+function skeletonItemHtml(){
+  return `
+  <div class="skel-item">
+    <div class="skel skel-photo"></div>
+    <div class="skel-item-body">
+      <div class="skel skel-label"></div>
+      <div class="skel skel-name"></div>
+      <div class="skel skel-sub2"></div>
+      <div class="skel skel-price2"></div>
+      <div class="skel skel-btn"></div>
+    </div>
+  </div>`;
+}
+
+function skeletonPkgHtml(){
+  return `
+  <div class="skel-pkg">
+    <div class="skel-pkg-head">
+      <div>
+        <div class="skel skel-badge"></div>
+        <div class="skel skel-title"></div>
+        <div class="skel skel-sub"></div>
+      </div>
+      <div>
+        <div class="skel skel-price"></div>
+        <div class="skel skel-price-cur"></div>
+      </div>
+    </div>
+    <div class="skel-items-row">${skeletonItemHtml()}${skeletonItemHtml()}${skeletonItemHtml()}</div>
+  </div>`;
+}
+
+function skeletonResultsHtml(loadingText){
+  return `
+  <div class="skel-packages" role="status" aria-busy="true" aria-live="polite">
+    <span class="sr-only">${escapeHtml(loadingText || '')}</span>
+    ${skeletonPkgHtml()}${skeletonPkgHtml()}${skeletonPkgHtml()}
+  </div>`;
+}
+
 async function renderResults(dest, from, to, nights, days, adults, flags, originCode){
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
@@ -1712,7 +1758,7 @@ async function runSurpriseSearch(isReroll){
   results.classList.add('visible');
   if (!isReroll){
     document.getElementById('resultsHead').innerHTML = '';
-    document.getElementById('resultsBody').innerHTML = '<div class="loading"><div class="spin"></div>' + (getLang()==='en' ? 'Searching 3 destinations that fit your budget…' : 'Tražimo 3 destinacije koje se uklapaju u tvoj budžet…') + '</div>';
+    document.getElementById('resultsBody').innerHTML = skeletonResultsHtml(getLang()==='en' ? 'Searching 3 destinations that fit your budget…' : 'Tražimo 3 destinacije koje se uklapaju u tvoj budžet…');
     results.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
@@ -1927,7 +1973,7 @@ async function runSearch(shouldScroll){
   const results = document.getElementById('results');
   results.classList.add('visible');
   document.getElementById('resultsHead').innerHTML = '';
-  document.getElementById('resultsBody').innerHTML = '<div class="loading"><div class="spin"></div>Pretražujemo letove, smeštaj, aute i aktivnosti…</div>';
+  document.getElementById('resultsBody').innerHTML = skeletonResultsHtml('Pretražujemo letove, smeštaj, aute i aktivnosti…');
   if (shouldScroll) results.scrollIntoView({behavior:'smooth', block:'start'});
 
   bumpSearchStat(dest);

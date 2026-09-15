@@ -1203,6 +1203,50 @@ footer{
     animation:sp 0.8s linear infinite;
 }
 @keyframes sp{to{transform:rotate(360deg);}}
+/* ---- Loading skeleton dok se računa ponuda (umesto praznog ekrana) ----
+   Oblik prati stvarne .pkg/.item-card kartice, da se rezultat "uklopi"
+   u skeleton bez skoka layout-a kad prava ponuda stigne. ---- */
+.skel-packages{display:flex;flex-direction:column;gap:22px;}
+.skel-pkg{
+    background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--line);
+    border-radius:6px;overflow:hidden;
+}
+.skel-pkg-head{
+    padding:22px 46px 18px 24px;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;
+}
+.skel-items-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:18px 24px;}
+@media (max-width:760px){.skel-items-row{grid-template-columns:1fr;}}
+.skel-item{border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+.skel-item-body{padding:12px 14px 14px;}
+.skel{
+    background-color:var(--line);border-radius:4px;
+    background-image:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.85) 50%, transparent 100%);
+    background-size:200px 100%;background-repeat:no-repeat;background-position:-200px 0;
+    animation:skel-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes skel-shimmer{
+    0%{background-position:-200px 0;}
+    100%{background-position:calc(100% + 200px) 0;}
+}
+.skel-photo{height:88px;border-radius:0;}
+.skel-badge{width:96px;height:20px;border-radius:16px;}
+.skel-title{width:150px;height:22px;margin-top:10px;}
+.skel-sub{width:190px;height:13px;margin-top:8px;}
+.skel-price{width:90px;height:28px;margin-left:auto;}
+.skel-price-cur{width:60px;height:12px;margin-top:6px;margin-left:auto;}
+.skel-label{width:60px;height:11px;}
+.skel-name{width:80%;height:17px;margin-top:6px;}
+.skel-sub2{width:60%;height:13px;margin-top:6px;}
+.skel-price2{width:70px;height:18px;margin-top:9px;}
+.skel-btn{width:100%;height:36px;margin-top:10px;border-radius:8px;}
+@media (prefers-reduced-motion: reduce){
+    .skel{animation:none;background-image:none;}
+}
+.sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
 @media (max-width:760px){
 .topbar,.hero,.section{padding-left:20px;padding-right:20px;}
 .hero{padding-top:22px;}
