@@ -1072,10 +1072,10 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .saved-card .sc-btn.del{background:var(--bg);color:var(--coral-text);border:1px solid var(--line);}
 /* ---------- toast ---------- */
 #toast{
-    position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+    position:fixed;top:26px;left:50%;transform:translateX(-50%) translateY(-20px);
     background:var(--deep);color:var(--on-dark);padding:13px 20px;border-radius:6px;
     font-size:15px;opacity:0;pointer-events:none;transition:all .25s ease;
-    box-shadow:0 14px 30px -10px rgba(0,0,0,0.4);z-index:50;
+    box-shadow:0 14px 30px -10px rgba(0,0,0,0.4);z-index:9999;
     display:flex;align-items:center;gap:10px;
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
