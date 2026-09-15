@@ -2308,8 +2308,8 @@ if (originInputForRegional){
 ========================================================== */
 let sb = null;
 try {
-  if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
-    sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  if (window.supabase && window.SKOKNICA_SUPABASE_URL && window.SKOKNICA_SUPABASE_KEY) {
+    sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
   } else {
     console.warn('[skoknica] Supabase konfiguracija (config.js) nije pronađena — nalozi i sačuvani izleti su isključeni, ostatak sajta radi normalno.');
   }
