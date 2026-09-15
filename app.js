@@ -791,18 +791,52 @@ function buildAffiliateLink(kind, ctx){
   }
 }
 
-function fetchFlights(rng, dest, adults, tier){
+/* Za grad polaska bez aerodroma, vraća STVARNI aerodrom sa kog bi se
+   letelo (isto znanje kao NO_AIRPORT_ORIGINS gore u fajlu — namerno
+   odvojeno, jer ova funkcija mora da radi i kad taj blok još nije
+   izvršen zbog redosleda u fajlu). Za nepoznat/prazan grad vraća null
+   i tada se u kartici uopšte ne prikazuje grad polaska (bez nagađanja). */
+const NO_AIRPORT_ORIGIN_FALLBACK = {
+  'novi sad':'Beograd', 'subotica':'Budimpešta', 'kragujevac':'Beograd',
+  'kraljevo':'Niš', 'novi pazar':'Beograd'
+};
+const LIMITED_NETWORK_ORIGINS = new Set(['nis','banja luka']);
+function realDepartureAirportFor(originRaw){
+  const norm = normalizeSr((originRaw || '').trim());
+  if (!norm) return null;
+  for (const key in NO_AIRPORT_ORIGIN_FALLBACK){
+    if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)){
+      return NO_AIRPORT_ORIGIN_FALLBACK[key];
+    }
+  }
+  return originRaw.trim();
+}
+function isLimitedNetworkOrigin(originRaw){
+  const norm = normalizeSr((originRaw || '').trim());
+  if (!norm) return false;
+  for (const key of LIMITED_NETWORK_ORIGINS){
+    if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)) return true;
+  }
+  return false;
+}
+function fetchFlights(rng, dest, adults, tier, originCode){
   const base = 60 + Math.floor(rng()*140);
   const tierMult = {budget:0.72, best:1, comfort:1.55}[tier];
   const price = Math.round(base * tierMult * adults);
   const p = PARTNERS.flight;
   const carriers = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
+  const carrier = (tier==='comfort' ? carriers[carriers.length-1] : carriers[Math.floor(rng()*carriers.length)]);
+  const departure = realDepartureAirportFor(originCode);
+  const limitedNetwork = isLimitedNetworkOrigin(originCode);
+  let sub = (tier==='comfort' ? 'direktan let, prtljag uključen' : (tier==='budget' ? 'jedan presedanje' : 'direktan let'));
+  if (limitedNetwork && sub.includes('direktan let')){
+    sub = sub.replace('direktan let', 'let (proveri sezonske/direktne linije)');
+  }
+  sub += (adults > 1 ? ' · cena za svih ' + adults + ' putnika' : '');
   return {
     provider:p.provider, providerLabel:p.name, type:'flight',
-    name: (tier==='comfort' ? carriers[carriers.length-1] : carriers[Math.floor(rng()*carriers.length)]) + ' → ' + dest,
-    sub: (tier==='comfort' ? 'direktan let, prtljag uključen' : (tier==='budget' ? 'jedan presedanje' : 'direktan let'))
-      + (adults > 1 ? ' · cena za svih ' + adults + ' putnika' : ''),
-    price, currency:'EUR'
+    name: carrier + (departure ? ' ' + departure : '') + ' → ' + dest,
+    sub, price, currency:'EUR'
   };
 }
 function fetchHotel(rng, dest, nights, adults, tier){
@@ -865,9 +899,9 @@ const EXTRA_COSTS = {
 /* ==========================================================
    PRICING + SCORE ENGINE
 ========================================================== */
-function buildPackage(rng, dest, nights, days, adults, tier, flags, factor){
+function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, originCode){
   factor = factor || 1;
-  const flight = flags.flight ? fetchFlights(rng, dest, adults, tier) : null;
+  const flight = flags.flight ? fetchFlights(rng, dest, adults, tier, originCode) : null;
   const hotel  = flags.hotel  ? fetchHotel(rng, dest, nights, adults, tier) : null;
   const car    = flags.car    ? fetchCar(rng, days, tier) : null;
   const activity = flags.activity ? fetchActivity(rng, dest, tier) : null;
@@ -1248,12 +1282,12 @@ async function fetchPackagesFromBackend(payload){
   }
 }
 
-function computePackagesLocally(dest, from, to, nights, days, adults, flags){
+function computePackagesLocally(dest, from, to, nights, days, adults, flags, originCode){
   const seed = hashSeed(dest.toLowerCase()+dest.length+nights+adults);
   const rng = seededRandom(seed);
   const factor = marketFactor(dest, todayStr());
 
-  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor));
+  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor, originCode));
   pkgs.forEach(p => attachAffiliateLinks(p, dest, from, to, adults));
 
   // Price score is relative to the cheapest of THIS run's three packages —
@@ -1322,7 +1356,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
   });
-  const pkgs = backendPkgs || computePackagesLocally(dest, from, to, nights, days, adults, flags);
+  const pkgs = backendPkgs || computePackagesLocally(dest, from, to, nights, days, adults, flags, originCode);
 
   // Global kontekst za "Sačuvaj ovu ponudu" dugme na svakoj kartici —
   // isti obrazac kao window._lastBuilderPkg za builder.
