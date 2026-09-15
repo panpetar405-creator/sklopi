@@ -1357,3 +1357,34 @@ footer{padding:28px 20px;}
 @media (prefers-reduced-motion: no-preference){
   .feature:hover .ic{transform:scale(1.12) rotate(-4deg);}
 }
+/* ---------- Pravne stranice (privatnost / uslovi / kolačići) ---------- */
+.legal-header{
+    max-width:1180px;margin:0 auto;padding:22px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+}
+.legal-header .logo{
+    display:flex;align-items:center;gap:9px;
+    font-family:'Fraunces',serif;font-size:24.5px;font-weight:600;color:var(--ink);
+    text-decoration:none;
+}
+.legal-header .logo .mark{width:32px;height:32px;color:var(--deep);flex:none;}
+.legal-header .logo em{font-style:italic;color:var(--gold);}
+.legal-back{
+    font-size:14.5px;color:var(--ink-soft);text-decoration:none;
+    display:flex;align-items:center;gap:6px;transition:color .15s ease;
+}
+.legal-back:hover{color:var(--deep);}
+.legal-wrap{max-width:760px;margin:0 auto;padding:12px 24px 80px;}
+.legal-wrap h1{font-size:34px;margin:18px 0 6px;}
+.legal-wrap .legal-updated{color:var(--ink-soft);font-size:14px;margin:0 0 40px;}
+.legal-wrap h2{font-size:21px;margin:38px 0 12px;}
+.legal-wrap p{line-height:1.7;color:var(--ink);margin:0 0 16px;}
+.legal-wrap ul{line-height:1.7;color:var(--ink);margin:0 0 16px;padding-left:22px;}
+.legal-wrap li{margin-bottom:8px;}
+.legal-wrap a{color:var(--gold-text);text-decoration:underline;}
+.legal-wrap strong{color:var(--ink);}
+@media (max-width:600px){
+    .legal-wrap h1{font-size:27px;}
+    .legal-wrap{padding:8px 18px 60px;}
+    .legal-header{padding:18px 18px;}
+}
