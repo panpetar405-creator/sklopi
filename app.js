@@ -1333,6 +1333,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const providers = [...new Set(pkgs.flatMap(p=>[p.flight,p.hotel,p.car,p.activity].filter(Boolean).map(i=>i.providerLabel)))].concat('Airalo');
 
   const head = document.getElementById('resultsHead');
+  const altNote = altAirportNoteFor(originCode);
   head.innerHTML = `
     <div class="status-banner">
       <div class="status-left">
@@ -1344,6 +1345,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
         <div class="pill">${iconSvg('people')} ${adults} ${passengerLabel(adults)}</div>
       </div>
     </div>
+    ${altNote ? `<div class="alt-airport-box">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : ''}
   `;
 
   const body = document.getElementById('resultsBody');
@@ -2285,6 +2287,34 @@ if (originInputForRegional){
     _originRegionalTimer = setTimeout(() => renderRegionalPopularDestinations(val), 400);
   });
   if (originInputForRegional.value) renderRegionalPopularDestinations(originInputForRegional.value);
+}
+
+/* ==========================================================
+   "ISPLATI LI SE LET PREKO DRUGOG AERODROMA?" — savet u rezultatima
+   pretrage za gradove gde je poznata, realna praksa da je jeftinije/
+   češće leteti preko obližnjeg stranog aerodroma nego iz sopstvenog
+   grada. Uredničko znanje (kao i regionalni signal iznad), ne uživo
+   podaci o cenama — zato namerno bez konkretnih brojki koje bismo
+   morali da dokazujemo.
+========================================================== */
+function matchOriginCityKey(originRaw, keysObject){
+  const norm = normalizeSr((originRaw || '').trim());
+  if (!norm) return null;
+  for (const key in keysObject){
+    if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)){
+      return key;
+    }
+  }
+  return null;
+}
+const ALT_AIRPORT_NOTES = {
+  'novi sad': 'Budimpešta i Beč su oko 2h vožnje od Novog Sada — low-cost aviokompanije tamo često lete češće i jeftinije nego iz Beograda, pa se isplati uporediti pre rezervacije.',
+  'nis': 'Solun i Skoplje su 2-3h vožnje od Niša i imaju širu mrežu low-cost letova nego niški aerodrom — vredi uporediti tu cenu sa letom iz Beograda ili sezonskim čarterom direktno iz Niša.',
+  'kragujevac': 'Beograd je najbliži veliki aerodrom (oko 1h vožnje) — za širi izbor i niže cene, isplati se poći odatle umesto tražiti direktan let iz manjeg grada.'
+};
+function altAirportNoteFor(originRaw){
+  const key = matchOriginCityKey(originRaw, ALT_AIRPORT_NOTES);
+  return key ? ALT_AIRPORT_NOTES[key] : null;
 }
 
 /* ==========================================================

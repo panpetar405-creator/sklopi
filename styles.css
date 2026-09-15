@@ -1050,6 +1050,11 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     padding:12px 14px;font-size:13.5px;color:#8A3420;line-height:1.5;margin-bottom:10px;
 }
 .passport-rule-box b{color:var(--ink);}
+.alt-airport-box{
+    background:rgba(231,211,172,0.25);border:1px solid var(--line);border-radius:8px;
+    padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;margin-top:14px;
+}
+.alt-airport-box b{color:var(--ink);}
 .passport-result{
     margin-top:14px;padding:14px;border-radius:8px;font-size:14px;line-height:1.5;
 }
