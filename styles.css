@@ -53,9 +53,14 @@ a{color:inherit;}
 .chip:focus-visible,.toggle:focus-visible,.avatar:focus-visible,.hamburger:focus-visible{
     outline-offset:3px;
 }
-/* dugmad unutar tamnih panela (builder-summary) — svetliji prsten radi kontrasta */
+/* dugmad unutar tamnih panela (builder-summary) — svetliji prsten radi kontrasta.
+   #calCard je svetle (--paper) pozadine iako je ugnježden unutar .hero, pa je
+   izuzet — svetli --gold-soft prsten na svetloj pozadini pada na ~1.45:1 kontrasta. */
 .builder-summary :focus-visible,.hero :focus-visible{
     outline-color:var(--gold-soft);
+}
+.hero .cal-card :focus-visible{
+    outline-color:var(--gold-text);
 }
 /* ---------- Top bar ---------- */
 .topbar-wrap{
@@ -308,8 +313,10 @@ a{color:inherit;}
 .date-display .dd-range{display:block;font-family:'Fraunces',serif;font-size:21.5px;color:var(--ink);transition:color .15s ease;}
 .date-display .dd-meta{display:block;margin-top:6px;font-size:17px;color:var(--ink-soft);}
 .date-display:hover .dd-range,.date-display[aria-expanded="true"] .dd-range{color:var(--gold-text);}
-.date-display.is-empty .dd-range{color:var(--ink-soft);opacity:0.45;}
-.date-display.is-empty .dd-meta{opacity:0.45;}
+/* placeholder stanje ("— – —") — ink-soft bez dodatne opacity (koja je nosila
+   kontrast do ~2:1, ispod WCAG 4.5:1 minimuma za normalan tekst) */
+.date-display.is-empty .dd-range{color:var(--ink-soft);}
+.date-display.is-empty .dd-meta{color:var(--ink-soft);}
 .date-display.is-empty:hover .dd-range{color:var(--ink-soft);}
 .cal-card{
     display:none;position:absolute;bottom:calc(100% + 10px);top:auto;left:0;right:0;
@@ -343,9 +350,14 @@ a{color:inherit;}
     display:block;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:0.04em;
     color:var(--ink-soft);text-transform:uppercase;
 }
-.cal-grid-body{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px;}
+.cal-grid-body{display:flex;flex-direction:column;row-gap:2px;}
+.cal-grid-row{display:grid;grid-template-columns:repeat(7,1fr);}
 .cal-day{
-    position:relative;height:33px;display:flex;align-items:center;justify-content:center;
+    /* .cal-day je sad <button> za dostupne dane — prvo poništi UA button izgled/font,
+       PA tek onda postavi stvarni izgled (redosled bitan zbog font shorthand-a) */
+    font:inherit;border:none;background-color:transparent;padding:0;margin:0;
+    -webkit-appearance:none;appearance:none;
+    position:relative;height:33px;width:100%;display:flex;align-items:center;justify-content:center;
     font-family:'Fraunces',serif;font-size:14px;color:var(--ink);cursor:pointer;border-radius:50%;
 }
 .cal-day.is-empty{cursor:default;}

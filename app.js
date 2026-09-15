@@ -32,6 +32,7 @@ const I18N = {
     label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
     label_dates:'Od — Do',
     aria_prev_month:'Prethodni mesec', aria_next_month:'Sledeći mesec',
+    aria_today:'danas', aria_cal_dialog:'Izbor datuma putovanja',
     chip_weekend:'Vikend', chip_week:'Nedelja dana', chip_twoweeks:'Dve nedelje',
     cal_wx_legend:'<span class="lg-exact">☀️</span>prognoza (do 16 dana unapred) &nbsp;·&nbsp; <span class="lg-est">☀️</span>procena za dalje datume, po podacima za isti period prošle godine &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
     btn_done:'Gotovo',
@@ -135,6 +136,7 @@ const I18N = {
     label_dest:'Destination', placeholder_dest:'e.g. Athens, Rome, Barcelona',
     label_dates:'From — To',
     aria_prev_month:'Previous month', aria_next_month:'Next month',
+    aria_today:'today', aria_cal_dialog:'Choose travel dates',
     chip_weekend:'Weekend', chip_week:'One week', chip_twoweeks:'Two weeks',
     cal_wx_legend:'<span class="lg-exact">☀️</span>forecast (up to 16 days ahead) &nbsp;·&nbsp; <span class="lg-est">☀️</span>estimate for later dates, based on the same period last year &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
     btn_done:'Done',
@@ -357,6 +359,12 @@ function pickBestLocationMatch(results, query){
   function fmtShort(d){
     return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'short'}).replace('.', '');
   }
+  // Pun, čitljiv opis datuma za screen reader (aria-label na svakom danu) —
+  // npr. "17. oktobar 2026, subota".
+  function fmtFullLabel(d){
+    const s = d.toLocaleString('sr-Latn', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
   function sameDay(a,b){ return !!a && !!b && a.getTime() === b.getTime(); }
   function nightsCount(a,b){ return Math.max(1, Math.round((b - a) / 86400000)); }
   function nightsWord(n){ return n === 1 ? t('night') : t('nights'); }
@@ -539,26 +547,93 @@ function pickBestLocationMatch(results, query){
     updateDisplay();
   }
 
-  function buildMonthGrid(year, month){
+  function buildMonthGrid(year, month, monthLabelText){
     const first = new Date(year, month, 1);
     const startOffset = (first.getDay() + 6) % 7; // ponedeljak = 0
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    let head = '<div class="cal-grid-head">' + DAY_NAMES.map(d => '<span>' + d + '</span>').join('') + '</div>';
-    let body = '<div class="cal-grid-body">';
-    for (let i = 0; i < startOffset; i++) body += '<span class="cal-day is-empty"></span>';
+    const head = '<div class="cal-grid-head" role="row">' +
+      DAY_NAMES.map(d => '<span role="columnheader" aria-hidden="true">' + d + '</span>').join('') +
+      '</div>';
+
+    // Skupi sve ćelije (prazan razmak + dani), pa ih iseci na nedelje od po 7
+    // radi role="row" (potrebno za role="grid" navigaciju strelicama / SR).
+    const cells = [];
+    for (let i = 0; i < startOffset; i++) cells.push('<span class="cal-day is-empty" role="gridcell" aria-hidden="true"></span>');
     for (let day = 1; day <= daysInMonth; day++){
       const d = new Date(year, month, day);
+      const iso = toISODate(d);
+      const isDisabled = d < today;
+      const isToday = sameDay(d, today);
+      const isSelected = sameDay(d, selStart) || sameDay(d, selEnd) || (selStart && selEnd && d > selStart && d < selEnd);
       const classes = ['cal-day'];
-      if (d < today) classes.push('is-disabled');
+      if (isDisabled) classes.push('is-disabled');
       if (sameDay(d, selStart)) classes.push('range-start');
       if (sameDay(d, selEnd)) classes.push('range-end');
       if (selStart && selEnd && d > selStart && d < selEnd) classes.push('range-mid');
-      if (sameDay(d, today)) classes.push('is-today');
-      body += '<span class="' + classes.join(' ') + '" data-date="' + toISODate(d) + '">' + day + '</span>';
+      if (isToday) classes.push('is-today');
+      const label = fmtFullLabel(d) + (isToday ? ', ' + t('aria_today') : '');
+      if (isDisabled){
+        // Prošli datum — nije klikabilan, pa ostaje neinteraktivan span,
+        // ali i dalje sa aria-label/aria-disabled radi screen readera.
+        cells.push('<span class="' + classes.join(' ') + '" role="gridcell" aria-disabled="true" aria-label="' + escapeHtml(label) + '">' + day + '</span>');
+      } else {
+        cells.push('<button type="button" class="' + classes.join(' ') + '" role="gridcell" data-date="' + iso + '" tabindex="-1" aria-selected="' + (isSelected ? 'true' : 'false') + '"' + (isToday ? ' aria-current="date"' : '') + ' aria-label="' + escapeHtml(label) + '">' + day + '</button>');
+      }
     }
-    body += '</div>';
-    return '<div class="cal-grid">' + head + body + '</div>';
+    while (cells.length % 7 !== 0) cells.push('<span class="cal-day is-empty" role="gridcell" aria-hidden="true"></span>');
+
+    let body = '';
+    for (let i = 0; i < cells.length; i += 7){
+      body += '<div class="cal-grid-row" role="row">' + cells.slice(i, i + 7).join('') + '</div>';
+    }
+    body = '<div class="cal-grid-body">' + body + '</div>';
+
+    return '<div class="cal-grid" role="grid" aria-label="' + escapeHtml(monthLabelText) + '">' + head + body + '</div>';
+  }
+
+  // Datum koji trenutno "nosi" roving tabindex/fokus u gridu — prati se
+  // odvojeno od selStart/selEnd jer se fokus tokom navigacije strelicama
+  // može naći na danu koji uopšte nije (još) selektovan.
+  let activeDate = null;
+
+  function selectDate(d){
+    if (!selStart || (selStart && selEnd)){
+      selStart = d; selEnd = null;
+    } else if (d < selStart){
+      selStart = d;
+    } else {
+      selEnd = d;
+    }
+    activeDate = d;
+    render();
+    if (selStart && selEnd) updateDisplay();
+    focusDayButton(d);
+  }
+
+  // Fokusira dugme za dati datum AKO je trenutno vidljivo (na mobilnom je
+  // drugi mesec u dvomesečnom prikazu sakriven preko CSS-a — display:none
+  // elementi se ne mogu fokusirati). Vraća true/false radi fallback logike.
+  function focusDayButton(d){
+    const btn = calGrids.querySelector('.cal-day[data-date="' + toISODate(d) + '"]');
+    if (btn && btn.offsetParent !== null){
+      calGrids.querySelectorAll('.cal-day[data-date]').forEach(el => el.setAttribute('tabindex', '-1'));
+      btn.setAttribute('tabindex', '0');
+      btn.focus();
+      return true;
+    }
+    return false;
+  }
+
+  // Posle svakog render()-a DOM se potpuno zameni (innerHTML), pa roving
+  // tabindex treba ponovo postaviti na "aktivni" dan (fokus/selekciju),
+  // a na sve ostale -1 — inače bi Tab uvek kretao od prvog dana u mesecu.
+  function syncRovingTabindex(){
+    const pref = activeDate || selStart || today;
+    let target = calGrids.querySelector('.cal-day[data-date="' + toISODate(pref) + '"]:not(.is-disabled)');
+    if (!target) target = calGrids.querySelector('.cal-day[data-date]:not(.is-disabled)');
+    calGrids.querySelectorAll('.cal-day[data-date]').forEach(el => el.setAttribute('tabindex', '-1'));
+    if (target) target.setAttribute('tabindex', '0');
   }
 
   function render(){
@@ -568,26 +643,75 @@ function pickBestLocationMatch(results, query){
       const name = new Date(y, m, 1).toLocaleString('sr-Latn', {month:'long'});
       return name.charAt(0).toUpperCase() + name.slice(1) + ' ' + y;
     };
-    calMonths.innerHTML = '<span>' + monthLabel(viewYear, viewMonth) + '</span><span>' + monthLabel(nextY, nextM) + '</span>';
-    calGrids.innerHTML = buildMonthGrid(viewYear, viewMonth) + buildMonthGrid(nextY, nextM);
+    const label1 = monthLabel(viewYear, viewMonth), label2 = monthLabel(nextY, nextM);
+    calMonths.innerHTML = '<span>' + label1 + '</span><span>' + label2 + '</span>';
+    calGrids.innerHTML = buildMonthGrid(viewYear, viewMonth, label1) + buildMonthGrid(nextY, nextM, label2);
     calGrids.querySelectorAll('.cal-day:not(.is-empty):not(.is-disabled)').forEach(el => {
-      el.addEventListener('click', () => {
-        const d = parseISODate(el.dataset.date);
-        if (!selStart || (selStart && selEnd)){
-          selStart = d; selEnd = null;
-        } else if (d < selStart){
-          selStart = d;
-        } else {
-          selEnd = d;
-        }
-        render();
-        if (selStart && selEnd) updateDisplay();
-      });
+      el.addEventListener('click', () => selectDate(parseISODate(el.dataset.date)));
     });
+    syncRovingTabindex();
     paintWeather();
   }
 
+  // ---- Navigacija tastaturom po mreži datuma (WAI-ARIA APG "grid" obrazac) ----
+  // strelice = dan/nedelja, Home/End = početak/kraj nedelje, PageUp/PageDown =
+  // prethodni/sledeći mesec (sa Shift = godina), Enter/Space = izbor datuma.
   const isMobileCal = () => window.matchMedia('(max-width:760px)').matches;
+
+  function isDateInView(d){
+    if (d.getFullYear() === viewYear && d.getMonth() === viewMonth) return true;
+    if (isMobileCal()) return false; // drugi mesec je sakriven na mobilnom
+    const nextM = viewMonth === 11 ? 0 : viewMonth + 1;
+    const nextY = viewMonth === 11 ? viewYear + 1 : viewYear;
+    return d.getFullYear() === nextY && d.getMonth() === nextM;
+  }
+
+  function goToDate(d){
+    if (d < today) d = new Date(today); // ne dozvoli fokus na onemogućen (prošli) dan
+    activeDate = d;
+    if (!isDateInView(d)){
+      viewYear = d.getFullYear();
+      viewMonth = d.getMonth();
+      render();
+    }
+    if (!focusDayButton(d)){
+      const fallback = calGrids.querySelector('.cal-day[data-date]:not(.is-disabled)');
+      if (fallback){ fallback.setAttribute('tabindex', '0'); fallback.focus(); }
+    }
+  }
+
+  calGrids.addEventListener('keydown', (e) => {
+    const cellBtn = e.target.closest('.cal-day[data-date]');
+    if (!cellBtn) return;
+    const current = parseISODate(cellBtn.dataset.date);
+    let next = null;
+    switch (e.key){
+      case 'ArrowRight': next = new Date(current); next.setDate(next.getDate() + 1); break;
+      case 'ArrowLeft':  next = new Date(current); next.setDate(next.getDate() - 1); break;
+      case 'ArrowDown':  next = new Date(current); next.setDate(next.getDate() + 7); break;
+      case 'ArrowUp':    next = new Date(current); next.setDate(next.getDate() - 7); break;
+      case 'Home': { const dow = (current.getDay() + 6) % 7; next = new Date(current); next.setDate(next.getDate() - dow); break; }
+      case 'End':  { const dow = (current.getDay() + 6) % 7; next = new Date(current); next.setDate(next.getDate() + (6 - dow)); break; }
+      case 'PageUp':
+        next = new Date(current);
+        if (e.shiftKey) next.setFullYear(next.getFullYear() - 1); else next.setMonth(next.getMonth() - 1);
+        break;
+      case 'PageDown':
+        next = new Date(current);
+        if (e.shiftKey) next.setFullYear(next.getFullYear() + 1); else next.setMonth(next.getMonth() + 1);
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        selectDate(current);
+        return;
+      default:
+        return;
+    }
+    e.preventDefault();
+    goToDate(next);
+  });
+
   let calScrollY = 0;
   function lockPageScroll(){
     calScrollY = window.scrollY;
@@ -609,13 +733,19 @@ function pickBestLocationMatch(results, query){
   function openCal(){
     viewYear = today.getFullYear();
     viewMonth = today.getMonth();
+    activeDate = (selStart && selStart >= today) ? selStart : today;
     render();
     calCard.classList.add('open');
     if (calBackdrop) calBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
     if (isMobileCal()) lockPageScroll();
+    // fokus tastature/screen readera ide direktno na selektovani (ili
+    // današnji) dan — bez ovoga dijalog se otvara vizuelno, ali korisnik
+    // koji ne koristi miša nema signal da se nešto promenilo.
+    focusDayButton(activeDate);
   }
   function closeCal(shouldCommit){
+    const wasOpen = calCard.classList.contains('open');
     calCard.classList.remove('open');
     if (calBackdrop) calBackdrop.classList.remove('open');
     displayBtn.setAttribute('aria-expanded', 'false');
@@ -625,6 +755,11 @@ function pickBestLocationMatch(results, query){
     } else if (!selStart || !selEnd){
       selStart = parseISODate(hiddenFrom.value);
       selEnd = parseISODate(hiddenTo.value);
+    }
+    // fokus se vraća na dugme koje je otvorilo dijalog — inače se gubi
+    // (npr. posle Escape) i tastaturni/SR korisnik "ispadne" iz konteksta.
+    if (wasOpen && document.activeElement && calCard.contains(document.activeElement)){
+      displayBtn.focus();
     }
   }
 
@@ -671,6 +806,20 @@ function pickBestLocationMatch(results, query){
     });
   });
   calCard.addEventListener('click', (e) => e.stopPropagation());
+  // Focus trap — pošto je calCard role="dialog" aria-modal="true", Tab ne
+  // sme da izađe u pozadinski sadržaj dok je kalendar otvoren.
+  calCard.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusables = Array.from(calCard.querySelectorAll('button:not([tabindex="-1"]), [tabindex="0"]'))
+      .filter(el => el.offsetParent !== null);
+    if (!focusables.length) return;
+    const first = focusables[0], last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first){
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last){
+      e.preventDefault(); first.focus();
+    }
+  });
 
   document.addEventListener('click', () => {
     if (calCard.classList.contains('open')) closeCal(true);

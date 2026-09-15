@@ -113,14 +113,14 @@ playPromise.catch(function(){ fallbackToImage(); });
 </div>
 <div class="stub stub-dates" id="dateStub">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
-<button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
+<button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
 <span class="dd-range" id="dateDisplayText">— – —</span>
 <span class="dd-meta" id="dateNightsText">—</span>
 </button>
 <input type="hidden" id="dateFrom" value="2026-10-01">
 <input type="hidden" id="dateTo" value="2026-10-05">
 <div class="cal-backdrop" id="calBackdrop"></div>
-<div class="cal-card" id="calCard">
+<div class="cal-card" id="calCard" role="dialog" aria-modal="true" data-i18n-aria-label="aria_cal_dialog" aria-label="Izbor datuma putovanja">
 <div class="cal-inner">
 <div class="cal-head">
 <button type="button" class="cal-nav" id="calPrev" data-i18n-aria-label="aria_prev_month" aria-label="Prethodni mesec">
@@ -138,9 +138,9 @@ playPromise.catch(function(){ fallbackToImage(); });
 <button type="button" class="chip" data-quick="twoweeks" data-i18n="chip_twoweeks">Dve nedelje</button>
 </div>
 <p class="cal-wx-legend" data-i18n-html="cal_wx_legend"><span class="lg-exact">☀️</span>prognoza (do 16 dana unapred) &nbsp;·&nbsp; <span class="lg-est">☀️</span>procena za dalje datume, po podacima za isti period prošle godine &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span></p>
-<p class="cal-wx-status" id="calWxStatus" style="display:none"></p>
+<p class="cal-wx-status" id="calWxStatus" style="display:none" role="status" aria-live="polite"></p>
 <div class="cal-foot">
-<span class="cal-range-label" id="calRangeLabel"></span>
+<span class="cal-range-label" id="calRangeLabel" role="status" aria-live="polite"></span>
 <button type="button" class="btn-primary cal-apply" id="calApply" data-i18n="btn_done">Gotovo</button>
 </div>
 </div>
