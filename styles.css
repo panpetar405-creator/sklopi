@@ -1204,9 +1204,9 @@ footer{
 .hero-inner > form.ticket{order:4;}
 .hero-inner > .ticket-submit-row{order:5;}
 .hero-inner > .hero-spacer{order:6;}
-.ticket-submit-row{margin:10px 0 8px;}
+.ticket-submit-row{margin:2px 0 8px;}
 .btn-search-main{max-width:none;}
-.ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:20px;}
+.ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:8px;}
 .ticket .stub{padding:20px 16px;border-right:none;border-bottom:1px dashed var(--line-form);}
 .ticket .stub:last-of-type{border-bottom:none;}
 .ticket .stub label{margin-bottom:4px;}
