@@ -312,6 +312,7 @@ playPromise.catch(function(){ fallbackToImage(); });
 <button type="button" class="chip on" data-value="small" data-i18n="chip_small_car">Mali auto</button>
 <button type="button" class="chip" data-value="suv" data-i18n="chip_suv">SUV</button>
 </div>
+<button type="button" class="passport-check-btn" id="greenCardCheckBtn" style="margin-top:10px;font-size:13px;padding:8px 14px;" data-i18n="green_card_check_link">🪪 Proveri da li ti treba zelena karta za ovu rutu</button>
 </div>
 <div class="builder-group">
 <label class="builder-label"><span class="builder-ic ic-activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></span> <span data-i18n="builder_activities_label">Aktivnosti</span></label>
@@ -561,13 +562,22 @@ playPromise.catch(function(){ fallbackToImage(); });
 <div id="passportResult"></div>
 <p class="alert-modal-disclaimer" data-i18n="passport_modal_disclaimer">⚠️ Opšta pravila po zemlji, radi orijentacije — pred put uvek dodatno proveri na sajtu ambasade/konzulata ili sa aviokompanijom.</p>
 </div>
+<div class="alert-modal-backdrop" id="greenCardModalBackdrop"></div>
+<div class="alert-modal" id="greenCardModal" role="dialog" aria-modal="true" aria-labelledby="greenCardModalTitle">
+<button type="button" class="alert-modal-close" id="greenCardModalClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
+<div class="alert-modal-ic">🪪</div>
+<h3 id="greenCardModalTitle" data-i18n="green_card_modal_title">Treba li ti zelena karta za auto?</h3>
+<p class="alert-modal-sub" data-i18n="green_card_modal_sub">Zelena karta je međunarodna potvrda auto-osiguranja. Srbija ima sporazume sa većinom evropskih zemalja pa karton nije potreban, ali za neke destinacije i dalje jeste — i plaća se posebno kod osiguravača, van cene rentakara.</p>
+<div class="alert-modal-row" id="greenCardRuleBox"></div>
+<p class="alert-modal-disclaimer" data-i18n="green_card_modal_disclaimer">⚠️ Opšte pravilo za vozila registrovana u Srbiji, radi orijentacije — pred put uvek potvrdi kod svog osiguravača ili AMSS-a, jer se sporazumi povremeno menjaju.</p>
+</div>
 <div id="toast"><div class="dot"></div><span id="toastText"></span></div>
 <a href="https://wa.me/38268578361?text=Zdravo%2C%20imam%20pitanje%20o%20SKLOPI%20putovanju" target="_blank" rel="noopener" class="whatsapp-fab" id="whatsappFab" data-i18n-aria-label="whatsapp_aria" aria-label="Piši nam na WhatsApp">
 <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"/></svg>
 </a>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 <script src="cookies.js"></script>
 </body>
 </html>

@@ -120,6 +120,12 @@ const I18N = {
     passport_modal_label_expiry:'Do kog datuma važi tvoj pasoš?',
     passport_modal_btn:'Proveri',
     passport_modal_disclaimer:'⚠️ Opšta pravila po zemlji, radi orijentacije — pred put uvek dodatno proveri na sajtu ambasade/konzulata ili sa aviokompanijom.',
+    green_card_check_link:'🪪 Proveri da li ti treba zelena karta za ovu rutu',
+    green_card_modal_title:'Treba li ti zelena karta za auto?',
+    green_card_modal_sub:'Zelena karta je međunarodna potvrda auto-osiguranja. Srbija ima sporazume sa većinom evropskih zemalja pa karton nije potreban, ali za neke destinacije i dalje jeste — i plaća se posebno kod osiguravača, van cene rentakara.',
+    green_card_modal_disclaimer:'⚠️ Opšte pravilo za vozila registrovana u Srbiji, radi orijentacije — pred put uvek potvrdi kod svog osiguravača ili AMSS-a, jer se sporazumi povremeno menjaju.',
+    green_card_dest_missing:'Prvo upiši kuda putuješ u polje „Destinacija“ iznad, pa se vrati ovde — pravilo zavisi od zemlje.',
+    green_card_scope_note:'Odnosi se na vožnju sopstvenim ili u Srbiji iznajmljenim automobilom do granice — ne na rentakar koji preuzimaš tek na destinaciji (fly & drive).',
     // ---- dinamički stringovi (koristi ih JS preko t()) ----
     ac_searching:'Tražim…', ac_no_results:'Nema predloga za taj naziv.',
     night:'noć', nights:'noći', passenger:'putnik', passengers:'putnika',
@@ -225,6 +231,12 @@ const I18N = {
     passport_modal_label_expiry:'When does your passport expire?',
     passport_modal_btn:'Check',
     passport_modal_disclaimer:'⚠️ General rules per country, for guidance only — always double-check with the embassy/consulate or your airline before you travel.',
+    green_card_check_link:'🪪 Check if you need a Green Card for this route',
+    green_card_modal_title:'Do you need a Green Card for the car?',
+    green_card_modal_sub:'The Green Card is an international proof of car insurance. Serbia has agreements with most European countries so it isn\'t needed, but some destinations still require it — and it\'s paid separately from the rental price, through your insurer.',
+    green_card_modal_disclaimer:'⚠️ General rule for Serbian-registered vehicles, for guidance only — always confirm with your insurer or AMSS before traveling, as agreements change from time to time.',
+    green_card_dest_missing:'First enter where you\'re going in the "Destination" field above, then come back here — the rule depends on the country.',
+    green_card_scope_note:'Applies to driving your own or a Serbia-rented car across the border — not to a rental car picked up at your destination (fly & drive).',
     ac_searching:'Searching…', ac_no_results:'No suggestions for that name.',
     night:'night', nights:'nights', passenger:'traveler', passengers:'travelers',
     fuel_estimate:'Fuel (estimate)', tolls_estimate:'Tolls (estimate)', insurance:'Insurance', esim_internet:'eSIM / internet',
@@ -1426,6 +1438,51 @@ function getPassportRule(country, destVal){
   }
   base.visaNote = visaNote;
   return base;
+}
+/* ---- Provera da li je za vožnju automobilom (sopstvenim ili u Srbiji
+   iznajmljenim) do odabrane destinacije potrebna "zelena karta" —
+   međunarodna potvrda auto-osiguranja.
+   Srbija je od 2012. članica Multilateralnog garantnog sporazuma Sistema
+   zelene karte, pa karton NIJE potreban za vožnju u zemlje EU/Šengena,
+   Švajcarsku, Lihtenštajn, Norvešku, Island i Andoru (SCHENGEN_COUNTRIES
+   gore), kao ni za Crnu Goru (bilateralni sporazum sa Udruženjem
+   osiguravača Srbije) i Bosnu i Hercegovinu (BiH pristupila sporazumu
+   19.10.2020, ranije bio potreban). I DALJE je obavezna za Severnu
+   Makedoniju (nije potpisnica) i za zemlje van kruga zelene karte
+   (Rusija, Belorusija, Ukrajina, Moldavija, Turska, Izrael, Iran,
+   Albanija, Tunis, Maroko). Izvor: Udruženje osiguravača Srbije / AMSS. */
+const GREEN_CARD_NOT_NEEDED = new Set([
+  ...SCHENGEN_COUNTRIES,
+  'Crna Gora', 'Bosna i Hercegovina'
+]);
+const GREEN_CARD_NEEDED_NOTES = {
+  'Severna Makedonija':'Za Severnu Makedoniju je zelena karta i dalje obavezna — nije potpisnica Multilateralnog sporazuma sa Srbijom.',
+  'Turska':'Za Tursku je zelena karta obavezna.',
+  'Albanija':'Za Albaniju je zelena karta obavezna.',
+  'Rusija':'Za Rusiju je zelena karta obavezna.',
+  'Belorusija':'Za Belorusiju je zelena karta obavezna.',
+  'Ukrajina':'Za Ukrajinu je zelena karta obavezna.',
+  'Moldavija':'Za Moldaviju je zelena karta obavezna.',
+  'Izrael':'Za Izrael je zelena karta obavezna.',
+  'Iran':'Za Iran je zelena karta obavezna.',
+  'Maroko':'Za Maroko je zelena karta obavezna.',
+  'Tunis':'Za Tunis je zelena karta obavezna.'
+};
+function getGreenCardRule(country){
+  const c = (country || '').trim();
+  if (!c){
+    return {status:'unknown', label:'', confident:false,
+      why:'Ne znamo tačnu zemlju za unetu destinaciju, pa ne možemo da proverimo pravilo o zelenoj karti.'};
+  }
+  if (GREEN_CARD_NOT_NEEDED.has(c)){
+    return {status:'ok', label:c, confident:true,
+      why:'Za ' + c + ' zelena karta NIJE potrebna za vozila registrovana u Srbiji — registarska tablica je dovoljan dokaz osiguranja.'};
+  }
+  if (GREEN_CARD_NEEDED_NOTES[c]){
+    return {status:'needed', label:c, confident:true, why: GREEN_CARD_NEEDED_NOTES[c]};
+  }
+  return {status:'unknown', label:c, confident:false,
+    why:'Nemamo potvrđeno pravilo za „' + c + '“ — proveri kod svog osiguravača da li ti treba zelena karta pre polaska.'};
 }
 function resolveCountryForDestination(destValue){
   if (!destValue || !destValue.trim()) return '';
@@ -3435,6 +3492,49 @@ function runPassportCheck(){
       + '“ traži da važi bar do ' + fmtDateSr(requiredExpiry) + '. Vreme je da obnoviš pasoš — MUP izdaje redovan za oko 30 dana, a uz dokaz o putovanju (kartu ili rezervaciju) moguća je i ubrzana procedura za 48h.';
   }
 }
+/* ---- Modal: da li je za auto potrebna zelena karta na odabranoj relaciji ---- */
+function openGreenCardModal(){
+  const destVal = (document.getElementById('dest') || {}).value || '';
+  const box = document.getElementById('greenCardRuleBox');
+  if (!destVal.trim()){
+    if (box){
+      box.innerHTML = '<div class="passport-rule-box">'
+        + '<b>Destinacija nije uneta</b>'
+        + '<br>' + escapeHtml(t('green_card_dest_missing'))
+        + '</div>';
+    }
+    document.getElementById('greenCardModalBackdrop').classList.add('open');
+    document.getElementById('greenCardModal').classList.add('open');
+    return;
+  }
+  const country = resolveCountryForDestination(destVal);
+  const rule = getGreenCardRule(country);
+  if (box){
+    const statusBox = rule.status === 'needed'
+      ? '<div class="passport-visa-box">🪪❗ <b>Zelena karta je obavezna</b><br>' + escapeHtml(rule.why) + '</div>'
+      : rule.status === 'ok'
+        ? '<div class="passport-result ok" style="margin-top:0;">✅ ' + escapeHtml(rule.why) + '</div>'
+        : '<div class="passport-rule-box"><b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b><br>' + escapeHtml(rule.why) + '</div>';
+    box.innerHTML = statusBox
+      + '<div class="passport-rule-box" style="margin-top:10px;">'
+      + (rule.status !== 'unknown' ? '<b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b><br>' : '')
+      + '<span style="opacity:0.75">' + escapeHtml(t('green_card_scope_note')) + '</span>'
+      + '</div>';
+  }
+  document.getElementById('greenCardModalBackdrop').classList.add('open');
+  document.getElementById('greenCardModal').classList.add('open');
+}
+function closeGreenCardModal(){
+  document.getElementById('greenCardModalBackdrop').classList.remove('open');
+  document.getElementById('greenCardModal').classList.remove('open');
+}
+const greenCardCheckBtn = document.getElementById('greenCardCheckBtn');
+if (greenCardCheckBtn) greenCardCheckBtn.addEventListener('click', openGreenCardModal);
+const greenCardModalClose = document.getElementById('greenCardModalClose');
+if (greenCardModalClose) greenCardModalClose.addEventListener('click', closeGreenCardModal);
+const greenCardModalBackdrop = document.getElementById('greenCardModalBackdrop');
+if (greenCardModalBackdrop) greenCardModalBackdrop.addEventListener('click', closeGreenCardModal);
+
 const passportCheckBtn = document.getElementById('passportCheckBtn');
 if (passportCheckBtn) passportCheckBtn.addEventListener('click', openPassportModal);
 const passportModalClose = document.getElementById('passportModalClose');
