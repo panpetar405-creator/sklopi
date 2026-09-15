@@ -1339,6 +1339,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
 
   const head = document.getElementById('resultsHead');
   const altNote = altAirportNoteFor(originCode);
+  const destNote = destAirportNoteFor(dest);
   head.innerHTML = `
     <div class="status-banner">
       <div class="status-left">
@@ -1351,6 +1352,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
       </div>
     </div>
     ${altNote ? `<div class="alt-airport-box">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : ''}
+    ${destNote ? `<div class="alt-airport-box">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : ''}
   `;
 
   const body = document.getElementById('resultsBody');
@@ -2366,6 +2368,34 @@ const ALT_AIRPORT_NOTES = {
 function altAirportNoteFor(originRaw){
   const key = matchOriginCityKey(originRaw, ALT_AIRPORT_NOTES);
   return key ? ALT_AIRPORT_NOTES[key] : null;
+}
+
+/* ==========================================================
+   "PAZI NA KOJI AERODROM SLEŽEŠ" — uredničke napomene za evropske
+   gradove gde low-cost aviokompanije često slede na aerodrom daleko
+   od centra grada (isti pod-brend imena grada, ali sat-dva vožnje
+   dalje). Namerno SAMO Evropa — stabilna, opštepoznata geografska
+   činjenica, ne uživo podatak, pa je bezbedno da bude urednička.
+========================================================== */
+const DEST_AIRPORT_NOTES = {
+  'london': 'London ima više aerodroma — Hitrou je najbliži centru, ali low-cost kompanije često slede na Stansted ili Luton, 45-75 minuta dalje od grada. Proveri tačan aerodrom pre nego što planiraš prevoz do centra.',
+  'pariz': 'Pariz ima tri aerodroma — Šarl de Gol i Orli su blizu grada, ali Ryanair i slične kompanije često koriste Bove (Beauvais), oko 85km severno, sa transferom od preko sat vremena do centra.',
+  'brisel': 'Brisel ima glavni aerodrom blizu grada, ali low-cost letovi često slede u Šarlroa, oko 50km južnije — računaj dodatni sat vožnje i trošak prevoza do centra.',
+  'frankfurt': 'Frankfurt ima dva aerodroma pod sličnim imenom — glavni je blizu grada, dok je Han (Hahn) oko 120km zapadno, bliže Luksemburgu nego Frankfurtu. Ryanair često leti baš tamo, sa transferom i do 2h.',
+  'milano': 'Milano ima tri aerodroma — Malpensa i Linate su praktični, ali Ryanair često leti u Bergamo, oko 45km od centra, sa transferom od preko sat vremena.',
+  'barselona': 'Barselona ima glavni aerodrom blizu grada (El Prat), ali neki low-cost letovi slede u Đironu ili Reus, stotinak kilometara dalje, sa transferom od preko sat vremena.',
+  'rim': 'Rim ima dva aerodroma — Fjumičino (glavni, malo dalji od centra) i Čampino (bliži centru, manji, koriste ga neke low-cost kompanije).',
+  'stokholm': 'Stokholm ima glavni aerodrom Arlanda, ali Ryanair često leti u Skavstu, oko 100km južnije — transfer do centra traje i do sat i po.',
+  'oslo': 'Oslo ima glavni aerodrom Gardermoen, ali neki low-cost letovi ka "Oslu" slede u Torp kod Sandefjorda, oko 110km južnije — transfer je i do 2h.',
+  'kopenhagen': 'Neki letovi oglašeni ka "Kopenhagenu" zapravo slede u Malme, u Švedskoj, s druge strane mosta — računaj dodatno vreme za prelazak i eventualnu graničnu kontrolu.'
+};
+function destAirportNoteFor(destRaw){
+  const norm = normalizeSr((destRaw || '').trim());
+  if (!norm) return null;
+  for (const key in DEST_AIRPORT_NOTES){
+    if (norm === key || norm.startsWith(key)) return DEST_AIRPORT_NOTES[key];
+  }
+  return null;
 }
 
 /* ==========================================================
