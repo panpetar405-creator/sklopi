@@ -1409,12 +1409,25 @@ const VISA_REQUIRED_NOTES = {
   'SAD':'Državljanima Srbije je potrebna prava viza za SAD (obično turistička B1/B2) — ovo nije samo provera pasoša. Traži se obavezan intervju u ambasadi u Beogradu, taksa oko 185 USD, a na termin se čeka od par nedelja do više meseci u zavisnosti od perioda. Prijavu treba podneti mnogo pre kupovine nepovratnih karata.',
   'Kanada':'Državljanima Srbije je potrebna prava viza za Kanadu (Kanada nema eTA olakšicu za srpski pasoš) — ovo nije samo provera pasoša. Obrada uključuje biometriju i obično traje oko 2-4 nedelje, pa prijavu treba podneti mnogo pre kupovine nepovratnih karata.'
 };
+/* Regionalne destinacije za koje državljanima Srbije pasoš UOPŠTE nije
+   potreban — ulazi se samo sa važećom biometrijskom ličnom kartom (do 90
+   dana boravka u periodu od 6 meseci), na osnovu regionalnog sporazuma o
+   tzv. "mini Šengenu" (Srbija–Severna Makedonija–Albanija od 2020/2021,
+   Crna Gora i BiH imaju istovetnu praksu sa ličnom kartom). Ako se ovo ne
+   prepozna, korisnik dobija generičko "verovatno 6 meseci" upozorenje koje
+   je i pogrešno i nepotrebno zabrinjavajuće za ove destinacije. */
+const REGIONAL_ID_CARD_COUNTRIES = new Set([
+  'Crna Gora', 'Bosna i Hercegovina', 'Severna Makedonija', 'Albanija'
+]);
 function getPassportRule(country, destVal){
   const c = (country || '').trim();
   const fallbackName = (destVal || '').trim();
   const visaNote = VISA_REQUIRED_NOTES[c] || null;
   let base;
-  if (SCHENGEN_COUNTRIES.has(c)){
+  if (REGIONAL_ID_CARD_COUNTRIES.has(c)){
+    base = {basis:'none', months:null, days:null, label:c, confident:true, noPassportNeeded:true,
+      why:'Za ' + c + ' pasoš ti uopšte nije potreban — državljani Srbije ulaze samo sa važećom biometrijskom ličnom kartom (do 90 dana boravka u periodu od 6 meseci), na osnovu regionalnog sporazuma o slobodnom kretanju.'};
+  } else if (SCHENGEN_COUNTRIES.has(c)){
     base = {basis:'to', months:3, days:null, label:c || 'Šengen zona', confident:true,
       why:'Za Šengen zonu pasoš mora da važi još najmanje 3 meseca nakon planiranog datuma povratka.'};
   } else if (c === 'Turska'){
@@ -3444,7 +3457,14 @@ function openPassportModal(){
       + '</div>';
   }
   const resultEl = document.getElementById('passportResult');
-  if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
+  if (rule.noPassportNeeded){
+    if (expiryInput) expiryInput.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
+    if (resultEl){
+      resultEl.className = 'passport-result ok';
+      resultEl.innerHTML = '✅ ' + escapeHtml(rule.why);
+    }
+  } else if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
   if (submitBtn) submitBtn.dataset.country = country;
   document.getElementById('passportModalBackdrop').classList.add('open');
   document.getElementById('passportModal').classList.add('open');
@@ -3463,13 +3483,18 @@ function runPassportCheck(){
     return;
   }
   const expiryVal = (document.getElementById('passportExpiryInput') || {}).value;
+  const country = resolveCountryForDestination(destVal);
+  const rule = getPassportRule(country, destVal);
+  if (rule.noPassportNeeded){
+    resultEl.className = 'passport-result ok';
+    resultEl.innerHTML = '✅ ' + escapeHtml(rule.why);
+    return;
+  }
   if (!expiryVal){
     resultEl.className = 'passport-result warn';
     resultEl.innerHTML = 'Unesi datum isteka pasoša da bismo mogli da proverimo.';
     return;
   }
-  const country = resolveCountryForDestination(destVal);
-  const rule = getPassportRule(country, destVal);
   const fromISO = (document.getElementById('dateFrom') || {}).value;
   const toISO = (document.getElementById('dateTo') || {}).value;
   const basisISO = rule.basis === 'from' ? fromISO : toISO;
