@@ -2193,6 +2193,104 @@ document.querySelectorAll('.popular-dest-card').forEach(card => {
 });
 
 /* ==========================================================
+   REGIONALNI SIGNAL — "Popularno kod putnika iz [tvog grada]"
+   umesto univerzalne top-liste. Ovo je uredničko, ručno sastavljeno
+   po realnim navikama iz svakog grada (aerodrom, sezonski čarteri,
+   praksa letenja preko bližeg stranog aerodroma) — NIJE uživo
+   statistika i ne pretvaramo se da jeste. Ako grad iz polja "Polazak"
+   nije prepoznat, ostaje originalni (Beograd-orijentisani) SEO sadržaj
+   iz HTML-a, bez ikakve promene.
+========================================================== */
+const REGIONAL_POPULAR_DESTINATIONS = {
+  'beograd': { genitiv:'Beograda', cards: [
+    {dest:'Atina', name:'Atina, Grčka', desc:'Antika, ostrvski trajekti i vrhunska kuhinja — česti direktni letovi iz Beograda.'},
+    {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja — kratak let, grad se obilazi peške.'},
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Gaudijeva arhitektura, plaža i tapas bari — omiljena kombinacija grada i mora.'},
+    {dest:'Budva', name:'Budva, Crna Gora', desc:'Najbliže more autom — 4-5h vožnje, stara varoš i duge plaže.'},
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, bazari i Bosfor — pristupačan izlet van sezone.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.'}
+  ]},
+  'novi sad': { genitiv:'Novog Sada', cards: [
+    {dest:'Budimpešta', name:'Budimpešta, Mađarska', desc:'Oko 2h vožnje — low-cost letovi odatle su često jeftiniji nego iz Beograda.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Direktan voz i autobus iz Novog Sada — praktičan gradski izlet bez presedanja.'},
+    {dest:'Atina', name:'Atina, Grčka', desc:'Za more i ostrva i dalje se najisplativije leti preko Beograda.'},
+    {dest:'Budva', name:'Budva, Crna Gora', desc:'Najbliže more autom — stara varoš i duge plaže.'},
+    {dest:'Zagreb', name:'Zagreb, Hrvatska', desc:'Kratka vožnja, praktičan vikend izlet uz adventski sadržaj zimi.'}
+  ]},
+  'nis': { genitiv:'Niša', cards: [
+    {dest:'Solun', name:'Solun, Grčka', desc:'Oko 3h vožnje — najbliže more za vikend izlet, bez potrebe za letom.'},
+    {dest:'Skoplje', name:'Skoplje, Sev. Makedonija', desc:'Blizu, praktično autom za kraći izlet.'},
+    {dest:'Antalija', name:'Antalija, Turska', desc:'Sezonski čarter letovi direktno sa aerodroma u Nišu, van glavne sezone jeftiniji.'},
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Za većinu daljih destinacija, presedanje preko Beograda ili Istanbula je i dalje najisplativije.'}
+  ]},
+  'podgorica': { genitiv:'Podgorice', cards: [
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije — praktičan let sa podgoričkog aerodroma.'},
+    {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja — kratak let preko mora.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji i kafei — praktičan gradski izlet.'},
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari.'}
+  ]}
+};
+let _defaultPopularDestState = null;
+function renderRegionalPopularDestinations(originRaw){
+  const grid = document.getElementById('popularDestGrid');
+  const head = document.getElementById('popularDestHead');
+  const eyebrow = document.getElementById('popularDestEyebrow');
+  if (!grid || !head) return;
+  if (_defaultPopularDestState === null){
+    _defaultPopularDestState = { head: head.textContent, eyebrow: eyebrow ? eyebrow.textContent : '', grid: grid.innerHTML };
+  }
+  const norm = normalizeSr((originRaw || '').trim());
+  let bucket = null;
+  if (norm){
+    for (const key in REGIONAL_POPULAR_DESTINATIONS){
+      if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key) ){
+        bucket = REGIONAL_POPULAR_DESTINATIONS[key];
+        break;
+      }
+    }
+  }
+  if (!bucket){
+    // Nepoznat ili prazan grad — vrati originalni (podrazumevani) sadržaj, ne ostavljaj "zaglavljen" prethodni grad.
+    head.textContent = _defaultPopularDestState.head;
+    if (eyebrow) eyebrow.textContent = _defaultPopularDestState.eyebrow;
+    grid.innerHTML = _defaultPopularDestState.grid;
+    grid.querySelectorAll('.popular-dest-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.getElementById('dest').value = card.dataset.dest;
+        document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+        runSearch(false);
+      });
+    });
+    return;
+  }
+  head.textContent = 'Popularno kod putnika iz ' + bucket.genitiv;
+  if (eyebrow) eyebrow.textContent = 'Predlozi prilagođeni tvom polasku';
+  grid.innerHTML = bucket.cards.map(c =>
+    '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '">'
+    + '<span class="pd-name">' + escapeHtml(c.name) + '</span>'
+    + '<span class="pd-desc">' + escapeHtml(c.desc) + '</span>'
+    + '</button>'
+  ).join('');
+  grid.querySelectorAll('.popular-dest-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.getElementById('dest').value = card.dataset.dest;
+      document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+      runSearch(false);
+    });
+  });
+}
+let _originRegionalTimer = null;
+const originInputForRegional = document.getElementById('origin');
+if (originInputForRegional){
+  originInputForRegional.addEventListener('input', (e) => {
+    clearTimeout(_originRegionalTimer);
+    const val = e.target.value;
+    _originRegionalTimer = setTimeout(() => renderRegionalPopularDestinations(val), 400);
+  });
+  if (originInputForRegional.value) renderRegionalPopularDestinations(originInputForRegional.value);
+}
+
+/* ==========================================================
    MOJA PUTOVANJA — Supabase (auth.users + trips tabela).
    Prijava je email magic-link (OTP), ne treba Google/OAuth podesavanje.
    Ako Supabase iz nekog razloga ne odgovori (mreza, pogresan kljuc),
