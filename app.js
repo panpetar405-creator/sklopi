@@ -27,7 +27,7 @@ const I18N = {
     nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
     aria_account:'Nalog', aria_menu:'Meni',
     hero_title:'SKLOPI <span class="accent">izlet</span>.',
-    hero_lede:'Letovi, smeštaj, prevoz i aktivnosti — u jednoj ceni.',
+    hero_lede:'Sve u jednoj ceni.',
     label_origin:'Polazak', placeholder_origin:'npr. Beograd, Niš, Podgorica',
     label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
     label_dates:'Od — Do',
@@ -690,11 +690,9 @@ function pickBestLocationMatch(results, query){
     });
   }
 
-  // Polje "Od — Do" na startu prikazuje stvarni opseg/broj noći iz skrivenih
-  // polja (dateFrom/dateTo već imaju validan default), umesto praznih crtica —
-  // te vrednosti se ionako koriste za pretragu ako korisnik ne dira datume,
-  // pa polje treba da to jasno pokaže od prvog renderovanja.
-  updateDisplay();
+  // Polje "Od — Do" na startu prikazuje crtice (placeholder stanje), a ne
+  // unapred izračunat opseg/broj noći iz skrivenih polja — updateDisplay()
+  // se zove tek kad korisnik stvarno potvrdi datume (Gotovo / brzi izbor).
 })();
 
 // Small heuristic list — no geo API here, just enough to stop the CTA

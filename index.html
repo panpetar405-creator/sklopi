@@ -97,7 +97,7 @@ playPromise.catch(function(){ fallbackToImage(); });
 </script>
 <div class="hero-inner">
 <h1 data-i18n-html="hero_title">SKLOPI <span class="accent">izlet</span>.</h1>
-<p class="lede" data-i18n="hero_lede">Letovi, smeštaj i prevoz — u jednoj ceni.</p>
+<p class="lede" data-i18n="hero_lede">Sve u jednoj ceni.</p>
 <form class="ticket" id="searchForm">
 <div class="stub" id="originStub">
 <label for="origin" data-i18n="label_origin">Polazak</label>
@@ -111,9 +111,9 @@ playPromise.catch(function(){ fallbackToImage(); });
 </div>
 <div class="stub stub-dates" id="dateStub">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
-<button type="button" class="date-display" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
-<span class="dd-range" id="dateDisplayText">1. okt – 5. okt</span>
-<span class="dd-meta" id="dateNightsText">4 noći</span>
+<button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
+<span class="dd-range" id="dateDisplayText">— – —</span>
+<span class="dd-meta" id="dateNightsText">—</span>
 </button>
 <input type="hidden" id="dateFrom" value="2026-10-01">
 <input type="hidden" id="dateTo" value="2026-10-05">
