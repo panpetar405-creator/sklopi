@@ -258,8 +258,9 @@ a{color:inherit;}
 .ticket .stub input:focus-visible, .ticket .stub select:focus-visible{
     outline:2px solid var(--gold-text);outline-offset:3px;border-radius:2px;
 }
-.ticket .stub select:invalid{color:var(--ink-soft);}
+.ticket .stub select:invalid{color:var(--ink-soft);opacity:0.7;}
 .ticket .stub input::placeholder{color:var(--ink-soft);opacity:0.7;}
+#dest::placeholder{opacity:0.45;}
 .stub.is-loading input{padding-right:22px;}
 .stub.is-loading::after{
     content:"";
@@ -306,6 +307,9 @@ a{color:inherit;}
 .date-display .dd-range{display:block;font-family:'Fraunces',serif;font-size:21.5px;color:var(--ink);transition:color .15s ease;}
 .date-display .dd-meta{display:block;margin-top:6px;font-size:17px;color:var(--ink-soft);}
 .date-display:hover .dd-range,.date-display[aria-expanded="true"] .dd-range{color:var(--gold-text);}
+.date-display.is-empty .dd-range{color:var(--ink-soft);opacity:0.45;}
+.date-display.is-empty .dd-meta{opacity:0.45;}
+.date-display.is-empty:hover .dd-range{color:var(--ink-soft);}
 .cal-card{
     display:none;position:absolute;bottom:calc(100% + 10px);top:auto;left:0;right:0;
     z-index:45;width:auto;overflow-anchor:none;

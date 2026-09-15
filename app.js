@@ -35,7 +35,7 @@ const I18N = {
     chip_weekend:'Vikend', chip_week:'Nedelja dana', chip_twoweeks:'Dve nedelje',
     cal_wx_legend:'<span class="lg-exact">☀️</span>prognoza (do 16 dana unapred) &nbsp;·&nbsp; <span class="lg-est">☀️</span>procena za dalje datume, po podacima za isti period prošle godine &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
     btn_done:'Gotovo',
-    label_passengers:'Putnika',
+    label_passengers:'Putnika', placeholder_passengers:'Putnika',
     opt_1adult:'1 odrasla osoba', opt_2adults:'2 odrasla', opt_3adults:'3 odrasla', opt_4adults:'4 odrasla',
     btn_search:'🌟 Start',
     toggle_flight:'Letovi', toggle_hotel:'Smeštaj', toggle_car:'Rent a car', toggle_activity:'Aktivnost',
@@ -137,7 +137,7 @@ const I18N = {
     chip_weekend:'Weekend', chip_week:'One week', chip_twoweeks:'Two weeks',
     cal_wx_legend:'<span class="lg-exact">☀️</span>forecast (up to 16 days ahead) &nbsp;·&nbsp; <span class="lg-est">☀️</span>estimate for later dates, based on the same period last year &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
     btn_done:'Done',
-    label_passengers:'Travelers',
+    label_passengers:'Travelers', placeholder_passengers:'Travelers',
     opt_1adult:'1 adult', opt_2adults:'2 adults', opt_3adults:'3 adults', opt_4adults:'4 adults',
     btn_search:'🌟 Start',
     toggle_flight:'Flights', toggle_hotel:'Stay', toggle_car:'Rent a car', toggle_activity:'Activity',
@@ -525,6 +525,7 @@ function pickBestLocationMatch(results, query){
     const n = nightsCount(selStart, selEnd);
     rangeText.textContent = fmtShort(selStart) + ' – ' + fmtShort(selEnd);
     nightsText.textContent = n + ' ' + nightsWord(n);
+    displayBtn.classList.remove('is-empty');
     calRangeLabel.innerHTML = fmtShort(selStart) + ' – ' + fmtShort(selEnd) + ' <b>· ' + n + ' ' + nightsWord(n) + '</b>';
   }
 
@@ -687,7 +688,9 @@ function pickBestLocationMatch(results, query){
     });
   }
 
-  updateDisplay();
+  // Polje "Od — Do" na startu prikazuje crtice (placeholder stanje), a ne
+  // unapred izračunat opseg/broj noći iz skrivenih polja — updateDisplay()
+  // se zove tek kad korisnik stvarno potvrdi datume (Gotovo / brzi izbor).
 })();
 
 // Small heuristic list — no geo API here, just enough to stop the CTA
@@ -1531,7 +1534,7 @@ async function runSurpriseSearch(isReroll){
 
   const from = document.getElementById('dateFrom').value;
   const to = document.getElementById('dateTo').value;
-  const adults = document.getElementById('adults').value;
+  const adults = document.getElementById('adults').value || '2';
   const flags = {
     flight:    document.querySelector('.toggle[data-t="flight"]').classList.contains('on'),
     hotel:     document.querySelector('.toggle[data-t="hotel"]').classList.contains('on'),
@@ -1747,7 +1750,7 @@ async function runSearch(shouldScroll){
   const originCode = document.getElementById('origin').value.trim();
   const from = document.getElementById('dateFrom').value;
   const to = document.getElementById('dateTo').value;
-  const adults = document.getElementById('adults').value;
+  const adults = document.getElementById('adults').value || '2';
   const flags = {
     flight:    document.querySelector('.toggle[data-t="flight"]').classList.contains('on'),
     hotel:     document.querySelector('.toggle[data-t="hotel"]').classList.contains('on'),

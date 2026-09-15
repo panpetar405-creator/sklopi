@@ -95,9 +95,9 @@ SKLOPI<em>.</em>
 </div>
 <div class="stub stub-dates" id="dateStub">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
-<button type="button" class="date-display" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
-<span class="dd-range" id="dateDisplayText">1. okt – 5. okt</span>
-<span class="dd-meta" id="dateNightsText">4 noći</span>
+<button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
+<span class="dd-range" id="dateDisplayText">— – —</span>
+<span class="dd-meta" id="dateNightsText">—</span>
 </button>
 <input type="hidden" id="dateFrom" value="2026-10-01">
 <input type="hidden" id="dateTo" value="2026-10-05">
@@ -130,9 +130,10 @@ SKLOPI<em>.</em>
 </div>
 <div class="stub">
 <label for="adults" data-i18n="label_passengers">Putnika</label>
-<select id="adults">
+<select id="adults" required>
+<option value="" disabled selected data-i18n="placeholder_passengers">Putnika</option>
 <option value="1" data-i18n="opt_1adult">1 odrasla osoba</option>
-<option value="2" selected data-i18n="opt_2adults">2 odrasla</option>
+<option value="2" data-i18n="opt_2adults">2 odrasla</option>
 <option value="3" data-i18n="opt_3adults">3 odrasla</option>
 <option value="4" data-i18n="opt_4adults">4 odrasla</option>
 </select>
