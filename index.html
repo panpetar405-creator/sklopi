@@ -111,9 +111,9 @@ playPromise.catch(function(){ fallbackToImage(); });
 </div>
 <div class="stub stub-dates" id="dateStub">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
-<button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
-<span class="dd-range" id="dateDisplayText">— – —</span>
-<span class="dd-meta" id="dateNightsText">—</span>
+<button type="button" class="date-display" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
+<span class="dd-range" id="dateDisplayText">1. okt – 5. okt</span>
+<span class="dd-meta" id="dateNightsText">4 noći</span>
 </button>
 <input type="hidden" id="dateFrom" value="2026-10-01">
 <input type="hidden" id="dateTo" value="2026-10-05">
@@ -159,7 +159,7 @@ playPromise.catch(function(){ fallbackToImage(); });
 </div>
 </form>
 <div class="ticket-submit-row">
-<button type="submit" form="searchForm" class="btn-primary btn-search-main" data-i18n="btn_search">Pronađi najbolje putovanje</button>
+<button type="submit" form="searchForm" class="btn-primary btn-search-main" data-i18n-html="btn_search_html"><svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start</button>
 </div>
 <div class="transport-row">
 <label class="toggle" data-t="flight">

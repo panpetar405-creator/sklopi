@@ -1041,6 +1041,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     color:var(--on-gold);
     box-shadow:0 14px 28px -12px rgba(184,134,59,0.55);
 }
+.btn-search-main .btn-search-icon{width:18px;height:18px;flex:none;stroke:var(--on-gold);}
 .btn-search-main::after{
     width:46px;height:46px;font-size:18px;
     background:var(--deep);color:var(--on-dark-strong);

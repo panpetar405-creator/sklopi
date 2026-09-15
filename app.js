@@ -37,7 +37,8 @@ const I18N = {
     btn_done:'Gotovo',
     label_passengers:'Putnika', placeholder_passengers:'Putnika',
     opt_1adult:'1 odrasla osoba', opt_2adults:'2 odrasla', opt_3adults:'3 odrasla', opt_4adults:'4 odrasla',
-    btn_search:'🌟 Start',
+    btn_search:'Start',
+    btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start',
     toggle_flight:'Letovi', toggle_hotel:'Smeštaj', toggle_car:'R & C', toggle_activity:'Aktivnost',
     eyebrow_no_idea:'Nemaš plan', h2_no_idea:'Ne znaš gde bi išao?', sub_no_idea:'Reci nam koliko želiš da potrošiš, a mi ćemo pronaći destinacije koje se uklapaju.',
     btn_no_idea_cta:'🎲 Iznenadi me',
@@ -139,7 +140,8 @@ const I18N = {
     btn_done:'Done',
     label_passengers:'Travelers', placeholder_passengers:'Travelers',
     opt_1adult:'1 adult', opt_2adults:'2 adults', opt_3adults:'3 adults', opt_4adults:'4 adults',
-    btn_search:'🌟 Start',
+    btn_search:'Start',
+    btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start',
     toggle_flight:'Flights', toggle_hotel:'Stay', toggle_car:'Rent a car', toggle_activity:'Activity',
     eyebrow_no_idea:'No plan yet', h2_no_idea:'Not sure where to go?', sub_no_idea:'Tell us how much you want to spend, and we’ll find destinations that fit.',
     btn_no_idea_cta:'🎲 Surprise me',
@@ -688,9 +690,11 @@ function pickBestLocationMatch(results, query){
     });
   }
 
-  // Polje "Od — Do" na startu prikazuje crtice (placeholder stanje), a ne
-  // unapred izračunat opseg/broj noći iz skrivenih polja — updateDisplay()
-  // se zove tek kad korisnik stvarno potvrdi datume (Gotovo / brzi izbor).
+  // Polje "Od — Do" na startu prikazuje stvarni opseg/broj noći iz skrivenih
+  // polja (dateFrom/dateTo već imaju validan default), umesto praznih crtica —
+  // te vrednosti se ionako koriste za pretragu ako korisnik ne dira datume,
+  // pa polje treba da to jasno pokaže od prvog renderovanja.
+  updateDisplay();
 })();
 
 // Small heuristic list — no geo API here, just enough to stop the CTA
