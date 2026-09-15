@@ -326,6 +326,10 @@ a{color:inherit;}
     padding:20px 21px 16px;
 }
 .cal-card.open{display:block;}
+/* Kalendar je zarobljen unutar izolovanog stub-a (isolation:isolate na .ticket .stub),
+   pa ga sledeći stub (Putnika) inače prekriva jer dolazi kasnije u DOM redosledu.
+   Kad je kalendar otvoren, podigni ceo njegov stub iznad ostalih. */
+.ticket .stub:has(.cal-card.open){z-index:50;}
 .cal-inner{max-width:500px;margin:0 auto;overflow-anchor:none;}
 .cal-card::before{
     content:"Kad putuješ?";
