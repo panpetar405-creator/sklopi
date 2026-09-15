@@ -80,7 +80,7 @@ SKLOPI<em>.</em>
 <img src="https://images.unsplash.com/photo-1499678329028-101435549a4e?w=2000&q=80&auto=format&fit=crop" alt="Vatreno narandžast zalazak sunca nad primorskim selom Vernaca na litici — primer destinacije koju SKLOPI pronalazi" loading="eager" fetchpriority="high">
 </div>
 <div class="hero-inner">
-<h1 data-i18n-html="hero_title">Pronađi svoj <span class="accent">IZLET</span>.</h1>
+<h1 data-i18n-html="hero_title">Sklopi <span class="accent">izlet</span>.</h1>
 <p class="lede" data-i18n="hero_lede">Let, hotel, auto i aktivnosti — sastavljeni u tri gotova paketa, s jednom cenom na dnu. Bez otvaranja deset kartica u pretraživaču.</p>
 <form class="ticket" id="searchForm">
 <div class="stub" id="originStub">
@@ -95,37 +95,10 @@ SKLOPI<em>.</em>
 </div>
 <div class="stub stub-dates" id="dateStub">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
-<button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="true" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
-<span class="dd-range" id="dateDisplayText">— – —</span>
-<span class="dd-meta" id="dateNightsText">—</span>
-</button>
-<input type="hidden" id="dateFrom" value="2026-10-01">
-<input type="hidden" id="dateTo" value="2026-10-05">
-<div class="cal-backdrop" id="calBackdrop"></div>
-<div class="cal-card" id="calCard">
-<div class="cal-inner">
-<div class="cal-head">
-<button type="button" class="cal-nav" id="calPrev" data-i18n-aria-label="aria_prev_month" aria-label="Prethodni mesec">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.5 5l-6.5 7 6.5 7"/></svg>
-</button>
-<div class="cal-months" id="calMonths"></div>
-<button type="button" class="cal-nav" id="calNext" data-i18n-aria-label="aria_next_month" aria-label="Sledeći mesec">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 5l6.5 7-6.5 7"/></svg>
-</button>
-</div>
-<div class="cal-grids" id="calGrids"></div>
-<div class="chip-row cal-quick">
-<button type="button" class="chip" data-quick="weekend" data-i18n="chip_weekend">Vikend</button>
-<button type="button" class="chip" data-quick="week" data-i18n="chip_week">Nedelja dana</button>
-<button type="button" class="chip" data-quick="twoweeks" data-i18n="chip_twoweeks">Dve nedelje</button>
-</div>
-<p class="cal-wx-legend" data-i18n-html="cal_wx_legend"><span class="lg-exact">☀️</span>prognoza (do 16 dana unapred) &nbsp;·&nbsp; <span class="lg-est">☀️</span>procena za dalje datume, po podacima za isti period prošle godine &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span></p>
-<p class="cal-wx-status" id="calWxStatus" style="display:none"></p>
-<div class="cal-foot">
-<span class="cal-range-label" id="calRangeLabel"></span>
-<button type="button" class="btn-primary cal-apply" id="calApply" data-i18n="btn_done">Gotovo</button>
-</div>
-</div>
+<div class="date-range-row">
+<input type="date" id="dateFrom" value="2026-10-01" required aria-label="Datum polaska">
+<span class="date-sep">–</span>
+<input type="date" id="dateTo" value="2026-10-05" required aria-label="Datum povratka">
 </div>
 </div>
 <div class="stub">
