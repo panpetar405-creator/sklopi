@@ -542,6 +542,7 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 .feature.f-activity .ic{background:var(--aqua-soft);color:var(--aqua);}
 .feature.f-insurance .ic{background:var(--deep-soft);color:var(--deep2);}
 .feature.f-esim .ic{background:var(--aqua-soft);color:var(--aqua);}
+.feature.f-transfer .ic{background:var(--coral-soft);color:var(--coral);}
 .feature .ic svg{width:19px;height:19px;}
 .feature .name{font-size:15.5px;font-weight:600;font-family:'Fraunces',serif;}
 .feature .sub{font-size:13px;color:var(--ink-soft);line-height:1.4;max-width:16ch;}
