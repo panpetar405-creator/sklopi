@@ -615,7 +615,28 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
     border-radius:20px;padding:7px 13px;font-size:14px;font-weight:600;color:var(--ink-soft);
 }
 .pill svg{width:13px;height:13px;color:var(--gold);}
-.packages{display:flex;flex-direction:column;gap:22px;}
+.packages-slider-wrap{position:relative;}
+.packages{
+    display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;padding:2px 2px 6px;margin:0 -2px;
+    scrollbar-width:none;
+}
+.packages::-webkit-scrollbar{display:none;}
+.packages .pkg{flex:0 0 88%;max-width:420px;scroll-snap-align:center;}
+.packages-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;}
+.packages-dot{
+    width:8px;height:8px;border-radius:50%;border:none;padding:0;
+    background:var(--line);cursor:pointer;transition:background .2s ease,transform .2s ease;
+}
+.packages-dot.active{background:var(--gold);transform:scale(1.35);}
+@media (min-width:860px){
+    .packages{
+        display:grid;grid-template-columns:repeat(3,1fr);
+        overflow:visible;scroll-snap-type:none;gap:22px;padding:0;margin:0;
+    }
+    .packages .pkg{flex:none;max-width:none;scroll-snap-align:none;}
+    .packages-dots{display:none;}
+}
 .pkg{
     background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:6px;
     overflow:hidden;position:relative;

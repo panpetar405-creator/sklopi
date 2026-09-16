@@ -1769,6 +1769,60 @@ function skeletonResultsHtml(loadingText){
   </div>`;
 }
 
+/* ==========================================================
+   Slajder za pakete (Budget/Comfort/Best Value) — na mobilnom
+   se 3 kartice prikazuju kao horizontalni slajder sa snap-om i
+   tačkicama umesto naslaganih jedna ispod druge (na širim
+   ekranima CSS ih vraća u 3 kolone, vidi @media u styles.css).
+========================================================== */
+function packagesSliderHtml(cardsHtml){
+  const dots = cardsHtml.length > 1
+    ? `<div class="packages-dots">${cardsHtml.map((_,i)=>`<button type="button" class="packages-dot${i===0?' active':''}" data-idx="${i}" aria-label="Prikaži ponudu ${i+1}"></button>`).join('')}</div>`
+    : '';
+  return `<div class="packages-slider-wrap"><div class="packages">${cardsHtml.join('')}</div>${dots}</div>`;
+}
+
+function initPackagesSlider(wrap){
+  if (!wrap) return;
+  const track = wrap.querySelector('.packages');
+  const dotsWrap = wrap.querySelector('.packages-dots');
+  if (!track || !dotsWrap) return;
+  const cards = Array.from(track.querySelectorAll('.pkg'));
+  const dots = Array.from(dotsWrap.querySelectorAll('.packages-dot'));
+  if (cards.length < 2) return;
+  const setActive = (idx) => dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const idx = Number(dot.dataset.idx);
+      const card = cards[idx];
+      if (card) card.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+    });
+  });
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.6){
+          const idx = cards.indexOf(entry.target);
+          if (idx > -1) setActive(idx);
+        }
+      });
+    }, {root:track, threshold:[0.6]});
+    cards.forEach(c => io.observe(c));
+  }
+}
+
+function rebuildPackagesDots(sliderWrap){
+  if (!sliderWrap) return;
+  const track = sliderWrap.querySelector('.packages');
+  const dotsWrap = sliderWrap.querySelector('.packages-dots');
+  if (!track) return;
+  const cards = Array.from(track.querySelectorAll('.pkg'));
+  if (!dotsWrap) return;
+  if (cards.length < 2){ dotsWrap.remove(); return; }
+  dotsWrap.innerHTML = cards.map((_,i)=>`<button type="button" class="packages-dot${i===0?' active':''}" data-idx="${i}" aria-label="Prikaži ponudu ${i+1}"></button>`).join('');
+  initPackagesSlider(sliderWrap);
+}
+
 async function renderResults(dest, from, to, nights, days, adults, flags, originCode){
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
@@ -1809,8 +1863,9 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   `;
 
   const body = document.getElementById('resultsBody');
-  body.innerHTML = `<div class="packages">${pkgs.map(pkgHtml).join('')}</div>
+  body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
     <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
+  initPackagesSlider(body.querySelector('.packages-slider-wrap'));
 }
 
 function itemCardHtml(item, kind){
@@ -1904,8 +1959,13 @@ function closePkgCard(btn){
   });
   setTimeout(() => {
     card.remove();
+    const sliderWrap = wrap && wrap.classList.contains('packages') ? wrap.closest('.packages-slider-wrap') : null;
     if (wrap && wrap.classList.contains('packages') && !wrap.querySelector('.pkg')){
       wrap.innerHTML = '<p class="disclaimer" style="text-align:center;">Sklonio si sve ponude sa liste. <button type="button" class="pkg-alert-btn" style="margin-left:6px;" onclick="runSearch(false)">Pretraži ponovo</button></p>';
+      const dotsWrap = sliderWrap && sliderWrap.querySelector('.packages-dots');
+      if (dotsWrap) dotsWrap.remove();
+    } else if (sliderWrap) {
+      rebuildPackagesDots(sliderWrap);
     }
   }, 200);
 }
@@ -1981,10 +2041,11 @@ function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
 
   const body = document.getElementById('resultsBody');
   body.innerHTML = `
-    <div class="packages">${picks.map((p,i)=>surprisePkgHtml(p, i, budget, ctxBase.adults)).join('')}</div>
+    ${packagesSliderHtml(picks.map((p,i)=>surprisePkgHtml(p, i, budget, ctxBase.adults)))}
     <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
     <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
   `;
+  initPackagesSlider(body.querySelector('.packages-slider-wrap'));
 }
 
 async function runSurpriseSearch(isReroll){
