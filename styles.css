@@ -1315,6 +1315,13 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     }
     .start-modal.open{transform:translateY(0);}
 }
+/* ---------- Kartica "Tvoj izlet" (#builderSummary) kad je premeštena
+   unutar ovog modala (vidi #spMakeBtn u app.js) — normalan tok umesto
+   sticky pozicioniranja namenjenog dvokolonskom rasporedu ispod, plus
+   malo razmaka od dugmeta "Napravi izlet" i "Nastavi" oko nje. ---------- */
+.start-modal-body #spBuilderSlot .builder-summary{
+    position:static;top:auto;margin-top:6px;
+}
 /* ---------- Jedinstvena kartica "Dokumenta za put" (pasoš + zelena karta) ---------- */
 .alert-modal-docs{width:min(440px, calc(100vw - 32px));padding-bottom:22px;}
 .docs-tabs{

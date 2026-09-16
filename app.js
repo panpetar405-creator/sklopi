@@ -2735,6 +2735,22 @@ const BUILDER_DEFAULTS = {
 };
 const builderState = Object.assign({}, BUILDER_DEFAULTS);
 
+// Originalno mesto kartice "Tvoj izlet" (#builderSummary) unutar samostalne
+// "Kontrola sadržaja" sekcije — čuvamo ga da bismo karticu mogli privremeno
+// da premestimo u "Prilagodi svoj plan" modal (klik na Start) i posle vratimo
+// tačno gde je bila, bez dupliranja cele te (prilično razgranate) logike.
+const BS_ORIGINAL_PARENT = document.getElementById('builderSummary').parentElement;
+const BS_ORIGINAL_NEXT = document.getElementById('builderSummary').nextElementSibling;
+function restoreBuilderSummaryPosition(){
+  const bs = document.getElementById('builderSummary');
+  if (!bs || bs.parentElement === BS_ORIGINAL_PARENT) return;
+  if (BS_ORIGINAL_NEXT && BS_ORIGINAL_NEXT.parentElement === BS_ORIGINAL_PARENT){
+    BS_ORIGINAL_PARENT.insertBefore(bs, BS_ORIGINAL_NEXT);
+  } else {
+    BS_ORIGINAL_PARENT.appendChild(bs);
+  }
+}
+
 // Teaser kartica "Želiš više kontrole?" — panel je zatvoren po default-u
 // (vidi style="display:none" na #builderPanel u HTML-u) da hero+ova
 // sekcija ne deluju pretrpano; klik otvara/zatvara ceo builder.
@@ -4210,6 +4226,13 @@ function openStartPrefsModal(){
 function closeStartPrefsModal(){
   document.getElementById('startPrefsBackdrop').classList.remove('open');
   document.getElementById('startPrefsModal').classList.remove('open');
+  // Bez obzira na to da li je korisnik stigao do klika na "Napravi izlet"
+  // unutar modala, izbori se ipak snimaju u builderState pri zatvaranju —
+  // tako je samostalna "Kontrola sadržaja" sekcija uvek usklađena sa
+  // poslednjim izborima iz ovog modala, a kartica "Tvoj izlet" (ako je bila
+  // premeštena unutar modala) vraća se tačno na svoje originalno mesto.
+  syncBuilderStateFromStartPrefs();
+  restoreBuilderSummaryPosition();
 }
 document.getElementById('startPrefsClose').addEventListener('click', closeStartPrefsModal);
 document.getElementById('startPrefsBackdrop').addEventListener('click', closeStartPrefsModal);
@@ -4272,6 +4295,51 @@ function syncBuilderChipsUi(){
   document.getElementById('budgetInput').value = builderState.budget || '';
 }
 
+// Prepisuje izbore iz "Prilagodi svoj plan" modala u builderState — isti
+// oblik polja, pa je ovo čist prenos, bez nagađanja/pretvaranja.
+function syncBuilderStateFromStartPrefs(){
+  Object.assign(builderState, {
+    flightPref: startPrefs.flightPref,
+    hotelStars: startPrefs.hotelStars,
+    carPref: startPrefs.carPref,
+    activityCount: startPrefs.activityCount,
+    prioritizeRating: startPrefs.prioritizeRating,
+    prioritizeLocation: startPrefs.prioritizeLocation,
+    budget: startPrefs.budget
+  });
+  syncBuilderChipsUi();
+}
+
+// Dugme "Napravi izlet" UNUTAR "Prilagodi svoj plan" modala (iznad
+// "Nastavi") — umesto da vodi na posebnu sekciju niže na strani, kartica
+// "Tvoj izlet" (#builderSummary — ista, sa svom svojom logikom: optimizuj/
+// sačuvaj/javi mi/rezerviši stavku) se privremeno premesti UNUTAR ovog
+// modala i tu se i računa, tako da je sve — izbori i rezultat — jedna
+// jedinstvena kartica koja se otvara klikom na Start. Vraća se na svoje
+// originalno mesto kad se modal zatvori (restoreBuilderSummaryPosition).
+document.getElementById('spMakeBtn').addEventListener('click', () => {
+  syncBuilderStateFromStartPrefs();
+
+  const destInput = document.getElementById('dest');
+  if (!destInput.value.trim()){
+    showToast('Unesi destinaciju da bismo napravili izlet.');
+    destInput.focus();
+    return;
+  }
+
+  const slot = document.getElementById('spBuilderSlot');
+  const bs = document.getElementById('builderSummary');
+  if (slot && bs.parentElement !== slot) slot.appendChild(bs);
+
+  renderBuilder();
+  bs.style.display = 'block';
+  document.getElementById('builderPlaceholder').style.display = 'none';
+
+  requestAnimationFrame(() => {
+    bs.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
 document.getElementById('startPrefsContinue').addEventListener('click', () => {
   closeStartPrefsModal();
   // Auto/aktivnosti biramo ovde jer stvarno utiču na to koje se stavke
@@ -4283,39 +4351,9 @@ document.getElementById('startPrefsContinue').addEventListener('click', () => {
   setTransportToggle('activity', startPrefs.activityCount > 0);
   // I dalje pripremamo "gotove" pakete u pozadini (dostupni niže na strani
   // ako korisnik ipak želi da uporedi tri ponude) — bez auto-skrola tamo,
-  // jer glavni rezultat ovog modala sad postaje STVARNI "Tvoj izlet" ispod.
+  // pošto je glavni rezultat ovog modala sad "Tvoj izlet" kartica iznad,
+  // dostupna preko dugmeta "Napravi izlet".
   runSearch(false, false);
-
-  // Izbori iz ovog modala su IDENTIČNI poljima builder-a ("Želiš više
-  // kontrole?") — umesto da se odbace (kao ranije, kad su uticali samo na
-  // dva toggle-a gore), sad direktno hrane computeCustomPackage kroz
-  // builderState, pa modal stvarno proizvodi personalizovan izlet, a ne
-  // generički set od 3 nasumične ponude koje ignorišu ove izbore.
-  Object.assign(builderState, {
-    flightPref: startPrefs.flightPref,
-    hotelStars: startPrefs.hotelStars,
-    carPref: startPrefs.carPref,
-    activityCount: startPrefs.activityCount,
-    prioritizeRating: startPrefs.prioritizeRating,
-    prioritizeLocation: startPrefs.prioritizeLocation,
-    budget: startPrefs.budget
-  });
-  syncBuilderChipsUi();
-
-  const destInput = document.getElementById('dest');
-  if (!destInput.value.trim()){
-    showToast('Unesi destinaciju da bismo napravili izlet.');
-    destInput.focus();
-    destInput.scrollIntoView({behavior:'smooth', block:'center'});
-    return;
-  }
-  renderBuilder();
-  openControlPanel();
-  document.getElementById('builderSummary').style.display = 'block';
-  document.getElementById('builderPlaceholder').style.display = 'none';
-  requestAnimationFrame(() => {
-    document.getElementById('builderSummary').scrollIntoView({behavior:'smooth', block:'start'});
-  });
 });
 
 /* ==========================================================
