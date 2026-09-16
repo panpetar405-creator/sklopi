@@ -3327,11 +3327,13 @@ if (originInputForRegional){
     _originRegionalTimer = setTimeout(() => {
       renderRegionalPopularDestinations(val);
       renderOriginAirportWarning(val);
+      updateCtaBanner();
     }, 400);
   });
   if (originInputForRegional.value){
     renderRegionalPopularDestinations(originInputForRegional.value);
     renderOriginAirportWarning(originInputForRegional.value);
+    updateCtaBanner();
   } else {
     renderDefaultPopularDestinations();
   }
@@ -3356,30 +3358,59 @@ if (destInputForAirport){
 /* ==========================================================
    Dok kucaš u "Destinacija", ako se poklopi sa jednom od kartica
    u "Gde bi sledeće?" gridu — ta kartica skoči na prvo mesto u
-   tabeli, a CTA baner ("X te čeka.") ispod grida se ažurira da
-   prikaže baš taj grad, umesto podrazumevanog "Atina te čeka."
-   Kad se polje isprazni, i grid-poredak i CTA se vraćaju na
-   podrazumevano stanje (default popular destinacije / "Atina").
+   tabeli. CTA baner ("X te čeka.") i stavka "poslednja destinacija"
+   se ažuriraju preko updateCtaBanner()/updateStatLastPreview() ispod —
+   ODAKLE (Polazak) ima prioritet nad Destinacijom: ako je Polazak
+   popunjen, baner prati top preporuku iz regionalnog grida; tek kad
+   je Polazak prazan, baner prati ono što je ukucano u Destinaciju.
+   Stavka "poslednja destinacija" prati isključivo Destinaciju —
+   dok se kuca prikazuje uneti tekst, a kad se polje isprazni vraća
+   se na stvarnu (deljenu) poslednju pretragu.
 ========================================================== */
 function syncDestTypingWithPopular(destRaw){
   const grid = document.getElementById('popularDestGrid');
+  const val = normalizeSr((destRaw || '').trim());
+  if (grid && val){
+    const cards = Array.from(grid.querySelectorAll('.popular-dest-card'));
+    const match = cards.find(card => normalizeSr(card.dataset.dest || '') === val)
+      || cards.find(card => normalizeSr(card.dataset.dest || '').startsWith(val));
+    if (match && grid.firstElementChild !== match) grid.insertBefore(match, grid.firstElementChild);
+  }
+  updateStatLastPreview(destRaw);
+  updateCtaBanner();
+}
+function updateStatLastPreview(destRaw){
+  const statLastEl = document.getElementById('statLast');
+  if (!statLastEl) return;
+  const typed = (destRaw || '').trim();
+  statLastEl.textContent = typed || state.lastDest || '—';
+}
+function pickCtaDestFromTyping(){
+  const originVal = (document.getElementById('origin') || {}).value || '';
+  const destVal = (document.getElementById('dest') || {}).value || '';
+  const grid = document.getElementById('popularDestGrid');
+  if (originVal.trim()){
+    if (grid && grid.firstElementChild && grid.firstElementChild.dataset.dest) return grid.firstElementChild.dataset.dest;
+    return null;
+  }
+  if (destVal.trim()){
+    const norm = normalizeSr(destVal.trim());
+    if (grid){
+      const cards = Array.from(grid.querySelectorAll('.popular-dest-card'));
+      const named = cards.find(c => normalizeSr(c.dataset.dest || '') === norm)
+        || cards.find(c => normalizeSr(c.dataset.dest || '').startsWith(norm));
+      if (named) return named.dataset.dest;
+    }
+    return destVal.trim();
+  }
+  return null;
+}
+function updateCtaBanner(){
   const ctaTitleEl = document.getElementById('ctaTitle');
   const ctaDescEl = document.getElementById('ctaDesc');
-  const val = normalizeSr((destRaw || '').trim());
-  if (!val){
-    if (ctaTitleEl) ctaTitleEl.textContent = getLang() === 'en' ? 'Athens is waiting for you.' : 'Atina te čeka.';
-    if (ctaDescEl) ctaDescEl.textContent = ctaCopy('Atina');
-    return;
-  }
-  if (!grid) return;
-  const cards = Array.from(grid.querySelectorAll('.popular-dest-card'));
-  const match = cards.find(card => normalizeSr(card.dataset.dest || '') === val)
-    || cards.find(card => normalizeSr(card.dataset.dest || '').startsWith(val));
-  if (!match) return;
-  if (grid.firstElementChild !== match) grid.insertBefore(match, grid.firstElementChild);
-  const destName = match.dataset.dest;
-  if (ctaTitleEl) ctaTitleEl.textContent = getLang() === 'en' ? destName + ' is waiting for you.' : destName + ' te čeka.';
-  if (ctaDescEl) ctaDescEl.textContent = ctaCopy(destName);
+  const ctaDest = pickCtaDestFromTyping() || 'Atina';
+  if (ctaTitleEl) ctaTitleEl.textContent = getLang() === 'en' ? ctaDest + ' is waiting for you.' : ctaDest + ' te čeka.';
+  if (ctaDescEl) ctaDescEl.textContent = ctaCopy(ctaDest);
 }
 
 /* ==========================================================
