@@ -1967,6 +1967,25 @@ function rebuildPackagesDots(sliderWrap){
   initPackagesSlider(sliderWrap);
 }
 
+/* Centrira dati element u vidljivom prostoru ISPOD sticky top bara.
+   Native scrollIntoView({block:'center'}) centrira CEO element — a
+   #resultsBody (3 kartice u slajderu + tačkice + disclaimer pasus ispod)
+   je često viši od ekrana, pa "centriranje" celog bloka gurne njegov vrh
+   (deo koji korisnik treba da vidi) gore, ispod/iza sticky menija. Zato
+   ovde ciljamo KONKRETAN element (npr. samu prvu karticu ponude) i
+   centriramo SAMO njega u prostoru koji ostaje ispod menija. */
+function scrollIntoCenterBelowHeader(el){
+  if (!el) return;
+  const topbarH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 0;
+  const rect = el.getBoundingClientRect();
+  const availableH = window.innerHeight - topbarH;
+  const elH = Math.min(rect.height, availableH);
+  const targetTopInViewport = topbarH + Math.max(0, (availableH - elH) / 2);
+  const currentY = window.scrollY || window.pageYOffset;
+  const elTopAbs = rect.top + currentY;
+  window.scrollTo({top: Math.max(0, elTopAbs - targetTopInViewport), behavior:'smooth'});
+}
+
 async function renderResults(dest, from, to, nights, days, adults, flags, originCode){
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
@@ -2018,7 +2037,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   // ponovo je centriramo u ekranu da ne ostane odsečena pri vrhu.
   requestAnimationFrame(() => {
     const planCard = head.querySelector('.plan-card');
-    if (planCard) planCard.scrollIntoView({behavior:'smooth', block:'center'});
+    if (planCard) scrollIntoCenterBelowHeader(planCard);
   });
 
   // Kartice NE upisujemo odmah u body (samo sakrivene CSS-om) — to je pravilo
@@ -2047,7 +2066,9 @@ function revealPackages(){
   if (btn) btn.style.display = 'none';
 
   body.classList.remove('rb-hidden');
-  requestAnimationFrame(() => body.scrollIntoView({behavior:'smooth', block:'center'}));
+  requestAnimationFrame(() => {
+    scrollIntoCenterBelowHeader(body.querySelector('.skel-pkg') || body);
+  });
 
   setTimeout(() => {
     if (window._pendingResultsHtml){
@@ -2055,7 +2076,9 @@ function revealPackages(){
       initPackagesSlider(body.querySelector('.packages-slider-wrap'));
     }
     body.classList.add('rb-reveal');
-    requestAnimationFrame(() => body.scrollIntoView({behavior:'smooth', block:'center'}));
+    requestAnimationFrame(() => {
+      scrollIntoCenterBelowHeader(body.querySelector('.packages .pkg') || body);
+    });
   }, 600);
 }
 
