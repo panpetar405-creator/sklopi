@@ -1902,19 +1902,21 @@ function pkgHtml(pkg){
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <div class="pkg-head">
-      <div>
+      <div class="pkg-head-main">
         ${featured ? `<span class="pkg-badge">★ Preporučeno</span>` : ''}
         <h3>${meta.label}</h3>
-        <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px;">${meta.desc}</div>
+        <div class="pkg-desc">${meta.desc}</div>
+        <div class="pkg-total">
+          <div class="num tabular">${fmtEUR(pkg.total)}</div>
+          <div class="cur">ukupno</div>
+          <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
+        </div>
       </div>
-      <div class="pkg-total">
-        <div class="num tabular">${fmtEUR(pkg.total)}</div>
-        <div class="cur">ukupno</div>
-        <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
+      <div class="pkg-score-box score-${pkg.score>=80?'good':pkg.score>=60?'mid':'low'}">
+        <div class="score-num tabular">${pkg.score}</div>
+        <div class="score-max">/100</div>
+        <div class="score-label">odnos cene i&nbsp;kvaliteta</div>
       </div>
-    </div>
-    <div class="pkg-score">
-      <span><strong style="color:var(--ink);font-weight:600;">Skor ${pkg.score}/100</strong> — odnos cene i kvaliteta</span>
     </div>
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     ${(() => {
