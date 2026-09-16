@@ -1600,9 +1600,12 @@ function setupLocDropdown(datalistId){
 
   // Sprečava da tap/klik na predlog oduzme fokus input polju pre nego što
   // stigne 'click' — upravo taj gubitak-pa-povratak fokusa je ono što na
-  // mobilnom zatvori pa ponovo otvori tastavuru.
+  // mobilnom zatvori pa ponovo otvori tastaturu. NAPOMENA: ovo se radi SAMO
+  // na 'mousedown' (stiže i posle dodira, kao "kompatibilni" miš-događaj) —
+  // preventDefault() na 'touchstart' je ranije bio dodat sa istom namerom,
+  // ali on na dodirnim uređajima potpuno ugasi naredni 'click' događaj
+  // (deo specifikacije touch-events), pa tap nije radio ništa.
   panel.addEventListener('mousedown', (e) => e.preventDefault());
-  panel.addEventListener('touchstart', (e) => e.preventDefault(), {passive:false});
 
   panel.addEventListener('click', (e) => {
     const btn = e.target.closest('.loc-dropdown-item');
