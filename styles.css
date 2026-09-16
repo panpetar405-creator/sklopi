@@ -1675,3 +1675,69 @@ footer{padding:28px 20px;}
     .legal-wrap{padding:8px 18px 60px;}
     .legal-header{padding:18px 18px;}
 }
+
+/* ---------- Business strip: partners trust row + price breakdown chart ---------- */
+.business-strip{padding-top:40px;padding-bottom:8px;}
+.partners-row{
+    display:flex;align-items:center;flex-wrap:wrap;gap:14px;
+    padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid var(--line);
+}
+.partners-label{
+    font-size:13px;font-weight:600;color:var(--ink-soft);
+    letter-spacing:0.01em;margin-right:6px;
+}
+.partner-badge{
+    display:inline-flex;align-items:center;
+    border:1px solid var(--line);border-radius:6px;
+    padding:7px 14px;font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;
+    color:var(--ink);background:var(--paper);
+}
+.price-chart{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:26px 28px 24px;
+}
+.price-chart-head h3{font-size:19px;margin:0;}
+.price-chart-head p{margin:6px 0 20px;font-size:14px;color:var(--ink-soft);line-height:1.55;max-width:60ch;}
+.price-bar{
+    display:flex;width:100%;height:40px;border-radius:6px;overflow:hidden;
+}
+.pb-seg{
+    display:flex;align-items:center;justify-content:space-between;gap:6px;
+    padding:0 12px;color:#fff;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;
+}
+.pb-seg b{font-weight:700;}
+.pb-flight{background:var(--deep);}
+.pb-hotel{background:var(--gold);}
+.pb-car{background:var(--coral);}
+.pb-activity{background:var(--aqua);}
+.price-chart-legend{
+    display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;
+    font-size:13px;color:var(--ink-soft);
+}
+.price-chart-legend span{display:flex;align-items:center;gap:7px;}
+.dot{width:9px;height:9px;border-radius:2px;display:inline-block;flex:none;}
+.dot-flight{background:var(--deep);}
+.dot-hotel{background:var(--gold);}
+.dot-car{background:var(--coral);}
+.dot-activity{background:var(--aqua);}
+@media (max-width:640px){
+    .business-strip{padding-top:28px;}
+    .partners-row{gap:10px;padding-bottom:20px;margin-bottom:20px;}
+    .partners-label{width:100%;margin-right:0;margin-bottom:2px;}
+    .price-chart{padding:20px 18px 18px;}
+    .pb-seg{font-size:0;padding:0;}
+    .pb-seg b{font-size:11px;margin:0 auto;}
+}
+/* ---------- Feature cards: accent bar so the "included in a package"
+   row reads as capability cards rather than plain icon tiles ---------- */
+.feature{position:relative;padding-top:24px;}
+.feature::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    border-radius:8px 8px 0 0;background:var(--line);
+}
+.feature.f-flight::before{background:var(--deep);}
+.feature.f-hotel::before{background:var(--gold);}
+.feature.f-car::before,.feature.f-tolls::before{background:var(--coral);}
+.feature.f-activity::before,.feature.f-esim::before{background:var(--aqua);}
+.feature.f-insurance::before{background:var(--deep2);}
+.feature.f-transfer::before{background:var(--coral);}
