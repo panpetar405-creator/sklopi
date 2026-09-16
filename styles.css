@@ -662,6 +662,18 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 }
 .packages::-webkit-scrollbar{display:none;}
 .packages .pkg{flex:0 0 88%;max-width:420px;scroll-snap-align:center;}
+/* Visina slajder-kartice — bez ovoga kartica raste koliko god ima
+   sadržaja (npr. paket na 8 noći bez leta/auta) i vertikalni scroll
+   unutar kartice kvari utisak slajdera. Ograničimo visinu na deo
+   ekrana i, ako sadržaj ne stane, neka se skroluje UNUTAR kartice —
+   spolja i dalje izgleda kao jedna, kompaktna, klizajuća kartica. */
+@media (max-width:859.98px){
+    .packages .pkg{
+        max-height:min(640px, calc(100dvh - 230px));
+        overflow-y:auto;
+        -webkit-overflow-scrolling:touch;
+    }
+}
 .packages-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;}
 .packages-dot{
     width:8px;height:8px;border-radius:50%;border:none;padding:0;
