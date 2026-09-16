@@ -102,6 +102,18 @@ a{color:inherit;}
 .hamburger.open{background:var(--deep);border-color:var(--deep);color:var(--gold-soft);}
 .hamburger svg{width:18px;height:18px;}
 .topbar-right{display:flex;align-items:center;gap:10px;}
+.lang-switch{
+    border:1px solid var(--line);border-radius:999px;background:var(--paper);
+    color:var(--ink);font-family:'Work Sans',sans-serif;font-size:13px;font-weight:600;
+    padding:8px 13px;cursor:pointer;flex:none;letter-spacing:0.02em;
+    transition:border-color .15s ease,background .15s ease;
+}
+.lang-switch:hover{border-color:var(--gold);background:var(--gold-soft);}
+.lang-switch .ls-sep{opacity:0.4;margin:0 3px;}
+.lang-switch .ls-sr,.lang-switch .ls-en{opacity:0.4;}
+.lang-switch:not(.is-en) .ls-sr{opacity:1;}
+.lang-switch.is-en .ls-en{opacity:1;}
+
 @media (max-width:760px){
 .topbar nav a{display:none;}
 .hamburger{display:flex;}

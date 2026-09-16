@@ -255,7 +255,13 @@ const I18N = {
     fits_budget:'Fits your budget of ', over_budget:'Slightly over budget, but the closest option we have.',
   }
 };
-function getLang(){ return 'sr'; } // Engleski privremeno isključen — sajt je sada samo na srpskom
+function getLang(){
+  try {
+    const saved = localStorage.getItem('skoknica_lang');
+    if (saved === 'en' || saved === 'sr') return saved;
+  } catch(e){}
+  return 'sr';
+}
 function t(key){ const lang = getLang(); return (I18N[lang] && I18N[lang][key]) ?? (I18N.sr[key] ?? key); }
 function applyStaticI18n(){
   const lang = getLang();
@@ -265,7 +271,10 @@ function applyStaticI18n(){
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
   document.querySelectorAll('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label'))); });
   const btn = document.getElementById('langSwitchBtn');
-  if (btn) btn.style.display = 'none'; // Engleski isključen — dugme za promenu jezika je sklonjeno
+  if (btn){
+    btn.classList.toggle('is-en', lang === 'en');
+    btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+  }
   const titleEl = document.querySelector('title');
   if (titleEl) titleEl.textContent = lang === 'sr' ? 'SKLOPI — ceo izlet, jedna cena' : 'SKLOPI — one whole trip, one price';
   const metaDesc = document.querySelector('meta[name="description"]');
@@ -3620,6 +3629,9 @@ function runPassportCheck(){
       + '“ traži da važi bar do ' + fmtDateSr(requiredExpiry) + '. Vreme je da obnoviš pasoš — MUP izdaje redovan za oko 30 dana, a uz dokaz o putovanju (kartu ili rezervaciju) moguća je i ubrzana procedura za 48h.';
   }
 }
+const langSwitchBtn = document.getElementById('langSwitchBtn');
+if (langSwitchBtn) langSwitchBtn.addEventListener('click', () => setLang(getLang() === 'en' ? 'sr' : 'en'));
+
 const documentsCheckBtn = document.getElementById('documentsCheckBtn');
 if (documentsCheckBtn) documentsCheckBtn.addEventListener('click', openDocumentsModal);
 const documentsModalClose = document.getElementById('documentsModalClose');
