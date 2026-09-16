@@ -474,44 +474,7 @@ a{color:inherit;}
     box-shadow:0 14px 26px -12px rgba(205,154,76,0.55);
 }
 .toggle.on .tt-label{color:var(--on-dark-strong);}
-/* ---------- "Nemaš ideju kuda?" — pre nije imalo NIJEDNO CSS pravilo,
-renderovalo se kao neuređeno podrazumevano <button> (siva kutija, sistemski
-font). Redizajnirano da liči na pozivnicu utisnutu u hero, u istom
-jeziku kao ostatak sajta (zlatna iskošena linija, isti krug-sa-strelicom
-kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
-.surprise-trigger{
-    width:100%;
-    display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
-    row-gap:8px;column-gap:14px;
-    padding:15px 26px;border-radius:999px;
-    border:1.5px dashed rgba(231,211,172,0.45);
-    background:linear-gradient(120deg,var(--deep) 0%,var(--deep2) 100%);
-    box-shadow:0 20px 44px -18px rgba(18,49,56,0.4);
-    font-family:'Work Sans',sans-serif;cursor:pointer;
-    -webkit-tap-highlight-color:transparent;
-    transition:background .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
-}
-.surprise-trigger .dice-ic{width:19px;height:19px;flex:none;color:var(--gold-soft);transition:transform .35s ease;}
-.surprise-trigger .st-q{font-size:15px;color:var(--on-dark-soft);}
-.surprise-trigger .st-cta{
-    display:inline-flex;align-items:center;gap:10px;
-    font-weight:600;font-size:15px;color:var(--on-dark-strong);
-}
-.surprise-trigger .st-arrow{
-    font-style:normal;flex:none;display:flex;align-items:center;justify-content:center;
-    width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--on-gold);
-    font-size:11.5px;transition:transform .2s ease, background .2s ease;
-}
-.surprise-trigger:hover{
-    background:rgba(244,239,227,0.09);border-color:var(--gold-soft);
-    transform:translateY(-2px);box-shadow:0 16px 34px -18px rgba(0,0,0,0.5);
-}
-.surprise-trigger:hover .dice-ic{transform:rotate(-16deg) scale(1.06);}
-.surprise-trigger:hover .st-arrow{background:#CD9A4C;transform:rotate(-8deg) translateX(1px);}
-.surprise-trigger:active{transform:translateY(0);}
 @media (max-width:520px){
-    .surprise-trigger{padding:13px 18px;gap:6px 10px;}
-    .surprise-trigger .st-q,.surprise-trigger .st-cta{font-size:14px;}
     .toggle{width:auto;}
     .toggle .tt-icon{width:56px;height:56px;border-radius:16px;}
     .toggle .tt-icon svg{width:23px;height:23px;}
@@ -931,62 +894,77 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 .builder-wrap{
     margin-top:44px;
 }
-/* Teaser kartica — zatvorena po default-u, klikom otvara/zatvara ceo
-.builder panel ispod (vidi wireControlTeaser u app.js). Ranije je ceo
-builder stajao otvoren odmah ispod hero-a, što je delovalo pretrpano. */
-.control-teaser{
+/* ---------- Dve akcione kartice: "Želiš više kontrole?" (otvara builder)
+i "Nemaš ideju kuda?" (surprise) — ranije builder teaser + posebno "Odaberi"
+dugme ispod njega (dupliran klik na istu akciju), plus surprise dugme kao
+usamljena pilula negde drugde na strani. Sad su to dve kartice iste težine,
+jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
+.action-cards{
+    display:flex;flex-direction:column;gap:16px;
+}
+@media (min-width:720px){
+    .action-cards{flex-direction:row;align-items:stretch;}
+    .action-cards .action-card{flex:1 1 0;}
+}
+.action-card{
     width:100%;text-align:left;cursor:pointer;
-    display:flex;align-items:center;gap:20px;
+    display:flex;flex-direction:column;align-items:flex-start;gap:12px;
     background:linear-gradient(120deg,var(--deep) 0%,var(--deep2) 100%);
     border:none;border-radius:16px;position:relative;overflow:hidden;
-    padding:30px 30px;font-family:'Work Sans',sans-serif;
+    padding:28px 26px;font-family:'Work Sans',sans-serif;
     box-shadow:0 20px 44px -18px rgba(18,49,56,0.55);
     transition:box-shadow .2s ease, transform .15s ease;
     -webkit-tap-highlight-color:transparent;
 }
-.control-teaser::before{
+.action-card::before{
     content:"";position:absolute;inset:0;pointer-events:none;
     background:radial-gradient(120% 140% at 88% -10%, rgba(231,211,172,0.22) 0%, rgba(231,211,172,0) 55%);
 }
-.control-teaser:hover{
+.action-card:hover{
     transform:translateY(-3px);box-shadow:0 26px 54px -18px rgba(18,49,56,0.65);
 }
-.control-teaser:active{transform:translateY(-1px);}
-.control-teaser .ct-ic{
-    width:60px;height:60px;border-radius:50%;flex:none;position:relative;z-index:1;
+.action-card:active{transform:translateY(-1px);}
+.action-card .ac-ic{
+    width:52px;height:52px;border-radius:50%;flex:none;position:relative;z-index:1;
     display:flex;align-items:center;justify-content:center;
     background:var(--gold-soft);color:var(--gold-text);
     transition:transform .2s ease;
 }
-.control-teaser:hover .ct-ic{transform:scale(1.06) rotate(-4deg);}
-.control-teaser .ct-ic svg{width:27px;height:27px;}
-.control-teaser .ct-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;position:relative;z-index:1;}
-.control-teaser .ct-title{font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--on-dark-strong);}
-.control-teaser .ct-sub{font-size:15px;line-height:1.5;color:var(--on-dark-soft);}
-.control-teaser .ct-cta{flex:none;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1;}
-.control-teaser .ct-cta-label{
+.action-card:hover .ac-ic{transform:scale(1.06) rotate(-4deg);}
+.action-card .ac-ic svg{width:24px;height:24px;}
+.action-card .ac-title{
+    font-family:'Fraunces',serif;font-size:21px;font-weight:600;line-height:1.25;
+    color:var(--on-dark-strong);position:relative;z-index:1;
+}
+.action-card .ac-sub{
+    font-size:14px;line-height:1.5;color:var(--on-dark-soft);position:relative;z-index:1;
+    margin-top:-4px;
+}
+.action-card .ac-cta{
+    margin-top:auto;padding-top:6px;width:100%;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    position:relative;z-index:1;
+}
+.action-card .ac-cta-label{
     font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
     color:var(--gold-soft);white-space:nowrap;
 }
-.control-teaser .ct-arrow{
-    flex:none;width:46px;height:46px;border-radius:50%;
+.action-card .ac-arrow{
+    flex:none;width:40px;height:40px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    background:var(--gold);color:var(--on-gold);font-size:18px;
+    background:var(--gold);color:var(--on-gold);font-size:16px;font-style:normal;
     transition:transform .25s ease, background .2s ease;
 }
-.control-teaser:hover .ct-arrow{background:#CD9A4C;transform:translateX(3px);}
-.control-teaser[aria-expanded="true"] .ct-arrow{transform:rotate(90deg);}
-.control-teaser + .builder{margin-top:22px;}
-.ct-select-btn{width:100%;justify-content:center;margin-top:14px;}
-.ct-select-btn + .builder{margin-top:22px;}
+.action-card:hover .ac-arrow{background:#CD9A4C;transform:translateX(3px);}
+.control-teaser[aria-expanded="true"] .ac-arrow{transform:rotate(90deg);}
+.action-cards + .builder{margin-top:22px;}
 @media (max-width:560px){
-    .control-teaser{padding:22px 20px;gap:14px;border-radius:14px;}
-    .control-teaser .ct-ic{width:48px;height:48px;}
-    .control-teaser .ct-ic svg{width:22px;height:22px;}
-    .control-teaser .ct-title{font-size:19px;}
-    .control-teaser .ct-sub{font-size:13.5px;}
-    .control-teaser .ct-cta-label{display:none;}
-    .control-teaser .ct-arrow{width:38px;height:38px;font-size:15px;}
+    .action-card{padding:22px 20px;gap:10px;border-radius:14px;}
+    .action-card .ac-ic{width:44px;height:44px;}
+    .action-card .ac-ic svg{width:20px;height:20px;}
+    .action-card .ac-title{font-size:18px;}
+    .action-card .ac-sub{font-size:13px;}
+    .action-card .ac-arrow{width:36px;height:36px;font-size:14px;}
 }
 .builder{
     display:grid;grid-template-columns:1.35fr 1fr;gap:22px;

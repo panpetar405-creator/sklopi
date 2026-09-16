@@ -253,18 +253,20 @@ SKLOPI<em>.</em>
 <div class="eyebrow" data-i18n="eyebrow_content_control">Kontrola sadržaja</div>
 <h2 data-i18n="h2_content_control">Sam odredi šta ti odgovara</h2>
 </div>
-<button type="button" class="control-teaser" id="controlTeaserBtn" aria-expanded="false" aria-controls="builderPanel">
-<span class="ct-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M17 7h3M4 17h3M10 17h10"/><circle cx="14" cy="7" r="2.4"/><circle cx="7" cy="17" r="2.4"/></svg></span>
-<span class="ct-body">
-<span class="ct-title" data-i18n="h2_build_own">Želiš više kontrole?</span>
-<span class="ct-sub" data-i18n="control_teaser_sub">Sam biraš let, hotel, prevoz, aktivnosti, osiguranje i eSIM — cena se sabira uživo.</span>
-</span>
-<span class="ct-cta">
-<span class="ct-cta-label" data-i18n="ct_cta">Otvori builder</span>
-<span class="ct-arrow">→</span>
-</span>
+<div class="action-cards">
+<button type="button" class="action-card control-teaser" id="controlTeaserBtn" aria-expanded="false" aria-controls="builderPanel">
+<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M17 7h3M4 17h3M10 17h10"/><circle cx="14" cy="7" r="2.4"/><circle cx="7" cy="17" r="2.4"/></svg></span>
+<span class="ac-title" data-i18n="h2_build_own">Želiš više kontrole?</span>
+<span class="ac-sub" data-i18n="control_teaser_sub">Sam biraš let, hotel, prevoz, aktivnosti, osiguranje i eSIM — cena se sabira uživo.</span>
+<span class="ac-cta"><span class="ac-cta-label" data-i18n="ct_cta">Otvori builder</span><span class="ac-arrow">→</span></span>
 </button>
-<button type="button" class="btn-primary ct-select-btn" id="controlTeaserSelectBtn" data-i18n="btn_choose">Odaberi</button>
+<button type="button" class="action-card surprise-trigger" id="surpriseTriggerBtn" data-i18n-html="surprise_trigger">
+<span class="ac-ic"><svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg></span>
+<span class="ac-title">Nemaš ideju kuda?</span>
+<span class="ac-sub">Reci nam budžet — predložićemo 3 destinacije koje se uklapaju.</span>
+<span class="ac-cta"><span class="ac-cta-label">Iznenadi me</span><span class="ac-arrow">→</span></span>
+</button>
+</div>
 <div class="builder" id="builderPanel" style="display:none;">
 <button type="button" class="builder-close" id="builderCloseBtn" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
 <div class="builder-form">
@@ -347,11 +349,6 @@ SKLOPI<em>.</em>
 <p data-i18n="builder_placeholder_text">Ovde ćeš videti procenjenu cenu čim počneš da biraš — promeni bilo koju opciju levo.</p>
 </div>
 </div>
-</div>
-<div class="section surprise-section">
-<button type="button" class="surprise-trigger" id="surpriseTriggerBtn" data-i18n-html="surprise_trigger">
-<svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg><span class="st-q">Nemaš ideju kuda?</span><span class="st-cta">Iznenadi me za dati budžet<i class="st-arrow">→</i></span>
-</button>
 </div>
 <div class="section saved-wrap">
 <div class="section-head">

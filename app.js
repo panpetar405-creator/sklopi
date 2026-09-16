@@ -106,7 +106,7 @@ const I18N = {
     aria_close:'Zatvori', label_email:'Email',
     label_alert_threshold:'Javi mi kad ukupna procenjena cena padne ispod', btn_set_alert:'Postavi alert',
     alert_modal_disclaimer:'⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.',
-    surprise_trigger:'<svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg><span class="st-q">Nemaš ideju kuda?</span><span class="st-cta">Iznenadi me za dati budžet<i class="st-arrow">→</i></span>',
+    surprise_trigger:'<span class="ac-ic"><svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg></span><span class="ac-title">Nemaš ideju kuda?</span><span class="ac-sub">Reci nam budžet — predložićemo 3 destinacije koje se uklapaju.</span><span class="ac-cta"><span class="ac-cta-label">Iznenadi me</span><span class="ac-arrow">→</span></span>',
     surprise_modal_title:'Iznenadi me',
     surprise_modal_sub:'Nemaš konkretnu destinaciju na umu? Reci nam samo budžet — probaćemo preko 100 gradova i predložićemo 3 koja se uklapaju. Datumi i broj putnika ostaju kao u formi iznad.',
     surprise_modal_label_budget:'Ukupan budžet (za sve putnike)', placeholder_surprise_budget:'npr. 400',
@@ -223,7 +223,7 @@ const I18N = {
     aria_close:'Close', label_email:'Email',
     label_alert_threshold:'Notify me when the total estimated price drops below', btn_set_alert:'Set alert',
     alert_modal_disclaimer:'⚠️ Still an illustrative estimate, not a real partner offer. You can unsubscribe anytime via the link in the email you receive.',
-    surprise_trigger:'<svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg><span class="st-q">No idea where to go?</span><span class="st-cta">Surprise me for a given budget<i class="st-arrow">→</i></span>',
+    surprise_trigger:'<span class="ac-ic"><svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg></span><span class="ac-title">No idea where to go?</span><span class="ac-sub">Tell us your budget — we\'ll suggest 3 destinations that fit.</span><span class="ac-cta"><span class="ac-cta-label">Surprise me</span><span class="ac-arrow">→</span></span>',
     surprise_modal_title:'Surprise me',
     surprise_modal_sub:'No specific destination in mind? Just tell us your budget — we’ll try over 100 cities and suggest 3 that fit. Dates and traveler count stay as set in the form above.',
     surprise_modal_label_budget:'Total budget (for all travelers)', placeholder_surprise_budget:'e.g. 400',
@@ -2578,10 +2578,6 @@ document.getElementById('controlTeaserBtn').addEventListener('click', ()=>{
     openControlPanel();
     document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
   }
-});
-document.getElementById('controlTeaserSelectBtn').addEventListener('click', ()=>{
-  openControlPanel();
-  document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
 });
 document.getElementById('builderCloseBtn').addEventListener('click', ()=>{
   closeControlPanel();
