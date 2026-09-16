@@ -3340,12 +3340,15 @@ let _destAirportTimer = null;
 const destInputForAirport = document.getElementById('dest');
 if (destInputForAirport){
   destInputForAirport.addEventListener('input', (e) => {
+    // Reordering nekoliko DOM elemenata je jeftina operacija — radi se
+    // odmah, na svaki taster, bez debounce-a. Debounce ostaje samo za
+    // renderDestAirportWarning (teža provera protiv AIRPORT_DB), jer
+    // deljenje istog tajmera za oba dovodi do toga da reorder radi
+    // "na sreću" — samo kad pauza između tastera bude duža od 400ms.
+    syncDestTypingWithPopular(e.target.value);
     clearTimeout(_destAirportTimer);
     const val = e.target.value;
-    _destAirportTimer = setTimeout(() => {
-      renderDestAirportWarning(val);
-      syncDestTypingWithPopular(val);
-    }, 400);
+    _destAirportTimer = setTimeout(() => renderDestAirportWarning(val), 400);
   });
   if (destInputForAirport.value) renderDestAirportWarning(destInputForAirport.value);
 }
@@ -3370,10 +3373,8 @@ function syncDestTypingWithPopular(destRaw){
   }
   if (!grid) return;
   const cards = Array.from(grid.querySelectorAll('.popular-dest-card'));
-  const match = cards.find(card => {
-    const cardDest = normalizeSr(card.dataset.dest || '');
-    return cardDest === val || cardDest.startsWith(val);
-  });
+  const match = cards.find(card => normalizeSr(card.dataset.dest || '') === val)
+    || cards.find(card => normalizeSr(card.dataset.dest || '').startsWith(val));
   if (!match) return;
   if (grid.firstElementChild !== match) grid.insertBefore(match, grid.firstElementChild);
   const destName = match.dataset.dest;
