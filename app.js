@@ -2201,6 +2201,14 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
       <button type="button" class="plan-continue-btn" onclick="revealPackages()">
         Nastavi <span class="arrow">→</span>
       </button>
+      <button type="button" class="plan-control-link" onclick="openBuilderFromPlanCard()">
+        <span class="pcl-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M17 7h3M4 17h3M10 17h10"/><circle cx="14" cy="7" r="2.4"/><circle cx="7" cy="17" r="2.4"/></svg></span>
+        <span class="pcl-text">
+          <span class="pcl-title">${t('h2_build_own')}</span>
+          <span class="pcl-sub">${t('control_teaser_sub')}</span>
+        </span>
+        <span class="pcl-arrow">→</span>
+      </button>
     </div>
   `;
   // Skeleton (kraća kartica) je zaslužan za prvobitni scroll pri kliku na
@@ -2750,6 +2758,16 @@ document.getElementById('builderCloseBtn').addEventListener('click', ()=>{
   closeControlPanel();
   document.getElementById('controlTeaserBtn').scrollIntoView({behavior:'smooth', block:'start'});
 });
+
+// Prečica sa plan-kartice (kartica koja se otvara odmah po kliku na Start,
+// pre "Nastavi") — isti builder kao teaser dugme u sekciji "Kontrola
+// sadržaja" ispod, samo dodatni ulaz sa vrha toka da korisnik ne mora prvo
+// da vidi 3 gotova paketa da bi stigao do njega.
+function openBuilderFromPlanCard(){
+  openControlPanel();
+  const panel = document.getElementById('builderPanel');
+  if (panel) panel.scrollIntoView({behavior:'smooth', block:'start'});
+}
 
 function builderCtx(){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
