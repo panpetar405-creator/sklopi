@@ -114,6 +114,9 @@ const I18N = {
     surprise_modal_sub:'Nemaš konkretnu destinaciju na umu? Reci nam samo budžet — probaćemo preko 100 gradova i predložićemo 3 koja se uklapaju. Datumi i broj putnika ostaju kao u formi iznad.',
     surprise_modal_label_budget:'Ukupan budžet (za sve putnike)', placeholder_surprise_budget:'npr. 400',
     surprise_modal_btn:'🎲 Predloži 3 destinacije',
+    control_modal_title:'Želiš više kontrole?',
+    control_modal_sub:'Reci nam budžet i šta ti je bitno — probaćemo preko 100 gradova i predložićemo 3 destinacije koje se najbolje uklapaju. Datumi i broj putnika ostaju kao u formi iznad.',
+    control_modal_btn:'Nastavi',
     surprise_modal_disclaimer:'⚠️ Ilustrativna procena cene po gradu, ne stvarna ponuda partnera.',
     share_modal_title:'Podeli sa prijateljima', share_modal_label_link:'Link za deljenje',
     share_modal_copy:'📋 Kopiraj link', share_modal_native:'📤 Podeli preko aplikacija',
@@ -234,6 +237,9 @@ const I18N = {
     surprise_modal_sub:'No specific destination in mind? Just tell us your budget — we’ll try over 100 cities and suggest 3 that fit. Dates and traveler count stay as set in the form above.',
     surprise_modal_label_budget:'Total budget (for all travelers)', placeholder_surprise_budget:'e.g. 400',
     surprise_modal_btn:'🎲 Suggest 3 destinations',
+    control_modal_title:'Want more control?',
+    control_modal_sub:'Tell us your budget and what matters to you — we’ll try over 100 cities and suggest the 3 destinations that fit best. Dates and traveler count stay as set in the form above.',
+    control_modal_btn:'Continue',
     surprise_modal_disclaimer:'⚠️ Illustrative price estimate per city, not a real partner offer.',
     share_modal_title:'Share with friends', share_modal_label_link:'Share link',
     share_modal_copy:'📋 Copy link', share_modal_native:'📤 Share via apps',
@@ -2509,7 +2515,30 @@ async function saveSurprisePackage(idx){
   showToast(pick.dest + ' sačuvan (' + fmtEUR(pick.pkg.total) + ').');
 }
 
-function openSurpriseModal(){
+// mode: 'surprise' (podrazumevano, "Nemaš ideju kuda?") ili 'control'
+// (novo — otvara se klikom na Start, sa naslovom "Želiš više kontrole?").
+// Isti modal/isto polje za budžet i ista pretraga ispod (runSurpriseSearch)
+// — menja se samo natpis, da poruka ima smisla s obzirom odakle je pokrenut.
+function openSurpriseModal(mode){
+  const isControl = mode === 'control';
+  const titleKey = isControl ? 'control_modal_title' : 'surprise_modal_title';
+  const subKey = isControl ? 'control_modal_sub' : 'surprise_modal_sub';
+  const btnKey = isControl ? 'control_modal_btn' : 'surprise_modal_btn';
+
+  const titleEl = document.getElementById('surpriseModalTitle');
+  const subEl = document.getElementById('surpriseModalSub');
+  const btnEl = document.getElementById('surpriseModalSubmit');
+  const icEl = document.getElementById('surpriseModalIc');
+
+  titleEl.setAttribute('data-i18n', titleKey);
+  titleEl.textContent = t(titleKey);
+  subEl.setAttribute('data-i18n', subKey);
+  subEl.textContent = t(subKey);
+  btnEl.setAttribute('data-i18n', btnKey);
+  btnEl.textContent = t(btnKey);
+  icEl.textContent = isControl ? '🧭' : '🎲';
+  icEl.classList.toggle('control-ic', isControl);
+
   document.getElementById('surpriseBudget').value = '';
   document.getElementById('surpriseModalBackdrop').classList.add('open');
   document.getElementById('surpriseModal').classList.add('open');
@@ -2689,8 +2718,23 @@ async function runSearch(shouldScroll){
   }, 700);
 }
 
+// PRIVREMENO isključeno dok se radi nešto drugo — kartica "Tvoj plan" (i
+// provera da su Letovi markirani) je ostavljena netaknuta ispod, samo se
+// preskače. Vrati na true kad opet bude trebalo da Start otvara plan.
+const PLAN_CARD_ENABLED = false;
+
 document.getElementById('searchForm').addEventListener('submit', function(e){
   e.preventDefault();
+  // Start sad otvara "Želiš više kontrole?" prozor (isti mehanizam kao
+  // "Nemaš ideju kuda?", samo drugi natpis) — klik na Nastavi unutra
+  // pokreće runSurpriseSearch i prikazuje 3 predložene destinacije.
+  openSurpriseModal('control');
+  if (!PLAN_CARD_ENABLED) return;
+  const flightOn = document.querySelector('.toggle[data-t="flight"]').classList.contains('on');
+  if (!flightOn){
+    showToast('Označi „Letovi” da bismo napravili plan.');
+    return;
+  }
   runSearch(true);
 });
 
@@ -3985,8 +4029,8 @@ if (hamburgerBtn && mobilePanel){
 }
 
 /* ---- "Iznenadi me" dugme na stranici otvara modal (koristi runSurpriseSearch iznad) ---- */
-const noIdeaCtaBtn = document.getElementById('noIdeaCtaBtn');
-if (noIdeaCtaBtn) noIdeaCtaBtn.addEventListener('click', openSurpriseModal);
+const noIdeaCtaBtn = document.getElementById('surpriseTriggerBtn');
+if (noIdeaCtaBtn) noIdeaCtaBtn.addEventListener('click', () => openSurpriseModal('surprise'));
 const surpriseModalClose = document.getElementById('surpriseModalClose');
 if (surpriseModalClose) surpriseModalClose.addEventListener('click', closeSurpriseModal);
 const surpriseModalBackdrop = document.getElementById('surpriseModalBackdrop');

@@ -1188,6 +1188,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     width:52px;height:52px;border-radius:50%;background:var(--gold-soft);
     display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;
 }
+.alert-modal-ic.control-ic{background:var(--deep);color:var(--gold-soft);}
 .alert-modal h3{font-size:22px;margin-bottom:6px;}
 .alert-modal-sub{font-size:14.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 18px;}
 .alert-modal-row{margin-bottom:14px;}
