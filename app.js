@@ -26,6 +26,7 @@ const I18N = {
   sr: {
     nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
     aria_account:'Nalog', aria_menu:'Meni',
+    hero_kicker:'Pažljivo osmišljena putovanja',
     hero_title:'SKLOPI <span class="accent">putovanje</span>.',
     hero_lede:'Sve u jednoj ceni.',
     label_origin:'Polazak', placeholder_origin:'npr. Beograd, Niš, Podgorica',
@@ -147,6 +148,7 @@ const I18N = {
   en: {
     nav_how:'How it works', nav_dest:'Destinations', nav_about:'About',
     aria_account:'Account', aria_menu:'Menu',
+    hero_kicker:'Thoughtfully designed trips',
     hero_title:'Enter a place.<br>Get a <span class="accent">whole trip</span>.',
     hero_lede:'Flight, stay, transport and activities combined into one plan and one total price.',
     label_origin:'From', placeholder_origin:'e.g. Belgrade, Niš, Podgorica',
