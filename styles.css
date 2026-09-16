@@ -1,21 +1,24 @@
 :root{
     --topbar-h:68px;
-    /* Deep Petrol brand palette: Deep Petrol (#0F4C5C) as the base
-       color, a lighter petrol/teal accent, crisp white surfaces,
-       petrol-tinted slate text. Variable NAMES are kept as in the
-       original stylesheet (--gold, --coral, --aqua …) so every rule
-       below still resolves — only the values move from the old
-       navy/sky-blue palette to Deep Petrol, spread evenly site-wide. */
-    --bg:#F2F6F6;
-    --paper:#FFFFFF;
-    --ink:#101F22;
+    /* Boutique-travel brand palette: Deep Petrol as the base color,
+       Midnight Navy / Champagne Gold / Ivory as the supporting trio
+       (same values already used inside .hero), spread evenly across
+       the whole site so every section shares one consistent look.
+       Burgundy is a rare, deliberate "secret weapon" accent — reserved
+       for the one thing on the page that should visually win (the
+       featured/recommended package) rather than spread everywhere.
+       Variable NAMES are kept as in the original stylesheet (--gold,
+       --coral, --aqua …) so every rule below still resolves. */
+    --bg:#EDE9DC;
+    --paper:#F5F1E8;         /* Ivory */
+    --ink:#111827;           /* Midnight Navy */
     --ink-soft:#4F6E73;
-    --deep:#0F4C5C;
-    --deep2:#1C7288;
-    --gold:#1C8CA3;          /* primary accent — petrol/teal */
-    --gold-soft:#DCEEF2;     /* accent tint background */
+    --deep:#0F4C5C;          /* Deep Petrol */
+    --deep2:#111827;         /* Midnight Navy */
+    --gold:#C9A45C;          /* Champagne Gold */
+    --gold-soft:#ECD9AD;     /* champagne tint background */
     --aqua:#1B8C82;          /* secondary accent — teal */
-    --line:#DCE7E8;
+    --line:#E4DFD3;
     --line-deep:rgba(255,255,255,0.14);
     /* Malo jača od --line — koristi se SAMO za razdvajanje polja u
 "ticket" pretrazi (Destinacija/Datumi/Putnika), gde je originalna
@@ -27,12 +30,14 @@ i teško se videla na mobilnom (linije između polja "nestajale"). */
     --coral-soft:#F7DCD5;
     --deep-soft:#DCE9EA;
     --aqua-soft:#DAECEA;
-    --gold-text:#0F5A6B;
-    --on-dark-strong:#FFFFFF;
-    --on-dark:#E3F0F1;
-    --on-dark-soft:#A9C7CA;
-    --on-gold:#FFFFFF;
-    --gold-on-soft:#0F4C5C;
+    --gold-text:#8A6D2E;     /* readable bronze-gold text on light surfaces */
+    --on-dark-strong:#F5F1E8;/* Ivory */
+    --on-dark:#EAE3D2;
+    --on-dark-soft:#C6BA9C;
+    --on-gold:#111827;       /* Midnight Navy text on gold surfaces */
+    --gold-on-soft:#8A6D2E;
+    --burgundy:#7F1D1D;      /* secret-weapon accent — used sparingly */
+    --burgundy-soft:#F3DEDD;
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
@@ -368,7 +373,7 @@ a{color:inherit;}
     transition:transform .2s ease, background .2s ease;
 }
 .btn-primary:hover{transform:translateY(-2px);gap:18px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
-.btn-primary:hover::after{background:#146E82;transform:rotate(-10deg) translateX(1px);}
+.btn-primary:hover::after{background:#A9803D;transform:rotate(-10deg) translateX(1px);}
 .btn-primary:active{transform:translateY(0);gap:14px;}
 /* ---------- Kalendar za izbor datuma (u stub-u "Od — Do") ---------- */
 .stub-dates{position:static;}
@@ -673,7 +678,7 @@ a{color:inherit;}
 .plan-card-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .plan-notes{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
 .plan-note{
-    background:rgba(220,238,242,0.25);border:1px solid var(--line);border-radius:8px;
+    background:rgba(236,217,173,0.25);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
 }
 .plan-note b{color:var(--ink);}
@@ -692,7 +697,7 @@ a{color:inherit;}
     font-size:15px;transition:transform .2s ease, background .2s ease;
 }
 .plan-continue-btn:hover{transform:translateY(-2px);gap:16px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
-.plan-continue-btn:hover .arrow{background:#146E82;transform:rotate(-10deg) translateX(1px);}
+.plan-continue-btn:hover .arrow{background:#A9803D;transform:rotate(-10deg) translateX(1px);}
 .plan-continue-btn:active{transform:translateY(0);}
 /* ---------- "Želiš više kontrole?" prečica na plan-kartici — vodi do
    istog builder panela kao teaser kartica u sekciji "Kontrola sadržaja",
@@ -804,13 +809,15 @@ a{color:inherit;}
 .pkg.comfort{border-top-color:var(--aqua);}
 .pkg.budget{border-top-color:var(--coral);}
 .pkg.featured{
-    box-shadow:0 20px 46px -24px rgba(28,140,163,0.4);
+    border-top-color:var(--burgundy);
+    box-shadow:0 20px 46px -24px rgba(127,29,29,0.4);
 }
 .pkg-head{
     padding:20px 22px 18px;border-bottom:1px solid var(--line);
     display:flex;justify-content:space-between;align-items:center;gap:14px;
 }
-.pkg.featured .pkg-head{background:#E1EFEF;}
+.pkg.featured .pkg-head{background:var(--burgundy-soft);}
+.pkg.featured .pkg-badge{background:var(--burgundy);color:var(--on-dark-strong);}
 .pkg-head h3{
     font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
     color:var(--ink-soft);
@@ -1134,7 +1141,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     font-family:'Work Sans',sans-serif;font-size:15px;color:var(--ink);
     padding:9px 12px;outline:none;
 }
-.builder-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(28,140,163,0.14);}
+.builder-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,164,92,0.14);}
 .builder-budget-row{display:flex;align-items:center;gap:8px;}
 .builder-budget-row span{font-weight:600;color:var(--ink-soft);}
 .builder-budget-row .builder-input{margin-top:0;}
@@ -1155,7 +1162,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 }
 .builder-summary::before{
     content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);
-    width:54px;height:20px;background:rgba(220,238,242,0.55);
+    width:54px;height:20px;background:rgba(236,217,173,0.55);
     box-shadow:0 2px 4px rgba(0,0,0,0.15);
 }
 .builder-summary-head{
@@ -1191,7 +1198,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     padding:6px 6px 6px 24px;border:none;border-radius:10px;
     background:var(--gold);color:var(--on-gold);font-family:'Work Sans',sans-serif;
     font-weight:600;font-size:15px;cursor:pointer;
-    box-shadow:0 10px 22px -10px rgba(28,140,163,0.45);
+    box-shadow:0 10px 22px -10px rgba(201,164,92,0.45);
     transition:transform .18s ease, box-shadow .18s ease, gap .18s ease;
 }
 .btn-optimize::after{
@@ -1199,7 +1206,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     width:36px;height:36px;border-radius:50%;
     background:var(--deep);color:var(--gold-soft);font-size:14px;
 }
-.btn-optimize:hover{transform:translateY(-1.5px);gap:15px;box-shadow:0 14px 26px -10px rgba(28,140,163,0.55);}
+.btn-optimize:hover{transform:translateY(-1.5px);gap:15px;box-shadow:0 14px 26px -10px rgba(201,164,92,0.55);}
 .btn-optimize:active{transform:translateY(0);gap:12px;}
 .optimize-result{
     margin-top:14px;background:rgba(255,255,255,0.06);border-left:2px solid var(--gold-soft);
@@ -1211,7 +1218,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     font-family:'Work Sans',sans-serif;font-size:13px;font-weight:700;
     padding:7px 12px;border-radius:14px;cursor:pointer;
 }
-.optimize-apply:hover{background:rgba(220,238,242,0.12);}
+.optimize-apply:hover{background:rgba(236,217,173,0.12);}
 .builder-book-links{margin-top:14px;padding-top:14px;border-top:1px solid rgba(227,240,241,0.25);}
 .builder-book-links .bbl-label{font-size:13px;color:var(--on-dark-soft);margin-bottom:9px;}
 .builder-book-row{display:flex;flex-wrap:wrap;gap:8px;}
@@ -1346,12 +1353,12 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 }
 .passport-rule-box b{color:var(--ink);}
 .alt-airport-box{
-    background:rgba(220,238,242,0.25);border:1px solid var(--line);border-radius:8px;
+    background:rgba(236,217,173,0.25);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;margin-top:14px;
 }
 .alt-airport-box b{color:var(--ink);}
 .origin-airport-warning{
-    background:rgba(220,238,242,0.25);border:1px solid var(--line);border-radius:8px;
+    background:rgba(236,217,173,0.25);border:1px solid var(--line);border-radius:8px;
     padding:10px 12px;font-size:12.5px;color:var(--ink);line-height:1.5;margin-top:10px;
 }
 .origin-airport-warning button{
@@ -1433,7 +1440,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     font-family:'Work Sans',sans-serif;font-size:15px;color:var(--ink);padding:11px 14px;outline:none;
     transition:border-color .15s ease, box-shadow .15s ease;
 }
-.auth-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(28,140,163,0.14);}
+.auth-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,164,92,0.14);}
 .auth-input:disabled{background:var(--line);color:var(--ink-soft);opacity:0.6;cursor:not-allowed;}
 .auth-btn{
     border:none;border-radius:4px;padding:11px 18px;background:var(--deep);color:var(--on-dark-strong);
