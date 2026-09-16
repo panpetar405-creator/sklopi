@@ -1887,6 +1887,13 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
       </button>
     </div>
   `;
+  // Skeleton (kraća kartica) je zaslužan za prvobitni scroll pri kliku na
+  // Start — sad kad je STVARNA plan-kartica ubačena (viša, sa notama),
+  // ponovo je centriramo u ekranu da ne ostane odsečena pri vrhu.
+  requestAnimationFrame(() => {
+    const planCard = head.querySelector('.plan-card');
+    if (planCard) planCard.scrollIntoView({behavior:'smooth', block:'center'});
+  });
 
   const body = document.getElementById('resultsBody');
   body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
