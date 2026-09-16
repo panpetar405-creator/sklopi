@@ -137,6 +137,7 @@ const I18N = {
     green_card_scope_note:'Odnosi se na vožnju sopstvenim ili u Srbiji iznajmljenim automobilom do granice — ne na rentakar koji preuzimaš tek na destinaciji (fly & drive).',
     // ---- dinamički stringovi (koristi ih JS preko t()) ----
     ac_searching:'Tražim…', ac_no_results:'Nema predloga za taj naziv.',
+    results_back:'Nazad', results_back_aria:'Nazad na sajt',
     night:'noć', nights:'noći', passenger:'putnik', passengers:'putnika',
     fuel_estimate:'Gorivo (procena)', tolls_estimate:'Putarine (procena)', insurance:'Osiguranje', esim_internet:'eSIM / internet',
     btn_search_kayak:'Pretraži na KAYAK-u', btn_book_booking:'Rezerviši na Booking.com',
@@ -256,6 +257,7 @@ const I18N = {
     green_card_dest_missing:'First enter where you\'re going in the "Destination" field above, then come back here — the rule depends on the country.',
     green_card_scope_note:'Applies to driving your own or a Serbia-rented car across the border — not to a rental car picked up at your destination (fly & drive).',
     ac_searching:'Searching…', ac_no_results:'No suggestions for that name.',
+    results_back:'Back', results_back_aria:'Back to site',
     night:'night', nights:'nights', passenger:'traveler', passengers:'travelers',
     fuel_estimate:'Fuel (estimate)', tolls_estimate:'Tolls (estimate)', insurance:'Insurance', esim_internet:'eSIM / internet',
     btn_search_kayak:'Search on KAYAK', btn_book_booking:'Book on Booking.com',
@@ -2142,6 +2144,91 @@ function scrollIntoCenterBelowHeader(el){
   window.scrollTo({top: Math.max(0, elTopAbs - targetTopInViewport), behavior:'smooth'});
 }
 
+/* ==========================================================
+   Rezultati (3 kartice ponuda) kao zaseban prozor na mobilnom
+   ==========================================================
+   Na širem ekranu #results ostaje običan deo stranice (kao pre).
+   Na mobilnom (<=760px) otvara se kao "bottom sheet" preko sadržaja:
+   80% visine ekrana, pozadina stranice je zaključana (position:fixed
+   trik, isti obrazac kao kod kalendara), a "Nazad" dugme zatvara sheet
+   i vraća korisnika tačno tamo gde je bio na sajtu. Bez ovoga je skrol
+   prstom unutar kartica u praksi skrolovao CEO sajt, jer su kartice
+   bile samo deo obične stranice, a ne svoj prozor.
+========================================================== */
+let _resultsScrollY = 0;
+const isMobileResults = () => window.matchMedia('(max-width:760px)').matches;
+
+function lockResultsPageScroll(){
+  _resultsScrollY = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = '-' + _resultsScrollY + 'px';
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+function unlockResultsPageScroll(){
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, _resultsScrollY);
+}
+
+function openResultsSheet(){
+  const results = document.getElementById('results');
+  if (!results) return;
+  const wasVisible = results.classList.contains('visible');
+  results.classList.add('visible');
+  const backdrop = document.getElementById('resultsBackdrop');
+  if (isMobileResults()){
+    if (backdrop) backdrop.classList.add('open');
+    results.setAttribute('role', 'dialog');
+    results.setAttribute('aria-modal', 'true');
+    if (!wasVisible || document.body.style.position !== 'fixed') lockResultsPageScroll();
+  }
+}
+
+function closeResultsSheet(){
+  const results = document.getElementById('results');
+  if (!results) return;
+  const backdrop = document.getElementById('resultsBackdrop');
+  const wasLocked = document.body.style.position === 'fixed';
+  results.classList.remove('visible');
+  if (backdrop) backdrop.classList.remove('open');
+  results.removeAttribute('role');
+  results.removeAttribute('aria-modal');
+  if (wasLocked) unlockResultsPageScroll();
+  const trigger = document.querySelector('.btn-search-main');
+  if (trigger) trigger.focus();
+}
+
+(function(){
+  const backBtn = document.getElementById('resultsBackBtn');
+  const backdrop = document.getElementById('resultsBackdrop');
+  if (backBtn) backBtn.addEventListener('click', () => closeResultsSheet());
+  if (backdrop) backdrop.addEventListener('click', () => closeResultsSheet());
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const results = document.getElementById('results');
+    if (results && results.classList.contains('visible') && isMobileResults()) closeResultsSheet();
+  });
+  // Ako se ekran "prebaci" preko 760px dok je sheet otvoren (npr. rotacija
+  // tableta), skini zaključavanje skrola — na širem ekranu #results više
+  // nije fiksni sheet, pa zaključana pozadina ne bi imala smisla.
+  window.addEventListener('resize', () => {
+    const results = document.getElementById('results');
+    if (!results || !results.classList.contains('visible')) return;
+    if (!isMobileResults() && document.body.style.position === 'fixed'){
+      unlockResultsPageScroll();
+      const backdrop = document.getElementById('resultsBackdrop');
+      if (backdrop) backdrop.classList.remove('open');
+      results.removeAttribute('role');
+      results.removeAttribute('aria-modal');
+    }
+  });
+})();
+
 async function renderResults(dest, from, to, nights, days, adults, flags, originCode, autoReveal){
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
@@ -2395,11 +2482,11 @@ async function runSurpriseSearch(isReroll){
   if (!isReroll) closeSurpriseModal();
 
   const results = document.getElementById('results');
-  results.classList.add('visible');
+  openResultsSheet();
   if (!isReroll){
     document.getElementById('resultsHead').innerHTML = '';
     document.getElementById('resultsBody').innerHTML = skeletonResultsHtml(getLang()==='en' ? 'Searching 3 destinations that fit your budget…' : 'Tražimo 3 destinacije koje se uklapaju u tvoj budžet…');
-    results.scrollIntoView({behavior:'smooth', block:'start'});
+    if (!isMobileResults()) results.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
   bumpSearchStat('🎲 ' + fmtEUR(budget));
@@ -2615,13 +2702,13 @@ async function runSearch(shouldScroll, autoReveal){
   const days = nights;
 
   const results = document.getElementById('results');
-  results.classList.add('visible');
+  openResultsSheet();
   document.getElementById('resultsHead').innerHTML = '';
   const rb = document.getElementById('resultsBody');
   rb.innerHTML = skeletonResultsHtml('Pripremamo tvoj plan…');
   rb.classList.remove('rb-hidden');
   rb.classList.add('rb-reveal');
-  if (shouldScroll) results.scrollIntoView({behavior:'smooth', block:'start'});
+  if (shouldScroll && !isMobileResults()) results.scrollIntoView({behavior:'smooth', block:'start'});
 
   bumpSearchStat(dest);
   logAirportDbMiss(originCode, 'origin');
@@ -3053,7 +3140,7 @@ document.getElementById('makeBuilderBtn').addEventListener('click', ()=>{
 document.querySelectorAll('.popular-dest-card').forEach(card => {
   card.addEventListener('click', () => {
     document.getElementById('dest').value = card.dataset.dest;
-    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+    if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
     runSearch(false);
   });
 });
@@ -3182,7 +3269,7 @@ function attachPopularDestCardHandlers(grid){
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
       document.getElementById('dest').value = card.dataset.dest;
-      document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+      if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
       runSearch(false);
     });
   });
@@ -3694,7 +3781,7 @@ function loadSavedTrip(tripId){
     openControlPanel();
     document.querySelector('.builder-wrap').scrollIntoView({behavior:'smooth', block:'start'});
   } else {
-    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+    if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
     runSearch(false);
   }
   showToast('Izlet za ' + trip.dest + ' učitan.');

@@ -581,6 +581,26 @@ a{color:inherit;}
 @media (max-width:600px){.popular-dest-grid{grid-template-columns:1fr;}}
 #results{display:none;padding-top:34px;padding-bottom:100px;}
 #results.visible{display:block;}
+/* Rezultati (3 kartice ponuda) — "bottom sheet" preko sadržaja stranice na
+   mobilnom (vidi @media(max-width:760px) niže): sopstveni prozor sa 80vh
+   visine, zaključanim skrolom pozadine i "Nazad" dugmetom, umesto da budu
+   deo obične stranice kroz koju se prosto skroluje. Na širem ekranu ova
+   dva elementa ostaju nevidljiva i #results se ponaša kao pre. */
+.results-sheet-head{display:none;}
+.results-back-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    border:1px solid var(--line);background:var(--paper);color:var(--ink);
+    border-radius:999px;padding:8px 14px 8px 10px;font-size:13.5px;font-weight:600;
+    font-family:inherit;cursor:pointer;transition:border-color .15s ease,color .15s ease;
+}
+.results-back-btn svg{width:15px;height:15px;flex:none;}
+.results-back-btn:hover{border-color:var(--gold);color:var(--gold-text);}
+.results-backdrop{
+    display:none;position:fixed;inset:0;z-index:58;
+    background:rgba(10,31,61,0.45);backdrop-filter:blur(1px);
+    opacity:0;transition:opacity .2s ease;
+}
+.results-backdrop.open{display:block;opacity:1;}
 /* status banner + pills */
 .status-banner{
     background:var(--paper);border:1px solid var(--line);border-radius:6px;
@@ -1584,6 +1604,37 @@ footer{
     opacity:0;transition:opacity .2s ease;
 }
 .cal-backdrop.open{display:block;opacity:1;}
+/* Rezultati kao "bottom sheet" — zaseban prozor preko stranice, 80% visine
+   ekrana, sa unutrašnjim skrolom (spoljna stranica je u međuvremenu
+   zaključana preko lockResultsPageScroll() u app.js, pa pomeranje prstom
+   gore/dole ovde skroluje SAMO ponude, ne ceo sajt). */
+#results.visible{
+    position:fixed;left:0;right:0;bottom:0;top:auto;z-index:59;
+    height:80vh;max-height:80vh;
+    padding-top:0;padding-bottom:0;
+    background:var(--bg);
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -24px 50px -20px rgba(10,31,61,0.4);
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
+}
+#results.visible > .section{
+    flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:0 20px calc(28px + env(safe-area-inset-bottom));
+}
+@keyframes resultsSheetUp{
+    from{transform:translateY(24px);opacity:0.4;}
+    to{transform:translateY(0);opacity:1;}
+}
+@media (prefers-reduced-motion:reduce){
+    #results.visible{animation:none;}
+}
+.results-sheet-head{
+    display:flex;align-items:center;position:sticky;top:0;z-index:2;
+    background:var(--bg);padding:14px 20px 10px;margin:0 -20px 4px;
+    border-bottom:1px solid var(--line);
+}
 .cal-quick.chip-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .cal-quick.chip-row .chip{
     padding:8px 6px;font-size:12px;text-align:center;
