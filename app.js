@@ -1555,8 +1555,6 @@ function fmtDateSr(d){
    ostaje otvorena i mirna od prvog slova do izbora predloga.
 ========================================================== */
 const LOC_DROPDOWN_INPUT_ID = { destSuggestions:'dest', originSuggestions:'origin' };
-// Na koje polje fokus ide posle izbora predloga (umesto da ostane u istom).
-const LOC_NEXT_FOCUS_ID = { origin:'dest', dest:'dateDisplayBtn' };
 const _locDropdownState = {
   destSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false },
   originSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false }
@@ -1589,10 +1587,12 @@ function selectLocSuggestion(datalistId, value){
   closeLocDropdown(datalistId);
   inputEl.dispatchEvent(new Event('input', {bubbles:true}));
   inputEl.dispatchEvent(new Event('change', {bubbles:true}));
-  // Posle izbora fokus ide na sledeće logično polje (npr. iz Polaska u
-  // Destinaciju, iz Destinacije na datume) — ne ostaje u istom polju.
-  const nextEl = document.getElementById(LOC_NEXT_FOCUS_ID[datalistId]);
-  if (nextEl) nextEl.focus(); else inputEl.focus();
+  // Tastatura se zatvara ODMAH posle izbora, bez obzira na sledeće polje —
+  // dok je otvorena, prekriva pola ekrana i baš uneto polje se jedva vidi.
+  // Fokus se NE prebacuje automatski na sledeće polje (ni Destinaciju ni
+  // datume): korisnik sam dodirne sledeće polje kad bude spreman, i tastatura
+  // (ili kalendar) se tad normalno otvori za njega.
+  inputEl.blur();
 }
 function setupLocDropdown(datalistId){
   const panel = document.getElementById(datalistId);
