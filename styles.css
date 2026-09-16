@@ -283,7 +283,7 @@ a{color:inherit;}
 .ticket .stub .subrow input::-webkit-calendar-picker-indicator{margin-left:2px;opacity:0.65;transform:translateY(1px);}
 .ticket .go{
     padding:18px;
-    display:flex;align-items:center;justify-content:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
 }
 .btn-primary{
     position:relative;display:inline-flex;align-items:center;justify-content:center;gap:14px;
