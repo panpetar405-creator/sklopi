@@ -84,6 +84,9 @@ const I18N = {
     pd_budva_name:'Budva, Crna Gora', pd_budva_desc:'Najbliže more autom ili autobusom iz Srbije — stara varoš i duge plaže.',
     pd_istanbul_name:'Istanbul, Turska', pd_istanbul_desc:'Spoj Evrope i Azije, bazari i Bosfor — pristupačan izlet van sezone.',
     pd_vienna_name:'Beč, Austrija', pd_vienna_desc:'Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.',
+    pd_thessaloniki_name:'Solun, Grčka', pd_thessaloniki_desc:'More bez potrebe za letom — praktičan izlet autom ili autobusom.',
+    pd_prague_name:'Prag, Češka', pd_prague_desc:'Arhitektura, pivnice i šetnja starim gradom — popularan gradski izlet.',
+    pd_budapest_name:'Budimpešta, Mađarska', pd_budapest_desc:'Kupatila, arhitektura i kratak let ili vožnja — praktičan gradski izlet.',
     cta_right:'Ceo izlet.<br>Jedna cena.',
     eyebrow_faq:'Pitanja', h2_faq:'Pre nego što rezervišeš',
     sub_faq:'Odgovori na najčešća pitanja o cenama, rezervaciji i promenama.',
@@ -201,6 +204,9 @@ const I18N = {
     pd_budva_name:'Budva, Montenegro', pd_budva_desc:'The closest sea by car or bus from Serbia — an old town and long beaches.',
     pd_istanbul_name:'Istanbul, Turkey', pd_istanbul_desc:'Where Europe meets Asia, bazaars and the Bosphorus — an affordable off-season trip.',
     pd_vienna_name:'Vienna, Austria', pd_vienna_desc:'Museums, cafés and Christmas markets in winter — a practical city break.',
+    pd_thessaloniki_name:'Thessaloniki, Greece', pd_thessaloniki_desc:'The sea without needing a flight — an easy trip by car or bus.',
+    pd_prague_name:'Prague, Czechia', pd_prague_desc:'Architecture, beer halls and a walk through the old town — a popular city break.',
+    pd_budapest_name:'Budapest, Hungary', pd_budapest_desc:'Baths, architecture and a short flight or drive — a practical city break.',
     cta_right:'One trip.<br>One price.',
     eyebrow_faq:'Questions', h2_faq:'Before you book',
     sub_faq:'Answers to the most common questions about prices, booking and changes.',
@@ -305,6 +311,22 @@ function hashSeed(str){
   let h = 0;
   for (let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) | 0; }
   return Math.abs(h) || 1;
+}
+/* Deterministička "dnevna" rotacija: isti izbor za sve posetioce istog dana
+   (na osnovu UTC datuma + salt), promeni se sledeći dan. Koristi isti
+   seededRandom/hashSeed par kao i marketFactor iznad — namerno, radi
+   doslednosti i da ne uvodimo drugi RNG algoritam u fajl. */
+function dailyShuffle(arr, salt){
+  const rand = seededRandom(hashSeed(String(salt) + '|' + todayStr()));
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(rand() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function dailyPick(arr, count, salt){
+  return dailyShuffle(arr, salt).slice(0, Math.min(count, arr.length));
 }
 /* ==========================================================
    DNEVNA FLUKTUACIJA CENE ("tržišni faktor")
@@ -2990,117 +3012,117 @@ document.querySelectorAll('.popular-dest-card').forEach(card => {
    iz HTML-a, bez ikakve promene.
 ========================================================== */
 const REGIONAL_POPULAR_DESTINATIONS = {
-  'beograd': { genitiv:'Beograda', cards: [
+  'beograd': { genitiv:'Beograda', show:6, cards: [
     {dest:'Atina', name:'Atina, Grčka', desc:'Antika, ostrvski trajekti i vrhunska kuhinja — česti direktni letovi iz Beograda.'},
     {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja — kratak let, grad se obilazi peške.'},
     {dest:'Barselona', name:'Barselona, Španija', desc:'Gaudijeva arhitektura, plaža i tapas bari — omiljena kombinacija grada i mora.'},
     {dest:'Budva', name:'Budva, Crna Gora', desc:'Najbliže more autom — 4-5h vožnje, stara varoš i duge plaže.'},
     {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, bazari i Bosfor — pristupačan izlet van sezone.'},
-    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.'}
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.'},
+    {dest:'Solun', name:'Solun, Grčka', desc:'More bez potrebe za letom — oko 6-7h vožnje, popularno van glavne sezone.'},
+    {dest:'Budimpešta', name:'Budimpešta, Mađarska', desc:'Kratak let ili vožnja — kupatila, arhitektura i praktičan gradski izlet.'}
   ]},
-  'novi sad': { genitiv:'Novog Sada', cards: [
+  'novi sad': { genitiv:'Novog Sada', show:5, cards: [
     {dest:'Budimpešta', name:'Budimpešta, Mađarska', desc:'Oko 2h vožnje — low-cost letovi odatle su često jeftiniji nego iz Beograda.'},
     {dest:'Beč', name:'Beč, Austrija', desc:'Direktan voz i autobus iz Novog Sada — praktičan gradski izlet bez presedanja.'},
     {dest:'Atina', name:'Atina, Grčka', desc:'Za more i ostrva i dalje se najisplativije leti preko Beograda.'},
     {dest:'Budva', name:'Budva, Crna Gora', desc:'Najbliže more autom — stara varoš i duge plaže.'},
-    {dest:'Zagreb', name:'Zagreb, Hrvatska', desc:'Kratka vožnja, praktičan vikend izlet uz adventski sadržaj zimi.'}
+    {dest:'Zagreb', name:'Zagreb, Hrvatska', desc:'Kratka vožnja, praktičan vikend izlet uz adventski sadržaj zimi.'},
+    {dest:'Solun', name:'Solun, Grčka', desc:'More bez potrebe za letom — preko Beograda ili direktno autom.'},
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije — let preko Beograda.'}
   ]},
-  'nis': { genitiv:'Niša', cards: [
+  'nis': { genitiv:'Niša', show:4, cards: [
     {dest:'Solun', name:'Solun, Grčka', desc:'Oko 3h vožnje — najbliže more za vikend izlet, bez potrebe za letom.'},
     {dest:'Skoplje', name:'Skoplje, Sev. Makedonija', desc:'Blizu, praktično autom za kraći izlet.'},
     {dest:'Antalija', name:'Antalija, Turska', desc:'Sezonski čarter letovi direktno sa aerodroma u Nišu, van glavne sezone jeftiniji.'},
-    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Za većinu daljih destinacija, presedanje preko Beograda ili Istanbula je i dalje najisplativije.'}
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Za većinu daljih destinacija, presedanje preko Beograda ili Istanbula je i dalje najisplativije.'},
+    {dest:'Sofija', name:'Sofija, Bugarska', desc:'Blizu, praktično autom ili vozom za kraći izlet.'},
+    {dest:'Budva', name:'Budva, Crna Gora', desc:'More autom — nešto duža vožnja, ali bez potrebe za letom.'}
   ]},
-  'podgorica': { genitiv:'Podgorice', cards: [
+  'podgorica': { genitiv:'Podgorice', show:4, cards: [
     {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije — praktičan let sa podgoričkog aerodroma.'},
     {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja — kratak let preko mora.'},
     {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji i kafei — praktičan gradski izlet.'},
-    {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari.'}
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari.'},
+    {dest:'Atina', name:'Atina, Grčka', desc:'Antika i ostrva — let preko mora.'},
+    {dest:'Milano', name:'Milano, Italija', desc:'Moda, dizajn i kratak let preko mora.'}
   ]},
-  'subotica': { genitiv:'Subotice', cards: [
+  'subotica': { genitiv:'Subotice', show:4, cards: [
     {dest:'Budimpešta', name:'Budimpešta, Mađarska', desc:'Manje od 3h vožnje i blizu granice — često praktičnija polazna tačka nego Beograd.'},
     {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji, kafei i gradska šetnja — dostupan i preko Budimpešte.'},
     {dest:'Atina', name:'Atina, Grčka', desc:'Za more i ostrva, let preko Beograda je i dalje najisplativiji.'},
-    {dest:'Zagreb', name:'Zagreb, Hrvatska', desc:'Kraća vožnja, praktičan vikend izlet.'}
+    {dest:'Zagreb', name:'Zagreb, Hrvatska', desc:'Kraća vožnja, praktičan vikend izlet.'},
+    {dest:'Prag', name:'Prag, Češka', desc:'Arhitektura i pivnice — dostupan preko Budimpešte.'},
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, let preko Beograda.'}
   ]},
-  'kragujevac': { genitiv:'Kragujevca', cards: [
+  'kragujevac': { genitiv:'Kragujevca', show:4, cards: [
     {dest:'Atina', name:'Atina, Grčka', desc:'Antika i ostrva — let preko Beograda, oko 1h vožnje do aerodroma.'},
     {dest:'Rim', name:'Rim, Italija', desc:'Koloseum i ulična kuhinja — kratak let iz Beograda.'},
     {dest:'Budva', name:'Budva, Crna Gora', desc:'Najbliže more autom — oko 3h vožnje.'},
-    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'}
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'},
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari — let preko Beograda.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji i kafei — praktičan gradski izlet.'}
   ]},
-  'kraljevo': { genitiv:'Kraljeva', cards: [
+  'kraljevo': { genitiv:'Kraljeva', show:4, cards: [
     {dest:'Budva', name:'Budva, Crna Gora', desc:'Jedna od bližih ruta do mora sa juga Srbije — oko 3h vožnje.'},
     {dest:'Solun', name:'Solun, Grčka', desc:'Preko Niša, oko 4h vožnje — more bez potrebe za letom.'},
     {dest:'Atina', name:'Atina, Grčka', desc:'Za ostrva i dalje, let preko Beograda ili Niša.'},
-    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'}
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'},
+    {dest:'Podgorica', name:'Podgorica, Crna Gora', desc:'Alternativni pravac za let ka moru ili dalje.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji i kafei — let preko Beograda.'}
   ]},
-  'novi pazar': { genitiv:'Novog Pazara', cards: [
+  'novi pazar': { genitiv:'Novog Pazara', show:4, cards: [
     {dest:'Budva', name:'Budva, Crna Gora', desc:'Preko Rožaja — jedna od kraćih ruta do mora sa juga Srbije.'},
     {dest:'Podgorica', name:'Podgorica, Crna Gora', desc:'Bliži aerodrom za neke pravce nego Beograd — vredi uporediti oba.'},
     {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'},
-    {dest:'Atina', name:'Atina, Grčka', desc:'Za ostrva, let preko Beograda ili Podgorice.'}
+    {dest:'Atina', name:'Atina, Grčka', desc:'Za ostrva, let preko Beograda ili Podgorice.'},
+    {dest:'Sarajevo', name:'Sarajevo, BiH', desc:'Blizu, praktično autom za kraći izlet.'},
+    {dest:'Rim', name:'Rim, Italija', desc:'Koloseum i ulična kuhinja — let preko Beograda ili Podgorice.'}
   ]},
-  'banja luka': { genitiv:'Banje Luke', cards: [
+  'banja luka': { genitiv:'Banje Luke', show:4, cards: [
     {dest:'Zagreb', name:'Zagreb, Hrvatska', desc:'Oko 2h vožnje — mnogo širi izbor letova nego banjalučki aerodrom.'},
     {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji i kafei — praktičan gradski izlet.'},
     {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'},
-    {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja.'}
+    {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja.'},
+    {dest:'Budimpešta', name:'Budimpešta, Mađarska', desc:'Šira mreža letova nego banjalučki aerodrom, oko 4-5h vožnje.'},
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari.'}
   ]},
-  'sarajevo': { genitiv:'Sarajeva', cards: [
+  'sarajevo': { genitiv:'Sarajeva', show:4, cards: [
     {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije — česti direktni letovi sa sarajevskog aerodroma.'},
     {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji, kafei i gradska šetnja — kratak let.'},
     {dest:'Rim', name:'Rim, Italija', desc:'Koloseum, Vatikan i ulična kuhinja.'},
-    {dest:'Atina', name:'Atina, Grčka', desc:'Antika, ostrva i vrhunska kuhinja.'}
+    {dest:'Atina', name:'Atina, Grčka', desc:'Antika, ostrva i vrhunska kuhinja.'},
+    {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari.'},
+    {dest:'Budimpešta', name:'Budimpešta, Mađarska', desc:'Kratak let ili vožnja preko Hrvatske.'}
   ]},
-  'skoplje': { genitiv:'Skoplja', cards: [
+  'skoplje': { genitiv:'Skoplja', show:4, cards: [
     {dest:'Rim', name:'Rim, Italija', desc:'Koloseum i ulična kuhinja — česti low-cost letovi sa skopskog aerodroma.'},
     {dest:'Barselona', name:'Barselona, Španija', desc:'Arhitektura, plaža i tapas bari.'},
     {dest:'Solun', name:'Solun, Grčka', desc:'Blizu, praktično i autom — oko 3h vožnje.'},
-    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'}
+    {dest:'Istanbul', name:'Istanbul, Turska', desc:'Spoj Evrope i Azije, pristupačan izlet van sezone.'},
+    {dest:'Atina', name:'Atina, Grčka', desc:'Antika, ostrva i vrhunska kuhinja.'},
+    {dest:'Beč', name:'Beč, Austrija', desc:'Muzeji, kafei i gradska šetnja.'}
   ]}
 };
-let _defaultPopularDestState = null;
-function renderRegionalPopularDestinations(originRaw){
-  const grid = document.getElementById('popularDestGrid');
-  const head = document.getElementById('popularDestHead');
-  const eyebrow = document.getElementById('popularDestEyebrow');
-  if (!grid || !head) return;
-  if (_defaultPopularDestState === null){
-    _defaultPopularDestState = { head: head.textContent, eyebrow: eyebrow ? eyebrow.textContent : '', grid: grid.innerHTML };
-  }
-  const norm = normalizeSr((originRaw || '').trim());
-  let bucket = null;
-  if (norm){
-    for (const key in REGIONAL_POPULAR_DESTINATIONS){
-      if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key) ){
-        bucket = REGIONAL_POPULAR_DESTINATIONS[key];
-        break;
-      }
-    }
-  }
-  if (!bucket){
-    // Nepoznat ili prazan grad — vrati originalni (podrazumevani) sadržaj, ne ostavljaj "zaglavljen" prethodni grad.
-    head.textContent = _defaultPopularDestState.head;
-    if (eyebrow) eyebrow.textContent = _defaultPopularDestState.eyebrow;
-    grid.innerHTML = _defaultPopularDestState.grid;
-    grid.querySelectorAll('.popular-dest-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.getElementById('dest').value = card.dataset.dest;
-        document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
-        runSearch(false);
-      });
-    });
-    return;
-  }
-  head.textContent = 'Popularno kod putnika iz ' + bucket.genitiv;
-  if (eyebrow) eyebrow.textContent = 'Predlozi prilagođeni tvom polasku';
-  grid.innerHTML = bucket.cards.map(c =>
-    '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '">'
-    + '<span class="pd-name">' + escapeHtml(c.name) + '</span>'
-    + '<span class="pd-desc">' + escapeHtml(c.desc) + '</span>'
-    + '</button>'
-  ).join('');
+/* ==========================================================
+   Podrazumevani ("Gde bi sledeće?") skup — kad polje Polazak nije
+   prepoznato ili je prazno. Umesto fiksnih 6 kartica iz HTML-a,
+   biramo dnevno-rotirajući podskup iz šireg pool-a (ispod), preko
+   dailyPick() — isto za sve posetioce istog dana, drugačije sutra.
+   Prevodi idu preko t()/I18N (pd_* ključevi), da poštuje SR/EN.
+========================================================== */
+const DEFAULT_POPULAR_DEST_POOL = [
+  {dest:'Atina', nameKey:'pd_athens_name', descKey:'pd_athens_desc'},
+  {dest:'Rim', nameKey:'pd_rome_name', descKey:'pd_rome_desc'},
+  {dest:'Barselona', nameKey:'pd_barcelona_name', descKey:'pd_barcelona_desc'},
+  {dest:'Budva', nameKey:'pd_budva_name', descKey:'pd_budva_desc'},
+  {dest:'Istanbul', nameKey:'pd_istanbul_name', descKey:'pd_istanbul_desc'},
+  {dest:'Beč', nameKey:'pd_vienna_name', descKey:'pd_vienna_desc'},
+  {dest:'Solun', nameKey:'pd_thessaloniki_name', descKey:'pd_thessaloniki_desc'},
+  {dest:'Prag', nameKey:'pd_prague_name', descKey:'pd_prague_desc'},
+  {dest:'Budimpešta', nameKey:'pd_budapest_name', descKey:'pd_budapest_desc'}
+];
+function attachPopularDestCardHandlers(grid){
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
       document.getElementById('dest').value = card.dataset.dest;
@@ -3108,6 +3130,55 @@ function renderRegionalPopularDestinations(originRaw){
       runSearch(false);
     });
   });
+}
+function renderDefaultPopularDestinations(){
+  const grid = document.getElementById('popularDestGrid');
+  const head = document.getElementById('popularDestHead');
+  const eyebrow = document.getElementById('popularDestEyebrow');
+  if (!grid || !head) return;
+  head.textContent = t('h2_popular_dest');
+  if (eyebrow) eyebrow.textContent = t('eyebrow_ideas');
+  const picks = dailyPick(DEFAULT_POPULAR_DEST_POOL, 6, 'default');
+  grid.innerHTML = picks.map(c =>
+    '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '">'
+    + '<span class="pd-name">' + escapeHtml(t(c.nameKey)) + '</span>'
+    + '<span class="pd-desc">' + escapeHtml(t(c.descKey)) + '</span>'
+    + '</button>'
+  ).join('');
+  attachPopularDestCardHandlers(grid);
+}
+function renderRegionalPopularDestinations(originRaw){
+  const grid = document.getElementById('popularDestGrid');
+  const head = document.getElementById('popularDestHead');
+  const eyebrow = document.getElementById('popularDestEyebrow');
+  if (!grid || !head) return;
+  const norm = normalizeSr((originRaw || '').trim());
+  let bucket = null;
+  let matchedKey = null;
+  if (norm){
+    for (const key in REGIONAL_POPULAR_DESTINATIONS){
+      if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key) ){
+        bucket = REGIONAL_POPULAR_DESTINATIONS[key];
+        matchedKey = key;
+        break;
+      }
+    }
+  }
+  if (!bucket){
+    // Nepoznat ili prazan grad — vrati podrazumevani (dnevno-rotirajući) sadržaj, ne ostavljaj "zaglavljen" prethodni grad.
+    renderDefaultPopularDestinations();
+    return;
+  }
+  head.textContent = 'Popularno kod putnika iz ' + bucket.genitiv;
+  if (eyebrow) eyebrow.textContent = 'Predlozi prilagođeni tvom polasku';
+  const picks = dailyPick(bucket.cards, bucket.show || bucket.cards.length, matchedKey);
+  grid.innerHTML = picks.map(c =>
+    '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '">'
+    + '<span class="pd-name">' + escapeHtml(c.name) + '</span>'
+    + '<span class="pd-desc">' + escapeHtml(c.desc) + '</span>'
+    + '</button>'
+  ).join('');
+  attachPopularDestCardHandlers(grid);
 }
 let _originRegionalTimer = null;
 const originInputForRegional = document.getElementById('origin');
@@ -3123,6 +3194,8 @@ if (originInputForRegional){
   if (originInputForRegional.value){
     renderRegionalPopularDestinations(originInputForRegional.value);
     renderOriginAirportWarning(originInputForRegional.value);
+  } else {
+    renderDefaultPopularDestinations();
   }
 }
 let _destAirportTimer = null;
@@ -3990,3 +4063,12 @@ applyStaticI18n();
 updateStats();
 renderSavedTrips();
 renderAccountMenu();
+// Ako se jezik promeni, ponovo iscrtaj "Gde bi sledeće?" u novom jeziku —
+// isti dnevni izbor, samo prevedeni tekst (regionalne kartice po gradu
+// polaska ostaju na srpskom, kao i do sada — ovde se menja samo podrazumevani skup).
+const _prevOnLangChange = window.onLangChange;
+window.onLangChange = function(lang){
+  if (typeof _prevOnLangChange === 'function') _prevOnLangChange(lang);
+  const originVal = (document.getElementById('origin') || {}).value || '';
+  if (!originVal.trim()) renderDefaultPopularDestinations();
+};
