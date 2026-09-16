@@ -3469,6 +3469,17 @@ const surpriseModalSubmit = document.getElementById('surpriseModalSubmit');
 if (surpriseModalSubmit) surpriseModalSubmit.addEventListener('click', () => runSurpriseSearch(false));
 
 /* ---- Jedinstvena kartica "Dokumenta za put": pasoš + zelena karta, sa tabovima i scrollom ---- */
+/* docsActionRow (unos datuma + dugme "Proveri") se prikazuje samo na tabu
+   "Pasoš" i samo kad je pasoš uopšte relevantan za unetu destinaciju —
+   ako destinacija nije uneta ili pasoš nije potreban, red se sakriva
+   umesto da ostane vidljiv ali onemogućen (što je izgledalo kao kvar). */
+let passportActionApplicable = false;
+function updateDocsActionRowVisibility(){
+  const row = document.getElementById('docsActionRow');
+  const passTab = document.getElementById('docsTabPassport');
+  const onPassportTab = !!(passTab && passTab.classList.contains('active'));
+  if (row) row.hidden = !(onPassportTab && passportActionApplicable);
+}
 function fillPassportSection(destVal, country){
   const box = document.getElementById('passportRuleBox');
   const submitBtn = document.getElementById('passportCheckSubmit');
@@ -3484,6 +3495,8 @@ function fillPassportSection(destVal, country){
     if (expiryInput) expiryInput.disabled = true;
     if (submitBtn) submitBtn.disabled = true;
     if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
+    passportActionApplicable = false;
+    updateDocsActionRowVisibility();
     return;
   }
   if (expiryInput) expiryInput.disabled = false;
@@ -3506,8 +3519,13 @@ function fillPassportSection(destVal, country){
       resultEl.className = 'passport-result ok';
       resultEl.innerHTML = '✅ ' + escapeHtml(rule.why);
     }
-  } else if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
+    passportActionApplicable = false;
+  } else {
+    if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
+    passportActionApplicable = true;
+  }
   if (submitBtn) submitBtn.dataset.country = country;
+  updateDocsActionRowVisibility();
 }
 function fillGreenCardSection(destVal, country){
   const box = document.getElementById('greenCardRuleBox');
@@ -3541,6 +3559,7 @@ function switchDocsTab(which){
   if (gcTab){ gcTab.classList.toggle('active', !showPassport); gcTab.setAttribute('aria-selected', !showPassport ? 'true' : 'false'); }
   if (passSection) passSection.hidden = !showPassport;
   if (gcSection) gcSection.hidden = showPassport;
+  updateDocsActionRowVisibility();
   const scrollEl = document.querySelector('#documentsModal .docs-scroll');
   if (scrollEl) scrollEl.scrollTop = 0;
 }

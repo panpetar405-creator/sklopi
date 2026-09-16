@@ -112,7 +112,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 <div class="topbar-wrap">
@@ -540,15 +540,17 @@ SKLOPI<em>.</em>
 <button type="button" class="docs-tab active" id="docsTabPassport" role="tab" aria-selected="true" data-i18n="docs_tab_passport">🛂 Pasoš</button>
 <button type="button" class="docs-tab" id="docsTabGreenCard" role="tab" aria-selected="false" data-i18n="docs_tab_greencard">🪪 Zelena karta</button>
 </div>
-<div class="docs-scroll">
-<section class="docs-section" id="docsSectionPassport">
-<p class="docs-section-sub" data-i18n="passport_modal_sub">Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.</p>
-<div class="alert-modal-row" id="passportRuleBox"></div>
+<div class="docs-action-row" id="docsActionRow">
 <div class="alert-modal-row" id="passportExpiryRow">
 <label for="passportExpiryInput" data-i18n="passport_modal_label_expiry">Do kog datuma važi tvoj pasoš?</label>
 <input type="date" id="passportExpiryInput" class="auth-input" style="width:100%;">
 </div>
 <button type="button" class="btn-primary" id="passportCheckSubmit" style="width:100%;margin-top:8px;" data-i18n="passport_modal_btn">Proveri</button>
+</div>
+<div class="docs-scroll">
+<section class="docs-section" id="docsSectionPassport">
+<p class="docs-section-sub" data-i18n="passport_modal_sub">Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.</p>
+<div class="alert-modal-row" id="passportRuleBox"></div>
 <div id="passportResult"></div>
 <p class="alert-modal-disclaimer" data-i18n="passport_modal_disclaimer">⚠️ Opšta pravila po zemlji, radi orijentacije — pred put uvek dodatno proveri na sajtu ambasade/konzulata ili sa aviokompanijom.</p>
 </section>
@@ -565,7 +567,7 @@ SKLOPI<em>.</em>
 </a>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 <script src="cookies.js"></script>
 </body>
 </html>
