@@ -517,6 +517,7 @@ a{color:inherit;}
 /* ---------- Sections ---------- */
 .section{max-width:1180px;margin:0 auto;padding:0 40px;}
 .section + .section{margin-top:96px;}
+.section.action-cards-wrap{margin-top:44px;margin-bottom:44px;}
 .section-head{margin:0 0 40px;}
 .section-head h2{margin-top:10px;}
 .section-head .eyebrow{font-size:14.5px;color:var(--gold-text);font-weight:600;}
@@ -1066,7 +1067,6 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 }
 .action-card:hover .ac-arrow{background:var(--gold);color:#fff;transform:translateX(3px);}
 .control-teaser[aria-expanded="true"] .ac-arrow{transform:rotate(90deg);}
-.action-cards + .builder{margin-top:22px;}
 @media (max-width:560px){
     .action-card{padding:20px 20px;gap:10px;border-radius:8px;}
     .action-card .ac-ic{width:40px;height:40px;}
