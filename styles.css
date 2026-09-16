@@ -1619,8 +1619,17 @@ footer{
     overflow:hidden;
     animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
 }
+/* .section (globalno .section{margin:0 auto;max-width:1180px}) je ovde
+   flex-child unutar #results.visible (flex-direction:column). Auto
+   margine na cross-axis flex-child-a poništavaju stretch i teraju ga
+   da se skalira po sadržaju (fit-content) umesto po širini roditelja —
+   pa je kartica ponude (.pkg, 88% + max-width:420px) gurala .section
+   šire od ekrana, a #results.visible ga je nemo sekao (overflow:hidden),
+   bez horizontalnog skrola — otud isečena kartica ponude na uskim
+   telefonima. margin:0 vraća puni stretch na 100% širine. */
 #results.visible > .section{
     flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    margin:0;
     padding:0 20px calc(28px + env(safe-area-inset-bottom));
 }
 @keyframes resultsSheetUp{
