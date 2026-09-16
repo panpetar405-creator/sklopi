@@ -1830,6 +1830,8 @@ footer{padding:28px 20px;}
 .partner-badge--viator::before{background:#0E8F62;}
 .partner-badge--airalo{color:#E4472B;text-transform:lowercase;}
 .partner-badge--airalo::before{background:#E4472B;}
+.partner-badge--worldnomads{color:#EE6C2A;}
+.partner-badge--worldnomads::before{background:#EE6C2A;}
 .price-chart{
     background:var(--paper);border:1px solid var(--line);border-radius:10px;
     padding:26px 28px 24px;
