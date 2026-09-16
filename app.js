@@ -26,7 +26,7 @@ const I18N = {
   sr: {
     nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
     aria_account:'Nalog', aria_menu:'Meni',
-    hero_title:'SKLOPI <span class="accent">izlet</span>.',
+    hero_title:'SKLOPI <span class="accent">putovanje</span>.',
     hero_lede:'Sve u jednoj ceni.',
     label_origin:'Polazak', placeholder_origin:'npr. Beograd, Niš, Podgorica',
     label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
