@@ -582,7 +582,7 @@ a{color:inherit;}
 #results{display:none;padding-top:34px;padding-bottom:100px;}
 #results.visible{display:block;}
 /* Rezultati (3 kartice ponuda) — "bottom sheet" preko sadržaja stranice na
-   mobilnom (vidi @media(max-width:760px) niže): sopstveni prozor sa 80vh
+   mobilnom (vidi @media(max-width:760px) niže): sopstveni prozor sa 90dvh
    visine, zaključanim skrolom pozadine i "Nazad" dugmetom, umesto da budu
    deo obične stranice kroz koju se prosto skroluje. Na širem ekranu ova
    dva elementa ostaju nevidljiva i #results se ponaša kao pre. */
@@ -725,7 +725,7 @@ a{color:inherit;}
    spolja i dalje izgleda kao jedna, kompaktna, klizajuća kartica. */
 @media (max-width:859.98px){
     .packages .pkg{
-        max-height:min(640px, calc(100dvh - 230px));
+        max-height:min(760px, calc(100dvh - 150px));
         overflow-y:auto;
         -webkit-overflow-scrolling:touch;
         scrollbar-width:none;
@@ -1610,7 +1610,7 @@ footer{
    gore/dole ovde skroluje SAMO ponude, ne ceo sajt). */
 #results.visible{
     position:fixed;left:0;right:0;bottom:0;top:auto;z-index:59;
-    height:80vh;max-height:80vh;
+    height:90dvh;max-height:90dvh;
     padding-top:0;padding-bottom:0;
     background:var(--bg);
     border-radius:18px 18px 0 0;
