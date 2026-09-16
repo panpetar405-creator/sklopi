@@ -883,8 +883,9 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
     .confirm-banner .amt{font-size:17px;}
     .confirm-banner .amt-lab{font-size:11px;}
 
-    .pkg-save-btn,.pkg-alert-btn{width:calc(100% - 32px);margin:0 16px 12px;padding:9px;font-size:12.5px;}
-    .pkg-save-btn svg,.pkg-alert-btn svg{width:12px;height:12px;}
+    .pkg-save-btn{width:calc(100% - 32px);margin:0 16px 12px;padding:9px;font-size:12.5px;}
+    .pkg-save-btn svg{width:12px;height:12px;}
+    .pkg-alert-btn{width:calc(100% - 32px);margin:0 16px 12px;font-size:12.5px;}
 }
 .disclaimer{
     margin-top:30px;font-size:14px;color:var(--ink-soft);
@@ -1113,23 +1114,20 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:border-color .15s ease,color .15s ease;
 }
 .pkg-save-btn:hover{border-color:var(--gold);color:var(--gold-text);}
-/* .pkg-alert-btn (zvonce "Javi mi kad padne cena" na kartici ponude) do
-sad nije imalo NIKAKAV CSS — renderovalo se kao goli browser default
-dugme. Ista širina/razmak kao .pkg-save-btn iznad, ali u aqua akcentu
-(zvonce upadljivije, kao i kod tamne .btn-alert verzije u builderu) da
-se jasno razlikuje od "Sačuvaj ovu ponudu". */
+/* .pkg-alert-btn (zvonce "Javi mi kad padne cena" na kartici ponude) — sad
+samo obična podvučena crvena poveznica, bez okvira/pozadine/ikonice, da se
+jasno razlikuje od punog dugmeta "Sačuvaj ovu ponudu" iznad. */
 .pkg-alert-btn{
-    width:calc(100% - 48px);margin:0 24px 24px;padding:11px;
-    border:1px solid rgba(110,156,156,0.5);border-radius:4px;
-    background:rgba(110,156,156,0.08);color:var(--ink-soft);
-    font-family:'Work Sans',sans-serif;font-weight:600;font-size:14px;
+    width:calc(100% - 48px);margin:0 24px 24px;padding:4px;
+    border:none;border-radius:0;background:transparent;
+    color:var(--coral);font-family:'Work Sans',sans-serif;font-weight:600;font-size:14px;
+    text-decoration:underline;text-underline-offset:3px;
     cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;
-    transition:border-color .15s ease,color .15s ease,background .15s ease,transform .15s ease;
+    transition:opacity .15s ease;
 }
-.pkg-alert-btn svg{width:14px;height:14px;flex:none;color:var(--aqua);transition:color .15s ease;}
-.pkg-alert-btn:hover{border-color:var(--aqua);color:var(--ink);background:rgba(110,156,156,0.16);transform:translateY(-1px);}
-.pkg-alert-btn:hover svg{color:#4f7a7a;}
-.pkg-alert-btn:active{transform:translateY(0);}
+.pkg-alert-btn svg{display:none;}
+.pkg-alert-btn:hover{opacity:0.72;}
+.pkg-alert-btn:active{opacity:0.55;}
 .builder-summary-placeholder{
     border:1px dashed var(--line);border-radius:6px;
     padding:36px 26px;text-align:center;color:var(--ink-soft);
