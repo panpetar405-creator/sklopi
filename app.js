@@ -40,7 +40,7 @@ const I18N = {
     opt_1adult:'1 odrasla osoba', opt_2adults:'2 odrasla', opt_3adults:'3 odrasla', opt_4adults:'4 odrasla',
     btn_search:'Start',
     btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start',
-    toggle_flight:'Letovi', toggle_hotel:'Smeštaj', toggle_car:'R & C', toggle_activity:'Aktivnost',
+    toggle_flight:'Letovi', toggle_hotel:'Smeštaj', toggle_car:'R a C', toggle_activity:'Aktivnost',
     eyebrow_no_idea:'Nemaš plan', h2_no_idea:'Ne znaš gde bi išao?', sub_no_idea:'Reci nam koliko želiš da potrošiš, a mi ćemo pronaći destinacije koje se uklapaju.',
     btn_no_idea_cta:'🎲 Iznenadi me',
     eyebrow_more_control:'Više kontrole', h2_build_own:'Želiš više kontrole?',
