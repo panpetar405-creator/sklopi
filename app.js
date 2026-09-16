@@ -2163,11 +2163,9 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const head = document.getElementById('resultsHead');
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
-  const busNote = busTrainNoteFor(dest, adults);
   const notes = [
     altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
-    destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : '',
-    busNote ? `<div class="plan-note">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''
+    destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : ''
   ].filter(Boolean).join('');
   head.innerHTML = notes ? `<div class="plan-notes">${notes}</div>` : '';
 
