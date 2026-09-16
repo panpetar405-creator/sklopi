@@ -791,6 +791,54 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 .confirm-banner svg{width:15px;height:15px;flex:none;color:var(--aqua);}
 .confirm-banner .amt{font-size:21.5px;font-weight:600;color:var(--ink);font-family:'Fraunces',serif;}
 .confirm-banner .amt-lab{font-size:13.5px;color:var(--ink-soft);font-weight:600;margin-right:6px;}
+/* ---------- Kompaktna kartica ponude na mobilnom ----------
+   Isti sadržaj, samo manje razmaka i manji fontovi, plus item-card
+   (let/hotel/auto) prelazi iz velike foto-kartice u kompaktan red
+   sa ikonicom — tako cela .pkg kartica staje u ekran i jasno se
+   vidi da je slajder (deo sledeće kartice viri sa strane). */
+@media (max-width:760px){
+    .pkg-close{top:8px;right:8px;width:24px;height:24px;}
+    .pkg-close svg{width:12px;height:12px;}
+    .pkg-head{padding:14px 16px 12px;gap:10px;}
+    .pkg-head h3{font-size:18px;}
+    .pkg-desc{font-size:11px;margin-top:2px;}
+    .pkg-badge{font-size:10px;padding:3px 8px;margin:0 0 6px;}
+    .pkg-total{margin-top:10px;}
+    .pkg-total .num{font-size:24px;}
+    .pkg-total .cur{font-size:12.5px;}
+    .pkg-total .hint{font-size:10px;margin-top:1px;max-width:150px;}
+    .pkg-score-box{margin-top:10px;min-width:54px;padding:6px 7px 7px;border-radius:9px;}
+    .pkg-score-box .score-num{font-size:16px;}
+    .pkg-score-box .score-max{font-size:9px;}
+    .pkg-score-box .score-label{font-size:8px;margin-top:3px;max-width:54px;}
+
+    .items-row{gap:8px;padding:10px 16px;}
+    .item-card{display:flex;align-items:center;gap:10px;border-radius:8px;}
+    .item-photo{position:static;flex:none;width:42px;height:42px;padding:0;border-radius:8px;
+        align-items:center;justify-content:center;}
+    .item-photo svg{width:17px;height:17px;}
+    .item-photo::after{display:none;}
+    .item-body{flex:1;min-width:0;padding:8px 10px 8px 0;}
+    .item-label{font-size:10px;}
+    .item-name{font-size:14px;margin-top:1px;line-height:1.25;}
+    .item-sub{font-size:11px;margin-top:1px;}
+    .item-price{font-size:14px;margin-top:3px;}
+    .item-btn{margin-top:6px;padding:7px;font-size:11.5px;border-radius:6px;}
+
+    .extras-row{gap:7px;padding:0 16px 10px;}
+    .extra{padding:7px 9px;gap:6px;border-radius:8px;}
+    .extra svg{width:13px;height:13px;}
+    .extra .lab{font-size:10px;}
+    .extra .val{font-size:12.5px;margin-top:0;}
+    .extra-btn{font-size:11px;padding:5px 8px;}
+
+    .confirm-banner{margin:0 16px 12px;padding:9px 12px;font-size:11.5px;gap:6px;}
+    .confirm-banner .amt{font-size:17px;}
+    .confirm-banner .amt-lab{font-size:11px;}
+
+    .pkg-save-btn,.pkg-alert-btn{width:calc(100% - 32px);margin:0 16px 12px;padding:9px;font-size:12.5px;}
+    .pkg-save-btn svg,.pkg-alert-btn svg{width:12px;height:12px;}
+}
 .disclaimer{
     margin-top:30px;font-size:14px;color:var(--ink-soft);
     border-left:2px solid var(--line);padding-left:12px;max-width:60ch;
