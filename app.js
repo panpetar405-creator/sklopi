@@ -2060,22 +2060,6 @@ function skeletonPkgHtml(){
   </div>`;
 }
 
-/* Kratki loading placeholder u obliku plan-kartice, dok se paket
-   računa — prikazuje se PRE prave plan-kartice (koja iskače prva,
-   pre paketa), umesto skeletona samih paketa. */
-function skeletonPlanCardHtml(loadingText){
-  return `
-  <div class="plan-card plan-card-loading" role="status" aria-busy="true" aria-live="polite">
-    <span class="sr-only">${escapeHtml(loadingText || '')}</span>
-    <div class="plan-card-top">
-      <div class="status-left">
-        <div class="skel skel-photo" style="width:34px;height:34px;border-radius:50%;"></div>
-        <div><div class="skel skel-title" style="width:210px;"></div><div class="skel skel-sub" style="width:270px;"></div></div>
-      </div>
-    </div>
-  </div>`;
-}
-
 function skeletonResultsHtml(loadingText){
   return `
   <div class="skel-packages" role="status" aria-busy="true" aria-live="polite">
@@ -2185,88 +2169,20 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
     destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : '',
     busNote ? `<div class="plan-note">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''
   ].filter(Boolean).join('');
-  head.innerHTML = `
-    <div class="plan-card">
-      <div class="plan-card-top">
-        <div class="status-left">
-          <div class="status-check">${iconSvg('check')}</div>
-          <div><h3>Tvoj plan za ${escapeHtml(dest)}</h3><p>Tri gotove opcije, od najpovoljnije do komfornije. Izaberi onu koja ti odgovara.</p></div>
-        </div>
-        <div class="status-pills">
-          <div class="pill">${iconSvg('calendar')} ${fmtDate(from)} – ${fmtDate(to)}</div>
-          <div class="pill">${iconSvg('people')} ${adults} ${passengerLabel(adults)}</div>
-        </div>
-      </div>
-      ${notes ? `<div class="plan-notes">${notes}</div>` : ''}
-      <button type="button" class="plan-continue-btn" onclick="revealPackages()">
-        Nastavi <span class="arrow">→</span>
-      </button>
-      <button type="button" class="plan-control-link" onclick="openBuilderFromPlanCard()">
-        <span class="pcl-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M17 7h3M4 17h3M10 17h10"/><circle cx="14" cy="7" r="2.4"/><circle cx="7" cy="17" r="2.4"/></svg></span>
-        <span class="pcl-text">
-          <span class="pcl-title">${t('h2_build_own')}</span>
-          <span class="pcl-sub">${t('control_teaser_sub')}</span>
-        </span>
-        <span class="pcl-arrow">→</span>
-      </button>
-    </div>
-  `;
-  // Skeleton (kraća kartica) je zaslužan za prvobitni scroll pri kliku na
-  // Start — sad kad je STVARNA plan-kartica ubačena (viša, sa notama),
-  // ponovo je centriramo u ekranu da ne ostane odsečena pri vrhu.
-  requestAnimationFrame(() => {
-    const planCard = head.querySelector('.plan-card');
-    if (planCard) scrollIntoCenterBelowHeader(planCard);
-  });
+  head.innerHTML = notes ? `<div class="plan-notes">${notes}</div>` : '';
 
-  // Kartice NE upisujemo odmah u body (samo sakrivene CSS-om) — to je pravilo
-  // zašto su ranije "iskakale" trenutno na klik "Nastavi", bez ikakvog
-  // utiska učitavanja. Umesto toga čuvamo gotov HTML za kasnije, a u body
-  // odmah stavljamo skeleton (isti obrazac kao inicijalni loading), koji
-  // revealPackages() stvarno prikazuje na klik pre nego što ubaci prave kartice.
-  window._pendingResultsHtml = `${packagesSliderHtml(pkgs.map(pkgHtml))}
+  // "Tvoj plan" kartica (naslov, Nastavi dugme i builder link) je uklonjena —
+  // paketi se sada prikazuju odmah, bez međukoraka.
+  const body = document.getElementById('resultsBody');
+  body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
     <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
-  const body = document.getElementById('resultsBody');
-  body.innerHTML = skeletonResultsHtml('Pripremamo ponude…');
-  body.classList.add('rb-hidden');
-  body.classList.remove('rb-reveal');
-
-  // Kad se pretraga pokrene iz "Prilagodi svoj plan" modala (klik na Start →
-  // Nastavi), korisnik je već video/potvrdio svoj izbor u modalu, pa ne
-  // treba da klikne "Nastavi" JOŠ jednom na plan-kartici — odmah otkrivamo
-  // pakete, uz kratku pauzu da plan-kartica stigne da se vidi pre prelaska.
-  if (autoReveal) {
-    setTimeout(() => revealPackages(), 500);
-  }
-}
-
-/* Klik na "Nastavi" na plan-kartici — otkriva pakete ispod nje.
-   U dva koraka: prvo se (kratko) vidi skeleton učitavanja umesto da prave
-   kartice iskoče trenutno, pa se tek onda zamene stvarnim karticama uz
-   fade-up animaciju. Skrolovanje ide na 'center' (ne 'start') i ponavlja
-   se posle zamene sadržaja, jer prave kartice menjaju visinu bloka —
-   bez tog drugog skrola ostanu odsečene/ne-centrirane na manjim ekranima. */
-function revealPackages(){
-  const body = document.getElementById('resultsBody');
-  if (!body) return;
-  const btn = document.querySelector('.plan-continue-btn');
-  if (btn) btn.style.display = 'none';
-
+  initPackagesSlider(body.querySelector('.packages-slider-wrap'));
   body.classList.remove('rb-hidden');
-  requestAnimationFrame(() => {
-    scrollIntoCenterBelowHeader(body.querySelector('.skel-pkg') || body);
-  });
+  body.classList.add('rb-reveal');
 
-  setTimeout(() => {
-    if (window._pendingResultsHtml){
-      body.innerHTML = window._pendingResultsHtml;
-      initPackagesSlider(body.querySelector('.packages-slider-wrap'));
-    }
-    body.classList.add('rb-reveal');
-    requestAnimationFrame(() => {
-      scrollIntoCenterBelowHeader(body.querySelector('.packages .pkg') || body);
-    });
-  }, 600);
+  requestAnimationFrame(() => {
+    scrollIntoCenterBelowHeader(body.querySelector('.packages .pkg') || body);
+  });
 }
 
 function itemCardHtml(item, kind){
@@ -2689,11 +2605,11 @@ async function runSearch(shouldScroll, autoReveal){
 
   const results = document.getElementById('results');
   results.classList.add('visible');
-  document.getElementById('resultsHead').innerHTML = skeletonPlanCardHtml('Pripremamo tvoj plan…');
+  document.getElementById('resultsHead').innerHTML = '';
   const rb = document.getElementById('resultsBody');
-  rb.innerHTML = '';
-  rb.classList.add('rb-hidden');
-  rb.classList.remove('rb-reveal');
+  rb.innerHTML = skeletonResultsHtml('Pripremamo tvoj plan…');
+  rb.classList.remove('rb-hidden');
+  rb.classList.add('rb-reveal');
   if (shouldScroll) results.scrollIntoView({behavior:'smooth', block:'start'});
 
   bumpSearchStat(dest);
@@ -2765,15 +2681,6 @@ document.getElementById('builderCloseBtn').addEventListener('click', ()=>{
   closeControlPanel();
   document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
 });
-
-// Prečica sa plan-kartice (kartica koja se otvara odmah po kliku na Start,
-// pre "Nastavi") — jedini ulaz u builder sada, otkad je teaser kartica
-// uklonjena sa početne strane (zida).
-function openBuilderFromPlanCard(){
-  openControlPanel();
-  const panel = document.getElementById('builderPanel');
-  if (panel) panel.scrollIntoView({behavior:'smooth', block:'start'});
-}
 
 function builderCtx(){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
