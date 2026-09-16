@@ -94,7 +94,7 @@ a{color:inherit;}
     width:32px;height:32px;border-radius:50%;background:var(--deep);
     display:flex;align-items:center;justify-content:center;flex:none;
 }
-.logo .mark svg{width:25.6px;height:25.6px;color:var(--gold-soft);}
+.logo .mark svg{width:25.6px;height:25.6px;color:var(--gold);}
 .topbar nav{display:flex;align-items:center;gap:28px;font-size:15.5px;color:var(--ink-soft);}
 .topbar nav a{text-decoration:none;color:inherit;transition:color .15s ease;}
 .topbar nav a:hover{color:var(--ink);}
@@ -1650,13 +1650,13 @@ footer{
     opacity:0;transition:opacity .2s ease;
 }
 .cal-backdrop.open{display:block;opacity:1;}
-/* Rezultati kao "bottom sheet" — zaseban prozor preko stranice, 80% visine
+/* Rezultati kao "bottom sheet" — zaseban prozor preko stranice, 95% visine
    ekrana, sa unutrašnjim skrolom (spoljna stranica je u međuvremenu
    zaključana preko lockResultsPageScroll() u app.js, pa pomeranje prstom
    gore/dole ovde skroluje SAMO ponude, ne ceo sajt). */
 #results.visible{
     position:fixed;left:0;right:0;bottom:0;top:auto;z-index:59;
-    height:90dvh;max-height:90dvh;
+    height:95dvh;max-height:95dvh;
     padding-top:0;padding-bottom:0;
     background:var(--bg);
     border-radius:18px 18px 0 0;

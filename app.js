@@ -2245,11 +2245,6 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   document.getElementById('ctaTitle').textContent = getLang() === 'en' ? dest + ' is waiting for you.' : dest + ' te čeka.';
   document.getElementById('ctaDesc').textContent = ctaCopy(dest);
 
-  // Airalo (eSIM) se dodaje ručno jer nije "fetch-ovana" stavka kao ostali
-  // partneri (nema svoju cenu sa API-ja) — ali je i dalje pravi partner
-  // sa affiliate linkom, pa treba da stoji u napomeni ispod paketa.
-  const providers = [...new Set(pkgs.flatMap(p=>[p.flight,p.hotel,p.car,p.activity].filter(Boolean).map(i=>i.providerLabel)))].concat('Airalo');
-
   const head = document.getElementById('resultsHead');
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
@@ -2267,8 +2262,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const hadSkeleton = !!body.querySelector('.skel-packages');
   body.classList.add('rb-swap-out');
   setTimeout(() => {
-    body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
-      <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
+    body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}`;
     initPackagesSlider(body.querySelector('.packages-slider-wrap'));
     body.classList.remove('rb-swap-out');
     body.classList.remove('rb-hidden');
@@ -2460,7 +2454,6 @@ function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
     body.innerHTML = `
       ${packagesSliderHtml(picks.map((p,i)=>surprisePkgHtml(p, i, budget, ctxBase.adults)))}
       <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
-      <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
     `;
     initPackagesSlider(body.querySelector('.packages-slider-wrap'));
     body.classList.remove('rb-swap-out');
