@@ -206,7 +206,7 @@ a{color:inherit;}
 }
 .hero h1 .accent{font-style:italic;color:var(--gold-soft);}
 .hero p.lede{
-    margin:20px 0 0;
+    margin:8px 0 0;
     max-width:44ch;
     font-size:19px;
     line-height:1.55;
@@ -1288,7 +1288,7 @@ footer{
 @media (max-width:760px){
 .topbar,.hero,.section{padding-left:20px;padding-right:20px;}
 .hero{padding-top:22px;}
-.hero p.lede{margin-top:10px;}
+.hero p.lede{margin-top:4px;}
 .hero-inner{display:flex;flex-direction:column;}
 .hero-inner > h1{order:1;}
 .hero-inner > p.lede{order:2;}
