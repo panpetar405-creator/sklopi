@@ -1,38 +1,38 @@
 :root{
     --topbar-h:68px;
-    /* Cool, neutral business palette in the spirit of amadeus.com:
-       deep navy brand color, a single sky-blue accent, crisp white
-       surfaces, slate-gray text. Variable NAMES are kept as in the
+    /* Deep Petrol brand palette: Deep Petrol (#0F4C5C) as the base
+       color, a lighter petrol/teal accent, crisp white surfaces,
+       petrol-tinted slate text. Variable NAMES are kept as in the
        original stylesheet (--gold, --coral, --aqua …) so every rule
-       below still resolves — only the values move from a warm
-       cream/gold travel-ticket palette to a cool navy/sky one. */
-    --bg:#F3F6FA;
+       below still resolves — only the values move from the old
+       navy/sky-blue palette to Deep Petrol, spread evenly site-wide. */
+    --bg:#F2F6F6;
     --paper:#FFFFFF;
-    --ink:#101C33;
-    --ink-soft:#54637C;
-    --deep:#0A1F3D;
-    --deep2:#123B6D;
-    --gold:#2F8FE0;          /* primary accent — "sky" blue */
-    --gold-soft:#DCEBFA;     /* accent tint background */
+    --ink:#101F22;
+    --ink-soft:#4F6E73;
+    --deep:#0F4C5C;
+    --deep2:#1C7288;
+    --gold:#1C8CA3;          /* primary accent — petrol/teal */
+    --gold-soft:#DCEEF2;     /* accent tint background */
     --aqua:#1B8C82;          /* secondary accent — teal */
-    --line:#DCE2EC;
+    --line:#DCE7E8;
     --line-deep:rgba(255,255,255,0.14);
     /* Malo jača od --line — koristi se SAMO za razdvajanje polja u
 "ticket" pretrazi (Destinacija/Datumi/Putnika), gde je originalna
 --line bila preslabog kontrasta na skoro-belom --paper pozadini
 i teško se videla na mobilnom (linije između polja "nestajale"). */
-    --line-form:rgba(10,31,61,0.45);
+    --line-form:rgba(15,76,92,0.45);
     --coral:#D6553D;
     --coral-text:#B8402A;
     --coral-soft:#F7DCD5;
-    --deep-soft:#DCE4EF;
+    --deep-soft:#DCE9EA;
     --aqua-soft:#DAECEA;
-    --gold-text:#15629E;
+    --gold-text:#0F5A6B;
     --on-dark-strong:#FFFFFF;
-    --on-dark:#E6EDF6;
-    --on-dark-soft:#AEC0D8;
+    --on-dark:#E3F0F1;
+    --on-dark-soft:#A9C7CA;
     --on-gold:#FFFFFF;
-    --gold-on-soft:#0F4C82;
+    --gold-on-soft:#0F4C5C;
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
@@ -358,7 +358,7 @@ a{color:inherit;}
     font-family:'Work Sans',sans-serif;font-weight:600;font-size:16px;
     padding:6px 6px 6px 26px;border-radius:10px;cursor:pointer;
     white-space:nowrap;letter-spacing:0.01em;
-    box-shadow:0 14px 28px -12px rgba(10,31,61,0.5);
+    box-shadow:0 14px 28px -12px rgba(15,76,92,0.5);
     transition:transform .2s ease, box-shadow .2s ease, gap .2s ease;
 }
 .btn-primary::after{
@@ -367,8 +367,8 @@ a{color:inherit;}
     background:var(--gold);color:var(--on-gold);font-size:17px;
     transition:transform .2s ease, background .2s ease;
 }
-.btn-primary:hover{transform:translateY(-2px);gap:18px;box-shadow:0 20px 36px -14px rgba(10,31,61,0.58);}
-.btn-primary:hover::after{background:#1C7FC7;transform:rotate(-10deg) translateX(1px);}
+.btn-primary:hover{transform:translateY(-2px);gap:18px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
+.btn-primary:hover::after{background:#146E82;transform:rotate(-10deg) translateX(1px);}
 .btn-primary:active{transform:translateY(0);gap:14px;}
 /* ---------- Kalendar za izbor datuma (u stub-u "Od — Do") ---------- */
 .stub-dates{position:static;}
@@ -583,10 +583,10 @@ a{color:inherit;}
     background:var(--paper);padding:12px 12px 18px;
     border:1px solid var(--line);
     border-radius:10px;
-    box-shadow:0 26px 50px -30px rgba(10,31,61,0.28);
+    box-shadow:0 26px 50px -30px rgba(15,76,92,0.28);
     transition:box-shadow .25s ease, transform .2s ease;
 }
-.postcard:hover{transform:translateY(-3px);box-shadow:0 30px 56px -28px rgba(10,31,61,0.34);}
+.postcard:hover{transform:translateY(-3px);box-shadow:0 30px 56px -28px rgba(15,76,92,0.34);}
 .postcard-photo{
     width:100%;aspect-ratio:4/3;border:1px solid var(--line);border-radius:6px;overflow:hidden;
 }
@@ -594,7 +594,7 @@ a{color:inherit;}
 .postcard-stamp{
     position:absolute;top:-14px;right:-10px;width:44px;height:44px;border-radius:10px;
     background:var(--deep);color:var(--on-dark-strong);display:flex;align-items:center;justify-content:center;
-    box-shadow:0 10px 18px -8px rgba(10,31,61,0.45);flex:none;
+    box-shadow:0 10px 18px -8px rgba(15,76,92,0.45);flex:none;
 }
 .postcard-stamp svg{width:19px;height:19px;}
 .postcard-caption{
@@ -612,7 +612,7 @@ a{color:inherit;}
     font-family:inherit;display:flex;flex-direction:column;gap:8px;
     transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
-.popular-dest-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(10,31,61,0.3);}
+.popular-dest-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(15,76,92,0.3);}
 .popular-dest-card:active{transform:translateY(-1px);}
 .pd-name{font-family:'Manrope',sans-serif;font-size:19px;font-weight:600;color:var(--ink);}
 .pd-desc{font-size:14px;line-height:1.5;color:var(--ink-soft);}
@@ -635,7 +635,7 @@ a{color:inherit;}
 .results-back-btn:hover{border-color:var(--gold);color:var(--gold-text);}
 .results-backdrop{
     display:none;position:fixed;inset:0;z-index:58;
-    background:rgba(10,31,61,0.45);backdrop-filter:blur(1px);
+    background:rgba(15,76,92,0.45);backdrop-filter:blur(1px);
     opacity:0;transition:opacity .2s ease;
 }
 .results-backdrop.open{display:block;opacity:1;}
@@ -667,13 +667,13 @@ a{color:inherit;}
 .plan-card{
     background:var(--paper);border:1px solid var(--line);border-radius:10px;
     padding:24px 26px;margin-bottom:28px;
-    box-shadow:0 24px 50px -32px rgba(10,31,61,0.28);
+    box-shadow:0 24px 50px -32px rgba(15,76,92,0.28);
     animation:planCardPop .45s cubic-bezier(.2,.8,.2,1) both;
 }
 .plan-card-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .plan-notes{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
 .plan-note{
-    background:rgba(220,235,250,0.25);border:1px solid var(--line);border-radius:8px;
+    background:rgba(220,238,242,0.25);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
 }
 .plan-note b{color:var(--ink);}
@@ -683,7 +683,7 @@ a{color:inherit;}
     color:var(--on-dark-strong);border:none;
     font-family:'Work Sans',sans-serif;font-weight:600;font-size:16px;
     padding:15px 20px;border-radius:10px;cursor:pointer;
-    box-shadow:0 14px 28px -12px rgba(10,31,61,0.5);
+    box-shadow:0 14px 28px -12px rgba(15,76,92,0.5);
     transition:transform .2s ease, box-shadow .2s ease, gap .2s ease;
 }
 .plan-continue-btn .arrow{
@@ -691,8 +691,8 @@ a{color:inherit;}
     width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--on-gold);
     font-size:15px;transition:transform .2s ease, background .2s ease;
 }
-.plan-continue-btn:hover{transform:translateY(-2px);gap:16px;box-shadow:0 20px 36px -14px rgba(10,31,61,0.58);}
-.plan-continue-btn:hover .arrow{background:#1C7FC7;transform:rotate(-10deg) translateX(1px);}
+.plan-continue-btn:hover{transform:translateY(-2px);gap:16px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
+.plan-continue-btn:hover .arrow{background:#146E82;transform:rotate(-10deg) translateX(1px);}
 .plan-continue-btn:active{transform:translateY(0);}
 /* ---------- "Želiš više kontrole?" prečica na plan-kartici — vodi do
    istog builder panela kao teaser kartica u sekciji "Kontrola sadržaja",
@@ -787,7 +787,7 @@ a{color:inherit;}
 .pkg{
     background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--line);border-radius:14px;
     overflow:hidden;position:relative;
-    box-shadow:0 12px 28px -20px rgba(10,31,61,0.22);
+    box-shadow:0 12px 28px -20px rgba(15,76,92,0.22);
     transition:box-shadow .25s ease, transform .25s ease, opacity .2s ease;
 }
 .pkg-close{
@@ -799,18 +799,18 @@ a{color:inherit;}
 }
 .pkg-close:hover{background:var(--bg);color:var(--ink);}
 .pkg-close svg{width:14px;height:14px;}
-.pkg:hover{transform:translateY(-3px);box-shadow:0 20px 40px -26px rgba(10,31,61,0.3);}
+.pkg:hover{transform:translateY(-3px);box-shadow:0 20px 40px -26px rgba(15,76,92,0.3);}
 .pkg.best{border-top-color:var(--gold);}
 .pkg.comfort{border-top-color:var(--aqua);}
 .pkg.budget{border-top-color:var(--coral);}
 .pkg.featured{
-    box-shadow:0 20px 46px -24px rgba(47,143,224,0.4);
+    box-shadow:0 20px 46px -24px rgba(28,140,163,0.4);
 }
 .pkg-head{
     padding:20px 22px 18px;border-bottom:1px solid var(--line);
     display:flex;justify-content:space-between;align-items:center;gap:14px;
 }
-.pkg.featured .pkg-head{background:#EAF4FC;}
+.pkg.featured .pkg-head{background:#E1EFEF;}
 .pkg-head h3{
     font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
     color:var(--ink-soft);
@@ -858,7 +858,7 @@ a{color:inherit;}
     border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;
     transition:transform .18s ease, box-shadow .18s ease;
 }
-.item-card:hover{transform:translateY(-3px);box-shadow:0 16px 28px -18px rgba(10,31,61,0.32);}
+.item-card:hover{transform:translateY(-3px);box-shadow:0 16px 28px -18px rgba(15,76,92,0.32);}
 .item-photo{
     height:88px;display:flex;align-items:flex-end;padding:10px 12px;position:relative;
 }
@@ -1031,7 +1031,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     -webkit-tap-highlight-color:transparent;
 }
 .action-card:hover{
-    transform:translateY(-2px);box-shadow:0 16px 32px -22px rgba(10,31,61,0.3);border-left-color:var(--gold-text);
+    transform:translateY(-2px);box-shadow:0 16px 32px -22px rgba(15,76,92,0.3);border-left-color:var(--gold-text);
 }
 .action-card:active{transform:translateY(0);}
 .action-card .ac-ic{
@@ -1083,7 +1083,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     position:absolute;top:-16px;right:0;width:34px;height:34px;border-radius:50%;
     border:none;background:var(--deep);color:var(--on-dark-strong);
     display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;
-    box-shadow:0 10px 22px -10px rgba(10,31,61,0.5);
+    box-shadow:0 10px 22px -10px rgba(15,76,92,0.5);
     transition:background .15s ease, color .15s ease, transform .15s ease;
     z-index:3;
 }
@@ -1111,7 +1111,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 .builder-ic.ic-hotel{background:var(--gold-soft);color:var(--gold);}
 .builder-ic.ic-car{background:var(--coral-soft);color:var(--coral);}
 .builder-ic.ic-activity{background:var(--aqua-soft);color:var(--aqua);}
-.builder-ic.ic-budget{background:#E3EAF3;color:#3C5170;}
+.builder-ic.ic-budget{background:#DFEEEE;color:#3C6169;}
 .builder-ic.ic-addons{background:var(--aqua-soft);color:var(--aqua);}
 .chip.toggle-chip{display:inline-flex;align-items:center;gap:7px;}
 .chip.toggle-chip svg{width:14px;height:14px;flex:none;}
@@ -1124,7 +1124,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     transition:all .15s ease;white-space:nowrap;
 }
 .chip:hover{border-color:var(--gold);color:var(--ink);transform:translateY(-1px);}
-.chip.on{background:var(--deep);border-color:var(--deep);color:var(--on-dark-strong);box-shadow:0 6px 14px -8px rgba(10,31,61,0.55);}
+.chip.on{background:var(--deep);border-color:var(--deep);color:var(--on-dark-strong);box-shadow:0 6px 14px -8px rgba(15,76,92,0.55);}
 .chip-row[data-group="hotelStars"] .chip.on{background:var(--gold);border-color:var(--gold);color:var(--on-gold);}
 .chip-row[data-group="carPref"] .chip.on{background:var(--coral);border-color:var(--coral);color:#FDEEEB;}
 .chip.toggle-chip.on{background:var(--gold-soft);border-color:var(--gold);color:var(--gold-on-soft);}
@@ -1134,7 +1134,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     font-family:'Work Sans',sans-serif;font-size:15px;color:var(--ink);
     padding:9px 12px;outline:none;
 }
-.builder-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(47,143,224,0.14);}
+.builder-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(28,140,163,0.14);}
 .builder-budget-row{display:flex;align-items:center;gap:8px;}
 .builder-budget-row span{font-weight:600;color:var(--ink-soft);}
 .builder-budget-row .builder-input{margin-top:0;}
@@ -1150,12 +1150,12 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 .builder-summary{
     background:var(--deep);color:var(--on-dark);border-radius:6px;
     padding:24px 24px 26px;position:sticky;top:78px;
-    box-shadow:0 0 0 8px rgba(10,31,61,0.05), 0 22px 48px -22px rgba(10,31,61,0.55);
+    box-shadow:0 0 0 8px rgba(15,76,92,0.05), 0 22px 48px -22px rgba(15,76,92,0.55);
     z-index:5;
 }
 .builder-summary::before{
     content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);
-    width:54px;height:20px;background:rgba(220,235,250,0.55);
+    width:54px;height:20px;background:rgba(220,238,242,0.55);
     box-shadow:0 2px 4px rgba(0,0,0,0.15);
 }
 .builder-summary-head{
@@ -1176,14 +1176,14 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     padding-top:14px;border-top:1px solid var(--line-deep);margin-top:4px;
 }
 .builder-total #builderTotal{font-family:'Manrope',sans-serif;font-size:33.5px;font-weight:600;color:var(--on-dark-strong);}
-.builder-total-sub{font-size:14.5px;color:#9FB4CC;}
-.builder-total-hint{font-size:12.5px;color:#9FB4CC;opacity:0.85;margin-top:6px;}
+.builder-total-sub{font-size:14.5px;color:#9FC0C4;}
+.builder-total-hint{font-size:12.5px;color:#9FC0C4;opacity:0.85;margin-top:6px;}
 .builder-budget-status{
     margin-top:12px;font-size:14px;padding:9px 12px;border-radius:4px;
     display:none;align-items:center;gap:8px;
 }
 .builder-budget-status.show{display:flex;}
-.builder-budget-status.ok{background:rgba(110,156,156,0.18);color:#BEE3F5;}
+.builder-budget-status.ok{background:rgba(110,156,156,0.18);color:#BEE9EA;}
 .builder-budget-status.over{background:rgba(193,87,60,0.22);color:#F6CFC4;}
 .btn-optimize{
     width:100%;margin-top:18px;
@@ -1191,7 +1191,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     padding:6px 6px 6px 24px;border:none;border-radius:10px;
     background:var(--gold);color:var(--on-gold);font-family:'Work Sans',sans-serif;
     font-weight:600;font-size:15px;cursor:pointer;
-    box-shadow:0 10px 22px -10px rgba(47,143,224,0.45);
+    box-shadow:0 10px 22px -10px rgba(28,140,163,0.45);
     transition:transform .18s ease, box-shadow .18s ease, gap .18s ease;
 }
 .btn-optimize::after{
@@ -1199,11 +1199,11 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     width:36px;height:36px;border-radius:50%;
     background:var(--deep);color:var(--gold-soft);font-size:14px;
 }
-.btn-optimize:hover{transform:translateY(-1.5px);gap:15px;box-shadow:0 14px 26px -10px rgba(47,143,224,0.55);}
+.btn-optimize:hover{transform:translateY(-1.5px);gap:15px;box-shadow:0 14px 26px -10px rgba(28,140,163,0.55);}
 .btn-optimize:active{transform:translateY(0);gap:12px;}
 .optimize-result{
     margin-top:14px;background:rgba(255,255,255,0.06);border-left:2px solid var(--gold-soft);
-    border-radius:0 4px 4px 0;padding:12px 14px;font-size:14.5px;line-height:1.55;color:#E6EDF6;
+    border-radius:0 4px 4px 0;padding:12px 14px;font-size:14.5px;line-height:1.55;color:#E3F0F1;
 }
 .optimize-result .save{font-family:'Manrope',sans-serif;font-weight:600;color:var(--gold-soft);font-size:17px;display:block;margin-bottom:4px;}
 .optimize-apply{
@@ -1211,8 +1211,8 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     font-family:'Work Sans',sans-serif;font-size:13px;font-weight:700;
     padding:7px 12px;border-radius:14px;cursor:pointer;
 }
-.optimize-apply:hover{background:rgba(220,235,250,0.12);}
-.builder-book-links{margin-top:14px;padding-top:14px;border-top:1px solid rgba(230,237,246,0.25);}
+.optimize-apply:hover{background:rgba(220,238,242,0.12);}
+.builder-book-links{margin-top:14px;padding-top:14px;border-top:1px solid rgba(227,240,241,0.25);}
 .builder-book-links .bbl-label{font-size:13px;color:var(--on-dark-soft);margin-bottom:9px;}
 .builder-book-row{display:flex;flex-wrap:wrap;gap:8px;}
 .builder-book-row .item-btn{flex:1;min-width:90px;justify-content:center;padding:10px 8px;font-size:13.5px;}
@@ -1248,12 +1248,12 @@ jasno razlikuje od punog dugmeta "Sačuvaj ovu ponudu" iznad. */
 /* ---------- Sačuvani aranžmani (mock "Moja putovanja", localStorage) ---------- */
 .btn-save{
     width:100%;margin-top:10px;padding:12px 18px;border:1.5px solid var(--aqua);border-radius:10px;
-    background:transparent;color:#BEE3F5;font-family:'Work Sans',sans-serif;
+    background:transparent;color:#BEE9EA;font-family:'Work Sans',sans-serif;
     font-weight:600;font-size:14.5px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;gap:8px;
     transition:background .15s ease, transform .15s ease, border-color .15s ease;
 }
-.btn-save:hover{background:rgba(110,156,156,0.18);border-color:#6FB6E8;transform:translateY(-1px);}
+.btn-save:hover{background:rgba(110,156,156,0.18);border-color:#6FBAC4;transform:translateY(-1px);}
 .btn-save:active{transform:translateY(0);}
 /* .btn-alert had no rules at all before — buttons using it (price-alert
 CTA, native-share CTA) were rendering as unstyled browser defaults.
@@ -1268,13 +1268,13 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     transition:background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
 .btn-alert svg{width:16px;height:16px;flex:none;color:var(--gold-soft);transition:color .15s ease;}
-.btn-alert:hover{background:rgba(110,156,156,0.22);border-color:#6FB6E8;transform:translateY(-1px);box-shadow:0 10px 22px -12px rgba(110,156,156,0.4);}
+.btn-alert:hover{background:rgba(110,156,156,0.22);border-color:#6FBAC4;transform:translateY(-1px);box-shadow:0 10px 22px -12px rgba(110,156,156,0.4);}
 .btn-alert:hover svg{color:var(--gold);}
 .btn-alert:active{transform:translateY(0);}
 /* ---------- Modali (alert / surprise / share) — nije uopšte imalo CSS ---------- */
 .alert-modal-backdrop{
     display:none;position:fixed;inset:0;z-index:60;
-    background:rgba(10,31,61,0.55);backdrop-filter:blur(2px);
+    background:rgba(15,76,92,0.55);backdrop-filter:blur(2px);
     opacity:0;transition:opacity .2s ease;
 }
 .alert-modal-backdrop.open{display:block;opacity:1;}
@@ -1283,7 +1283,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     transform:translate(-50%,-46%);width:min(400px, calc(100vw - 40px));
     background:var(--paper);border-radius:12px;padding:26px 26px 24px;
     border-top:4px solid var(--gold);
-    box-shadow:0 30px 60px -24px rgba(10,31,61,0.35);
+    box-shadow:0 30px 60px -24px rgba(15,76,92,0.35);
     opacity:0;transition:opacity .2s ease, transform .2s ease;
 }
 .alert-modal.open{display:block;opacity:1;transform:translate(-50%,-50%);}
@@ -1346,12 +1346,12 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 }
 .passport-rule-box b{color:var(--ink);}
 .alt-airport-box{
-    background:rgba(220,235,250,0.25);border:1px solid var(--line);border-radius:8px;
+    background:rgba(220,238,242,0.25);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;margin-top:14px;
 }
 .alt-airport-box b{color:var(--ink);}
 .origin-airport-warning{
-    background:rgba(220,235,250,0.25);border:1px solid var(--line);border-radius:8px;
+    background:rgba(220,238,242,0.25);border:1px solid var(--line);border-radius:8px;
     padding:10px 12px;font-size:12.5px;color:var(--ink);line-height:1.5;margin-top:10px;
 }
 .origin-airport-warning button{
@@ -1372,7 +1372,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     max-height:min(88vh, 780px);overflow-y:auto;
     background:var(--paper);border-radius:12px;padding:28px 28px 24px;
     border-top:4px solid var(--gold);
-    box-shadow:0 30px 60px -24px rgba(10,31,61,0.35);
+    box-shadow:0 30px 60px -24px rgba(15,76,92,0.35);
     opacity:0;transition:opacity .2s ease, transform .2s ease;
 }
 .start-modal.open{display:block;opacity:1;transform:translate(-50%,-50%);}
@@ -1433,7 +1433,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     font-family:'Work Sans',sans-serif;font-size:15px;color:var(--ink);padding:11px 14px;outline:none;
     transition:border-color .15s ease, box-shadow .15s ease;
 }
-.auth-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(47,143,224,0.14);}
+.auth-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(28,140,163,0.14);}
 .auth-input:disabled{background:var(--line);color:var(--ink-soft);opacity:0.6;cursor:not-allowed;}
 .auth-btn{
     border:none;border-radius:4px;padding:11px 18px;background:var(--deep);color:var(--on-dark-strong);
@@ -1514,7 +1514,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 }
 .cta-photo::after{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(100deg, rgba(10,31,61,0.93) 32%, rgba(10,31,61,0.55) 100%);
+    background:linear-gradient(100deg, rgba(15,76,92,0.93) 32%, rgba(15,76,92,0.55) 100%);
 }
 .cta-inner{max-width:1180px;margin:0 auto;position:relative;z-index:2;
     display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
@@ -1534,7 +1534,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .stat:hover .val{transform:translateY(-2px);}
 .stat .lab{font-size:13.5px;color:var(--ink-soft);margin-top:2px;}
 footer{
-    background:linear-gradient(175deg,var(--deep) 0%,#0A1F3D 100%);
+    background:linear-gradient(175deg,var(--deep) 0%,#0A343F 100%);
     color:var(--on-dark-soft);padding:34px 40px;
 }
 .footer-inner{
@@ -1554,7 +1554,7 @@ footer{
 .flinks a:nth-child(2n):hover{color:var(--aqua);}
 .fsocial{display:flex;gap:14px;}
 .fsocial svg{width:15px;height:15px;color:var(--on-dark-soft);}
-.foot-note{margin-top:18px;font-size:13.5px;color:#8FA3C2;text-align:center;}
+.foot-note{margin-top:18px;font-size:13.5px;color:#8FB4B8;text-align:center;}
 .loading{
     padding:60px 0;text-align:center;color:var(--ink-soft);font-size:15.5px;
 }
@@ -1639,7 +1639,7 @@ footer{
 }
 .cal-backdrop{
     display:none;position:fixed;inset:0;z-index:44;
-    background:rgba(10,31,61,0.45);backdrop-filter:blur(1px);
+    background:rgba(15,76,92,0.45);backdrop-filter:blur(1px);
     opacity:0;transition:opacity .2s ease;
 }
 .cal-backdrop.open{display:block;opacity:1;}
@@ -1653,7 +1653,7 @@ footer{
     padding-top:0;padding-bottom:0;
     background:var(--bg);
     border-radius:18px 18px 0 0;
-    box-shadow:0 -24px 50px -20px rgba(10,31,61,0.4);
+    box-shadow:0 -24px 50px -20px rgba(15,76,92,0.4);
     display:flex;flex-direction:column;
     overflow:hidden;
     animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
@@ -1703,11 +1703,11 @@ footer{padding:28px 20px;}
     width:56px;height:56px;border-radius:50%;
     background:#25D366;color:#fff;
     display:flex;align-items:center;justify-content:center;
-    box-shadow:0 14px 30px -10px rgba(10,31,61,0.45);
+    box-shadow:0 14px 30px -10px rgba(15,76,92,0.45);
     transition:transform .18s ease, box-shadow .18s ease;
 }
 .whatsapp-fab svg{width:30px;height:30px;}
-.whatsapp-fab:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 18px 36px -10px rgba(10,31,61,0.55);}
+.whatsapp-fab:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 18px 36px -10px rgba(15,76,92,0.55);}
 .whatsapp-fab:active{transform:translateY(0) scale(0.98);}
 @media (max-width:480px){
     .whatsapp-fab{right:14px;bottom:14px;width:52px;height:52px;}
