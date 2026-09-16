@@ -2157,7 +2157,7 @@ function scrollIntoCenterBelowHeader(el){
   window.scrollTo({top: Math.max(0, elTopAbs - targetTopInViewport), behavior:'smooth'});
 }
 
-async function renderResults(dest, from, to, nights, days, adults, flags, originCode){
+async function renderResults(dest, from, to, nights, days, adults, flags, originCode, autoReveal){
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
   });
@@ -2222,6 +2222,14 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   body.innerHTML = skeletonResultsHtml('Pripremamo ponude…');
   body.classList.add('rb-hidden');
   body.classList.remove('rb-reveal');
+
+  // Kad se pretraga pokrene iz "Prilagodi svoj plan" modala (klik na Start →
+  // Nastavi), korisnik je već video/potvrdio svoj izbor u modalu, pa ne
+  // treba da klikne "Nastavi" JOŠ jednom na plan-kartici — odmah otkrivamo
+  // pakete, uz kratku pauzu da plan-kartica stigne da se vidi pre prelaska.
+  if (autoReveal) {
+    setTimeout(() => revealPackages(), 500);
+  }
 }
 
 /* Klik na "Nastavi" na plan-kartici — otkriva pakete ispod nje.
@@ -2656,7 +2664,7 @@ document.querySelectorAll('.toggle').forEach(t=>{
 // (trenutno "Letovi" nije uključen po default-u, pa se polje krije od starta).
 updateOriginVisibility(document.querySelector('.toggle[data-t="flight"] input').checked);
 
-async function runSearch(shouldScroll){
+async function runSearch(shouldScroll, autoReveal){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
   const originCode = document.getElementById('origin').value.trim();
   const from = document.getElementById('dateFrom').value;
@@ -2685,13 +2693,13 @@ async function runSearch(shouldScroll){
   logAirportDbMiss(dest, 'dest');
 
   setTimeout(()=>{
-    renderResults(dest, from, to, nights, days, adults, flags, originCode);
+    renderResults(dest, from, to, nights, days, adults, flags, originCode, autoReveal);
   }, 700);
 }
 
 document.getElementById('searchForm').addEventListener('submit', function(e){
   e.preventDefault();
-  runSearch(true);
+  openStartPrefsModal();
 });
 
 /* ==========================================================
@@ -4161,6 +4169,87 @@ const docsTabGreenCard = document.getElementById('docsTabGreenCard');
 if (docsTabGreenCard) docsTabGreenCard.addEventListener('click', () => switchDocsTab('greencard'));
 const passportCheckSubmit = document.getElementById('passportCheckSubmit');
 if (passportCheckSubmit) passportCheckSubmit.addEventListener('click', runPassportCheck);
+
+/* ==========================================================
+   "PRILAGODI SVOJ PLAN" — modal koji se otvara klikom na Start
+   Nezavisan je od buildera ("Želiš više kontrole?" sekcije ispod) —
+   ima svoje polje stanja (startPrefs) da izbori ovde ne diraju
+   builderState niti obrnuto. Klik na "Nastavi" prevodi ono što se
+   realno odražava na gotove ponude (auto/aktivnosti uključeni ili ne)
+   u toggle-row iznad forme, pa pokreće istu pretragu koja bi se
+   pokrenula i ranije klikom na Start — samo sad odmah otkriva sve
+   3 kartice, bez dodatnog klika na "Nastavi" na plan-kartici.
+========================================================== */
+const startPrefs = {
+  flightPref: 'direct', hotelStars: 4, carPref: 'small', activityCount: 2,
+  prioritizeRating: false, prioritizeLocation: false, budget: null
+};
+
+function openStartPrefsModal(){
+  document.getElementById('startPrefsBackdrop').classList.add('open');
+  document.getElementById('startPrefsModal').classList.add('open');
+}
+function closeStartPrefsModal(){
+  document.getElementById('startPrefsBackdrop').classList.remove('open');
+  document.getElementById('startPrefsModal').classList.remove('open');
+}
+document.getElementById('startPrefsClose').addEventListener('click', closeStartPrefsModal);
+document.getElementById('startPrefsBackdrop').addEventListener('click', closeStartPrefsModal);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('startPrefsModal').classList.contains('open')) closeStartPrefsModal();
+});
+
+wireChipGroup('spFlight', (val) => { startPrefs.flightPref = val; });
+wireChipGroup('spHotel', (val) => { startPrefs.hotelStars = Number(val); });
+wireChipGroup('spCar', (val) => { startPrefs.carPref = val; });
+
+document.querySelectorAll('#startPrefsModal .toggle-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('on');
+    const key = chip.dataset.spToggle === 'rating' ? 'prioritizeRating' : 'prioritizeLocation';
+    startPrefs[key] = chip.classList.contains('on');
+  });
+});
+
+document.getElementById('spActMinus').addEventListener('click', () => {
+  startPrefs.activityCount = Math.max(0, startPrefs.activityCount - 1);
+  document.getElementById('spActCount').textContent = startPrefs.activityCount;
+});
+document.getElementById('spActPlus').addEventListener('click', () => {
+  startPrefs.activityCount = Math.min(8, startPrefs.activityCount + 1);
+  document.getElementById('spActCount').textContent = startPrefs.activityCount;
+});
+
+document.getElementById('spBudgetInput').addEventListener('input', (e) => {
+  const raw = e.target.value;
+  const n = Math.floor(Number(raw));
+  if (!raw || !Number.isFinite(n) || n <= 0) { startPrefs.budget = null; return; }
+  const clamped = Math.min(n, MAX_BUDGET);
+  if (String(clamped) !== raw) e.target.value = clamped;
+  startPrefs.budget = clamped;
+});
+
+// Postavlja "on" toggle u transport-row-u SAMO ako trenutno nije već u
+// traženom stanju — izbegava suvišan click event (i, za let, suvišan
+// updateOriginVisibility poziv) kad se ništa ne menja.
+function setTransportToggle(dataT, shouldBeOn){
+  const el = document.querySelector('.toggle[data-t="' + dataT + '"]');
+  if (!el) return;
+  const isOn = el.classList.contains('on');
+  if (isOn !== shouldBeOn) el.click();
+}
+
+document.getElementById('startPrefsContinue').addEventListener('click', () => {
+  closeStartPrefsModal();
+  // Auto/aktivnosti biramo ovde jer stvarno utiču na to koje se stavke
+  // pojavljuju u gotovim ponudama (isto polje kao toggle-row iznad forme).
+  // Let i hotel ostaju kakvi su već podešeni gore — let namerno ne
+  // uključujemo automatski jer bi to iznenada tražilo popunjeno "Polazak"
+  // polje koje ovaj modal ne prikuplja.
+  setTransportToggle('car', startPrefs.carPref !== 'none');
+  setTransportToggle('activity', startPrefs.activityCount > 0);
+  runSearch(true, true);
+});
 
 /* ==========================================================
    INICIJALIZACIJA

@@ -1255,6 +1255,31 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .passport-result.ok{background:rgba(45,120,90,0.1);color:#2D5A45;border:1px solid rgba(45,120,90,0.25);}
 .passport-result.warn{background:rgba(190,70,50,0.08);color:#8A3420;border:1px solid rgba(190,70,50,0.25);}
 @media (max-width:480px){.alert-modal{padding:24px 20px 20px;}}
+/* ---------- "Prilagodi svoj plan" — modal koji se otvara klikom na Start ---------- */
+.start-modal{
+    display:none;position:fixed;z-index:61;top:50%;left:50%;
+    transform:translate(-50%,-46%);width:min(460px, calc(100vw - 32px));
+    max-height:min(88vh, 780px);overflow-y:auto;
+    background:var(--paper);border-radius:22px;padding:30px 28px 24px;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,0.4);
+    opacity:0;transition:opacity .2s ease, transform .2s ease;
+}
+.start-modal.open{display:block;opacity:1;transform:translate(-50%,-50%);}
+.start-modal-eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-text);margin-bottom:8px;}
+.start-modal-head h3{font-size:23px;margin:0 0 6px;}
+.start-modal-sub{font-size:14px;color:var(--ink-soft);line-height:1.5;margin:0 0 20px;}
+.start-modal-body{display:flex;flex-direction:column;}
+.start-modal-body .builder-group{padding:16px 0;}
+.start-modal-body .builder-group:first-child{padding-top:0;}
+.start-modal-cta{width:100%;margin-top:20px;justify-content:center;}
+@media (max-width:520px){
+    .start-modal{
+        padding:26px 20px 22px;border-radius:22px 22px 0 0;
+        top:auto;bottom:0;left:0;right:0;
+        transform:translateY(100%);width:100%;max-width:100%;max-height:90vh;
+    }
+    .start-modal.open{transform:translateY(0);}
+}
 /* ---------- Jedinstvena kartica "Dokumenta za put" (pasoš + zelena karta) ---------- */
 .alert-modal-docs{width:min(440px, calc(100vw - 32px));padding-bottom:22px;}
 .docs-tabs{
