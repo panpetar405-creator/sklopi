@@ -4246,11 +4246,12 @@ document.getElementById('startPrefsContinue').addEventListener('click', () => {
   // polje koje ovaj modal ne prikuplja.
   setTransportToggle('car', startPrefs.carPref !== 'none');
   setTransportToggle('activity', startPrefs.activityCount > 0);
-  // I dalje pripremamo "gotove" pakete u pozadini (dostupni niže na strani
-  // ako korisnik ipak želi da uporedi tri ponude) — bez auto-skrola tamo,
-  // pošto je glavni rezultat ovog modala sad "Tvoj izlet" kartica iznad,
-  // dostupna preko dugmeta "Napravi izlet".
-  runSearch(false, false);
+  // Odmah skrolujemo ka rezultatima (na loading skeleton) — ranije se ovde
+  // NIJE skrolovalo dok se ponude ne učitaju, pa je stranica ostajala pri
+  // vrhu, a onda naglo skočila dole na kartice kad se učitavanje završi.
+  // Sad je skrol jedan, gladak pokret: ka skeletonu odmah, pa mala
+  // dorada pozicije kad prave kartice zamene skeleton (renderResults).
+  runSearch(true, false);
 });
 
 /* ==========================================================
