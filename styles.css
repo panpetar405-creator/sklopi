@@ -728,7 +728,7 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 .pkg.comfort{border-left-color:var(--aqua);}
 .pkg.budget{border-left-color:var(--coral);}
 .pkg.featured{
-    border-color:var(--gold);border-left-color:var(--gold);
+    border-color:var(--gold);
     box-shadow:0 20px 46px -24px rgba(184,134,59,0.5);
 }
 .pkg-head{
@@ -817,6 +817,12 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 .item-btn.flight{background:var(--deep);}
 .item-btn.hotel{background:var(--gold);color:var(--on-gold);}
 .item-btn.car{background:var(--coral);}
+/* Kartica hotela prati boju tier-a (budget=crvena, comfort=plava),
+   umesto da uvek bude zlatna — jasnija veza sa bojom kartice. */
+.pkg.budget .item-photo.hotel{background:linear-gradient(135deg,var(--coral-text),var(--coral));}
+.pkg.budget .item-btn.hotel{background:var(--coral);color:var(--on-dark);}
+.pkg.comfort .item-photo.hotel{background:linear-gradient(135deg,var(--deep2),var(--aqua));}
+.pkg.comfort .item-btn.hotel{background:var(--aqua);color:var(--on-dark);}
 /* extras grid — activity / fuel / tolls / insurance */
 .extras-row{
     display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
@@ -889,17 +895,17 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
     .pkg-score-box .score-label{font-size:8px;margin-top:3px;max-width:54px;}
 
     .items-row{gap:8px;padding:10px 16px;}
-    .item-card{display:flex;align-items:center;gap:10px;border-radius:8px;}
-    .item-photo{position:static;flex:none;width:42px;height:42px;padding:0;border-radius:8px;
+    .item-card{display:flex;align-items:center;gap:12px;border-radius:9px;}
+    .item-photo{position:static;flex:none;width:54px;height:54px;padding:0;border-radius:10px;
         align-items:center;justify-content:center;}
-    .item-photo svg{width:17px;height:17px;}
+    .item-photo svg{width:23px;height:23px;}
     .item-photo::after{display:none;}
     .item-body{flex:1;min-width:0;padding:8px 10px 8px 0;}
     .item-label{font-size:10px;}
     .item-name{font-size:14px;margin-top:1px;line-height:1.25;}
     .item-sub{font-size:11px;margin-top:1px;}
     .item-price{font-size:14px;margin-top:3px;}
-    .item-btn{margin-top:6px;padding:7px;font-size:11.5px;border-radius:6px;}
+    .item-btn{margin-top:8px;padding:10px;font-size:13px;border-radius:7px;}
 
     .extras-row{gap:7px;padding:0 16px 10px;}
     .extra{padding:7px 9px;gap:6px;border-radius:8px;}
