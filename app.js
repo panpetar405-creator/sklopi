@@ -2751,34 +2751,24 @@ function restoreBuilderSummaryPosition(){
   }
 }
 
-// Teaser kartica "Želiš više kontrole?" — panel je zatvoren po default-u
-// (vidi style="display:none" na #builderPanel u HTML-u) da hero+ova
-// sekcija ne deluju pretrpano; klik otvara/zatvara ceo builder.
+// Builder panel — zatvoren po default-u (vidi style="display:none" na
+// #builderPanel u HTML-u). Jedini ulaz je sada plan-kartica (klik na Start),
+// pošto je zasebna teaser kartica "Želiš više kontrole?" uklonjena sa zida
+// (početne strane) da se ne dupira sa istim pozivom na akciju.
 function openControlPanel(){
-  document.getElementById('controlTeaserBtn').setAttribute('aria-expanded', 'true');
   document.getElementById('builderPanel').style.display = 'grid';
 }
 function closeControlPanel(){
-  document.getElementById('controlTeaserBtn').setAttribute('aria-expanded', 'false');
   document.getElementById('builderPanel').style.display = 'none';
 }
-document.getElementById('controlTeaserBtn').addEventListener('click', ()=>{
-  const isOpen = document.getElementById('controlTeaserBtn').getAttribute('aria-expanded') === 'true';
-  if (isOpen){ closeControlPanel(); }
-  else {
-    openControlPanel();
-    document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
-  }
-});
 document.getElementById('builderCloseBtn').addEventListener('click', ()=>{
   closeControlPanel();
-  document.getElementById('controlTeaserBtn').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('builderPanel').scrollIntoView({behavior:'smooth', block:'start'});
 });
 
 // Prečica sa plan-kartice (kartica koja se otvara odmah po kliku na Start,
-// pre "Nastavi") — isti builder kao teaser dugme u sekciji "Kontrola
-// sadržaja" ispod, samo dodatni ulaz sa vrha toka da korisnik ne mora prvo
-// da vidi 3 gotova paketa da bi stigao do njega.
+// pre "Nastavi") — jedini ulaz u builder sada, otkad je teaser kartica
+// uklonjena sa početne strane (zida).
 function openBuilderFromPlanCard(){
   openControlPanel();
   const panel = document.getElementById('builderPanel');
