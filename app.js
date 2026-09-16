@@ -1897,7 +1897,7 @@ function closePkgCard(btn){
    #resultsHead/#resultsBody sa običnom pretragom (isti kontejner),
    samo drugačiji sadržaj.
 ========================================================== */
-function surprisePkgHtml(pick, idx, budget){
+function surprisePkgHtml(pick, idx, budget, adults){
   const {dest, country, pkg} = pick;
   const itemsRow = [
     itemCardHtml(pkg.flight,'flight'),
@@ -1905,6 +1905,7 @@ function surprisePkgHtml(pick, idx, budget){
     itemCardHtml(pkg.car,'car')
   ].filter(Boolean).join('');
   const fits = pkg.total <= budget;
+  const busNote = busTrainNoteFor(dest, adults);
 
   return `
   <div class="pkg surprise-pkg" data-base-total="${pkg.total}">
@@ -1920,6 +1921,7 @@ function surprisePkgHtml(pick, idx, budget){
         <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
       </div>
     </div>
+    ${busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''}
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     <div class="confirm-banner">
       <span>${iconSvg('check')} ${fits ? t('fits_budget') + fmtEUR(budget) + '.' : t('over_budget')}</span>
@@ -1960,7 +1962,7 @@ function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
 
   const body = document.getElementById('resultsBody');
   body.innerHTML = `
-    <div class="packages">${picks.map((p,i)=>surprisePkgHtml(p, i, budget)).join('')}</div>
+    <div class="packages">${picks.map((p,i)=>surprisePkgHtml(p, i, budget, ctxBase.adults)).join('')}</div>
     <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
     <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
   `;
