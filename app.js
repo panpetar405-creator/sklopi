@@ -1192,6 +1192,62 @@ function isLimitedNetworkOrigin(originRaw){
   const info = airportInfoFor(originRaw);
   return !!(info && info.hasAirport && info.limited);
 }
+/* ==========================================================
+   LOGOVANJE PROMAŠAJA AIRPORT_DB — kad korisnik pokrene pretragu sa
+   gradom koji baza ne prepoznaje. Beleži se SAMO na submit pretrage
+   (ne na svaki taster dok kuca), da log ne bude zatrpan polu-unetim
+   tekstom. Uvek se čuva lokalno (localStorage, po uređaju/pretraživaču)
+   kao fallback; ako je Supabase podešen (config.js), šalje se i deljeni
+   zapis u tabelu 'airport_db_misses' — best-effort, ćuti ako tabela još
+   ne postoji (npr. dok se ne napravi u Supabase-u).
+   NAMERNO se ne tretira svaki promašaj kao "rupu" u bazi — mnogi su
+   očekivani (Rim, Barselona i sl. su van AIRPORT_DB po dizajnu, nisu
+   regionalni gradovi bez aerodroma). Vlasnik sajta ručno pregleda listu
+   (showAirportDbMisses() u konzoli) i bira šta stvarno vredi dodati.
+========================================================== */
+const AIRPORT_MISS_STORAGE_KEY = 'skoknica_airport_misses_v1';
+const AIRPORT_MISS_STORAGE_CAP = 300; // ne dozvoli da lokalna lista raste unedogled
+function loadAirportMisses(){
+  try{
+    const raw = localStorage.getItem(AIRPORT_MISS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function saveAirportMisses(misses){
+  try{ localStorage.setItem(AIRPORT_MISS_STORAGE_KEY, JSON.stringify(misses)); }catch(e){}
+}
+function logAirportDbMiss(cityRaw, field){
+  const city = (cityRaw || '').trim();
+  if (city.length < 3) return; // prekratko/prazno da bi bilo relevantno
+  if (airportInfoFor(city)) return; // prepoznat je — nije promašaj
+  const norm = normalizeSr(city);
+  const misses = loadAirportMisses();
+  const key = field + '|' + norm;
+  if (!misses[key]) misses[key] = {city, field, count:0};
+  misses[key].city = city; // čuvaj poslednji unet oblik (velika/mala slova)
+  misses[key].count += 1;
+  misses[key].lastSeen = todayStr();
+  const keys = Object.keys(misses);
+  if (keys.length > AIRPORT_MISS_STORAGE_CAP){
+    keys.sort((a,b) => misses[a].count - misses[b].count);
+    delete misses[keys[0]]; // kad lista preraste, izbaci najređi zapis
+  }
+  saveAirportMisses(misses);
+  if (typeof sb !== 'undefined' && sb){
+    sb.from('airport_db_misses').insert({city, field, normalized:norm})
+      .then(({error}) => {
+        if (error) console.warn('[skoknica] Deljeno logovanje promašaja AIRPORT_DB nije uspelo (tabela verovatno ne postoji još):', error.message);
+      });
+  }
+}
+/* Konzolni prečac za vlasnika sajta: otvori konzolu i pozovi
+   showAirportDbMisses() da vidiš koji gradovi (i koliko puta) nisu
+   prepoznati — sortirano od najčešćeg ka najređem. */
+window.showAirportDbMisses = function(){
+  const rows = Object.values(loadAirportMisses()).sort((a,b) => b.count - a.count);
+  console.table(rows);
+  return rows;
+};
 function fetchFlights(rng, dest, adults, tier, originCode){
   const base = 60 + Math.floor(rng()*140);
   const tierMult = {budget:0.72, best:1, comfort:1.55}[tier];
@@ -2625,6 +2681,8 @@ async function runSearch(shouldScroll){
   if (shouldScroll) results.scrollIntoView({behavior:'smooth', block:'start'});
 
   bumpSearchStat(dest);
+  logAirportDbMiss(originCode, 'origin');
+  logAirportDbMiss(dest, 'dest');
 
   setTimeout(()=>{
     renderResults(dest, from, to, nights, days, adults, flags, originCode);
