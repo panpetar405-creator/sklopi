@@ -2009,23 +2009,42 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
     if (planCard) planCard.scrollIntoView({behavior:'smooth', block:'center'});
   });
 
-  const body = document.getElementById('resultsBody');
-  body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
+  // Kartice NE upisujemo odmah u body (samo sakrivene CSS-om) — to je pravilo
+  // zašto su ranije "iskakale" trenutno na klik "Nastavi", bez ikakvog
+  // utiska učitavanja. Umesto toga čuvamo gotov HTML za kasnije, a u body
+  // odmah stavljamo skeleton (isti obrazac kao inicijalni loading), koji
+  // revealPackages() stvarno prikazuje na klik pre nego što ubaci prave kartice.
+  window._pendingResultsHtml = `${packagesSliderHtml(pkgs.map(pkgHtml))}
     <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
+  const body = document.getElementById('resultsBody');
+  body.innerHTML = skeletonResultsHtml('Pripremamo ponude…');
   body.classList.add('rb-hidden');
   body.classList.remove('rb-reveal');
-  initPackagesSlider(body.querySelector('.packages-slider-wrap'));
 }
 
-/* Klik na "Nastavi" na plan-kartici — otkriva pakete ispod nje. */
+/* Klik na "Nastavi" na plan-kartici — otkriva pakete ispod nje.
+   U dva koraka: prvo se (kratko) vidi skeleton učitavanja umesto da prave
+   kartice iskoče trenutno, pa se tek onda zamene stvarnim karticama uz
+   fade-up animaciju. Skrolovanje ide na 'center' (ne 'start') i ponavlja
+   se posle zamene sadržaja, jer prave kartice menjaju visinu bloka —
+   bez tog drugog skrola ostanu odsečene/ne-centrirane na manjim ekranima. */
 function revealPackages(){
   const body = document.getElementById('resultsBody');
   if (!body) return;
-  body.classList.remove('rb-hidden');
-  body.classList.add('rb-reveal');
   const btn = document.querySelector('.plan-continue-btn');
   if (btn) btn.style.display = 'none';
-  requestAnimationFrame(() => body.scrollIntoView({behavior:'smooth', block:'start'}));
+
+  body.classList.remove('rb-hidden');
+  requestAnimationFrame(() => body.scrollIntoView({behavior:'smooth', block:'center'}));
+
+  setTimeout(() => {
+    if (window._pendingResultsHtml){
+      body.innerHTML = window._pendingResultsHtml;
+      initPackagesSlider(body.querySelector('.packages-slider-wrap'));
+    }
+    body.classList.add('rb-reveal');
+    requestAnimationFrame(() => body.scrollIntoView({behavior:'smooth', block:'center'}));
+  }, 600);
 }
 
 function itemCardHtml(item, kind){
