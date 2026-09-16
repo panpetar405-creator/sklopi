@@ -1170,11 +1170,15 @@ function fetchHotel(rng, dest, nights, adults, tier){
   };
 }
 function fetchCar(rng, days, tier){
-  if (tier==='budget') return null; // budget package skips a car, per the brief
-  const perDay = {best:34, comfort:58}[tier] + Math.floor(rng()*12);
+  // Ranije je Budget tier UVEK preskakao auto ("per the brief"), bez obzira
+  // da li je korisnik uključio Auto toggle u pretrazi — to je pravilo
+  // ignorisalo stvarni izbor korisnika (kartica bi tiho izbacila auto iz
+  // Budget ponude iako je tražen). Sad svaki tier dobija auto ako je
+  // flags.car uključen, samo je budget varijanta najjeftinija/najmanja.
+  const perDay = {budget:19, best:34, comfort:58}[tier] + Math.floor(rng()*12);
   const price = Math.round(perDay * days);
   const p = PARTNERS.car;
-  const models = {best:['Fiat 500','VW Polo','Opel Corsa'], comfort:['VW Tiguan','Audi A4','Volvo XC40']};
+  const models = {budget:['Fiat Panda','Hyundai i10','Kia Picanto'], best:['Fiat 500','VW Polo','Opel Corsa'], comfort:['VW Tiguan','Audi A4','Volvo XC40']};
   const arr = models[tier];
   return {
     provider:p.provider, providerLabel:p.name, type:'car',
@@ -1203,7 +1207,7 @@ function fetchActivity(rng, dest, tier){
 const EXTRA_COSTS = {
   best:    {fuel:45, tolls:28, insurance:22, esim:12},
   comfort: {fuel:58, tolls:34, insurance:34, esim:18},
-  budget:  {fuel:0,  tolls:0,  insurance:14, esim:8}
+  budget:  {fuel:28, tolls:14, insurance:14, esim:8}
 };
 
 /* ==========================================================
