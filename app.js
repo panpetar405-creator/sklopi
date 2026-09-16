@@ -1249,6 +1249,33 @@ const TIER_META = {
   budget:  {label:'Budget', desc:'Najniža cena, bez iznajmljivanja auta'}
 };
 
+/* Opis kartice ponude mora pratiti stvarni sadržaj paketa — koje usluge
+   su STVARNO uključene (let/hotel/auto/aktivnosti) — a ne fiksni tekst po
+   tier-u. Korisnik bira usluge preko toggle-a iznad forme (Letovi/Smeštaj/
+   Auto/Aktivnosti), pa npr. Comfort ponuda bez izabranog Auto toggle-a ne
+   sme da u opisu i dalje piše "prostraniji auto" kad auto nije ni prikazan
+   na kartici. */
+function pkgDescText(pkg){
+  const bits = [];
+  if (pkg.hotel) bits.push(pkg.tier === 'comfort' ? 'bolji hotel' : pkg.tier === 'budget' ? 'najjeftiniji hotel' : 'provereni hotel');
+  if (pkg.flight) bits.push(pkg.tier === 'comfort' ? 'direktan let' : pkg.tier === 'budget' ? 'najjeftiniji let' : 'let');
+  if (pkg.car) bits.push(pkg.tier === 'comfort' ? 'prostraniji auto' : 'auto');
+  if (pkg.activity) bits.push('aktivnosti');
+
+  if (!bits.length) return TIER_META[pkg.tier].label;
+
+  let text = bits.length === 1
+    ? bits[0]
+    : bits.slice(0, -1).join(', ') + ' i ' + bits[bits.length - 1];
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+
+  // Budget tier namerno nikad ne uključuje auto (vidi fetchCar) — istakni
+  // to kao prednost umesto da ga prosto izostaviš iz rečenice.
+  if (pkg.tier === 'budget' && !pkg.car) text += ', bez iznajmljivanja auta';
+
+  return text;
+}
+
 const ICONS = {
   flight: '<path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/>',
   hotel: '<path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6M9 10h.01M13 10h.01M9 6.5h.01M13 6.5h.01"/>',
@@ -2131,7 +2158,7 @@ function pkgHtml(pkg){
       <div class="pkg-head-main">
         ${featured ? `<span class="pkg-badge">★ Preporučeno</span>` : ''}
         <h3>${meta.label}</h3>
-        <div class="pkg-desc">${meta.desc}</div>
+        <div class="pkg-desc">${pkgDescText(pkg)}</div>
         <div class="pkg-total">
           <div class="num tabular">${fmtEUR(pkg.total)}</div>
           <div class="cur">ukupno</div>
