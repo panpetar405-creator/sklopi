@@ -2170,17 +2170,24 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   head.innerHTML = notes ? `<div class="plan-notes">${notes}</div>` : '';
 
   // "Tvoj plan" kartica (naslov, Nastavi dugme i builder link) je uklonjena —
-  // paketi se sada prikazuju odmah, bez međukoraka.
+  // paketi se sada prikazuju odmah, bez međukoraka. Zamena skeletona
+  // pravim karticama ide kroz kratki fade-out/fade-in (rb-swap-out), da
+  // prelaz izgleda smišljeno, a ne kao nagli skok sadržaja.
   const body = document.getElementById('resultsBody');
-  body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
-    <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
-  initPackagesSlider(body.querySelector('.packages-slider-wrap'));
-  body.classList.remove('rb-hidden');
-  body.classList.add('rb-reveal');
+  const hadSkeleton = !!body.querySelector('.skel-packages');
+  body.classList.add('rb-swap-out');
+  setTimeout(() => {
+    body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
+      <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
+    initPackagesSlider(body.querySelector('.packages-slider-wrap'));
+    body.classList.remove('rb-swap-out');
+    body.classList.remove('rb-hidden');
+    body.classList.add('rb-reveal');
 
-  requestAnimationFrame(() => {
-    scrollIntoCenterBelowHeader(body.querySelector('.packages .pkg') || body);
-  });
+    requestAnimationFrame(() => {
+      scrollIntoCenterBelowHeader(body.querySelector('.packages .pkg') || body);
+    });
+  }, hadSkeleton ? 180 : 0);
 }
 
 function itemCardHtml(item, kind){
@@ -2357,12 +2364,17 @@ function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
   `;
 
   const body = document.getElementById('resultsBody');
-  body.innerHTML = `
-    ${packagesSliderHtml(picks.map((p,i)=>surprisePkgHtml(p, i, budget, ctxBase.adults)))}
-    <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
-    <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
-  `;
-  initPackagesSlider(body.querySelector('.packages-slider-wrap'));
+  const hadSkeleton = !!body.querySelector('.skel-packages');
+  body.classList.add('rb-swap-out');
+  setTimeout(() => {
+    body.innerHTML = `
+      ${packagesSliderHtml(picks.map((p,i)=>surprisePkgHtml(p, i, budget, ctxBase.adults)))}
+      <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
+      <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova.</p>
+    `;
+    initPackagesSlider(body.querySelector('.packages-slider-wrap'));
+    body.classList.remove('rb-swap-out');
+  }, hadSkeleton ? 180 : 0);
 }
 
 async function runSurpriseSearch(isReroll){
