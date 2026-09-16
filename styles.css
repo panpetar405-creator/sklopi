@@ -29,7 +29,7 @@ i teško se videla na mobilnom (linije između polja "nestajale"). */
     --gold-on-soft:#6B4A12;
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
 body{
     margin:0;
     background:var(--bg);
@@ -37,6 +37,8 @@ body{
     font-family:'Work Sans',sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow-anchor:none;
+    overflow-x:hidden;
+    max-width:100%;
 }
 h1,h2,h3,.display{
     font-family:'Fraunces',serif;
@@ -673,10 +675,18 @@ a{color:inherit;}
    skeleton naglo "iskoči" u prave kartice bez ikakve tranzicije. */
 #resultsBody.rb-swap-out > *{opacity:0;transition:opacity .18s ease;}
 @keyframes pkgFadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-.packages .pkg{opacity:0;animation:pkgFadeUp .5s cubic-bezier(.2,.8,.2,1) both;}
-.packages .pkg:nth-child(1){animation-delay:.05s;}
-.packages .pkg:nth-child(2){animation-delay:.16s;}
-.packages .pkg:nth-child(3){animation-delay:.27s;}
+/* Mobilni slajder (kartice se preklapaju/"peek"-uju jedna preko druge) —
+   sve tri ulaze ZAJEDNO, bez pojedinačnog kašnjenja: kad se susedna
+   kartica delimično vidi pored trenutne, a još je u drugoj fazi
+   animacije, ceo prelaz izgleda razbijeno/nedovršeno. */
+.packages .pkg{opacity:0;animation:pkgFadeUp .42s cubic-bezier(.2,.8,.2,1) both;}
+/* Desktop grid — sve 3 kartice jedna pored druge, bez preklapanja —
+   ovde blago stepenovano uvlačenje izgleda namerno i uredno. */
+@media (min-width:860px){
+    .packages .pkg:nth-child(1){animation-delay:.05s;}
+    .packages .pkg:nth-child(2){animation-delay:.16s;}
+    .packages .pkg:nth-child(3){animation-delay:.27s;}
+}
 @media (prefers-reduced-motion: reduce){
     #resultsBody.rb-swap-out > *{opacity:1;transition:none;}
     .packages .pkg{animation:none;opacity:1;}
@@ -699,7 +709,9 @@ a{color:inherit;}
         max-height:min(640px, calc(100dvh - 230px));
         overflow-y:auto;
         -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
     }
+    .packages .pkg::-webkit-scrollbar{display:none;}
 }
 .packages-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;}
 .packages-dot{

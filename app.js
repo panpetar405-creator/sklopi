@@ -2086,6 +2086,7 @@ function initPackagesSlider(wrap){
   const track = wrap.querySelector('.packages');
   const dotsWrap = wrap.querySelector('.packages-dots');
   if (!track || !dotsWrap) return;
+  track.scrollLeft = 0;
   const cards = Array.from(track.querySelectorAll('.pkg'));
   const dots = Array.from(dotsWrap.querySelectorAll('.packages-dot'));
   if (cards.length < 2) return;
