@@ -3342,9 +3342,43 @@ if (destInputForAirport){
   destInputForAirport.addEventListener('input', (e) => {
     clearTimeout(_destAirportTimer);
     const val = e.target.value;
-    _destAirportTimer = setTimeout(() => renderDestAirportWarning(val), 400);
+    _destAirportTimer = setTimeout(() => {
+      renderDestAirportWarning(val);
+      syncDestTypingWithPopular(val);
+    }, 400);
   });
   if (destInputForAirport.value) renderDestAirportWarning(destInputForAirport.value);
+}
+
+/* ==========================================================
+   Dok kucaš u "Destinacija", ako se poklopi sa jednom od kartica
+   u "Gde bi sledeće?" gridu — ta kartica skoči na prvo mesto u
+   tabeli, a CTA baner ("X te čeka.") ispod grida se ažurira da
+   prikaže baš taj grad, umesto podrazumevanog "Atina te čeka."
+   Kad se polje isprazni, i grid-poredak i CTA se vraćaju na
+   podrazumevano stanje (default popular destinacije / "Atina").
+========================================================== */
+function syncDestTypingWithPopular(destRaw){
+  const grid = document.getElementById('popularDestGrid');
+  const ctaTitleEl = document.getElementById('ctaTitle');
+  const ctaDescEl = document.getElementById('ctaDesc');
+  const val = normalizeSr((destRaw || '').trim());
+  if (!val){
+    if (ctaTitleEl) ctaTitleEl.textContent = getLang() === 'en' ? 'Athens is waiting for you.' : 'Atina te čeka.';
+    if (ctaDescEl) ctaDescEl.textContent = ctaCopy('Atina');
+    return;
+  }
+  if (!grid) return;
+  const cards = Array.from(grid.querySelectorAll('.popular-dest-card'));
+  const match = cards.find(card => {
+    const cardDest = normalizeSr(card.dataset.dest || '');
+    return cardDest === val || cardDest.startsWith(val);
+  });
+  if (!match) return;
+  if (grid.firstElementChild !== match) grid.insertBefore(match, grid.firstElementChild);
+  const destName = match.dataset.dest;
+  if (ctaTitleEl) ctaTitleEl.textContent = getLang() === 'en' ? destName + ' is waiting for you.' : destName + ' te čeka.';
+  if (ctaDescEl) ctaDescEl.textContent = ctaCopy(destName);
 }
 
 /* ==========================================================
