@@ -727,8 +727,9 @@ a{color:inherit;}
     .packages-dots{display:none;}
 }
 .pkg{
-    background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--line);border-radius:10px;
+    background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--line);border-radius:14px;
     overflow:hidden;position:relative;
+    box-shadow:0 12px 28px -20px rgba(10,31,61,0.22);
     transition:box-shadow .25s ease, transform .25s ease, opacity .2s ease;
 }
 .pkg-close{
@@ -749,7 +750,7 @@ a{color:inherit;}
 }
 .pkg-head{
     padding:20px 22px 18px;border-bottom:1px solid var(--line);
-    display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
 }
 .pkg.featured .pkg-head{background:#EAF4FC;}
 .pkg-head h3{
@@ -770,7 +771,7 @@ a{color:inherit;}
 .pkg-total .hint{font-size:12px;color:var(--ink-soft);opacity:0.85;margin-top:2px;max-width:220px;line-height:1.3;}
 /* Skor — kompaktan pravougaoni indikator gore desno, kao stat-chip */
 .pkg-score-box{
-    flex:0 0 auto;align-self:flex-start;margin-top:2px;
+    flex:0 0 auto;align-self:center;
     border:1px solid var(--line);border-radius:8px;
     padding:9px 11px 10px;text-align:center;min-width:72px;
     background:var(--bg);
@@ -804,9 +805,9 @@ a{color:inherit;}
     height:88px;display:flex;align-items:flex-end;padding:10px 12px;position:relative;
 }
 .item-photo svg{width:24px;height:24px;color:var(--on-dark);opacity:0.9;}
-.item-photo.flight{background:linear-gradient(135deg,var(--deep),var(--deep2));}
-.item-photo.hotel{background:linear-gradient(135deg,var(--gold-text),var(--gold));}
-.item-photo.car{background:linear-gradient(135deg,#8B2E22,var(--coral));}
+.item-photo.flight{background:var(--deep);}
+.item-photo.hotel{background:var(--gold-text);}
+.item-photo.car{background:var(--coral-text);}
 .item-body{padding:12px 14px 14px;}
 .item-label{font-size:12.5px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
 .item-card.flight .item-label{color:var(--deep2);}
@@ -831,9 +832,9 @@ a{color:inherit;}
 .item-btn.car{background:var(--coral);}
 /* Kartica hotela prati boju tier-a (budget=crvena, comfort=plava),
    umesto da uvek bude zlatna — jasnija veza sa bojom kartice. */
-.pkg.budget .item-photo.hotel{background:linear-gradient(135deg,var(--coral-text),var(--coral));}
+.pkg.budget .item-photo.hotel{background:var(--coral-text);}
 .pkg.budget .item-btn.hotel{background:var(--coral);color:var(--on-dark);}
-.pkg.comfort .item-photo.hotel{background:linear-gradient(135deg,var(--deep2),var(--aqua));}
+.pkg.comfort .item-photo.hotel{background:var(--deep2);}
 .pkg.comfort .item-btn.hotel{background:var(--aqua);color:var(--on-dark);}
 /* extras grid — activity / fuel / tolls / insurance */
 .extras-row{
@@ -900,14 +901,14 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
     .pkg-close{top:8px;right:8px;width:24px;height:24px;}
     .pkg-close svg{width:12px;height:12px;}
     .pkg-head{padding:14px 16px 12px;gap:10px;}
-    .pkg-head h3{font-size:18px;}
+    .pkg-head h3{font-size:11px;}
     .pkg-desc{font-size:11px;margin-top:2px;}
     .pkg-badge{font-size:10px;padding:3px 8px;margin:0 0 6px;}
     .pkg-total{margin-top:10px;}
     .pkg-total .num{font-size:24px;}
     .pkg-total .cur{font-size:12.5px;}
     .pkg-total .hint{font-size:10px;margin-top:1px;max-width:150px;}
-    .pkg-score-box{margin-top:10px;min-width:54px;padding:6px 7px 7px;border-radius:9px;}
+    .pkg-score-box{min-width:54px;padding:6px 7px 7px;border-radius:8px;}
     .pkg-score-box .score-num{font-size:16px;}
     .pkg-score-box .score-max{font-size:9px;}
     .pkg-score-box .score-label{font-size:8px;margin-top:3px;max-width:54px;}
