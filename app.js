@@ -4257,6 +4257,21 @@ function setTransportToggle(dataT, shouldBeOn){
   if (isOn !== shouldBeOn) el.click();
 }
 
+// Sinhronizuje vizuelne chip-ove u samostalnoj builder sekciji ("Želiš
+// više kontrole?" niže na strani) sa builderState — isti obrazac kao u
+// loadSavedTrip, da izgled ne ostane neusklađen ako korisnik kasnije
+// otvori tu sekciju posle popunjavanja "Prilagodi svoj plan" modala.
+function syncBuilderChipsUi(){
+  document.querySelectorAll('.chip-row[data-group="flightPref"] .chip').forEach(c=>c.classList.toggle('on', c.dataset.value === builderState.flightPref));
+  document.getElementById('airlineName').style.display = (builderState.flightPref === 'airline') ? 'block' : 'none';
+  document.getElementById('airlineName').value = builderState.airlineName || '';
+  document.querySelectorAll('.chip-row[data-group="hotelStars"] .chip').forEach(c=>c.classList.toggle('on', Number(c.dataset.value) === builderState.hotelStars));
+  document.querySelectorAll('.chip-row[data-group="carPref"] .chip').forEach(c=>c.classList.toggle('on', c.dataset.value === builderState.carPref));
+  document.querySelectorAll('#builderPanel .toggle-chip').forEach(c=>c.classList.toggle('on', !!builderState[c.dataset.toggle]));
+  document.getElementById('actCount').textContent = builderState.activityCount;
+  document.getElementById('budgetInput').value = builderState.budget || '';
+}
+
 document.getElementById('startPrefsContinue').addEventListener('click', () => {
   closeStartPrefsModal();
   // Auto/aktivnosti biramo ovde jer stvarno utiču na to koje se stavke
@@ -4266,7 +4281,41 @@ document.getElementById('startPrefsContinue').addEventListener('click', () => {
   // polje koje ovaj modal ne prikuplja.
   setTransportToggle('car', startPrefs.carPref !== 'none');
   setTransportToggle('activity', startPrefs.activityCount > 0);
-  runSearch(true, true);
+  // I dalje pripremamo "gotove" pakete u pozadini (dostupni niže na strani
+  // ako korisnik ipak želi da uporedi tri ponude) — bez auto-skrola tamo,
+  // jer glavni rezultat ovog modala sad postaje STVARNI "Tvoj izlet" ispod.
+  runSearch(false, false);
+
+  // Izbori iz ovog modala su IDENTIČNI poljima builder-a ("Želiš više
+  // kontrole?") — umesto da se odbace (kao ranije, kad su uticali samo na
+  // dva toggle-a gore), sad direktno hrane computeCustomPackage kroz
+  // builderState, pa modal stvarno proizvodi personalizovan izlet, a ne
+  // generički set od 3 nasumične ponude koje ignorišu ove izbore.
+  Object.assign(builderState, {
+    flightPref: startPrefs.flightPref,
+    hotelStars: startPrefs.hotelStars,
+    carPref: startPrefs.carPref,
+    activityCount: startPrefs.activityCount,
+    prioritizeRating: startPrefs.prioritizeRating,
+    prioritizeLocation: startPrefs.prioritizeLocation,
+    budget: startPrefs.budget
+  });
+  syncBuilderChipsUi();
+
+  const destInput = document.getElementById('dest');
+  if (!destInput.value.trim()){
+    showToast('Unesi destinaciju da bismo napravili izlet.');
+    destInput.focus();
+    destInput.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  renderBuilder();
+  openControlPanel();
+  document.getElementById('builderSummary').style.display = 'block';
+  document.getElementById('builderPlaceholder').style.display = 'none';
+  requestAnimationFrame(() => {
+    document.getElementById('builderSummary').scrollIntoView({behavior:'smooth', block:'start'});
+  });
 });
 
 /* ==========================================================
