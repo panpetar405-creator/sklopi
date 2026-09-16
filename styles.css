@@ -616,6 +616,44 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
     border-radius:20px;padding:7px 13px;font-size:14px;font-weight:600;color:var(--ink-soft);
 }
 .pill svg{width:13px;height:13px;color:var(--gold);}
+/* ---------- Plan-kartica ("Tvoj plan za X" + napomene o letu/autobusu)
+   Klikom na Start prvo se pojavljuje samo ova kartica; dugme "Nastavi"
+   otkriva pakete ispod (vidi revealPackages() u app.js). ---------- */
+@keyframes planCardPop{from{opacity:0;transform:translateY(14px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes resultsFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.plan-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:24px 26px;margin-bottom:28px;
+    box-shadow:0 24px 50px -32px rgba(18,49,56,0.28);
+    animation:planCardPop .45s cubic-bezier(.2,.8,.2,1) both;
+}
+.plan-card-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.plan-notes{margin-top:18px;display:flex;flex-direction:column;gap:10px;}
+.plan-note{
+    background:rgba(231,211,172,0.25);border:1px solid var(--line);border-radius:8px;
+    padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
+}
+.plan-note b{color:var(--ink);}
+.plan-continue-btn{
+    margin-top:22px;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;
+    background:linear-gradient(100deg,var(--deep) 0%,var(--deep2) 100%);
+    color:var(--on-dark-strong);border:none;
+    font-family:'Work Sans',sans-serif;font-weight:600;font-size:16px;
+    padding:15px 20px;border-radius:999px;cursor:pointer;
+    box-shadow:0 14px 28px -12px rgba(18,49,56,0.5);
+    transition:transform .2s ease, box-shadow .2s ease, gap .2s ease;
+}
+.plan-continue-btn .arrow{
+    display:flex;align-items:center;justify-content:center;flex:none;
+    width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--on-gold);
+    font-size:15px;transition:transform .2s ease, background .2s ease;
+}
+.plan-continue-btn:hover{transform:translateY(-2px);gap:16px;box-shadow:0 20px 36px -14px rgba(18,49,56,0.58);}
+.plan-continue-btn:hover .arrow{background:#CD9A4C;transform:rotate(-10deg) translateX(1px);}
+.plan-continue-btn:active{transform:translateY(0);}
+.plan-card-loading .status-left p{margin-top:8px;}
+#resultsBody.rb-hidden{display:none;}
+#resultsBody.rb-reveal{animation:resultsFadeUp .45s ease both;}
 .packages-slider-wrap{position:relative;}
 .packages{
     display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
@@ -797,6 +835,11 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
    sa ikonicom — tako cela .pkg kartica staje u ekran i jasno se
    vidi da je slajder (deo sledeće kartice viri sa strane). */
 @media (max-width:760px){
+    .plan-card{padding:18px 18px 20px;border-radius:8px;}
+    .plan-notes{margin-top:14px;gap:8px;}
+    .plan-note{padding:10px 12px;font-size:12.5px;}
+    .plan-continue-btn{margin-top:16px;padding:13px 18px;font-size:15px;}
+    .plan-continue-btn .arrow{width:28px;height:28px;font-size:14px;}
     .pkg-close{top:8px;right:8px;width:24px;height:24px;}
     .pkg-close svg{width:12px;height:12px;}
     .pkg-head{padding:14px 16px 12px;gap:10px;}

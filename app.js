@@ -1763,6 +1763,22 @@ function skeletonPkgHtml(){
   </div>`;
 }
 
+/* Kratki loading placeholder u obliku plan-kartice, dok se paket
+   računa — prikazuje se PRE prave plan-kartice (koja iskače prva,
+   pre paketa), umesto skeletona samih paketa. */
+function skeletonPlanCardHtml(loadingText){
+  return `
+  <div class="plan-card plan-card-loading" role="status" aria-busy="true" aria-live="polite">
+    <span class="sr-only">${escapeHtml(loadingText || '')}</span>
+    <div class="plan-card-top">
+      <div class="status-left">
+        <div class="skel skel-photo" style="width:34px;height:34px;border-radius:50%;"></div>
+        <div><div class="skel skel-title" style="width:210px;"></div><div class="skel skel-sub" style="width:270px;"></div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
 function skeletonResultsHtml(loadingText){
   return `
   <div class="skel-packages" role="status" aria-busy="true" aria-live="polite">
@@ -1848,26 +1864,47 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
   const busNote = busTrainNoteFor(dest, adults);
+  const notes = [
+    altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
+    destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : '',
+    busNote ? `<div class="plan-note">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''
+  ].filter(Boolean).join('');
   head.innerHTML = `
-    <div class="status-banner">
-      <div class="status-left">
-        <div class="status-check">${iconSvg('check')}</div>
-        <div><h3>Tvoj plan za ${escapeHtml(dest)}</h3><p>Tri gotove opcije, od najpovoljnije do komfornije. Izaberi onu koja ti odgovara.</p></div>
+    <div class="plan-card">
+      <div class="plan-card-top">
+        <div class="status-left">
+          <div class="status-check">${iconSvg('check')}</div>
+          <div><h3>Tvoj plan za ${escapeHtml(dest)}</h3><p>Tri gotove opcije, od najpovoljnije do komfornije. Izaberi onu koja ti odgovara.</p></div>
+        </div>
+        <div class="status-pills">
+          <div class="pill">${iconSvg('calendar')} ${fmtDate(from)} – ${fmtDate(to)}</div>
+          <div class="pill">${iconSvg('people')} ${adults} ${passengerLabel(adults)}</div>
+        </div>
       </div>
-      <div class="status-pills">
-        <div class="pill">${iconSvg('calendar')} ${fmtDate(from)} – ${fmtDate(to)}</div>
-        <div class="pill">${iconSvg('people')} ${adults} ${passengerLabel(adults)}</div>
-      </div>
+      ${notes ? `<div class="plan-notes">${notes}</div>` : ''}
+      <button type="button" class="plan-continue-btn" onclick="revealPackages()">
+        Nastavi <span class="arrow">→</span>
+      </button>
     </div>
-    ${altNote ? `<div class="alt-airport-box">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : ''}
-    ${destNote ? `<div class="alt-airport-box">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : ''}
-    ${busNote ? `<div class="alt-airport-box">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''}
   `;
 
   const body = document.getElementById('resultsBody');
   body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}
     <p class="disclaimer">⚠️ SKLOPI je trenutno u razvoju — prikazane cene su ilustrativan primer, generisan lokalno radi demonstracije, i <strong>nisu preuzete uživo</strong> sa partnerskih sajtova. Za stvarnu cenu i dostupnost proveri direktno na sajtu partnera (${providers.join(', ')}) pre rezervacije.</p>`;
+  body.classList.add('rb-hidden');
+  body.classList.remove('rb-reveal');
   initPackagesSlider(body.querySelector('.packages-slider-wrap'));
+}
+
+/* Klik na "Nastavi" na plan-kartici — otkriva pakete ispod nje. */
+function revealPackages(){
+  const body = document.getElementById('resultsBody');
+  if (!body) return;
+  body.classList.remove('rb-hidden');
+  body.classList.add('rb-reveal');
+  const btn = document.querySelector('.plan-continue-btn');
+  if (btn) btn.style.display = 'none';
+  requestAnimationFrame(() => body.scrollIntoView({behavior:'smooth', block:'start'}));
 }
 
 function itemCardHtml(item, kind){
@@ -2290,8 +2327,11 @@ async function runSearch(shouldScroll){
 
   const results = document.getElementById('results');
   results.classList.add('visible');
-  document.getElementById('resultsHead').innerHTML = '';
-  document.getElementById('resultsBody').innerHTML = skeletonResultsHtml('Pretražujemo letove, smeštaj, aute i aktivnosti…');
+  document.getElementById('resultsHead').innerHTML = skeletonPlanCardHtml('Pripremamo tvoj plan…');
+  const rb = document.getElementById('resultsBody');
+  rb.innerHTML = '';
+  rb.classList.add('rb-hidden');
+  rb.classList.remove('rb-reveal');
   if (shouldScroll) results.scrollIntoView({behavior:'smooth', block:'start'});
 
   bumpSearchStat(dest);
