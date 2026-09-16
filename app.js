@@ -114,6 +114,11 @@ const I18N = {
     share_modal_title:'Podeli sa prijateljima', share_modal_label_link:'Link za deljenje',
     share_modal_copy:'📋 Kopiraj link', share_modal_native:'📤 Podeli preko aplikacija',
     share_modal_disclaimer:'Svako ko otvori link vidi predlog i može da ostavi odgovor (Idem/Možda/Ne mogu) — bez pravljenja naloga.',
+    documents_check_link:'🧳 Proveri dokumenta za put',
+    documents_modal_title:'Dokumenta za put',
+    documents_modal_sub:'Pasoš i zelena karta — sve na jednom mestu, u par klikova.',
+    docs_tab_passport:'🛂 Pasoš',
+    docs_tab_greencard:'🪪 Zelena karta',
     passport_check_link:'🛂 Proveri da li ti pasoš važi za ovaj put',
     passport_modal_sub:'Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.',
     passport_modal_title:'Da li ti pasoš važi za ovaj put?',
@@ -225,6 +230,11 @@ const I18N = {
     share_modal_title:'Share with friends', share_modal_label_link:'Share link',
     share_modal_copy:'📋 Copy link', share_modal_native:'📤 Share via apps',
     share_modal_disclaimer:'Anyone who opens the link can see the plan and RSVP (Going/Maybe/Can’t make it) — no account needed.',
+    documents_check_link:'🧳 Check your travel documents',
+    documents_modal_title:'Travel documents',
+    documents_modal_sub:'Passport and Green Card — all in one place, a couple of clicks away.',
+    docs_tab_passport:'🛂 Passport',
+    docs_tab_greencard:'🪪 Green Card',
     passport_check_link:'🛂 Check if your passport is valid for this trip',
     passport_modal_sub:'Many countries require your passport to stay valid for a while after your return — otherwise you can be turned away at the border or check-in, even if your travel dates themselves are fine.',
     passport_modal_title:'Is your passport valid for this trip?',
@@ -3458,12 +3468,12 @@ if (surpriseModalBackdrop) surpriseModalBackdrop.addEventListener('click', close
 const surpriseModalSubmit = document.getElementById('surpriseModalSubmit');
 if (surpriseModalSubmit) surpriseModalSubmit.addEventListener('click', () => runSurpriseSearch(false));
 
-/* ---- Modal: da li pasoš važi za odabranu destinaciju/datume ---- */
-function openPassportModal(){
-  const destVal = (document.getElementById('dest') || {}).value || '';
+/* ---- Jedinstvena kartica "Dokumenta za put": pasoš + zelena karta, sa tabovima i scrollom ---- */
+function fillPassportSection(destVal, country){
   const box = document.getElementById('passportRuleBox');
   const submitBtn = document.getElementById('passportCheckSubmit');
   const expiryInput = document.getElementById('passportExpiryInput');
+  const resultEl = document.getElementById('passportResult');
   if (!destVal.trim()){
     if (box){
       box.innerHTML = '<div class="passport-rule-box">'
@@ -3473,15 +3483,11 @@ function openPassportModal(){
     }
     if (expiryInput) expiryInput.disabled = true;
     if (submitBtn) submitBtn.disabled = true;
-    const resultEl = document.getElementById('passportResult');
     if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
-    document.getElementById('passportModalBackdrop').classList.add('open');
-    document.getElementById('passportModal').classList.add('open');
     return;
   }
   if (expiryInput) expiryInput.disabled = false;
   if (submitBtn) submitBtn.disabled = false;
-  const country = resolveCountryForDestination(destVal);
   const rule = getPassportRule(country, destVal);
   if (box){
     box.innerHTML = (rule.visaNote
@@ -3493,7 +3499,6 @@ function openPassportModal(){
       + (rule.confident ? '' : '<br><span style="opacity:0.75">(opšte pravilo, ne potvrđeno za ovu zemlju)</span>')
       + '</div>';
   }
-  const resultEl = document.getElementById('passportResult');
   if (rule.noPassportNeeded){
     if (expiryInput) expiryInput.disabled = true;
     if (submitBtn) submitBtn.disabled = true;
@@ -3503,12 +3508,54 @@ function openPassportModal(){
     }
   } else if (resultEl){ resultEl.className = ''; resultEl.innerHTML = ''; }
   if (submitBtn) submitBtn.dataset.country = country;
-  document.getElementById('passportModalBackdrop').classList.add('open');
-  document.getElementById('passportModal').classList.add('open');
 }
-function closePassportModal(){
-  document.getElementById('passportModalBackdrop').classList.remove('open');
-  document.getElementById('passportModal').classList.remove('open');
+function fillGreenCardSection(destVal, country){
+  const box = document.getElementById('greenCardRuleBox');
+  if (!box) return;
+  if (!destVal.trim()){
+    box.innerHTML = '<div class="passport-rule-box">'
+      + '<b>Destinacija nije uneta</b>'
+      + '<br>' + escapeHtml(t('green_card_dest_missing'))
+      + '</div>';
+    return;
+  }
+  const rule = getGreenCardRule(country);
+  const statusBox = rule.status === 'needed'
+    ? '<div class="passport-visa-box">🪪❗ <b>Zelena karta je obavezna</b><br>' + escapeHtml(rule.why) + '</div>'
+    : rule.status === 'ok'
+      ? '<div class="passport-result ok" style="margin-top:0;">✅ ' + escapeHtml(rule.why) + '</div>'
+      : '<div class="passport-rule-box"><b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b><br>' + escapeHtml(rule.why) + '</div>';
+  box.innerHTML = statusBox
+    + '<div class="passport-rule-box" style="margin-top:10px;">'
+    + (rule.status !== 'unknown' ? '<b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b><br>' : '')
+    + '<span style="opacity:0.75">' + escapeHtml(t('green_card_scope_note')) + '</span>'
+    + '</div>';
+}
+function switchDocsTab(which){
+  const passTab = document.getElementById('docsTabPassport');
+  const gcTab = document.getElementById('docsTabGreenCard');
+  const passSection = document.getElementById('docsSectionPassport');
+  const gcSection = document.getElementById('docsSectionGreenCard');
+  const showPassport = which === 'passport';
+  if (passTab){ passTab.classList.toggle('active', showPassport); passTab.setAttribute('aria-selected', showPassport ? 'true' : 'false'); }
+  if (gcTab){ gcTab.classList.toggle('active', !showPassport); gcTab.setAttribute('aria-selected', !showPassport ? 'true' : 'false'); }
+  if (passSection) passSection.hidden = !showPassport;
+  if (gcSection) gcSection.hidden = showPassport;
+  const scrollEl = document.querySelector('#documentsModal .docs-scroll');
+  if (scrollEl) scrollEl.scrollTop = 0;
+}
+function openDocumentsModal(){
+  const destVal = (document.getElementById('dest') || {}).value || '';
+  const country = destVal.trim() ? resolveCountryForDestination(destVal) : null;
+  fillPassportSection(destVal, country);
+  fillGreenCardSection(destVal, country);
+  switchDocsTab('passport');
+  document.getElementById('documentsModalBackdrop').classList.add('open');
+  document.getElementById('documentsModal').classList.add('open');
+}
+function closeDocumentsModal(){
+  document.getElementById('documentsModalBackdrop').classList.remove('open');
+  document.getElementById('documentsModal').classList.remove('open');
 }
 function runPassportCheck(){
   const destVal = (document.getElementById('dest') || {}).value || '';
@@ -3554,55 +3601,16 @@ function runPassportCheck(){
       + '“ traži da važi bar do ' + fmtDateSr(requiredExpiry) + '. Vreme je da obnoviš pasoš — MUP izdaje redovan za oko 30 dana, a uz dokaz o putovanju (kartu ili rezervaciju) moguća je i ubrzana procedura za 48h.';
   }
 }
-/* ---- Modal: da li je za auto potrebna zelena karta na odabranoj relaciji ---- */
-function openGreenCardModal(){
-  const destVal = (document.getElementById('dest') || {}).value || '';
-  const box = document.getElementById('greenCardRuleBox');
-  if (!destVal.trim()){
-    if (box){
-      box.innerHTML = '<div class="passport-rule-box">'
-        + '<b>Destinacija nije uneta</b>'
-        + '<br>' + escapeHtml(t('green_card_dest_missing'))
-        + '</div>';
-    }
-    document.getElementById('greenCardModalBackdrop').classList.add('open');
-    document.getElementById('greenCardModal').classList.add('open');
-    return;
-  }
-  const country = resolveCountryForDestination(destVal);
-  const rule = getGreenCardRule(country);
-  if (box){
-    const statusBox = rule.status === 'needed'
-      ? '<div class="passport-visa-box">🪪❗ <b>Zelena karta je obavezna</b><br>' + escapeHtml(rule.why) + '</div>'
-      : rule.status === 'ok'
-        ? '<div class="passport-result ok" style="margin-top:0;">✅ ' + escapeHtml(rule.why) + '</div>'
-        : '<div class="passport-rule-box"><b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b><br>' + escapeHtml(rule.why) + '</div>';
-    box.innerHTML = statusBox
-      + '<div class="passport-rule-box" style="margin-top:10px;">'
-      + (rule.status !== 'unknown' ? '<b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b><br>' : '')
-      + '<span style="opacity:0.75">' + escapeHtml(t('green_card_scope_note')) + '</span>'
-      + '</div>';
-  }
-  document.getElementById('greenCardModalBackdrop').classList.add('open');
-  document.getElementById('greenCardModal').classList.add('open');
-}
-function closeGreenCardModal(){
-  document.getElementById('greenCardModalBackdrop').classList.remove('open');
-  document.getElementById('greenCardModal').classList.remove('open');
-}
-const greenCardCheckBtn = document.getElementById('greenCardCheckBtn');
-if (greenCardCheckBtn) greenCardCheckBtn.addEventListener('click', openGreenCardModal);
-const greenCardModalClose = document.getElementById('greenCardModalClose');
-if (greenCardModalClose) greenCardModalClose.addEventListener('click', closeGreenCardModal);
-const greenCardModalBackdrop = document.getElementById('greenCardModalBackdrop');
-if (greenCardModalBackdrop) greenCardModalBackdrop.addEventListener('click', closeGreenCardModal);
-
-const passportCheckBtn = document.getElementById('passportCheckBtn');
-if (passportCheckBtn) passportCheckBtn.addEventListener('click', openPassportModal);
-const passportModalClose = document.getElementById('passportModalClose');
-if (passportModalClose) passportModalClose.addEventListener('click', closePassportModal);
-const passportModalBackdrop = document.getElementById('passportModalBackdrop');
-if (passportModalBackdrop) passportModalBackdrop.addEventListener('click', closePassportModal);
+const documentsCheckBtn = document.getElementById('documentsCheckBtn');
+if (documentsCheckBtn) documentsCheckBtn.addEventListener('click', openDocumentsModal);
+const documentsModalClose = document.getElementById('documentsModalClose');
+if (documentsModalClose) documentsModalClose.addEventListener('click', closeDocumentsModal);
+const documentsModalBackdrop = document.getElementById('documentsModalBackdrop');
+if (documentsModalBackdrop) documentsModalBackdrop.addEventListener('click', closeDocumentsModal);
+const docsTabPassport = document.getElementById('docsTabPassport');
+if (docsTabPassport) docsTabPassport.addEventListener('click', () => switchDocsTab('passport'));
+const docsTabGreenCard = document.getElementById('docsTabGreenCard');
+if (docsTabGreenCard) docsTabGreenCard.addEventListener('click', () => switchDocsTab('greencard'));
 const passportCheckSubmit = document.getElementById('passportCheckSubmit');
 if (passportCheckSubmit) passportCheckSubmit.addEventListener('click', runPassportCheck);
 

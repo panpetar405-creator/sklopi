@@ -227,8 +227,7 @@ playPromise.catch(function(){ fallbackToImage(); });
 </select>
 </div>
 <div class="go">
-<button type="button" class="passport-check-btn" id="passportCheckBtn" data-i18n="passport_check_link">🛂 Proveri da li ti pasoš važi za ovaj put</button>
-<button type="button" class="passport-check-btn" id="greenCardCheckBtn" data-i18n="green_card_check_link">🪪 Proveri da li ti treba zelena karta za ovu rutu</button>
+<button type="button" class="passport-check-btn" id="documentsCheckBtn" data-i18n="documents_check_link">🧳 Proveri dokumenta za put</button>
 </div>
 </form>
 <div class="ticket-submit-row">
@@ -547,29 +546,34 @@ playPromise.catch(function(){ fallbackToImage(); });
 <button type="button" class="btn-alert" id="shareModalNative" style="display:none;margin-top:10px;" data-i18n="share_modal_native">📤 Podeli preko aplikacija</button>
 <p class="alert-modal-disclaimer" data-i18n="share_modal_disclaimer">Svako ko otvori link vidi predlog i može da ostavi odgovor (Idem/Možda/Ne mogu) — bez pravljenja naloga.</p>
 </div>
-<div class="alert-modal-backdrop" id="passportModalBackdrop"></div>
-<div class="alert-modal" id="passportModal" role="dialog" aria-modal="true" aria-labelledby="passportModalTitle">
-<button type="button" class="alert-modal-close" id="passportModalClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
-<div class="alert-modal-ic">🛂</div>
-<h3 id="passportModalTitle" data-i18n="passport_modal_title">Da li ti pasoš važi za ovaj put?</h3>
-<p class="alert-modal-sub" id="passportModalSub" data-i18n="passport_modal_sub">Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.</p>
+<div class="alert-modal-backdrop" id="documentsModalBackdrop"></div>
+<div class="alert-modal alert-modal-docs" id="documentsModal" role="dialog" aria-modal="true" aria-labelledby="documentsModalTitle">
+<button type="button" class="alert-modal-close" id="documentsModalClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
+<div class="alert-modal-ic">🧳</div>
+<h3 id="documentsModalTitle" data-i18n="documents_modal_title">Dokumenta za put</h3>
+<p class="alert-modal-sub" data-i18n="documents_modal_sub">Pasoš i zelena karta — sve na jednom mestu, u par klikova.</p>
+<div class="docs-tabs" role="tablist">
+<button type="button" class="docs-tab active" id="docsTabPassport" role="tab" aria-selected="true" data-i18n="docs_tab_passport">🛂 Pasoš</button>
+<button type="button" class="docs-tab" id="docsTabGreenCard" role="tab" aria-selected="false" data-i18n="docs_tab_greencard">🪪 Zelena karta</button>
+</div>
+<div class="docs-scroll">
+<section class="docs-section" id="docsSectionPassport">
+<p class="docs-section-sub" data-i18n="passport_modal_sub">Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.</p>
 <div class="alert-modal-row" id="passportRuleBox"></div>
-<div class="alert-modal-row">
+<div class="alert-modal-row" id="passportExpiryRow">
 <label for="passportExpiryInput" data-i18n="passport_modal_label_expiry">Do kog datuma važi tvoj pasoš?</label>
 <input type="date" id="passportExpiryInput" class="auth-input" style="width:100%;">
 </div>
 <button type="button" class="btn-primary" id="passportCheckSubmit" style="width:100%;margin-top:8px;" data-i18n="passport_modal_btn">Proveri</button>
 <div id="passportResult"></div>
 <p class="alert-modal-disclaimer" data-i18n="passport_modal_disclaimer">⚠️ Opšta pravila po zemlji, radi orijentacije — pred put uvek dodatno proveri na sajtu ambasade/konzulata ili sa aviokompanijom.</p>
-</div>
-<div class="alert-modal-backdrop" id="greenCardModalBackdrop"></div>
-<div class="alert-modal" id="greenCardModal" role="dialog" aria-modal="true" aria-labelledby="greenCardModalTitle">
-<button type="button" class="alert-modal-close" id="greenCardModalClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
-<div class="alert-modal-ic">🪪</div>
-<h3 id="greenCardModalTitle" data-i18n="green_card_modal_title">Treba li ti zelena karta za auto?</h3>
-<p class="alert-modal-sub" data-i18n="green_card_modal_sub">Zelena karta je međunarodna potvrda auto-osiguranja. Srbija ima sporazume sa većinom evropskih zemalja pa karton nije potreban, ali za neke destinacije i dalje jeste — i plaća se posebno kod osiguravača, van cene rentakara.</p>
+</section>
+<section class="docs-section" id="docsSectionGreenCard" hidden>
+<p class="docs-section-sub" data-i18n="green_card_modal_sub">Zelena karta je međunarodna potvrda auto-osiguranja. Srbija ima sporazume sa većinom evropskih zemalja pa karton nije potreban, ali za neke destinacije i dalje jeste — i plaća se posebno kod osiguravača, van cene rentakara.</p>
 <div class="alert-modal-row" id="greenCardRuleBox"></div>
 <p class="alert-modal-disclaimer" data-i18n="green_card_modal_disclaimer">⚠️ Opšte pravilo za vozila registrovana u Srbiji, radi orijentacije — pred put uvek potvrdi kod svog osiguravača ili AMSS-a, jer se sporazumi povremeno menjaju.</p>
+</section>
+</div>
 </div>
 <div id="toast"><div class="dot"></div><span id="toastText"></span></div>
 <a href="https://wa.me/38268578361?text=Zdravo%2C%20imam%20pitanje%20o%20SKLOPI%20putovanju" target="_blank" rel="noopener" class="whatsapp-fab" id="whatsappFab" data-i18n-aria-label="whatsapp_aria" aria-label="Piši nam na WhatsApp">

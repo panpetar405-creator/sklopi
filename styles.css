@@ -1092,6 +1092,25 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .passport-result.ok{background:rgba(45,120,90,0.1);color:#2D5A45;border:1px solid rgba(45,120,90,0.25);}
 .passport-result.warn{background:rgba(190,70,50,0.08);color:#8A3420;border:1px solid rgba(190,70,50,0.25);}
 @media (max-width:480px){.alert-modal{padding:24px 20px 20px;}}
+/* ---------- Jedinstvena kartica "Dokumenta za put" (pasoš + zelena karta) ---------- */
+.alert-modal-docs{width:min(440px, calc(100vw - 32px));padding-bottom:22px;}
+.docs-tabs{
+    display:flex;gap:6px;background:var(--bg);border:1px solid var(--line);
+    border-radius:999px;padding:4px;margin-bottom:18px;
+}
+.docs-tab{
+    flex:1;border:none;background:transparent;border-radius:999px;
+    padding:9px 10px;font-family:'Work Sans',sans-serif;font-weight:600;font-size:13.5px;
+    color:var(--ink-soft);cursor:pointer;transition:background .15s ease,color .15s ease,box-shadow .15s ease;
+}
+.docs-tab.active{background:var(--paper);color:var(--ink);box-shadow:0 4px 12px -6px rgba(0,0,0,0.18);}
+.docs-tab:not(.active):hover{color:var(--ink);}
+.docs-scroll{
+    max-height:min(50vh, 420px);overflow-y:auto;overflow-x:hidden;
+    margin:0 -4px;padding:0 4px 2px;
+}
+.docs-section-sub{font-size:14px;color:var(--ink-soft);line-height:1.5;margin:0 0 16px;}
+@media (max-width:480px){.alert-modal-docs{padding:24px 20px 20px;}}
 .btn-save svg{width:15px;height:15px;}
 .saved-wrap{margin-top:44px;}
 .auth-bar{margin-bottom:18px;}
