@@ -728,7 +728,9 @@ kao .btn-primary::after, samo manji i kao sekundarni akcenat). */
 .pkg.comfort{border-left-color:var(--aqua);}
 .pkg.budget{border-left-color:var(--coral);}
 .pkg.featured{
-    border-color:var(--gold);
+    /* border-top/right/bottom, NE border-color (taj bi šorthend prepisao
+       i border-left-color koju postavlja tier klasa — .budget/.comfort) */
+    border-top-color:var(--gold);border-right-color:var(--gold);border-bottom-color:var(--gold);
     box-shadow:0 20px 46px -24px rgba(184,134,59,0.5);
 }
 .pkg-head{
