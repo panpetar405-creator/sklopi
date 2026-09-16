@@ -2196,7 +2196,11 @@ document.querySelectorAll('.toggle').forEach(t=>{
     const input = t.querySelector('input');
     input.checked = !input.checked;
     t.classList.toggle('on', input.checked);
-    if (t.dataset.t === 'flight') updateOriginVisibility(input.checked);
+    if (t.dataset.t === 'flight'){
+      updateOriginVisibility(input.checked);
+      renderOriginAirportWarning(document.getElementById('origin').value);
+      renderDestAirportWarning(document.getElementById('dest').value);
+    }
   });
 });
 
@@ -2817,10 +2821,18 @@ if (destInputForAirport){
    formi za pretragu (ne tek u rezultatima). Radi na OBA polja
    (Polazak i Destinacija), nad istom AIRPORT_DB bazom iznad u
    fajlu. Uredničko znanje o geografiji, ne uživo podatak.
+   Prikazuje se ISKLJUČIVO kad je toggle "Letovi" uključen — u
+   Smeštaj/R&C/Aktivnost pretragama nema leta, pa napomena o
+   aerodromu nema smisla tu.
 ========================================================== */
+function isFlightToggleOn(){
+  const el = document.querySelector('.toggle[data-t="flight"]');
+  return !!(el && el.classList.contains('on'));
+}
 function renderAirportWarning(cityRaw, boxId, inputId){
   const box = document.getElementById(boxId);
   if (!box) return;
+  if (!isFlightToggleOn()){ box.innerHTML = ''; return; }
   const info = airportInfoFor(cityRaw);
   if (!info || info.hasAirport || !info.nearest){ box.innerHTML = ''; return; }
   const btnId = boxId + 'UseNearestBtn';
