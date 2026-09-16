@@ -911,6 +911,11 @@ const COASTAL_DESTINATIONS = [
 ];
 function ctaCopy(dest){
   const isCoastal = COASTAL_DESTINATIONS.includes(dest.trim().toLowerCase());
+  if (getLang() === 'en'){
+    return isCoastal
+      ? 'History, great food, the sea and unforgettable experiences — now easier than ever to plan it all.'
+      : 'History, great food and unforgettable experiences — now easier than ever to plan it all.';
+  }
   return isCoastal
     ? 'Istorija, dobra hrana, more i nezaboravni doživljaji — a sad je lakše nego ikad da sve to isplaniraš.'
     : 'Istorija, dobra hrana i nezaboravni doživljaji — a sad je lakše nego ikad da sve to isplaniraš.';
@@ -2064,7 +2069,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   window._lastSearchPkgs = pkgs;
   window._lastSearchCtx = {dest, from, to, adults, nights, flags};
 
-  document.getElementById('ctaTitle').textContent = dest + ' te čeka.';
+  document.getElementById('ctaTitle').textContent = getLang() === 'en' ? dest + ' is waiting for you.' : dest + ' te čeka.';
   document.getElementById('ctaDesc').textContent = ctaCopy(dest);
 
   // Airalo (eSIM) se dodaje ručno jer nije "fetch-ovana" stavka kao ostali
@@ -4071,4 +4076,12 @@ window.onLangChange = function(lang){
   if (typeof _prevOnLangChange === 'function') _prevOnLangChange(lang);
   const originVal = (document.getElementById('origin') || {}).value || '';
   if (!originVal.trim()) renderDefaultPopularDestinations();
+  // Ako je CTA baner već popunjen (korisnik je pretraživao), osveži i njega na novom jeziku.
+  if (window._lastSearchCtx && window._lastSearchCtx.dest){
+    const dest = window._lastSearchCtx.dest;
+    const ctaTitleEl = document.getElementById('ctaTitle');
+    const ctaDescEl = document.getElementById('ctaDesc');
+    if (ctaTitleEl) ctaTitleEl.textContent = lang === 'en' ? dest + ' is waiting for you.' : dest + ' te čeka.';
+    if (ctaDescEl) ctaDescEl.textContent = ctaCopy(dest);
+  }
 };
