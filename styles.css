@@ -183,7 +183,7 @@ a{color:inherit;}
 }
 .hero-photo img{
     position:absolute;inset:0;width:100%;height:100%;
-    object-fit:cover;object-position:center 62%;
+    object-fit:cover;object-position:center 45%;
 }
 .hero-photo::after{
     content:"";position:absolute;inset:0;

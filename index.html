@@ -11,7 +11,7 @@
 <meta property="og:site_name" content="SKLOPI">
 <meta property="og:title" content="SKLOPI — sastavi putni paket, jedna cena">
 <meta property="og:description" content="Let, hotel, auto i aktivnosti — sve sabrano u jedan putni paket i jednu cenu. Napravi svoj aranžman za par minuta.">
-<meta property="og:image" content="https://skoknica.rs/hero-photo.jpg">
+<meta property="og:image" content="https://skoknica.rs/hero-photo.jpg?v=2">
 <meta property="og:locale" content="sr_RS">
 <meta property="og:url" content="https://skoknica.rs/">
 <link rel="canonical" href="https://skoknica.rs/">
@@ -26,7 +26,7 @@
 "alternateName": "Skoknica",
 "description": "SKLOPI sastavlja putni paket od leta, hotela, rentakara i aktivnosti i sabira sve u jednu procenjenu cenu.",
 "url": "https://skoknica.rs/",
-"image": "https://skoknica.rs/hero-photo.jpg",
+"image": "https://skoknica.rs/hero-photo.jpg?v=2",
 "areaServed": "RS",
 "makesOffer": {
 "@type": "Offer",
@@ -97,7 +97,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SKLOPI — sastavi putni paket, jedna cena">
 <meta name="twitter:description" content="Let, hotel, auto i aktivnosti — sve sabrano u jedan putni paket i jednu cenu.">
-<meta name="twitter:image" content="https://skoknica.rs/hero-photo.jpg">
+<meta name="twitter:image" content="https://skoknica.rs/hero-photo.jpg?v=2">
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -147,24 +147,8 @@ SKLOPI<em>.</em>
 </div>
 <div class="hero">
 <div class="hero-photo">
-<video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="hero-photo.jpg" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
-<source src="hero-video.mp4" type="video/mp4">
-</video>
-<img id="heroImgFallback" src="hero-photo.jpg" alt="Ilustracija šarene mediteranske uličice sa turistima, cvetnim balkonima i pogledom na more — primer atmosfere koju SKLOPI dočarava" loading="eager" fetchpriority="high" style="display:none;">
+<img id="heroImgFallback" src="hero-photo.jpg?v=2" alt="Polje šarenog cveća (lavanda i crveni salvia) sa stazama, drvenim kućicama i crvenom torii kapijom u pozadini, planine na horizontu" loading="eager" fetchpriority="high" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
 </div>
-<script>
-(function(){
-var v = document.getElementById('heroVideo');
-var img = document.getElementById('heroImgFallback');
-function fallbackToImage(){ v.style.display = 'none'; img.style.display = 'block'; }
-v.addEventListener('error', fallbackToImage);
-// Ako browser blokira autoplay (retko uz muted, ali za svaki slučaj)
-var playPromise = v.play();
-if (playPromise !== undefined) {
-playPromise.catch(function(){ fallbackToImage(); });
-}
-})();
-</script>
 <div class="hero-inner">
 <h1 data-i18n-html="hero_title">SKLOPI <span class="accent">izlet</span>.</h1>
 <p class="lede" data-i18n="hero_lede">Sve u jednoj ceni.</p>
