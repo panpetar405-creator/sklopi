@@ -1502,6 +1502,11 @@ function resolveCountryForDestination(destValue){
   const matches = matchPopularDestinations(destValue);
   return matches.length ? (matches[0].extra || '') : '';
 }
+function resolveCanonicalDestName(destValue){
+  if (!destValue || !destValue.trim()) return '';
+  const matches = matchPopularDestinations(destValue);
+  return matches.length ? matches[0].name : '';
+}
 function addMonthsToDate(date, months){
   const d = new Date(date);
   d.setMonth(d.getMonth() + months);
@@ -1767,6 +1772,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const head = document.getElementById('resultsHead');
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
+  const busNote = busTrainNoteFor(dest, adults);
   head.innerHTML = `
     <div class="status-banner">
       <div class="status-left">
@@ -1780,6 +1786,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
     </div>
     ${altNote ? `<div class="alt-airport-box">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : ''}
     ${destNote ? `<div class="alt-airport-box">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : ''}
+    ${busNote ? `<div class="alt-airport-box">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''}
   `;
 
   const body = document.getElementById('resultsBody');
@@ -2871,6 +2878,34 @@ function destAirportNoteFor(destRaw){
     if (norm === key || norm.startsWith(key)) return DEST_AIRPORT_NOTES[key];
   }
   return null;
+}
+
+/* ==========================================================
+   "RAZMISLI I O AUTOBUSU" — alternativa prevoza za bliske regionalne
+   destinacije koje veliki deo putnika iz Srbije uglavnom i onako radi
+   autobusom (crnogorsko primorje, BiH, Severna Makedonija), a nijedan
+   klasičan OTA/metasearch ovo ne poredi sa letom. Namerno samo
+   destinacije do ~8h vožnje — dalje od toga autobus prestaje da bude
+   realna alternativa letu. Cene/trajanje su ilustrativna procena (isti
+   status kao i ostatak sajta u razvoju), ne uživo podatak prevoznika. */
+const BUS_TRAIN_ROUTES = {
+  'Budva':{hours:7, price:26}, 'Kotor':{hours:7, price:26}, 'Herceg Novi':{hours:8, price:28},
+  'Igalo':{hours:8, price:28}, 'Bar':{hours:6.5, price:25}, 'Tivat':{hours:7, price:27},
+  'Petrovac':{hours:7, price:26}, 'Sutomore':{hours:6.5, price:25}, 'Ulcinj':{hours:7.5, price:27},
+  'Perast':{hours:7, price:26}, 'Risan':{hours:7, price:26}, 'Podgorica':{hours:5.5, price:22},
+  'Sarajevo':{hours:6, price:24}, 'Mostar':{hours:7, price:26}, 'Banja Luka':{hours:4.5, price:20},
+  'Skoplje':{hours:4, price:18}, 'Ohrid':{hours:6.5, price:24}
+};
+function busTrainNoteFor(destRaw, adults){
+  const canonical = resolveCanonicalDestName(destRaw);
+  const route = BUS_TRAIN_ROUTES[canonical];
+  if (!route) return null;
+  const n = Math.max(1, Number(adults) || 1);
+  const oneWay = Math.round(route.price * n);
+  const roundTrip = Math.round(route.price * n * 1.8);
+  return 'Ovo je oko ' + route.hours + 'h vožnje autobusom iz Srbije (npr. Lasta, FlixBus, Ekol) — procena cene je oko '
+    + route.price + '€ po osobi u jednom pravcu. Za ' + n + ' ' + passengerLabel(n) + ' to je otprilike ' + oneWay
+    + '€ u jednom pravcu, odnosno grubo ' + roundTrip + '€ povratno. Za kraće izlete i manje grupe ovo često izađe jeftinije od leta — vredi uporediti pre nego što rezervišeš.';
 }
 
 /* ==========================================================
