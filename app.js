@@ -1555,9 +1555,11 @@ function fmtDateSr(d){
    ostaje otvorena i mirna od prvog slova do izbora predloga.
 ========================================================== */
 const LOC_DROPDOWN_INPUT_ID = { destSuggestions:'dest', originSuggestions:'origin' };
+// Na koje polje fokus ide posle izbora predloga (umesto da ostane u istom).
+const LOC_NEXT_FOCUS_ID = { origin:'dest', dest:'dateDisplayBtn' };
 const _locDropdownState = {
-  destSuggestions:{ items:[], activeIndex:-1 },
-  originSuggestions:{ items:[], activeIndex:-1 }
+  destSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false },
+  originSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false }
 };
 function positionLocDropdown(panel, inputEl){
   const r = inputEl.getBoundingClientRect();
@@ -1577,12 +1579,20 @@ function selectLocSuggestion(datalistId, value){
   const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
   if (!inputEl) return;
   inputEl.value = value;
+  // Sledeći 'input' event (koji dispatch-ujemo ispod, da pokrene regionalne
+  // predloge/upozorenje o aerodromu) NE sme ponovo da pokrene pretragu
+  // predloga — inače isti tekst ("Budva") opet nađe sam sebe kao pogodak
+  // i lista se vrati/ne zatvori 300ms nakon izbora. Ovaj flag preskače
+  // TAČNO taj jedan naredni poziv.
+  const state = _locDropdownState[datalistId];
+  if (state) state.suppressNextFetch = true;
   closeLocDropdown(datalistId);
-  // input/change event pokreće postojeću logiku (regionalni predlozi,
-  // upozorenje o aerodromu, itd.) — isto kao ranije kad se biralo iz datalist-a.
   inputEl.dispatchEvent(new Event('input', {bubbles:true}));
   inputEl.dispatchEvent(new Event('change', {bubbles:true}));
-  inputEl.focus();
+  // Posle izbora fokus ide na sledeće logično polje (npr. iz Polaska u
+  // Destinaciju, iz Destinacije na datume) — ne ostaje u istom polju.
+  const nextEl = document.getElementById(LOC_NEXT_FOCUS_ID[datalistId]);
+  if (nextEl) nextEl.focus(); else inputEl.focus();
 }
 function setupLocDropdown(datalistId){
   const panel = document.getElementById(datalistId);
@@ -1748,12 +1758,16 @@ function markStubLoading(inputEl, q){
 document.getElementById('dest').addEventListener('input', (e)=>{
   clearTimeout(_destSuggestTimer);
   const q = e.target.value;
+  const state = _locDropdownState.destSuggestions;
+  if (state && state.suppressNextFetch){ state.suppressNextFetch = false; return; }
   markStubLoading(e.target, q);
   _destSuggestTimer = setTimeout(()=> fetchLocationSuggestions(q, 'destSuggestions'), 300);
 });
 document.getElementById('origin').addEventListener('input', (e)=>{
   clearTimeout(_originSuggestTimer);
   const q = e.target.value;
+  const state = _locDropdownState.originSuggestions;
+  if (state && state.suppressNextFetch){ state.suppressNextFetch = false; return; }
   markStubLoading(e.target, q);
   _originSuggestTimer = setTimeout(()=> fetchLocationSuggestions(q, 'originSuggestions'), 300);
 });
