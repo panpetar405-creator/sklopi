@@ -201,13 +201,13 @@ a{color:inherit;}
     --deep2:#111827;             /* Midnight Navy — dno gradijenta, dublje površine */
     --gold:#C9A45C;              /* Champagne Gold — akcenat, CTA */
     --gold-soft:#ECD9AD;         /* topli svetlo-zlatni ton — akcent na tamnom, hover na ivory-ju */
-    --gold-text:#8A6B32;         /* zatamnjeno zlatno — čitljiv tekst/linkovi na ivory pozadini */
+    --gold-text:#D9B776;         /* svetlije zlatno — čitljiv tekst/linkovi na tamnoj pozadini */
     --on-gold:#111827;           /* Midnight Navy tekst/ikone na zlatnim površinama */
-    --paper:#EEECE4;             /* Prljavo bela — površina ticket/pretraga kartice */
-    --ink:#111827;               /* Midnight Navy — primarni tekst na ivory-ju */
-    --ink-soft:#57666D;          /* omekšano petrol-sivo — sekundarni tekst */
-    --line:#E4DCC8;              /* topla ivory linija */
-    --line-form:rgba(17,24,39,0.16);
+    --paper:#121A29;             /* Tamno-teget iz reference slike — površina ticket/pretraga kartice i neaktivnih ikonica */
+    --ink:#F2EFE8;               /* Skoro-bela — primarni tekst na tamnoj pozadini */
+    --ink-soft:#93A0B2;          /* prigušeno hladno-sivo — sekundarni tekst na tamnoj pozadini */
+    --line:#28344A;              /* suptilna svetlija linija na tamnoj pozadini */
+    --line-form:rgba(255,255,255,0.14);
     --on-dark-strong:#F5F1E8;    /* Ivory — naslov na tamnoj pozadini */
     --on-dark:#EAE3D2;
     --on-dark-soft:#C6BA9C;      /* prigušeno zlatno-sivo — lede tekst na tamnom */
@@ -482,14 +482,14 @@ a{color:inherit;}
 }
 .toggle{
     display:flex;flex-direction:column;align-items:center;gap:9px;
-    width:76px;
+    width:88px;
     cursor:pointer;user-select:none;
     font-family:'Work Sans',sans-serif;
     -webkit-tap-highlight-color:transparent;
 }
 .toggle input{display:none;}
 .toggle .tt-icon{
-    width:64px;height:64px;border-radius:18px;flex:none;
+    width:88px;height:58px;border-radius:16px;flex:none;
     display:flex;align-items:center;justify-content:center;
     background:var(--paper);color:var(--ink-soft);
     box-shadow:0 10px 22px -14px rgba(0,0,0,0.4);
@@ -509,7 +509,7 @@ a{color:inherit;}
 .toggle.on .tt-label{color:var(--on-dark-strong);}
 @media (max-width:520px){
     .toggle{width:auto;}
-    .toggle .tt-icon{width:56px;height:56px;border-radius:16px;}
+    .toggle .tt-icon{width:72px;height:48px;border-radius:14px;}
     .toggle .tt-icon svg{width:23px;height:23px;}
     .toggle .tt-label{font-size:12px;}
 }
@@ -1323,7 +1323,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     margin:90px 0 20px;
 }
 .btn-search-main{
-    width:auto;max-width:none;justify-content:center;
+    width:100%;max-width:none;justify-content:center;
     padding:6px 6px 6px 28px;font-size:17px;font-weight:700;
     border-radius:18px;
     background:linear-gradient(100deg,#DABE87 0%,var(--gold) 100%);
