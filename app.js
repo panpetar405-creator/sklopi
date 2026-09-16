@@ -1542,11 +1542,111 @@ function fmtDateSr(d){
   return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'long'}) + ' ' + d.getFullYear() + '.';
 }
 
+/* ==========================================================
+   Sopstvena (ne-native) lista predloga mesta za Polazak/Destinaciju.
+   Ranije: <input list="..."> + <datalist>. Problem koji je to pravilo
+   na Android/Chrome: nativna traka predloga iznad tastature ume da
+   "trepće" — zatvori pa ponovo otvori tastaturu pri svakom kucanju
+   ili izboru predloga, jer datalist UI nije deo same tastature nego
+   posebna traka koju browser umeće/uklanja. Ovde predloge iscrtavamo
+   sami u panel-u koji mi kontrolišemo (position:fixed, pozicioniran
+   preko getBoundingClientRect), a fokus nikad ne napušta input polje
+   (mousedown/touchstart na panelu je preventDefault-ovan), pa tastatura
+   ostaje otvorena i mirna od prvog slova do izbora predloga.
+========================================================== */
+const LOC_DROPDOWN_INPUT_ID = { destSuggestions:'dest', originSuggestions:'origin' };
+const _locDropdownState = {
+  destSuggestions:{ items:[], activeIndex:-1 },
+  originSuggestions:{ items:[], activeIndex:-1 }
+};
+function positionLocDropdown(panel, inputEl){
+  const r = inputEl.getBoundingClientRect();
+  panel.style.left = r.left + 'px';
+  panel.style.top = (r.bottom + 6) + 'px';
+  panel.style.width = r.width + 'px';
+}
+function closeLocDropdown(datalistId){
+  const panel = document.getElementById(datalistId);
+  const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
+  const state = _locDropdownState[datalistId];
+  if (panel){ panel.classList.remove('open'); panel.innerHTML = ''; }
+  if (state){ state.items = []; state.activeIndex = -1; }
+  if (inputEl){ inputEl.setAttribute('aria-expanded', 'false'); inputEl.removeAttribute('aria-activedescendant'); }
+}
+function selectLocSuggestion(datalistId, value){
+  const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
+  if (!inputEl) return;
+  inputEl.value = value;
+  closeLocDropdown(datalistId);
+  // input/change event pokreće postojeću logiku (regionalni predlozi,
+  // upozorenje o aerodromu, itd.) — isto kao ranije kad se biralo iz datalist-a.
+  inputEl.dispatchEvent(new Event('input', {bubbles:true}));
+  inputEl.dispatchEvent(new Event('change', {bubbles:true}));
+  inputEl.focus();
+}
+function setupLocDropdown(datalistId){
+  const panel = document.getElementById(datalistId);
+  const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
+  if (!panel || !inputEl) return;
+
+  // Sprečava da tap/klik na predlog oduzme fokus input polju pre nego što
+  // stigne 'click' — upravo taj gubitak-pa-povratak fokusa je ono što na
+  // mobilnom zatvori pa ponovo otvori tastavuru.
+  panel.addEventListener('mousedown', (e) => e.preventDefault());
+  panel.addEventListener('touchstart', (e) => e.preventDefault(), {passive:false});
+
+  panel.addEventListener('click', (e) => {
+    const btn = e.target.closest('.loc-dropdown-item');
+    if (!btn) return;
+    const state = _locDropdownState[datalistId];
+    const item = state.items[Number(btn.dataset.idx)];
+    if (item) selectLocSuggestion(datalistId, item.name);
+  });
+
+  inputEl.addEventListener('keydown', (e) => {
+    const state = _locDropdownState[datalistId];
+    if (!panel.classList.contains('open') || !state.items.length) return;
+    if (e.key === 'ArrowDown'){
+      e.preventDefault();
+      state.activeIndex = Math.min(state.activeIndex + 1, state.items.length - 1);
+    } else if (e.key === 'ArrowUp'){
+      e.preventDefault();
+      state.activeIndex = Math.max(state.activeIndex - 1, 0);
+    } else if (e.key === 'Enter'){
+      if (state.activeIndex >= 0){
+        e.preventDefault();
+        const item = state.items[state.activeIndex];
+        if (item) selectLocSuggestion(datalistId, item.name);
+      }
+      return;
+    } else if (e.key === 'Escape'){
+      closeLocDropdown(datalistId);
+      return;
+    } else {
+      return;
+    }
+    const optionEls = panel.querySelectorAll('.loc-dropdown-item');
+    optionEls.forEach((el, i) => el.classList.toggle('is-active', i === state.activeIndex));
+    const activeEl = optionEls[state.activeIndex];
+    if (activeEl){
+      activeEl.scrollIntoView({block:'nearest'});
+      inputEl.setAttribute('aria-activedescendant', activeEl.id);
+    }
+  });
+
+  // Malo kašnjenje na blur: ostavlja vremena da 'click' na predlogu (posle
+  // mousedown-a iznad) stigne da se obradi pre nego što panel nestane.
+  inputEl.addEventListener('blur', () => setTimeout(() => closeLocDropdown(datalistId), 150));
+
+  window.addEventListener('resize', () => { if (panel.classList.contains('open')) positionLocDropdown(panel, inputEl); });
+  window.addEventListener('scroll', () => { if (panel.classList.contains('open')) positionLocDropdown(panel, inputEl); }, true);
+}
+
 let _destSuggestTimer = null;
 let _originSuggestTimer = null;
 async function fetchLocationSuggestions(q, datalistId){
   const query = q.trim();
-  const inputEl = document.querySelector(`input[list="${datalistId}"]`);
+  const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
   const stubEl = inputEl ? inputEl.closest('.stub') : null;
   if (query.length < 2){ renderLocationSuggestions([], datalistId); if (stubEl) stubEl.classList.remove('is-loading'); return; }
   if (stubEl) stubEl.classList.add('is-loading');
@@ -1601,17 +1701,31 @@ async function fetchLocationSuggestions(q, datalistId){
   }
 }
 function renderLocationSuggestions(results, datalistId){
-  const list = document.getElementById(datalistId);
-  if (!list) return;
-  if (!results.length){ list.innerHTML = ''; return; }
+  const panel = document.getElementById(datalistId);
+  const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
+  if (!panel || !inputEl) return;
   const seen = new Set(); // izbegava duplikate istog naziva grada
-  list.innerHTML = results.filter(r => {
+  const items = results.filter(r => {
     const key = r.name.toLowerCase();
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
-  }).map(r => `<option value="${escapeHtml(r.name)}">${escapeHtml(r.name)}${r.extra ? ' — ' + escapeHtml(r.extra) : ''}</option>`).join('');
+  });
+  const state = _locDropdownState[datalistId];
+  state.items = items;
+  state.activeIndex = -1;
+  if (!items.length){ closeLocDropdown(datalistId); return; }
+  panel.innerHTML = items.map((r, i) =>
+    `<button type="button" class="loc-dropdown-item" role="option" id="${datalistId}-opt-${i}" data-idx="${i}">`
+    + escapeHtml(r.name) + (r.extra ? `<span class="ldi-extra">${escapeHtml(r.extra)}</span>` : '')
+    + `</button>`
+  ).join('');
+  positionLocDropdown(panel, inputEl);
+  panel.classList.add('open');
+  inputEl.setAttribute('aria-expanded', 'true');
 }
+setupLocDropdown('destSuggestions');
+setupLocDropdown('originSuggestions');
 function markStubLoading(inputEl, q){
   const stubEl = inputEl.closest('.stub');
   if (!stubEl) return;

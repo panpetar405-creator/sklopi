@@ -155,14 +155,14 @@ SKLOPI<em>.</em>
 <form class="ticket" id="searchForm">
 <div class="stub" id="originStub">
 <label for="origin" data-i18n="label_origin">Polazak</label>
-<input id="origin" type="text" value="" data-i18n-placeholder="placeholder_origin" placeholder="npr. Beograd, Niš, Podgorica" required maxlength="60" list="originSuggestions" autocomplete="off">
-<datalist id="originSuggestions"></datalist>
+<input id="origin" type="text" value="" data-i18n-placeholder="placeholder_origin" placeholder="npr. Beograd, Niš, Podgorica" required maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="originSuggestions">
+<div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
 <div id="originAirportWarning"></div>
 </div>
 <div class="stub">
 <label for="dest" data-i18n="label_dest">Destinacija</label>
-<input id="dest" type="text" value="" data-i18n-placeholder="placeholder_dest" placeholder="npr. Atina, Rim, Barselona" required maxlength="60" list="destSuggestions" autocomplete="off">
-<datalist id="destSuggestions"></datalist>
+<input id="dest" type="text" value="" data-i18n-placeholder="placeholder_dest" placeholder="npr. Atina, Rim, Barselona" required maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="destSuggestions">
+<div class="loc-dropdown" id="destSuggestions" role="listbox"></div>
 <div id="destAirportWarning"></div>
 </div>
 <div class="stub stub-dates" id="dateStub">

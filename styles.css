@@ -290,6 +290,27 @@ a{color:inherit;}
     animation:stub-spin .7s linear infinite;
 }
 @keyframes stub-spin{ to{ transform:rotate(360deg); } }
+/* ---------- Sopstvena lista predloga mesta (Polazak/Destinacija) ----------
+   Zamena za native <input list> + <datalist>: na Android/Chrome ta
+   kombinacija zna da otvori sopstvenu traku predloga preko tastature i
+   da tastaturu zatvori-pa-ponovo-otvori pri svakom unosu ili izboru.
+   Ovde crtamo panel sami (position:fixed, pozicioniran preko getBoundingClientRect
+   u JS), pa fokus nikad ne napušta input polje. */
+.loc-dropdown{
+    display:none;position:fixed;z-index:500;
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 16px 32px -14px rgba(0,0,0,0.35);
+    max-height:264px;overflow-y:auto;
+    padding:6px;
+}
+.loc-dropdown.open{display:block;}
+.loc-dropdown-item{
+    display:block;width:100%;text-align:left;border:none;background:transparent;
+    border-radius:6px;padding:10px 12px;cursor:pointer;
+    font-family:'Work Sans',sans-serif;font-size:15.5px;color:var(--ink);line-height:1.35;
+}
+.loc-dropdown-item .ldi-extra{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:1px;}
+.loc-dropdown-item:hover,.loc-dropdown-item.is-active{background:var(--gold-soft);}
 .ticket .stub .subrow{display:flex;gap:10px;margin-top:6px;}
 .ticket .stub .subrow input{font-family:'Work Sans',sans-serif;font-size:17.5px;width:auto;flex:1;color:var(--ink-soft);line-height:1.4;padding:2px 0;display:block;}
 .ticket .stub .subrow input::-webkit-calendar-picker-indicator{margin-left:2px;opacity:0.65;transform:translateY(1px);}
