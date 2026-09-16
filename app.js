@@ -1589,6 +1589,15 @@ function setupLocDropdown(datalistId){
   const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
   if (!panel || !inputEl) return;
 
+  // KLJUČNO: panel fizički prebacujemo u <body>. U HTML-u je ugnježden unutar
+  // .stub-a za Destinaciju/Polazak, a taj .stub ima isolation:isolate (isti
+  // razlog zbog kog je i kalendar ranije morao specijalan tretman — vidi
+  // komentar uz .cal-card u styles.css). Isolation zarobi SVAKI potomak u
+  // sopstveni sloj za crtanje, čak i position:fixed — pa su stubovi koji u
+  // DOM-u dolaze POSLE (OD—DO, Putnika) crtani PREKO panela, bez obzira na
+  // z-index. Kad je panel direktno dete <body>, taj problem nestaje.
+  if (panel.parentElement !== document.body) document.body.appendChild(panel);
+
   // Sprečava da tap/klik na predlog oduzme fokus input polju pre nego što
   // stigne 'click' — upravo taj gubitak-pa-povratak fokusa je ono što na
   // mobilnom zatvori pa ponovo otvori tastavuru.
