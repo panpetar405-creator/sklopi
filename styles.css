@@ -81,7 +81,7 @@ a{color:inherit;}
     width:32px;height:32px;border-radius:50%;background:var(--deep);
     display:flex;align-items:center;justify-content:center;flex:none;
 }
-.logo .mark svg{width:16px;height:16px;color:var(--gold-soft);}
+.logo .mark svg{width:20px;height:20px;color:var(--gold-soft);}
 .topbar nav{display:flex;align-items:center;gap:28px;font-size:15.5px;color:var(--ink-soft);}
 .topbar nav a{text-decoration:none;color:inherit;transition:color .15s ease;}
 .topbar nav a:hover{color:var(--ink);}
