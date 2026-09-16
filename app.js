@@ -3413,7 +3413,12 @@ document.getElementById('shareModalNative').addEventListener('click', async () =
    ALERT ZA CENU (Javi mi kad padne cena)
 ========================================================== */
 let _pendingAlert = null;
-function openAlertModal(kind, tier, total, destOverride){
+async function openAlertModal(kind, tier, total, destOverride){
+  const user = await getCurrentUser();
+  if (!user){
+    promptLogin('Prijavi se emailom da postaviš alert za cenu.');
+    return;
+  }
   let dest, params;
   if (kind === 'builder') {
     const ctx = builderCtx();
@@ -3431,7 +3436,7 @@ function openAlertModal(kind, tier, total, destOverride){
   }
   _pendingAlert = { kind, tier, currentTotal: total, dest, params };
   document.getElementById('alertModalSub').textContent = 'Za ' + dest + ' — trenutna procena je ' + fmtEUR(total) + '.';
-  document.getElementById('alertEmail').value = '';
+  document.getElementById('alertEmail').value = user.email;
   document.getElementById('alertThreshold').value = Math.max(1, Math.round(total * 0.9));
   document.getElementById('alertModalBackdrop').classList.add('open');
   document.getElementById('alertModal').classList.add('open');
