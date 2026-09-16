@@ -1708,7 +1708,7 @@ footer{padding:28px 20px;}
 .whatsapp-fab{
     position:fixed;right:20px;bottom:20px;z-index:70;
     width:56px;height:56px;border-radius:50%;
-    background:#25D366;color:#fff;
+    background:var(--gold);color:var(--on-gold);
     display:flex;align-items:center;justify-content:center;
     box-shadow:0 14px 30px -10px rgba(15,76,92,0.45);
     transition:transform .18s ease, box-shadow .18s ease;
