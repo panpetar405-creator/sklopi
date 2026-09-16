@@ -4029,8 +4029,8 @@ if (hamburgerBtn && mobilePanel){
 }
 
 /* ---- "Iznenadi me" dugme na stranici otvara modal (koristi runSurpriseSearch iznad) ---- */
-const noIdeaCtaBtn = document.getElementById('surpriseTriggerBtn');
-if (noIdeaCtaBtn) noIdeaCtaBtn.addEventListener('click', () => openSurpriseModal('surprise'));
+const noIdeaCtaBtn = document.getElementById('noIdeaCtaBtn');
+if (noIdeaCtaBtn) noIdeaCtaBtn.addEventListener('click', openSurpriseModal);
 const surpriseModalClose = document.getElementById('surpriseModalClose');
 if (surpriseModalClose) surpriseModalClose.addEventListener('click', closeSurpriseModal);
 const surpriseModalBackdrop = document.getElementById('surpriseModalBackdrop');
