@@ -687,9 +687,11 @@ a{color:inherit;}
     display:flex;flex-direction:row;align-items:center;
     gap:16px;text-align:left;padding:16px 20px;
     transition:background .15s ease;
+    cursor:pointer;width:100%;font:inherit;
 }
 .feature:last-child{border-bottom:none;}
 .feature:hover{background:var(--bg);}
+.feature:focus-visible{outline:2px solid var(--gold-text);outline-offset:-2px;}
 .feature .ic{
     width:38px;height:38px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;
     background:var(--bg);color:var(--ink-soft);
@@ -1563,6 +1565,18 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     margin:0 -4px;padding:0 4px 2px;
 }
 .docs-section-sub{font-size:14px;color:var(--ink-soft);line-height:1.5;margin:0 0 16px;}
+/* ---------- Vodič po stavci (Letovi/Smeštaj/... — klik na feature-strip) ---------- */
+.fg-content h4{
+    font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;color:var(--ink);
+    margin:18px 0 8px;
+}
+.fg-content h4:first-child{margin-top:0;}
+.fg-content p{font-size:14px;line-height:1.55;color:var(--ink-soft);margin:0 0 4px;}
+.fg-content ul,.fg-content ol{margin:0;padding-left:19px;}
+.fg-content li{font-size:14px;line-height:1.55;color:var(--ink-soft);margin-bottom:7px;}
+.fg-content li:last-child{margin-bottom:0;}
+.fg-content li b{color:var(--ink);}
+.feature-guide-footnote{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:16px 0 0;}
 @media (max-width:480px){.alert-modal-docs{padding:24px 20px 20px;}}
 .btn-save svg{width:15px;height:15px;}
 .saved-wrap{margin-top:44px;}
