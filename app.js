@@ -3375,6 +3375,7 @@ function closePkgCard(btn){
 ========================================================== */
 function matchPkgHtml(pick, idx, budget, answers, month){
   const {dest, country, pkg, matchPct, fitsBudget} = pick;
+  const featured = idx === 0;
   const itemsRow = [
     itemCardHtml(pkg.flight,'flight'),
     itemCardHtml(pkg.hotel,'hotel'),
@@ -3384,18 +3385,22 @@ function matchPkgHtml(pick, idx, budget, answers, month){
   const reasonText = matchReasonSentence(pick, answers, month);
 
   return `
-  <div class="pkg match-pkg" data-base-total="${pkg.total}">
-    <div class="match-ribbon"><span class="match-ribbon-num">${matchPct}%</span><span class="match-ribbon-lab">poklapanje</span></div>
+  <div class="pkg match-pkg ${featured?'featured':''}" data-base-total="${pkg.total}">
     <div class="pkg-head">
-      <div>
-        <span class="pkg-badge match-badge">🧭 Predlog za tebe</span>
+      <div class="pkg-head-main">
+        <span class="pkg-badge match-badge">${featured ? '★ Preporučeno' : '🧭 Predlog za tebe'}</span>
         <h3>${escapeHtml(dest)}</h3>
-        <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px;">${escapeHtml(country)} · Best Value</div>
+        <div class="pkg-desc">${escapeHtml(country)} · Best Value</div>
+        <div class="pkg-total">
+          <div class="num tabular">${fmtEUR(pkg.total)}</div>
+          <div class="cur">ukupno</div>
+          <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
+        </div>
       </div>
-      <div class="pkg-total">
-        <div class="num tabular">${fmtEUR(pkg.total)}</div>
-        <div class="cur">ukupno</div>
-        <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
+      <div class="pkg-score-box">
+        <div class="score-num tabular">${matchPct}%</div>
+        <div class="score-max">poklapanje</div>
+        <div class="score-label">sa tvojim odgovorima</div>
       </div>
     </div>
     <div class="match-reason">💡 ${escapeHtml(reasonText)}</div>

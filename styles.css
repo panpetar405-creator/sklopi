@@ -44,6 +44,7 @@ i teško se videla na mobilnom (linije između polja "nestajale"). */
        akcionu karticu. Midnight Navy/Gold/Burgundy/Ivory iznad se i dalje
        koriste, ova tri su jedina zaista nova: */
     --emerald:#087F5B;
+    --emerald-soft:#DCEEE7;
     --royal-plum:#4B2354;
     --dusty-rose:#B76E79;
 }
@@ -2146,19 +2147,21 @@ footer{padding:28px 20px;}
 .match-modal #matchBudget::placeholder{color:#B7A6AE;}
 .match-modal .builder-budget-row span{color:var(--gold);}
 
-/* ---- Rezultati: match% ribon, bedž i "Zato što…" objašnjenje ---- */
+/* ---- Rezultati: kartica predloga destinacije, ista struktura kao
+   obična kartica ponude (pkg-head-main + pkg-score-box), samo u
+   emerald paleti — score-box sad nosi % poklapanja umesto ocene
+   cena/kvalitet, a prvi (najbolji) predlog dobija isti "Preporučeno"
+   tretman kao featured kartica u običnoj pretrazi. ---- */
 .pkg.match-pkg{border-top-color:var(--emerald);}
-.match-ribbon{
-    position:absolute;top:14px;right:14px;z-index:2;
-    display:flex;flex-direction:column;align-items:center;line-height:1.05;
-    background:linear-gradient(135deg, var(--emerald) 0%, var(--royal-plum) 100%);
-    color:var(--paper);border-radius:10px;padding:7px 12px;
-    box-shadow:0 10px 20px -10px rgba(8,127,91,0.5);
+.pkg.match-pkg .pkg-head h3{
+    font-family:'Manrope',sans-serif;font-size:19px;font-weight:700;
+    text-transform:none;letter-spacing:0;color:var(--ink);
 }
-.match-ribbon-num{font-family:'Manrope',sans-serif;font-size:16px;font-weight:800;}
-.match-ribbon-lab{font-size:9px;letter-spacing:0.04em;text-transform:uppercase;opacity:0.9;}
 .match-badge{background:rgba(8,127,91,0.14);color:var(--emerald);}
-.pkg.match-pkg .pkg-head{padding-right:96px;}
+.pkg.match-pkg .pkg-score-box{border-color:var(--emerald);background:var(--emerald-soft);}
+.pkg.match-pkg .pkg-score-box .score-num{color:var(--emerald);}
+.pkg.match-pkg.featured .pkg-head{background:var(--emerald-soft);}
+.pkg.match-pkg.featured .pkg-badge{background:var(--emerald);color:var(--on-dark-strong);}
 .match-reason{
     margin:0 22px 16px;padding:11px 14px;border-radius:8px;
     background:rgba(183,110,121,0.12);border:1px solid rgba(183,110,121,0.3);
@@ -2177,11 +2180,11 @@ footer{padding:28px 20px;}
 .match-reroll-btn:hover svg{color:var(--emerald);}
 
 @media (max-width:560px){
-    .match-ribbon{top:10px;right:10px;padding:6px 10px;}
-    .match-ribbon-num{font-size:14px;}
-    .pkg.match-pkg .pkg-head{padding-right:82px;}
     .match-chip{padding:13px 8px;}
     .match-chip .mc-ic{font-size:21px;}
+}
+@media (max-width:760px){
+    .pkg.match-pkg .pkg-head h3{font-size:16px;}
 }
 
 /* ---- 4 konkretna naslova u Deep Petrol boji (na zahtev) ---- */
