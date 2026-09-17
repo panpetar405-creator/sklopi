@@ -1963,6 +1963,17 @@ const POPULAR_DESTINATIONS = [
   {name:'Istanbul', extra:'Turska'}, {name:'Antalija', extra:'Turska'}, {name:'Bodrum', extra:'Turska'}, {name:'Kapadokija', extra:'Turska'},
   {name:'Marmaris', extra:'Turska'}, {name:'Fetije', extra:'Turska'}, {name:'Izmir', extra:'Turska'}, {name:'Ankara', extra:'Turska'},
   {name:'Alanja', extra:'Turska'}, {name:'Kušadasi', extra:'Turska'}, {name:'Side', extra:'Turska'}, {name:'Pamukale', extra:'Turska'}, {name:'Bursa', extra:'Turska'}, {name:'Česme', extra:'Turska'},
+  // Turska — gradovi
+  {name:'Adana', extra:'Turska'}, {name:'Konja', extra:'Turska'}, {name:'Gaziantep', extra:'Turska'}, {name:'Kajseri', extra:'Turska'}, {name:'Mersin', extra:'Turska'},
+  {name:'Eskišehir', extra:'Turska'}, {name:'Denizli', extra:'Turska'}, {name:'Trabzon', extra:'Turska'}, {name:'Samsun', extra:'Turska'}, {name:'Malatja', extra:'Turska'},
+  // Turska — banje
+  {name:'Jalova', extra:'Turska'}, {name:'Afjon Karahisar', extra:'Turska'}, {name:'Haymana', extra:'Turska'}, {name:'Kizildžahamam', extra:'Turska'},
+  // Turska — turistički centri
+  {name:'Efes', extra:'Turska'}, {name:'Troja', extra:'Turska'}, {name:'Pergamon', extra:'Turska'}, {name:'Hijerapolis', extra:'Turska'},
+  {name:'Sumela', extra:'Turska'}, {name:'Nemrut', extra:'Turska'}, {name:'Safranbolu', extra:'Turska'}, {name:'Gjobekli Tepe', extra:'Turska'},
+  // Turska — primorska mesta
+  {name:'Kaš', extra:'Turska'}, {name:'Kalkan', extra:'Turska'}, {name:'Datča', extra:'Turska'}, {name:'Didim', extra:'Turska'},
+  {name:'Ajvalik', extra:'Turska'}, {name:'Silifke', extra:'Turska'}, {name:'Foča (Turska)', extra:'Turska'},
   {name:'Tel Aviv', extra:'Izrael'}, {name:'Dubai', extra:'UAE'}, {name:'Abu Dabi', extra:'UAE'},
   {name:'Kairo', extra:'Egipat'}, {name:'Šarm El Šeik', extra:'Egipat'}, {name:'Hurgada', extra:'Egipat'}, {name:'Luksor', extra:'Egipat'},
   {name:'Marakeš', extra:'Maroko'}, {name:'Rabat', extra:'Maroko'}, {name:'Kazablanka', extra:'Maroko'}, {name:'Tanger', extra:'Maroko'},
