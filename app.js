@@ -30,7 +30,7 @@ const I18N = {
     hero_title:'SKLOPI',
     hero_lede:'Sve u jednu cenu.',
     promo_banner_kicker:'Trenutak za sebe',
-    promo_banner_quote:'Mesta gde se dan završava sporije nego što je počeo.',
+    promo_banner_quote:'Neka mesta jednostavno nemaju cenu.',
     label_origin:'Polazak', placeholder_origin:'npr. Beograd, Niš, Podgorica',
     label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
     label_dates:'Od — Do',
