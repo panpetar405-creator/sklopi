@@ -236,15 +236,22 @@ SKLOPI<em>.</em>
 </div>
 </div>
 </div>
-<div class="stub">
-<label for="adults" data-i18n="label_passengers">Putnika</label>
-<select id="adults" required>
-<option value="" disabled selected data-i18n="placeholder_passengers">Putnika</option>
-<option value="1" data-i18n="opt_1adult">1 odrasla osoba</option>
-<option value="2" data-i18n="opt_2adults">2 odrasla</option>
-<option value="3" data-i18n="opt_3adults">3 odrasla</option>
-<option value="4" data-i18n="opt_4adults">4 odrasla</option>
-</select>
+<div class="stub stub-pax" id="paxStub">
+<label id="paxStubLabel" for="paxDisplayBtn" data-i18n="label_passengers">Putnika</label>
+<button type="button" class="pax-display is-empty" id="paxDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="paxCard" aria-labelledby="paxStubLabel paxDisplayText">
+<span id="paxDisplayText" data-i18n="placeholder_passengers">Putnika</span>
+</button>
+<input type="hidden" id="adults" value="">
+<div class="cal-backdrop" id="paxBackdrop"></div>
+<div class="pax-card" id="paxCard" role="dialog" aria-modal="true" data-i18n-aria-label="aria_pax_dialog" aria-label="Izbor broja putnika">
+<div class="cal-inner">
+<div class="pax-card-title" data-i18n="label_passengers">Putnika</div>
+<div class="pax-list" id="paxList" role="listbox" data-i18n-aria-label="aria_pax_dialog" aria-label="Broj putnika"></div>
+<div class="cal-foot" style="justify-content:flex-end">
+<button type="button" class="btn-primary cal-apply" id="paxApply" data-i18n="btn_done">Gotovo</button>
+</div>
+</div>
+</div>
 </div>
 <div class="go">
 <button type="button" class="passport-check-btn" id="documentsCheckBtn" data-i18n="documents_check_link">🧳 Proveri dokumenta za put</button>

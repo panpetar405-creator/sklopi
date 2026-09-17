@@ -495,6 +495,47 @@ a{color:inherit;}
 .cal-nav svg{width:13px;height:13px;}
 .cal-wx{font-size:10.5px;top:2px;right:3px;}
 }
+/* ---------- Broj putnika (kartica po uzoru na kalendar, umesto native <select>) ---------- */
+.stub-pax{position:static;}
+.pax-display{
+    width:100%;border:none;background:transparent;padding:0;margin:0;
+    text-align:left;cursor:pointer;display:block;font:inherit;
+    font-family:'Manrope',sans-serif;font-size:21.5px;color:var(--ink);
+    transition:color .15s ease;
+}
+.pax-display:hover,.pax-display[aria-expanded="true"]{color:var(--gold-text);}
+.pax-display.is-empty{color:var(--ink-soft);}
+.pax-display.is-empty:hover{color:var(--ink-soft);}
+.pax-card{
+    display:none;position:absolute;bottom:calc(100% + 10px);top:auto;left:0;right:0;
+    z-index:45;width:auto;overflow-anchor:none;
+    background:var(--paper);border:1px solid var(--line);border-radius:12px;
+    box-shadow:0 -20px 42px -18px rgba(0,0,0,0.38);
+    padding:20px 21px 16px;
+}
+.pax-card.open{display:block;}
+/* isti razlog kao kod .cal-card — stub je isolation:isolate, pa mora da se
+   podigne iznad ostalih kad je kartica otvorena. */
+.ticket .stub:has(.pax-card.open){z-index:50;}
+.pax-card .cal-inner{max-width:320px;margin:0 auto;overflow-anchor:none;}
+.pax-card-title{
+    font-family:'Manrope',sans-serif;font-size:13px;color:var(--gold-text);
+    letter-spacing:0.02em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);
+}
+.pax-list{
+    max-height:290px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    display:flex;flex-direction:column;gap:1px;
+}
+.pax-option{
+    font:inherit;border:none;background-color:transparent;text-align:left;cursor:pointer;
+    padding:10px 8px;border-radius:8px;font-family:'Manrope',sans-serif;font-size:15px;
+    color:var(--ink);transition:background-color .15s ease,color .15s ease;
+}
+.pax-option:hover{background-color:var(--gold-soft);}
+.pax-option.is-selected{background-color:var(--gold);color:var(--on-gold);font-weight:600;}
+@media (max-width:900px){
+.pax-card{padding:16px 15px 13px;}
+}
 .transport-row{
     max-width:1180px;margin:0 auto;padding:0 24px;
     display:flex;gap:20px;flex-wrap:wrap;
@@ -1676,6 +1717,13 @@ footer{
     left:14px;right:14px;max-height:calc(100vh - var(--topbar-h, 68px) - 24px);
     overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
+.stub-pax{position:relative;}
+.pax-card{
+    position:fixed;top:calc(var(--topbar-h, 68px) + 10px);bottom:auto;
+    left:14px;right:14px;max-height:calc(100vh - var(--topbar-h, 68px) - 24px);
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.pax-list{max-height:none;}
 .cal-backdrop{
     display:none;position:fixed;inset:0;z-index:44;
     background:rgba(15,76,92,0.45);backdrop-filter:blur(1px);

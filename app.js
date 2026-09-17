@@ -37,7 +37,7 @@ const I18N = {
     chip_weekend:'Vikend', chip_week:'Nedelja dana', chip_twoweeks:'Dve nedelje',
     cal_wx_legend:'<span class="lg-exact">☀️</span>prognoza (do 16 dana unapred) &nbsp;·&nbsp; <span class="lg-est">☀️</span>procena za dalje datume, po podacima za isti period prošle godine &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
     btn_done:'Gotovo',
-    label_passengers:'Putnika', placeholder_passengers:'Putnika',
+    label_passengers:'Putnika', placeholder_passengers:'Putnika', aria_pax_dialog:'Izbor broja putnika',
     opt_1adult:'1 odrasla osoba', opt_2adults:'2 odrasla', opt_3adults:'3 odrasla', opt_4adults:'4 odrasla',
     btn_search:'Start',
     btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start',
@@ -159,7 +159,7 @@ const I18N = {
     chip_weekend:'Weekend', chip_week:'One week', chip_twoweeks:'Two weeks',
     cal_wx_legend:'<span class="lg-exact">☀️</span>forecast (up to 16 days ahead) &nbsp;·&nbsp; <span class="lg-est">☀️</span>estimate for later dates, based on the same period last year &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
     btn_done:'Done',
-    label_passengers:'Travelers', placeholder_passengers:'Travelers',
+    label_passengers:'Travelers', placeholder_passengers:'Travelers', aria_pax_dialog:'Select number of travelers',
     opt_1adult:'1 adult', opt_2adults:'2 adults', opt_3adults:'3 adults', opt_4adults:'4 adults',
     btn_search:'Start',
     btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start',
@@ -712,6 +712,31 @@ function pickBestLocationMatch(results, query){
     });
     syncRovingTabindex();
     paintWeather();
+    // Sadržaj (broj redova u mreži, prognoza) menja visinu kartice — ako je
+    // otvorena na mobilnom, osveži poziciju da i dalje ostane tačno iznad polja.
+    if (calCard.classList.contains('open')) positionCalMobile();
+  }
+
+  // ---- Pozicioniranje kartice na mobilnom: umesto fiksnog razmaka od vrha
+  // ekrana (koji nema veze sa stvarnim mestom polja "Od — Do" na strani i
+  // zato ume da prekrije polje za destinaciju iznad njega), kartica se veže
+  // direktno za stvarnu poziciju polja i otvara tačno iznad njega. ----
+  function positionCalMobile(){
+    if (!isMobileCal()) return;
+    const anchor = document.getElementById('dateStub') || displayBtn;
+    const rect = anchor.getBoundingClientRect();
+    const topbarH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 68;
+    const minTop = topbarH + 10, gap = 10, margin = 14;
+    calCard.style.left = margin + 'px';
+    calCard.style.right = margin + 'px';
+    calCard.style.bottom = 'auto';
+    // izmeri prirodnu visinu bez ograničenja, da znamo koliko prostora treba iznad polja
+    calCard.style.maxHeight = 'none';
+    const naturalHeight = calCard.offsetHeight;
+    const desiredTop = rect.top - gap - naturalHeight;
+    const top = Math.max(minTop, desiredTop);
+    calCard.style.top = top + 'px';
+    calCard.style.maxHeight = Math.max(160, (rect.top - gap - top)) + 'px';
   }
 
   // ---- Navigacija tastaturom po mreži datuma (WAI-ARIA APG "grid" obrazac) ----
@@ -799,7 +824,7 @@ function pickBestLocationMatch(results, query){
     calCard.classList.add('open');
     if (calBackdrop) calBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
-    if (isMobileCal()) lockPageScroll();
+    if (isMobileCal()){ lockPageScroll(); positionCalMobile(); }
     // fokus tastature/screen readera ide direktno na selektovani (ili
     // današnji) dan — bez ovoga dijalog se otvara vizuelno, ali korisnik
     // koji ne koristi miša nema signal da se nešto promenilo.
@@ -888,6 +913,9 @@ function pickBestLocationMatch(results, query){
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && calCard.classList.contains('open')) closeCal(true);
   });
+  window.addEventListener('resize', () => {
+    if (calCard.classList.contains('open')) positionCalMobile();
+  });
 
   const destInputEl = document.getElementById('dest');
   if (destInputEl){
@@ -903,6 +931,177 @@ function pickBestLocationMatch(results, query){
   // Polje "Od — Do" na startu prikazuje crtice (placeholder stanje), a ne
   // unapred izračunat opseg/broj noći iz skrivenih polja — updateDisplay()
   // se zove tek kad korisnik stvarno potvrdi datume (Gotovo / brzi izbor).
+})();
+
+/* ==========================================================
+   BROJ PUTNIKA — kartica po uzoru na kalendar (umesto native <select>,
+   koji je ograničavao izbor na najviše 4 osobe i čiji padajući meni
+   nije moguće stilizovati). Vrednost i dalje živi u #adults (sad
+   <input type="hidden">, isti obrazac kao #dateFrom/#dateTo), pa sav
+   ostatak koda koji čita/piše .value nastavlja da radi bez izmena.
+   ========================================================== */
+(function(){
+  const displayBtn = document.getElementById('paxDisplayBtn');
+  const displayText = document.getElementById('paxDisplayText');
+  const hiddenField = document.getElementById('adults');
+  const paxCard = document.getElementById('paxCard');
+  const paxBackdrop = document.getElementById('paxBackdrop');
+  const paxList = document.getElementById('paxList');
+  const applyBtn = document.getElementById('paxApply');
+  if (!displayBtn || !paxCard || !hiddenField || !paxList) return;
+
+  const MAX_ADULTS = 30;
+
+  // Gramatički ispravna množina za "odrasla osoba/odrasla/odraslih" —
+  // pravilo isto kao za sve brojeve u srpskom (1, 2-4, 5+, sa izuzetkom
+  // 11-14 koji uvek idu na "odraslih" bez obzira na poslednju cifru).
+  function paxOptionLabel(n){
+    if (getLang() === 'en') return n + ' ' + (n === 1 ? 'adult' : 'adults');
+    const mod10 = n % 10, mod100 = n % 100;
+    let word;
+    if (mod100 >= 11 && mod100 <= 14) word = 'odraslih';
+    else if (mod10 === 1) word = 'odrasla osoba';
+    else if (mod10 >= 2 && mod10 <= 4) word = 'odrasla';
+    else word = 'odraslih';
+    return n + ' ' + word;
+  }
+
+  function buildOptions(){
+    const keepVal = hiddenField.value;
+    paxList.innerHTML = '';
+    for (let n = 1; n <= MAX_ADULTS; n++){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pax-option';
+      btn.setAttribute('role', 'option');
+      btn.dataset.value = String(n);
+      btn.textContent = paxOptionLabel(n);
+      const isSel = String(n) === keepVal;
+      btn.classList.toggle('is-selected', isSel);
+      btn.setAttribute('aria-selected', isSel ? 'true' : 'false');
+      btn.addEventListener('click', (e) => { e.stopPropagation(); selectPax(n); });
+      paxList.appendChild(btn);
+    }
+  }
+
+  function updateDisplay(){
+    const val = hiddenField.value;
+    if (!val){
+      displayText.textContent = t('placeholder_passengers');
+      displayBtn.classList.add('is-empty');
+    } else {
+      displayText.textContent = paxOptionLabel(Number(val));
+      displayBtn.classList.remove('is-empty');
+    }
+  }
+  // Izloženo van IIFE-a da loadSavedTrip() može da osveži prikaz posle
+  // direktnog upisa u #adults.value (isti obrazac kao za ostatak forme).
+  window.syncPaxDisplay = updateDisplay;
+
+  function selectPax(n){
+    hiddenField.value = String(n);
+    paxList.querySelectorAll('.pax-option').forEach(b => {
+      const isSel = b.dataset.value === String(n);
+      b.classList.toggle('is-selected', isSel);
+      b.setAttribute('aria-selected', isSel ? 'true' : 'false');
+    });
+    updateDisplay();
+    hiddenField.dispatchEvent(new Event('input', {bubbles:true}));
+    hiddenField.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+
+  const isMobilePax = () => window.matchMedia('(max-width:760px)').matches;
+
+  let paxScrollY = 0;
+  function lockPageScroll(){
+    paxScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + paxScrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+  function unlockPageScroll(){
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, paxScrollY);
+  }
+
+  function positionPaxMobile(){
+    if (!isMobilePax()) return;
+    const anchor = document.getElementById('paxStub') || displayBtn;
+    const rect = anchor.getBoundingClientRect();
+    const topbarH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 68;
+    const minTop = topbarH + 10, gap = 10, margin = 14;
+    paxCard.style.left = margin + 'px';
+    paxCard.style.right = margin + 'px';
+    paxCard.style.bottom = 'auto';
+    paxCard.style.maxHeight = 'none';
+    const naturalHeight = paxCard.offsetHeight;
+    const desiredTop = rect.top - gap - naturalHeight;
+    const top = Math.max(minTop, desiredTop);
+    paxCard.style.top = top + 'px';
+    paxCard.style.maxHeight = Math.max(160, (rect.top - gap - top)) + 'px';
+  }
+
+  function openPax(){
+    paxCard.classList.add('open');
+    if (paxBackdrop) paxBackdrop.classList.add('open');
+    displayBtn.setAttribute('aria-expanded', 'true');
+    if (isMobilePax()){ lockPageScroll(); positionPaxMobile(); }
+    const focusTarget = paxList.querySelector('.pax-option.is-selected') || paxList.querySelector('.pax-option');
+    if (focusTarget) focusTarget.focus();
+  }
+  function closePax(){
+    const wasOpen = paxCard.classList.contains('open');
+    paxCard.classList.remove('open');
+    if (paxBackdrop) paxBackdrop.classList.remove('open');
+    displayBtn.setAttribute('aria-expanded', 'false');
+    if (isMobilePax() && document.body.style.position === 'fixed') unlockPageScroll();
+    if (wasOpen && document.activeElement && paxCard.contains(document.activeElement)){
+      displayBtn.focus();
+    }
+  }
+
+  displayBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (paxCard.classList.contains('open')) closePax();
+    else openPax();
+  });
+  if (applyBtn) applyBtn.addEventListener('click', (e) => { e.stopPropagation(); closePax(); });
+  paxCard.addEventListener('click', (e) => e.stopPropagation());
+  // Focus trap dok je "dijalog" otvoren — isti obrazac kao kod kalendara.
+  paxCard.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusables = Array.from(paxCard.querySelectorAll('button')).filter(el => el.offsetParent !== null);
+    if (!focusables.length) return;
+    const first = focusables[0], last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+  document.addEventListener('click', () => {
+    if (paxCard.classList.contains('open')) closePax();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && paxCard.classList.contains('open')) closePax();
+  });
+  window.addEventListener('resize', () => {
+    if (paxCard.classList.contains('open')) positionPaxMobile();
+  });
+
+  buildOptions();
+  updateDisplay();
+
+  // Ako se jezik promeni, prevedi i listu i trenutni prikaz.
+  const _prevOnLangChangePax = window.onLangChange;
+  window.onLangChange = function(lang){
+    if (typeof _prevOnLangChangePax === 'function') _prevOnLangChangePax(lang);
+    buildOptions();
+    updateDisplay();
+  };
 })();
 
 // Small heuristic list — no geo API here, just enough to stop the CTA
@@ -3834,6 +4033,7 @@ function loadSavedTrip(tripId){
   document.getElementById('dateFrom').value = trip.date_from;
   document.getElementById('dateTo').value = trip.date_to;
   document.getElementById('adults').value = String(trip.adults);
+  if (typeof window.syncPaxDisplay === 'function') window.syncPaxDisplay();
   document.getElementById('dateFrom').dispatchEvent(new Event('change', {bubbles:true}));
 
   if (trip.selection && trip.selection.kind === 'builder' && trip.selection.builderState){
