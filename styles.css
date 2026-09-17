@@ -506,6 +506,28 @@ a{color:inherit;}
 .pax-display:hover,.pax-display[aria-expanded="true"]{color:var(--gold-text);}
 .pax-display.is-empty{color:var(--ink-soft);}
 .pax-display.is-empty:hover{color:var(--ink-soft);}
+/* Kalendar i kartica za putnike se na mobilnom, dok su otvorene, prebacuju
+   direktno u <body> (van .hero-a) da bi position:fixed radio ispravno u
+   odnosu na viewport (vidi JS — detachCalForMobile/detachPaxForMobile).
+   Time gube CSS promenljive koje .hero lokalno predefiniše (--paper,
+   --ink, --gold, itd. — vidi .hero pravilo gore), pa kartica bez ovoga
+   ume da "propadne" na svetlu/podrazumevanu (:root) paletu umesto na
+   tamnu Deep Petrol temu koju ima ostatak forme. Ponavljamo iste
+   vrednosti direktno na karticama, da izgled ostane isti bez obzira
+   gde su trenutno u DOM-u. */
+#calCard, #paxCard{
+    --deep:#0F4C5C;
+    --deep2:#111827;
+    --gold:#C9A45C;
+    --gold-soft:#ECD9AD;
+    --gold-text:#D9B776;
+    --on-gold:#111827;
+    --paper:#0F4C5C;
+    --ink:#F2EFE8;
+    --ink-soft:#A9BDC2;
+    --line:rgba(255,255,255,0.18);
+    --line-form:rgba(255,255,255,0.14);
+}
 .pax-card{
     display:none;position:absolute;bottom:calc(100% + 10px);top:auto;left:0;right:0;
     z-index:45;width:auto;overflow-anchor:none;

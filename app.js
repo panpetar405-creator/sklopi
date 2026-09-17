@@ -717,26 +717,23 @@ function pickBestLocationMatch(results, query){
     if (calCard.classList.contains('open')) positionCalMobile();
   }
 
-  // ---- Pozicioniranje kartice na mobilnom: umesto fiksnog razmaka od vrha
-  // ekrana (koji nema veze sa stvarnim mestom polja "Od — Do" na strani i
-  // zato ume da prekrije polje za destinaciju iznad njega), kartica se veže
-  // direktno za stvarnu poziciju polja i otvara tačno iznad njega. ----
+  // ---- Pozicioniranje kartice na mobilnom ----
+  // Kartica je sad, dok je otvorena, prebačena direktno u <body> (van
+  // .ticket-a, van .hero-a) sa punim tamnim overlay-em preko celog ekrana —
+  // pravi fullscreen "bottom sheet" modal, a ne više mali dropdown zalepljen
+  // uz konkretno polje. Zato više NE računamo visinu prema poziciji polja
+  // (to je ranije nepotrebno sažimalo karticu i sekalo mesec/legendu/dugme
+  // "Gotovo" van vidljivog dela) — prepuštamo visinu CSS pravilu iz media
+  // query-ja (top odmah ispod topbar-a, do skoro dna ekrana), koje već daje
+  // maksimalan mogući prostor da ceo mesec stane bez skrolovanja. Ovde samo
+  // brišemo eventualne inline stilove koje je ranija verzija postavljala.
   function positionCalMobile(){
     if (!isMobileCal()) return;
-    const anchor = document.getElementById('dateStub') || displayBtn;
-    const rect = anchor.getBoundingClientRect();
-    const topbarH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 68;
-    const minTop = topbarH + 10, gap = 10, margin = 14;
-    calCard.style.left = margin + 'px';
-    calCard.style.right = margin + 'px';
-    calCard.style.bottom = 'auto';
-    // izmeri prirodnu visinu bez ograničenja, da znamo koliko prostora treba iznad polja
-    calCard.style.maxHeight = 'none';
-    const naturalHeight = calCard.offsetHeight;
-    const desiredTop = rect.top - gap - naturalHeight;
-    const top = Math.max(minTop, desiredTop);
-    calCard.style.top = top + 'px';
-    calCard.style.maxHeight = Math.max(160, (rect.top - gap - top)) + 'px';
+    calCard.style.left = '';
+    calCard.style.right = '';
+    calCard.style.top = '';
+    calCard.style.bottom = '';
+    calCard.style.maxHeight = '';
   }
 
   // ---- Navigacija tastaturom po mreži datuma (WAI-ARIA APG "grid" obrazac) ----
@@ -1072,21 +1069,16 @@ function pickBestLocationMatch(results, query){
     window.scrollTo(0, paxScrollY);
   }
 
+  // Isti razlog kao kod positionCalMobile gore — kartica je sad fullscreen
+  // modal u <body>, pa joj prepuštamo visinu CSS media-query pravilu umesto
+  // da je ručno sažimamo prema poziciji polja.
   function positionPaxMobile(){
     if (!isMobilePax()) return;
-    const anchor = document.getElementById('paxStub') || displayBtn;
-    const rect = anchor.getBoundingClientRect();
-    const topbarH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h')) || 68;
-    const minTop = topbarH + 10, gap = 10, margin = 14;
-    paxCard.style.left = margin + 'px';
-    paxCard.style.right = margin + 'px';
-    paxCard.style.bottom = 'auto';
-    paxCard.style.maxHeight = 'none';
-    const naturalHeight = paxCard.offsetHeight;
-    const desiredTop = rect.top - gap - naturalHeight;
-    const top = Math.max(minTop, desiredTop);
-    paxCard.style.top = top + 'px';
-    paxCard.style.maxHeight = Math.max(160, (rect.top - gap - top)) + 'px';
+    paxCard.style.left = '';
+    paxCard.style.right = '';
+    paxCard.style.top = '';
+    paxCard.style.bottom = '';
+    paxCard.style.maxHeight = '';
   }
 
   // Isti razlog i isto rešenje kao kod kalendara (vidi detachCalForMobile
