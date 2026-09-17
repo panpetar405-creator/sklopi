@@ -1800,6 +1800,7 @@ footer{padding:28px 20px;}
 }
 
 /* ---------- Business strip: partners trust row + price breakdown chart ---------- */
+.price-chart-section{padding-top:40px;}
 .business-strip{padding-bottom:8px;}
 .partners-row{
     display:flex;align-items:center;flex-wrap:wrap;gap:12px;
