@@ -1803,9 +1803,14 @@ footer{padding:28px 20px;}
 .price-chart-section{padding-top:40px;}
 .business-strip{padding-bottom:8px;}
 .partners-row{
-    display:flex;align-items:center;flex-wrap:wrap;gap:16px 28px;
+    display:flex;flex-direction:column;gap:14px;
     padding-bottom:30px;margin-bottom:30px;border-bottom:1px solid var(--line);
 }
+.partners-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:26px 28px;display:flex;flex-direction:column;gap:26px;
+}
+.partners-line{display:flex;align-items:center;justify-content:space-between;}
 .partners-label{
     display:flex;align-items:center;gap:10px;width:100%;
     font-size:12.5px;font-weight:700;color:var(--ink-soft);
@@ -1860,7 +1865,8 @@ footer{padding:28px 20px;}
 .dot-car{background:var(--coral);}
 .dot-activity{background:var(--aqua);}
 @media (max-width:640px){
-    .partners-row{gap:12px 20px;padding-bottom:20px;margin-bottom:20px;}
+    .partners-row{gap:14px;padding-bottom:20px;margin-bottom:20px;}
+    .partners-card{padding:20px 18px;gap:20px;}
     .partner-badge{font-size:17px;gap:7px;}
     .partners-label{width:100%;margin-right:0;margin-bottom:2px;}
     .price-chart{padding:20px 18px 18px;}
