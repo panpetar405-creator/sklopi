@@ -30,31 +30,36 @@ window.addEventListener('error', function(e){ document.title = 'GRESKA: ' + e.me
 const _historyOverlays = []; // stek { id, close(rawCloseFn) }
 
 function guardOverlayOpen(id, closeFn){
-  // ===== PRIVREMENO ISKLJUČENO RADI TESTIRANJA DUPLOG KLIKA =====
-  // (originalni kod je ispod, zakomentarisan; vrati ga nazad kad test završi)
-  return;
-  /*
   // Ako je ovaj overlay (npr. kalendar) već otvoren i gurnut, ne guramo
   // duplo — samo ažuriramo close funkciju (može se promeniti po pozivu).
   const existing = _historyOverlays.find(o => o.id === id);
   if (existing){ existing.close = closeFn; return; }
   _historyOverlays.push({ id, close: closeFn });
-  history.pushState({ overlayGuard: true, id }, '');
-  */
+  // history.pushState() se NAMERNO odlaže za sledeći tick (setTimeout 0),
+  // ne poziva se direktno unutar click/touch handlera. Pozivanje
+  // pushState() sinhrono, usred istog dodira koji je otvorio overlay,
+  // je pravi uzrok bio zašto je na mobilnom trebalo dva tapa za SVAKU
+  // narednu radnju (biranje datuma, brojač putnika, Nastavi...) — mobilni
+  // WebKit/Chrome ume da "zaglavi" isporuku sledećeg klika kad se historija
+  // menja usred obrade dodira. Odlaganjem za jedan tick, pushState se
+  // izvršava tek KAD je browser završio sa obradom trenutnog tapa.
+  setTimeout(() => {
+    history.pushState({ overlayGuard: true, id }, '');
+  }, 0);
 }
 // Vraća true ako je overlay bio gurnut u historiju (i time preuzima
 // zatvaranje preko history.back() → popstate). Vraća false ako nije
 // bio gurnut — u tom slučaju pozivač treba sam da zatvori overlay.
 function guardOverlayRequestClose(id){
-  // ===== PRIVREMENO ISKLJUČENO RADI TESTIRANJA DUPLOG KLIKA =====
-  return false;
-  /*
   const idx = _historyOverlays.findIndex(o => o.id === id);
   if (idx === -1) return false;
   _historyOverlays.splice(idx, 1);
-  history.back();
+  // Isti razlog kao gore — history.back() odložen za sledeći tick, da ne
+  // ometa isporuku klika koji je zatvaranje i pokrenuo.
+  setTimeout(() => {
+    history.back();
+  }, 0);
   return true;
-  */
 }
 window.addEventListener('popstate', () => {
   const top = _historyOverlays.pop();
