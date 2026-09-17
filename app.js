@@ -1991,11 +1991,41 @@ const _locDropdownState = {
   destSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false },
   originSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false }
 };
+// Koristi visualViewport (kad postoji — svi moderni Android/Chrome) da
+// zna GDE se stvarno završava vidljiv deo ekrana kad je tastatura otvorena.
+// Bez ovoga se panel računao prema window.innerHeight/scroll poziciji koje
+// tastatura ne menja (samo "visual" viewport se smanji), pa je panel visio
+// ispod polja i tastatura ga je prekrivala skoro celog — vidljiv je ostajao
+// tek delić prvog predloga.
+function getVisibleViewportTop(){
+  const vv = window.visualViewport;
+  return vv ? vv.offsetTop : 0;
+}
+function getVisibleViewportBottom(){
+  const vv = window.visualViewport;
+  return vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+}
 function positionLocDropdown(panel, inputEl){
   const r = inputEl.getBoundingClientRect();
+  const gap = 6, margin = 8, minUseful = 120, preferredMax = 264;
+  const visTop = getVisibleViewportTop() + margin;
+  const visBottom = getVisibleViewportBottom() - margin;
+  const spaceBelow = visBottom - (r.bottom + gap);
+  const spaceAbove = (r.top - gap) - visTop;
   panel.style.left = r.left + 'px';
-  panel.style.top = (r.bottom + 6) + 'px';
   panel.style.width = r.width + 'px';
+  if (spaceBelow >= minUseful || spaceBelow >= spaceAbove){
+    // dovoljno mesta ispod polja (ili bar više nego iznad) — otvori ispod,
+    // ali visinu ograniči na stvarno vidljiv prostor iznad tastature
+    panel.style.top = (r.bottom + gap) + 'px';
+    panel.style.bottom = 'auto';
+    panel.style.maxHeight = Math.max(minUseful, Math.min(preferredMax, spaceBelow)) + 'px';
+  } else {
+    // tastatura pojela prostor ispod polja — otvori NAVIŠE, iznad polja
+    panel.style.top = 'auto';
+    panel.style.bottom = (window.innerHeight - r.top + gap) + 'px';
+    panel.style.maxHeight = Math.max(minUseful, Math.min(preferredMax, spaceAbove)) + 'px';
+  }
 }
 function closeLocDropdown(datalistId){
   const panel = document.getElementById(datalistId);
@@ -2094,6 +2124,14 @@ function setupLocDropdown(datalistId){
 
   window.addEventListener('resize', () => { if (panel.classList.contains('open')) positionLocDropdown(panel, inputEl); });
   window.addEventListener('scroll', () => { if (panel.classList.contains('open')) positionLocDropdown(panel, inputEl); }, true);
+  // window 'resize' se često NE aktivira kad se otvori/zatvori tastatura
+  // (menja se samo visualViewport, ne i layout viewport) — bez ovoga bi
+  // panel ostao zaleđen na poziciji izračunatoj PRE nego što je tastatura
+  // stigla da se potpuno otvori.
+  if (window.visualViewport){
+    window.visualViewport.addEventListener('resize', () => { if (panel.classList.contains('open')) positionLocDropdown(panel, inputEl); });
+    window.visualViewport.addEventListener('scroll', () => { if (panel.classList.contains('open')) positionLocDropdown(panel, inputEl); });
+  }
 }
 
 let _destSuggestTimer = null;
