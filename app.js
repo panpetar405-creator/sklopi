@@ -4356,13 +4356,17 @@ actIncludeEl.addEventListener('change', ()=>{
   qSyncRow('activities', actIncludeEl.checked);
   renderBuilder();
 });
+actCountInput.addEventListener('focus', ()=>{ actCountInput.select(); });
 actCountInput.addEventListener('input', ()=>{
-  const n = Math.max(0, Math.min(10, Math.floor(Number(actCountInput.value)) || 0));
+  const raw = actCountInput.value;
+  const n = raw === '' ? 0 : Math.max(0, Math.min(10, Math.floor(Number(raw)) || 0));
   builderState.activityCount = n;
   if (n > 0) _lastActivityCount = n;
-  actIncludeEl.checked = n > 0;
-  qSyncRow('activities', actIncludeEl.checked);
   renderBuilder();
+});
+actCountInput.addEventListener('blur', ()=>{
+  actIncludeEl.checked = builderState.activityCount > 0;
+  qSyncRow('activities', actIncludeEl.checked);
 });
 
 // Prosti dodaci bez pod-opcija: osiguranje / putarine / eSIM / transferi.
@@ -5743,11 +5747,15 @@ spActIncludeEl.addEventListener('change', () => {
   }
   qSyncRow('sp-activities', spActIncludeEl.checked);
 });
+spActCountInput.addEventListener('focus', () => { spActCountInput.select(); });
 spActCountInput.addEventListener('input', () => {
-  const n = Math.max(0, Math.min(10, Math.floor(Number(spActCountInput.value)) || 0));
+  const raw = spActCountInput.value;
+  const n = raw === '' ? 0 : Math.max(0, Math.min(10, Math.floor(Number(raw)) || 0));
   startPrefs.activityCount = n;
   if (n > 0) _spLastActivityCount = n;
-  spActIncludeEl.checked = n > 0;
+});
+spActCountInput.addEventListener('blur', () => {
+  spActIncludeEl.checked = startPrefs.activityCount > 0;
   qSyncRow('sp-activities', spActIncludeEl.checked);
 });
 
