@@ -1292,6 +1292,74 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 }
 .stepper button:hover{border-color:var(--gold);color:var(--gold-text);}
 .stepper span{font-family:'Manrope',sans-serif;font-size:20px;font-weight:600;min-width:1.4em;text-align:center;}
+/* ---------- Upitnik (q-*) — checkbox/radio forma umesto chip dugmadi,
+   koristi se u #builderPanel .builder-form. ---------- */
+.q-form{padding-top:6px;gap:0;}
+.q-row{border-bottom:1px solid var(--line);}
+.q-row:last-of-type{border-bottom:none;}
+.q-row-head{
+    display:flex;align-items:flex-start;gap:14px;
+    padding:15px 2px;cursor:pointer;user-select:none;
+}
+.q-row-head input[type="checkbox"]{
+    appearance:none;-webkit-appearance:none;
+    width:21px;height:21px;min-width:21px;margin-top:2px;
+    border:1.6px solid var(--ink-soft);border-radius:5px;
+    background:var(--bg);position:relative;cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+}
+.q-row-head input[type="checkbox"]:checked{background:var(--deep);border-color:var(--deep);}
+.q-row-head input[type="checkbox"]:checked::after{
+    content:"";position:absolute;left:6px;top:2px;
+    width:6px;height:11px;border:solid #fff;border-width:0 2px 2px 0;
+    transform:rotate(40deg);
+}
+.q-checkbox-spacer{width:21px;min-width:21px;}
+.q-row-head .q-txt{flex:1;}
+.q-row-head .q-name{
+    font-family:'Manrope',sans-serif;font-weight:700;font-size:16px;display:block;color:var(--ink);
+}
+.q-row-head .q-desc{
+    display:block;font-family:'Work Sans',sans-serif;font-size:13px;color:var(--ink-soft);margin-top:2px;
+}
+.q-sub{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.q-row.checked .q-sub{max-height:320px;}
+.q-sub-inner{padding:2px 2px 16px 53px;}
+.q-field-label{
+    display:block;font-family:'Manrope',sans-serif;font-size:11.5px;font-weight:700;
+    letter-spacing:.03em;color:var(--ink-soft);text-transform:uppercase;margin:10px 0 7px;
+}
+.q-radio-line{
+    display:flex;align-items:center;gap:9px;padding:5px 0;
+    font-family:'Work Sans',sans-serif;font-size:14.5px;color:var(--ink);cursor:pointer;
+}
+.q-radio-line input[type="radio"]{
+    appearance:none;-webkit-appearance:none;
+    width:17px;height:17px;min-width:17px;border:1.6px solid var(--ink-soft);
+    border-radius:50%;position:relative;cursor:pointer;
+}
+.q-radio-line input[type="radio"]:checked{border-color:var(--deep);}
+.q-radio-line input[type="radio"]:checked::after{
+    content:"";position:absolute;inset:3px;border-radius:50%;background:var(--deep);
+}
+.q-radio-line input[type="checkbox"]{
+    appearance:none;-webkit-appearance:none;
+    width:17px;height:17px;min-width:17px;border:1.6px solid var(--ink-soft);
+    border-radius:4px;position:relative;cursor:pointer;background:var(--bg);
+}
+.q-radio-line input[type="checkbox"]:checked{background:var(--gold);border-color:var(--gold);}
+.q-radio-line input[type="checkbox"]:checked::after{
+    content:"";position:absolute;left:5px;top:1px;
+    width:5px;height:9px;border:solid var(--ink);border-width:0 1.6px 1.6px 0;
+    transform:rotate(40deg);
+}
+.q-text-field{
+    width:100%;max-width:220px;border:none;border-bottom:1.4px solid var(--line);
+    background:transparent;font-family:'Work Sans',sans-serif;font-size:15px;
+    padding:8px 2px;outline:none;color:var(--ink);margin-top:6px;
+}
+.q-text-field:focus{border-bottom-color:var(--gold);}
+.q-num-field{max-width:90px;}
 .builder-summary{
     background:var(--deep);color:var(--on-dark);border-radius:6px;
     padding:24px 24px 26px;position:sticky;top:78px;
@@ -1361,6 +1429,18 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 .builder-book-links .bbl-label{font-size:13px;color:var(--on-dark-soft);margin-bottom:9px;}
 .builder-book-row{display:flex;flex-wrap:wrap;gap:8px;}
 .builder-book-row .item-btn{flex:1;min-width:90px;justify-content:center;padding:10px 8px;font-size:13.5px;}
+.qa-list{margin-top:18px;padding-top:4px;border-top:1px solid var(--line-deep);}
+.qa-item{
+    display:flex;align-items:center;gap:10px;width:100%;
+    background:none;border:none;border-bottom:1px solid var(--line-deep);
+    padding:12px 2px;cursor:pointer;text-align:left;
+    font-family:'Manrope',sans-serif;font-weight:600;font-size:14.5px;
+    color:var(--gold-soft);transition:color .15s ease;
+}
+.qa-item:last-child{border-bottom:none;}
+.qa-item svg{width:17px;height:17px;min-width:17px;stroke:var(--gold);transition:stroke .15s ease;}
+.qa-item:hover{color:#fff;}
+.qa-item:hover svg{stroke:var(--gold-soft);}
 .pkg-save-btn{
     width:calc(100% - 48px);margin:0 24px 24px;padding:11px;border:1px solid var(--line);border-radius:4px;
     background:transparent;color:var(--ink-soft);font-family:'Work Sans',sans-serif;font-weight:600;font-size:14px;

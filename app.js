@@ -106,12 +106,17 @@ const I18N = {
     btn_choose:'Odaberi',
     builder_addons_label:'Dodaci',
     eyebrow_features:'Sve uključeno',
-    builder_flight_label:'Let', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'Određena kompanija',
+    builder_flight_label:'Letovi', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'Određena kompanija',
     placeholder_airline:'npr. Lufthansa',
     chip_priority_rating:'Prioritet: ocena', chip_priority_location:'Prioritet: lokacija',
-    builder_transport_label:'Prevoz', chip_no_car:'Bez auta', chip_small_car:'Mali auto', chip_suv:'SUV',
+    builder_transport_label:'Rent a car', chip_no_car:'Bez auta', chip_small_car:'Mali auto', chip_suv:'SUV',
     builder_activities_label:'Aktivnosti',
     aria_fewer_activities:'Manje aktivnosti', aria_more_activities:'Više aktivnosti',
+    q_flight_desc:'Avionska karta do destinacije i nazad', q_flight_type:'Tip leta',
+    q_hotel_desc:'Hotel ili apartman za ceo boravak', q_hotel_category:'Kategorija', q_priority:'Prioritet',
+    q_car_desc:'Vozilo za ceo period boravka', q_car_type:'Vozilo',
+    q_activities_desc:'Izleti, ulaznice i vođene ture', q_activities_count:'Broj aktivnosti',
+    q_budget_desc:'Reci nam okvirni budžet da uporedimo',
     builder_budget_label_html:'Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span>',
     placeholder_budget:'npr. 700',
     btn_make_arrangement:'Napravi izlet',
@@ -234,12 +239,17 @@ const I18N = {
     builder_addons_label:'Add-ons',
     eyebrow_features:'All included',
     sub_build_own:'You choose the flight, stay, car and activities — we add up how much it all costs together.',
-    builder_flight_label:'Flight', chip_direct:'Direct', chip_cheapest:'Cheapest', chip_airline:'Specific airline',
+    builder_flight_label:'Flights', chip_direct:'Direct', chip_cheapest:'Cheapest', chip_airline:'Specific airline',
     placeholder_airline:'e.g. Lufthansa',
     chip_priority_rating:'Priority: rating', chip_priority_location:'Priority: location',
-    builder_transport_label:'Transport', chip_no_car:'No car', chip_small_car:'Small car', chip_suv:'SUV',
+    builder_transport_label:'Car rental', chip_no_car:'No car', chip_small_car:'Small car', chip_suv:'SUV',
     builder_activities_label:'Activities',
     aria_fewer_activities:'Fewer activities', aria_more_activities:'More activities',
+    q_flight_desc:'Flight to your destination and back', q_flight_type:'Flight type',
+    q_hotel_desc:'Hotel or apartment for the whole stay', q_hotel_category:'Category', q_priority:'Priority',
+    q_car_desc:'Vehicle for the whole stay', q_car_type:'Vehicle',
+    q_activities_desc:'Excursions, tickets and guided tours', q_activities_count:'Number of activities',
+    q_budget_desc:'Tell us your rough budget so we can compare',
     builder_budget_label_html:'Budget <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(optional)</span>',
     placeholder_budget:'e.g. 700',
     btn_make_arrangement:'Build my trip',
@@ -361,12 +371,17 @@ const I18N = {
     builder_addons_label:'Дополнения',
     eyebrow_features:'Всё включено',
     sub_build_own:'Сам выбираешь перелёт, проживание, авто и активности — мы считаем, сколько всё это будет стоить вместе.',
-    builder_flight_label:'Перелёт', chip_direct:'Прямой', chip_cheapest:'Самый дешёвый', chip_airline:'Определённая авиакомпания',
+    builder_flight_label:'Перелёты', chip_direct:'Прямой', chip_cheapest:'Самый дешёвый', chip_airline:'Определённая авиакомпания',
     placeholder_airline:'напр. Lufthansa',
     chip_priority_rating:'Приоритет: рейтинг', chip_priority_location:'Приоритет: расположение',
-    builder_transport_label:'Транспорт', chip_no_car:'Без авто', chip_small_car:'Маленькое авто', chip_suv:'Внедорожник',
+    builder_transport_label:'Аренда авто', chip_no_car:'Без авто', chip_small_car:'Маленькое авто', chip_suv:'Внедорожник',
     builder_activities_label:'Активности',
     aria_fewer_activities:'Меньше активностей', aria_more_activities:'Больше активностей',
+    q_flight_desc:'Авиабилет до места назначения и обратно', q_flight_type:'Тип перелёта',
+    q_hotel_desc:'Отель или апартаменты на весь период', q_hotel_category:'Категория', q_priority:'Приоритет',
+    q_car_desc:'Автомобиль на весь период пребывания', q_car_type:'Автомобиль',
+    q_activities_desc:'Экскурсии, билеты и туры с гидом', q_activities_count:'Количество активностей',
+    q_budget_desc:'Скажи нам примерный бюджет, чтобы сравнить',
     builder_budget_label_html:'Бюджет <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(необязательно)</span>',
     placeholder_budget:'напр. 700',
     btn_make_arrangement:'Составить поездку',
@@ -4014,10 +4029,12 @@ document.getElementById('searchForm').addEventListener('submit', function(e){
 // kasnije u builderState) ne bi dobilo fallback — ostalo bi kakvo je bilo
 // pre poziva (stanje iz prethodno učitanog aranžmana ili undefined), što bi
 // computeCustomPackage moglo da pretvori u NaN cene.
-const BUILDER_ADDON_RATES = { insurance: 18, esim: 9 }; // po osobi
+const BUILDER_ADDON_RATES = { insurance: 18, esim: 9, putarina: 18, transferi: 25 }; // insurance/esim/transferi po osobi, putarina paušalno
 const BUILDER_DEFAULTS = {
+  includeFlight: true,
   flightPref: 'direct',
   airlineName: '',
+  includeHotel: true,
   hotelStars: 4,
   prioritizeRating: false,
   prioritizeLocation: false,
@@ -4025,6 +4042,8 @@ const BUILDER_DEFAULTS = {
   activityCount: 2,
   insurance: false,
   esim: false,
+  putarina: false,
+  transferi: false,
   budget: null
 };
 const builderState = Object.assign({}, BUILDER_DEFAULTS);
@@ -4141,19 +4160,24 @@ function computeCustomPackage(sel, ctx){
   // to i drži ostatak paketa stabilnim.
   const insuranceCost = sel.insurance ? BUILDER_ADDON_RATES.insurance * ctx.adults : 0;
   const esimCost = sel.esim ? BUILDER_ADDON_RATES.esim * ctx.adults : 0;
+  // Putarine (paušalna procena za celu rutu, nezavisno od rent-a-cara —
+  // relevantno i kad se putuje sopstvenim autom ili transferom) i
+  // transferi (aerodrom–smeštaj, cena po osobi), isti obrazac kao gore.
+  const putarinaCost = sel.putarina ? BUILDER_ADDON_RATES.putarina : 0;
+  const transferiCost = sel.transferi ? BUILDER_ADDON_RATES.transferi * ctx.adults : 0;
 
   // Isti dnevni tržišni faktor kao u gotovim ponudama (vidi marketFactor) —
   // primenjen na sve stavke osim osiguranja/eSIM-a, koji su fiksni dodaci
   // po osobi, ne tržišna cena koja fluktuira.
   const factor = marketFactor(ctx.dest, todayStr());
-  const flightPriceF = Math.round(flightPrice * factor);
-  const hotelPriceF = Math.round(hotelPrice * factor);
+  const flightPriceF = sel.includeFlight ? Math.round(flightPrice * factor) : 0;
+  const hotelPriceF = sel.includeHotel ? Math.round(hotelPrice * factor) : 0;
   const carPriceF = Math.round(carPrice * factor);
   const activityPriceF = Math.round(activityPrice * factor);
   const carExtrasF = Math.round(carExtras * factor);
   const bookingFeeF = Math.round(bookingFee * factor);
 
-  const total = flightPriceF + hotelPriceF + carPriceF + activityPriceF + carExtrasF + bookingFeeF + insuranceCost + esimCost;
+  const total = flightPriceF + hotelPriceF + carPriceF + activityPriceF + carExtrasF + bookingFeeF + insuranceCost + esimCost + putarinaCost + transferiCost;
 
   return {
     flight: {price:flightPriceF, name:flightName, sub:flightSub},
@@ -4162,7 +4186,7 @@ function computeCustomPackage(sel, ctx){
     activity: {price:activityPriceF, count:sel.activityCount},
     carExtras: {price:carExtrasF},
     bookingFee: {price:bookingFeeF},
-    insuranceCost, esimCost,
+    insuranceCost, esimCost, putarinaCost, transferiCost,
     total
   };
 }
@@ -4172,16 +4196,17 @@ function renderBuilder(){
   const pkg = computeCustomPackage(builderState, ctx);
 
   const lines = document.getElementById('builderLines');
-  const rows = [
-    ['✈️', 'Let', pkg.flight.price],
-    ['🏨', 'Hotel', pkg.hotel.price],
-  ];
+  const rows = [];
+  if (builderState.includeFlight) rows.push(['✈️', t('builder_flight_label'), pkg.flight.price]);
+  if (builderState.includeHotel) rows.push(['🏨', 'Hotel', pkg.hotel.price]);
   if (builderState.carPref !== 'none') rows.push(['🚗', 'Auto', pkg.car.price]);
-  if (builderState.activityCount > 0) rows.push(['🎟️', 'Aktivnosti', pkg.activity.price]);
-  if (pkg.carExtras.price > 0) rows.push(['⛽', 'Gorivo i putarine', pkg.carExtras.price]);
+  if (builderState.activityCount > 0) rows.push(['🎟️', t('builder_activities_label'), pkg.activity.price]);
+  if (pkg.carExtras.price > 0) rows.push(['⛽', 'Gorivo i putarine (auto)', pkg.carExtras.price]);
   rows.push(['🧾', 'Taksa za rezervaciju', pkg.bookingFee.price]);
   if (builderState.insurance) rows.push(['🛡️', t('f_insurance_name'), pkg.insuranceCost]);
+  if (builderState.putarina) rows.push(['🛣️', t('f_tolls_name'), pkg.putarinaCost]);
   if (builderState.esim) rows.push(['📶', 'eSIM', pkg.esimCost]);
+  if (builderState.transferi) rows.push(['🚐', t('f_transfer_name'), pkg.transferiCost]);
 
   lines.innerHTML = rows.map(([ic,name,price]) => `
     <div class="builder-line">
@@ -4216,10 +4241,13 @@ function renderBuilder(){
     from: document.getElementById('dateFrom').value,
     to: document.getElementById('dateTo').value
   });
-  const bookBtns = [
-    `<a class="item-btn flight" href="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" target="_blank" rel="noopener" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" onclick="bookItem(this)">✈️ KAYAK</a>`,
-    `<a class="item-btn hotel" href="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" onclick="bookItem(this)">🏨 Booking.com</a>`
-  ];
+  const bookBtns = [];
+  if (builderState.includeFlight){
+    bookBtns.push(`<a class="item-btn flight" href="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" target="_blank" rel="noopener" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" onclick="bookItem(this)">✈️ KAYAK</a>`);
+  }
+  if (builderState.includeHotel){
+    bookBtns.push(`<a class="item-btn hotel" href="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" onclick="bookItem(this)">🏨 Booking.com</a>`);
+  }
   if (builderState.carPref !== 'none'){
     bookBtns.push(`<a class="item-btn car" href="${escapeHtml(buildAffiliateLink('car', linkCtx))}" target="_blank" rel="noopener" data-kind="car" data-price="${pkg.car.price}" data-url="${escapeHtml(buildAffiliateLink('car', linkCtx))}" onclick="bookItem(this)">🚗 Booking.com</a>`);
   }
@@ -4241,43 +4269,108 @@ function wireChipGroup(groupName, onChange){
   });
 }
 
-wireChipGroup('flightPref', (val)=>{
-  builderState.flightPref = val;
-  document.getElementById('airlineName').style.display = (val === 'airline') ? 'block' : 'none';
-  renderBuilder();
+// ---- Upitnik (#builderPanel) — čekboks/radio povezivanje, bez chip
+// dugmadi. Svaki .q-row-head checkbox otvara/zatvara svoj .q-sub (klasa
+// .checked) i upisuje include-flag u builderState.
+function qRow(name){ return document.querySelector('.q-row[data-row="'+name+'"]'); }
+function qSyncRow(name, isOpen){ const row = qRow(name); if (row) row.classList.toggle('checked', isOpen); }
+
+['flight','hotel'].forEach(key=>{
+  const cbId = key === 'flight' ? 'flightInclude' : 'hotelInclude';
+  const stateKey = key === 'flight' ? 'includeFlight' : 'includeHotel';
+  const cb = document.getElementById(cbId);
+  qSyncRow(key, cb.checked);
+  cb.addEventListener('change', ()=>{
+    builderState[stateKey] = cb.checked;
+    qSyncRow(key, cb.checked);
+    renderBuilder();
+  });
+});
+
+document.querySelectorAll('input[name="flightPrefRadio"]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    builderState.flightPref = r.value;
+    document.getElementById('airlineName').style.display = (r.value === 'airline') ? 'block' : 'none';
+    renderBuilder();
+  });
 });
 document.getElementById('airlineName').addEventListener('input', (e)=>{
   builderState.airlineName = e.target.value.trim();
   renderBuilder();
 });
 
-wireChipGroup('hotelStars', (val)=>{
-  builderState.hotelStars = Number(val);
+document.querySelectorAll('input[name="hotelStarsRadio"]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    builderState.hotelStars = Number(r.value);
+    renderBuilder();
+  });
+});
+document.getElementById('prioritizeRatingChk').addEventListener('change', (e)=>{
+  builderState.prioritizeRating = e.target.checked;
+  renderBuilder();
+});
+document.getElementById('prioritizeLocationChk').addEventListener('change', (e)=>{
+  builderState.prioritizeLocation = e.target.checked;
   renderBuilder();
 });
 
-wireChipGroup('carPref', (val)=>{
-  builderState.carPref = val;
+// Rent a car: checkbox uključi/isključi (mapira se na carPref==='none'),
+// tip vozila je radio grupa. Pamtimo poslednji izabrani tip da bi ponovno
+// čekiranje vratilo baš njega, ne uvek "Mali auto".
+let _lastCarPref = builderState.carPref !== 'none' ? builderState.carPref : 'small';
+const carIncludeEl = document.getElementById('carInclude');
+qSyncRow('car', carIncludeEl.checked);
+carIncludeEl.addEventListener('change', ()=>{
+  if (carIncludeEl.checked){
+    builderState.carPref = _lastCarPref;
+  } else {
+    if (builderState.carPref !== 'none') _lastCarPref = builderState.carPref;
+    builderState.carPref = 'none';
+  }
+  qSyncRow('car', carIncludeEl.checked);
   renderBuilder();
 });
-
-document.querySelectorAll('.toggle-chip').forEach(chip=>{
-  chip.addEventListener('click', ()=>{
-    chip.classList.toggle('on');
-    builderState[chip.dataset.toggle] = chip.classList.contains('on');
+document.querySelectorAll('input[name="carPrefRadio"]').forEach(r=>{
+  r.addEventListener('change', ()=>{
+    builderState.carPref = r.value;
+    _lastCarPref = r.value;
     renderBuilder();
   });
 });
 
-document.getElementById('actMinus').addEventListener('click', ()=>{
-  builderState.activityCount = Math.max(0, builderState.activityCount - 1);
-  document.getElementById('actCount').textContent = builderState.activityCount;
+// Aktivnosti: checkbox uključi/isključi (mapira se na activityCount===0),
+// broj se unosi u polje umesto starog +/- stepera. Pamtimo poslednji broj
+// da ponovno čekiranje vrati istu vrednost, ne uvek podrazumevanih 2.
+let _lastActivityCount = builderState.activityCount > 0 ? builderState.activityCount : 2;
+const actIncludeEl = document.getElementById('activitiesInclude');
+const actCountInput = document.getElementById('actCountInput');
+qSyncRow('activities', actIncludeEl.checked);
+actIncludeEl.addEventListener('change', ()=>{
+  if (actIncludeEl.checked){
+    builderState.activityCount = _lastActivityCount;
+    actCountInput.value = _lastActivityCount;
+  } else {
+    if (builderState.activityCount > 0) _lastActivityCount = builderState.activityCount;
+    builderState.activityCount = 0;
+  }
+  qSyncRow('activities', actIncludeEl.checked);
   renderBuilder();
 });
-document.getElementById('actPlus').addEventListener('click', ()=>{
-  builderState.activityCount = Math.min(8, builderState.activityCount + 1);
-  document.getElementById('actCount').textContent = builderState.activityCount;
+actCountInput.addEventListener('input', ()=>{
+  const n = Math.max(0, Math.min(10, Math.floor(Number(actCountInput.value)) || 0));
+  builderState.activityCount = n;
+  if (n > 0) _lastActivityCount = n;
+  actIncludeEl.checked = n > 0;
+  qSyncRow('activities', actIncludeEl.checked);
   renderBuilder();
+});
+
+// Prosti dodaci bez pod-opcija: osiguranje / putarine / eSIM / transferi.
+[['insuranceChk','insurance'], ['putarinaChk','putarina'], ['esimChk','esim'], ['transferiChk','transferi']].forEach(([id, key])=>{
+  document.getElementById(id).addEventListener('change', (e)=>{
+    builderState[key] = e.target.checked;
+    renderBuilder();
+  });
 });
 
 // Gornja granica je namerno velikodušna (niko realno ne planira izlet
@@ -4330,9 +4423,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
       message: `Ako promeniš hotel na ${testSel.hotelStars}★, zadržavaš skoro istu lokaciju uz malo nižu ocenu (${alt.hotel.rating} umesto ${current.hotel.rating}).`,
       toastMsg: 'hotel promenjen na ' + testSel.hotelStars + '★.',
       apply(){
-        document.querySelectorAll('.chip-row[data-group="hotelStars"] .chip').forEach(c=>{
-          c.classList.toggle('on', Number(c.dataset.value) === testSel.hotelStars);
-        });
+        syncBuilderPanelUi();
       }
     });
   }
@@ -4350,9 +4441,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
         : 'Ako uzmeš manji auto umesto SUV-a, uštedu dobijaš uz nešto manje prtljažnog prostora.',
       toastMsg: 'auto promenjen na ' + (carDowngrade === 'none' ? 'bez auta' : 'mali auto') + '.',
       apply(){
-        document.querySelectorAll('.chip-row[data-group="carPref"] .chip').forEach(c=>{
-          c.classList.toggle('on', c.dataset.value === testSel.carPref);
-        });
+        syncBuilderPanelUi();
       }
     });
   }
@@ -4367,7 +4456,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
       message: `Ako smanjiš broj aktivnosti na ${testSel.activityCount}, ostaje ti i dalje dovoljno vremena za slobodno istraživanje.`,
       toastMsg: 'broj aktivnosti smanjen na ' + testSel.activityCount + '.',
       apply(){
-        document.getElementById('actCount').textContent = testSel.activityCount;
+        syncBuilderPanelUi();
       }
     });
   }
@@ -5118,14 +5207,7 @@ function loadSavedTrip(tripId){
 
   if (trip.selection && trip.selection.kind === 'builder' && trip.selection.builderState){
     Object.assign(builderState, BUILDER_DEFAULTS, trip.selection.builderState);
-    document.querySelectorAll('.chip-row[data-group="flightPref"] .chip').forEach(c=>c.classList.toggle('on', c.dataset.value === builderState.flightPref));
-    document.getElementById('airlineName').style.display = (builderState.flightPref === 'airline') ? 'block' : 'none';
-    document.getElementById('airlineName').value = builderState.airlineName || '';
-    document.querySelectorAll('.chip-row[data-group="hotelStars"] .chip').forEach(c=>c.classList.toggle('on', Number(c.dataset.value) === builderState.hotelStars));
-    document.querySelectorAll('.chip-row[data-group="carPref"] .chip').forEach(c=>c.classList.toggle('on', c.dataset.value === builderState.carPref));
-    document.querySelectorAll('.toggle-chip').forEach(c=>c.classList.toggle('on', !!builderState[c.dataset.toggle]));
-    document.getElementById('actCount').textContent = builderState.activityCount;
-    document.getElementById('budgetInput').value = builderState.budget || '';
+    syncBuilderPanelUi();
     renderBuilder();
     document.getElementById('builderSummary').style.display = 'block';
     document.getElementById('builderPlaceholder').style.display = 'none';
@@ -5649,18 +5731,41 @@ function setTransportToggle(dataT, shouldBeOn){
   if (isOn !== shouldBeOn) el.click();
 }
 
-// Sinhronizuje vizuelne chip-ove u samostalnoj builder sekciji ("Želiš
-// više kontrole?" niže na strani) sa builderState — isti obrazac kao u
-// loadSavedTrip, da izgled ne ostane neusklađen ako korisnik kasnije
-// otvori tu sekciju posle popunjavanja "Prilagodi svoj plan" modala.
-function syncBuilderChipsUi(){
-  document.querySelectorAll('.chip-row[data-group="flightPref"] .chip').forEach(c=>c.classList.toggle('on', c.dataset.value === builderState.flightPref));
+// Sinhronizuje sve checkbox/radio elemente u upitniku (#builderPanel) sa
+// builderState — pozvano posle učitavanja sačuvanog izleta, primene
+// optimizacije, ili prenosa izbora iz "Prilagodi svoj plan" modala, da
+// izgled forme nikad ne ostane neusklađen sa stvarnim stanjem.
+function syncBuilderPanelUi(){
+  const setRadio = (name, val) => document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{ r.checked = (String(r.value) === String(val)); });
+  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+
+  setChk('flightInclude', builderState.includeFlight);
+  qSyncRow('flight', builderState.includeFlight);
+  setRadio('flightPrefRadio', builderState.flightPref);
   document.getElementById('airlineName').style.display = (builderState.flightPref === 'airline') ? 'block' : 'none';
   document.getElementById('airlineName').value = builderState.airlineName || '';
-  document.querySelectorAll('.chip-row[data-group="hotelStars"] .chip').forEach(c=>c.classList.toggle('on', Number(c.dataset.value) === builderState.hotelStars));
-  document.querySelectorAll('.chip-row[data-group="carPref"] .chip').forEach(c=>c.classList.toggle('on', c.dataset.value === builderState.carPref));
-  document.querySelectorAll('#builderPanel .toggle-chip').forEach(c=>c.classList.toggle('on', !!builderState[c.dataset.toggle]));
-  document.getElementById('actCount').textContent = builderState.activityCount;
+
+  setChk('hotelInclude', builderState.includeHotel);
+  qSyncRow('hotel', builderState.includeHotel);
+  setRadio('hotelStarsRadio', builderState.hotelStars);
+  setChk('prioritizeRatingChk', builderState.prioritizeRating);
+  setChk('prioritizeLocationChk', builderState.prioritizeLocation);
+
+  const carOn = builderState.carPref !== 'none';
+  setChk('carInclude', carOn);
+  qSyncRow('car', carOn);
+  setRadio('carPrefRadio', carOn ? builderState.carPref : 'small');
+
+  const actOn = builderState.activityCount > 0;
+  setChk('activitiesInclude', actOn);
+  qSyncRow('activities', actOn);
+  const actInput = document.getElementById('actCountInput');
+  if (actInput) actInput.value = builderState.activityCount;
+
+  setChk('insuranceChk', builderState.insurance);
+  setChk('putarinaChk', builderState.putarina);
+  setChk('esimChk', builderState.esim);
+  setChk('transferiChk', builderState.transferi);
   document.getElementById('budgetInput').value = builderState.budget || '';
 }
 
@@ -5676,7 +5781,7 @@ function syncBuilderStateFromStartPrefs(){
     prioritizeLocation: startPrefs.prioritizeLocation,
     budget: startPrefs.budget
   });
-  syncBuilderChipsUi();
+  syncBuilderPanelUi();
 }
 
 // Dugme "Napravi izlet" UNUTAR "Prilagodi svoj plan" modala (iznad

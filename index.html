@@ -384,58 +384,137 @@ SKLOPI<em>.</em>
 <div class="section builder-wrap">
 <div class="builder" id="builderPanel" style="display:none;">
 <button type="button" class="builder-close" id="builderCloseBtn" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
-<div class="builder-form">
-<div class="builder-group">
-<label class="builder-label"><span class="builder-ic ic-flight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></span> <span data-i18n="builder_flight_label">Let</span></label>
-<div class="chip-row" data-group="flightPref">
-<button type="button" class="chip on" data-value="direct" data-i18n="chip_direct">Direktan</button>
-<button type="button" class="chip" data-value="cheapest" data-i18n="chip_cheapest">Najjeftiniji</button>
-<button type="button" class="chip" data-value="airline" data-i18n="chip_airline">Određena kompanija</button>
-</div>
-<input type="text" id="airlineName" class="builder-input" data-i18n-placeholder="placeholder_airline" placeholder="npr. Lufthansa" style="display:none;">
-</div>
-<div class="builder-group">
-<label class="builder-label"><span class="builder-ic ic-hotel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6M9 10h.01M13 10h.01M9 6.5h.01M13 6.5h.01"/></svg></span> <span data-i18n="toggle_hotel">Smeštaj</span></label>
-<div class="chip-row" data-group="hotelStars">
-<button type="button" class="chip" data-value="3">3★</button>
-<button type="button" class="chip on" data-value="4">4★</button>
-<button type="button" class="chip" data-value="5">5★</button>
-</div>
-<div class="chip-row secondary">
-<button type="button" class="chip toggle-chip" data-toggle="prioritizeRating" data-i18n="chip_priority_rating">Prioritet: ocena</button>
-<button type="button" class="chip toggle-chip" data-toggle="prioritizeLocation" data-i18n="chip_priority_location">Prioritet: lokacija</button>
+<div class="builder-form q-form">
+
+<div class="q-row" data-row="flight">
+<label class="q-row-head">
+<input type="checkbox" id="flightInclude" checked>
+<span class="q-txt">
+<span class="q-name" data-i18n="builder_flight_label">Letovi</span>
+<span class="q-desc" data-i18n="q_flight_desc">Avionska karta do destinacije i nazad</span>
+</span>
+</label>
+<div class="q-sub">
+<div class="q-sub-inner">
+<span class="q-field-label" data-i18n="q_flight_type">Tip leta</span>
+<label class="q-radio-line"><input type="radio" name="flightPrefRadio" value="direct" checked> <span data-i18n="chip_direct">Direktan</span></label>
+<label class="q-radio-line"><input type="radio" name="flightPrefRadio" value="cheapest"> <span data-i18n="chip_cheapest">Najjeftiniji, sa presedanjem</span></label>
+<label class="q-radio-line"><input type="radio" name="flightPrefRadio" value="airline"> <span data-i18n="chip_airline">Određena kompanija</span></label>
+<input type="text" id="airlineName" class="q-text-field" data-i18n-placeholder="placeholder_airline" placeholder="npr. Lufthansa" style="display:none;">
 </div>
 </div>
-<div class="builder-group">
-<label class="builder-label"><span class="builder-ic ic-car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M4 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M17 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M6 12h12"/></svg></span> <span data-i18n="builder_transport_label">Prevoz</span></label>
-<div class="chip-row" data-group="carPref">
-<button type="button" class="chip" data-value="none" data-i18n="chip_no_car">Bez auta</button>
-<button type="button" class="chip on" data-value="small" data-i18n="chip_small_car">Mali auto</button>
-<button type="button" class="chip" data-value="suv" data-i18n="chip_suv">SUV</button>
+</div>
+
+<div class="q-row" data-row="hotel">
+<label class="q-row-head">
+<input type="checkbox" id="hotelInclude" checked>
+<span class="q-txt">
+<span class="q-name" data-i18n="toggle_hotel">Smeštaj</span>
+<span class="q-desc" data-i18n="q_hotel_desc">Hotel ili apartman za ceo boravak</span>
+</span>
+</label>
+<div class="q-sub">
+<div class="q-sub-inner">
+<span class="q-field-label" data-i18n="q_hotel_category">Kategorija</span>
+<label class="q-radio-line"><input type="radio" name="hotelStarsRadio" value="3"> 3★</label>
+<label class="q-radio-line"><input type="radio" name="hotelStarsRadio" value="4" checked> 4★</label>
+<label class="q-radio-line"><input type="radio" name="hotelStarsRadio" value="5"> 5★</label>
+<span class="q-field-label" data-i18n="q_priority">Prioritet</span>
+<label class="q-radio-line"><input type="checkbox" id="prioritizeRatingChk"> <span data-i18n="chip_priority_rating">Prioritet: ocena</span></label>
+<label class="q-radio-line"><input type="checkbox" id="prioritizeLocationChk"> <span data-i18n="chip_priority_location">Prioritet: lokacija</span></label>
 </div>
 </div>
-<div class="builder-group">
-<label class="builder-label"><span class="builder-ic ic-activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></span> <span data-i18n="builder_activities_label">Aktivnosti</span></label>
-<div class="stepper">
-<button type="button" id="actMinus" data-i18n-aria-label="aria_fewer_activities" aria-label="Manje aktivnosti">–</button>
-<span id="actCount" class="tabular">2</span>
-<button type="button" id="actPlus" data-i18n-aria-label="aria_more_activities" aria-label="Više aktivnosti">+</button>
+</div>
+
+<div class="q-row" data-row="car">
+<label class="q-row-head">
+<input type="checkbox" id="carInclude" checked>
+<span class="q-txt">
+<span class="q-name" data-i18n="builder_transport_label">Rent a car</span>
+<span class="q-desc" data-i18n="q_car_desc">Vozilo za ceo period boravka</span>
+</span>
+</label>
+<div class="q-sub">
+<div class="q-sub-inner">
+<span class="q-field-label" data-i18n="q_car_type">Vozilo</span>
+<label class="q-radio-line"><input type="radio" name="carPrefRadio" value="small" checked> <span data-i18n="chip_small_car">Mali auto</span></label>
+<label class="q-radio-line"><input type="radio" name="carPrefRadio" value="suv"> <span data-i18n="chip_suv">SUV</span></label>
 </div>
 </div>
-<div class="builder-group" style="border-bottom:none;">
-<label class="builder-label"><span class="builder-ic ic-budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.3 9.6c0-1.2 1.1-2.1 2.7-2.1s2.7.8 2.7 1.9-1.2 1.6-2.5 1.9c-1.4.3-2.7.8-2.7 1.9s1.2 1.9 2.7 1.9 2.7-.7 2.7-1.9M12 6.3v1.2M12 16.5v1.2"/></svg></span> <span data-i18n-html="builder_budget_label_html">Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></span></label>
+</div>
+
+<div class="q-row" data-row="activities">
+<label class="q-row-head">
+<input type="checkbox" id="activitiesInclude" checked>
+<span class="q-txt">
+<span class="q-name" data-i18n="builder_activities_label">Aktivnosti</span>
+<span class="q-desc" data-i18n="q_activities_desc">Izleti, ulaznice i vođene ture</span>
+</span>
+</label>
+<div class="q-sub">
+<div class="q-sub-inner">
+<span class="q-field-label" data-i18n="q_activities_count">Broj aktivnosti</span>
+<input type="number" id="actCountInput" class="q-text-field q-num-field" min="0" max="10" value="2">
+</div>
+</div>
+</div>
+
+<div class="q-row" data-row="insurance">
+<label class="q-row-head">
+<input type="checkbox" id="insuranceChk">
+<span class="q-txt">
+<span class="q-name" data-i18n="f_insurance_name">Osiguranje</span>
+<span class="q-desc" data-i18n="f_insurance_sub">Zdravstveno i za otkazivanje</span>
+</span>
+</label>
+</div>
+
+<div class="q-row" data-row="putarina">
+<label class="q-row-head">
+<input type="checkbox" id="putarinaChk">
+<span class="q-txt">
+<span class="q-name" data-i18n="f_tolls_name">Putarine</span>
+<span class="q-desc" data-i18n="f_tolls_sub">Procena po ruti i državi</span>
+</span>
+</label>
+</div>
+
+<div class="q-row" data-row="esim">
+<label class="q-row-head">
+<input type="checkbox" id="esimChk">
+<span class="q-txt">
+<span class="q-name">eSIM</span>
+<span class="q-desc" data-i18n="f_esim_sub">Internet od sletanja</span>
+</span>
+</label>
+</div>
+
+<div class="q-row" data-row="transferi">
+<label class="q-row-head">
+<input type="checkbox" id="transferiChk">
+<span class="q-txt">
+<span class="q-name" data-i18n="f_transfer_name">Transferi</span>
+<span class="q-desc" data-i18n="f_transfer_sub">Od aerodroma do smeštaja</span>
+</span>
+</label>
+</div>
+
+<div class="q-row" data-row="budget" style="border-bottom:none;">
+<label class="q-row-head" style="cursor:default;">
+<span class="q-checkbox-spacer"></span>
+<span class="q-txt">
+<span class="q-name" data-i18n-html="builder_budget_label_html">Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></span>
+<span class="q-desc" data-i18n="q_budget_desc">Reci nam okvirni budžet da uporedimo</span>
+</span>
+</label>
+<div class="q-sub-inner" style="padding-left:53px;">
 <div class="builder-budget-row">
-<span>€</span><input type="number" id="budgetInput" class="builder-input" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
+<span>€</span><input type="number" id="budgetInput" class="q-text-field" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
 </div>
 </div>
-<div class="builder-group" style="border-bottom:none;">
-<label class="builder-label"><span class="builder-ic ic-addons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span> <span data-i18n="builder_addons_label">Dodaci</span></label>
-<div class="chip-row secondary">
-<button type="button" class="chip toggle-chip" data-toggle="insurance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/></svg><span data-i18n="f_insurance_name">Osiguranje</span></button>
-<button type="button" class="chip toggle-chip" data-toggle="esim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8.5a8.5 8.5 0 0112 0M8.7 11.2a4.7 4.7 0 016.6 0M11.4 13.9a1 1 0 011.2 0"/><circle cx="12" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg><span>eSIM</span></button>
 </div>
-</div>
-<button type="button" class="btn-primary" id="makeBuilderBtn" style="margin:6px 0 22px;width:100%;" data-i18n="btn_make_arrangement">Napravi aranžman</button>
+
+<button type="button" class="btn-primary" id="makeBuilderBtn" style="margin:18px 0 22px;width:100%;" data-i18n="btn_make_arrangement">Napravi aranžman</button>
 </div>
 <div class="builder-summary" id="builderSummary" style="display:none;">
 <div class="builder-summary-head" data-i18n="builder_summary_head">Tvoj aranžman</div>
@@ -447,16 +526,21 @@ SKLOPI<em>.</em>
 <div class="builder-total-hint" data-i18n="builder_total_hint">Zbir procena za let, hotel, auto i aktivnosti — svaka stavka se plaća zasebno kod partnera, ne u jednom plaćanju.</div>
 <div class="builder-budget-status" id="builderBudgetStatus"></div>
 <p class="disclaimer" style="margin-top:8px;" data-i18n="disclaimer_illustrative">⚠️ Ilustrativna procena, ne stvarna ponuda — sajt je u razvoju.</p>
-<button type="button" class="btn-optimize" id="optimizeBtn" data-i18n="btn_optimize">Optimizuj moj aranžman</button>
-<div class="optimize-result" id="optimizeResult" style="display:none;"></div>
-<button type="button" class="btn-save" id="saveTripBtn">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-<span data-i18n="btn_save_trip">Sačuvaj aranžman</span>
+<div class="qa-list">
+<button type="button" class="qa-item" id="optimizeBtn">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>
+<span data-i18n="btn_optimize">Optimizuj moj izlet</span>
 </button>
-<button type="button" class="btn-alert" id="alertBuilderBtn">
+<div class="optimize-result" id="optimizeResult" style="display:none;"></div>
+<button type="button" class="qa-item" id="saveTripBtn">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+<span data-i18n="btn_save_trip">Sačuvaj izlet</span>
+</button>
+<button type="button" class="qa-item" id="alertBuilderBtn">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.75-.98 2.4L4.6 15h14.8l-1.42-1.4a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 19a2.6 2.6 0 005 0"/></svg>
 <span data-i18n="btn_price_alert">Javi mi kad padne cena</span>
 </button>
+</div>
 <div class="builder-book-links" id="builderBookLinks"></div>
 </div>
 <div class="builder-summary-placeholder" id="builderPlaceholder">
