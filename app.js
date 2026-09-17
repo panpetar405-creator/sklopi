@@ -4099,7 +4099,7 @@ function builderCtx(){
   const to = document.getElementById('dateTo').value;
   const adults = Number(document.getElementById('adults').value) || 2;
   const nights = nightsBetween(from, to);
-  return {dest, nights, days:nights, adults};
+  return {dest, from, to, nights, days:nights, adults};
 }
 
 function computeCustomPackage(sel, ctx){
@@ -5306,22 +5306,38 @@ async function openAlertModal(kind, tier, total, destOverride){
     promptLogin('Prijavi se emailom da postaviš alert za cenu.');
     return;
   }
-  let dest, params;
+  let dest, dateFrom, dateTo, adults, selection;
   if (kind === 'builder') {
     const ctx = builderCtx();
     dest = ctx.dest;
+    dateFrom = ctx.from;
+    dateTo = ctx.to;
+    adults = ctx.adults;
     // Čuvamo CEO izbor iz buildera (builderState) da bi server kasnije
-    // mogao da rekonstruiše IDENTIČAN paket i uporedi cenu — bez ovoga
-    // ne bi imao dovoljno informacija (builder ima mnogo više opcija
-    // od gotove ponude: tip leta, zvezdice hotela, tip auta...).
-    params = { kind:'builder', dest: ctx.dest, nights: ctx.nights, days: ctx.days, adults: ctx.adults, sel: builderState };
+    // mogao da rekonstruiše IDENTIČAN paket i uporedi cenu (vidi
+    // computeBuilderTotal u pricing-core.js, koje očekuje selection sa
+    // flightPref/hotelStars/prioritizeRating/prioritizeLocation/carPref/
+    // activityCount direktno na objektu — bez ovoga ne bi imao dovoljno
+    // informacija: builder ima mnogo više opcija od gotove ponude).
+    selection = Object.assign({ kind: 'builder' }, builderState);
   } else {
     const isMatchPick = !!destOverride;
     const ctx = isMatchPick ? window._lastMatchCtx : window._lastSearchCtx;
     dest = destOverride || (window._lastSearchCtx && window._lastSearchCtx.dest) || document.getElementById('dest').value.trim() || 'Atina';
-    params = ctx ? { kind:'search', dest, tier, nights: ctx.nights, adults: Number(ctx.adults), flags: ctx.flags } : null;
+    dateFrom = ctx && ctx.from;
+    dateTo = ctx && ctx.to;
+    adults = ctx ? Number(ctx.adults) : 2;
+    // Worker (pricing-core.js → computeAlertPrice) prepoznaje 'search' po
+    // selection.kind i računa cenu preko computeSearchTierTotal(dest,
+    // nights, adults, tier) — tier je jedino što mu treba osim onoga što
+    // već ima u redu (dest/date_from/date_to/adults).
+    selection = { kind: 'search', tier };
   }
-  _pendingAlert = { kind, tier, currentTotal: total, dest, params };
+  if (!dateFrom || !dateTo) {
+    showToast('Nedostaju datumi putovanja — pokušaj ponovo iz pretrage.');
+    return;
+  }
+  _pendingAlert = { dest, dateFrom, dateTo, adults, selection, currentTotal: total };
   document.getElementById('alertModalSub').textContent = 'Za ' + dest + ' — trenutna procena je ' + fmtEUR(total) + '.';
   document.getElementById('alertEmail').value = user.email;
   document.getElementById('alertThreshold').value = Math.max(1, Math.round(total * 0.9));
@@ -5363,11 +5379,12 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
     const { error } = await sb.from('price_alerts').insert({
       email,
       dest: _pendingAlert.dest,
-      kind: _pendingAlert.kind,
-      tier: _pendingAlert.tier,
+      date_from: _pendingAlert.dateFrom,
+      date_to: _pendingAlert.dateTo,
+      adults: _pendingAlert.adults,
+      selection: _pendingAlert.selection,
       threshold,
-      current_total: _pendingAlert.currentTotal,
-      params: _pendingAlert.params
+      last_price: _pendingAlert.currentTotal
     });
     if (error) throw error;
     requestCloseAlertModal();
