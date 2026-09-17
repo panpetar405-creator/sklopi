@@ -5918,18 +5918,8 @@ const FEATURE_GUIDES = {
     ]
   }
 };
-function featureGuideCardHtml(section, idx, total, icon){
-  return `
-  <div class="pkg fg-pkg">
-    <div class="fg-card-head">
-      <span class="fg-card-ic">${icon}</span>
-      <div class="fg-card-heading">
-        <span class="fg-card-step">${idx+1}/${total}</span>
-        <h3>${escapeHtml(section.step)}</h3>
-      </div>
-    </div>
-    <div class="fg-card-body fg-content">${section.body}</div>
-  </div>`;
+function featureGuideScrollHtml(sections){
+  return sections.map(s => `<h4>${escapeHtml(s.step)}</h4>${s.body}`).join('');
 }
 function openFeatureGuide(key){
   const g = FEATURE_GUIDES[key];
@@ -5938,14 +5928,13 @@ function openFeatureGuide(key){
     <div class="status-banner">
       <div class="status-left">
         <div class="status-check">${g.icon}</div>
-        <div><h3>${escapeHtml(g.title)}</h3><p>Sve što treba da znaš pre nego što rezervišeš — prevuci za sledeću karticu.</p></div>
+        <div><h3>${escapeHtml(g.title)}</h3><p>Sve što treba da znaš pre nego što rezervišeš.</p></div>
       </div>
     </div>
   `;
   const body = document.getElementById('featureGuideBody');
-  body.innerHTML = packagesSliderHtml(g.sections.map((s,i)=>featureGuideCardHtml(s, i, g.sections.length, g.icon)))
+  body.innerHTML = `<div class="fg-content fg-scroll">${featureGuideScrollHtml(g.sections)}</div>`
     + `<p class="fg-disclaimer">⚠️ Saveti su opšteg, edukativnog karaktera i mogu se razlikovati po konkretnoj destinaciji, sezoni i propisima zemlje. Uvek proveri aktuelne uslove kod partnera pre rezervacije.</p>`;
-  initPackagesSlider(body.querySelector('.packages-slider-wrap'));
   openFeatureGuideSheet();
 }
 function openFeatureGuideSheet(){
