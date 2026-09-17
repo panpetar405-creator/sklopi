@@ -2042,7 +2042,7 @@ footer{padding:28px 20px;}
     background:
         radial-gradient(circle at 88% -10%, rgba(200,164,92,0.28) 0%, transparent 46%),
         radial-gradient(circle at 6% 112%, rgba(8,127,91,0.35) 0%, transparent 52%),
-        linear-gradient(150deg, var(--royal-plum) 0%, var(--ink) 72%);
+        linear-gradient(150deg, var(--royal-plum) 0%, var(--deep) 72%);
     border-left:4px solid var(--emerald);
     border-color:rgba(255,255,255,0.08);
 }
