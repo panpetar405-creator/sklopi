@@ -354,9 +354,9 @@ a{color:inherit;}
 /* ---------- Search "boarding pass" ---------- */
 .ticket{
     margin:44px 0 -70px;
-    background:rgba(15,76,92,0.38);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
+    background:rgba(15,76,92,0.12);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
     color:var(--ink);
     border-radius:14px;
     border:1px solid var(--line);
@@ -400,10 +400,12 @@ a{color:inherit;}
 .ticket .stub label{
     display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.08em;
     color:var(--ink-soft);margin-bottom:8px;
+    text-shadow:0 1px 6px rgba(17,24,39,0.55);
 }
 .ticket .stub input, .ticket .stub select{
     width:100%;border:none;font-family:'Manrope',sans-serif;font-size:21.5px;
     background:transparent;color:var(--ink);padding:0;outline:none;
+    text-shadow:0 1px 6px rgba(17,24,39,0.55);
 }
 .ticket .stub input:focus-visible, .ticket .stub select:focus-visible{
     outline:2px solid var(--gold-text);outline-offset:3px;border-radius:2px;
