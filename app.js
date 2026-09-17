@@ -277,16 +277,151 @@ const I18N = {
     btn_search_kayak:'Search on KAYAK', btn_book_booking:'Book on Booking.com',
     base_package_note:'Base package price — add insurance or eSIM if you like.',
     fits_budget:'Fits your budget of ', over_budget:'Slightly over budget, but the closest option we have.',
+  },
+  ru: {
+    nav_how:'Как это работает', nav_dest:'Направления', nav_about:'О нас',
+    aria_account:'Аккаунт', aria_menu:'Меню',
+    hero_kicker:'Продуманные путешествия',
+    hero_title:'SKLOPI',
+    hero_lede:'Всё включено в одну цену.',
+    promo_banner_kicker:'Момент для себя',
+    promo_banner_quote:'Некоторые места просто бесценны.',
+    partners_label:'Бронирование проходит напрямую через партнёров',
+    label_origin:'Откуда', placeholder_origin:'напр. Белград, Ниш, Подгорица',
+    label_dest:'Направление', placeholder_dest:'напр. Афины, Рим, Барселона',
+    label_dates:'С — По',
+    aria_prev_month:'Предыдущий месяц', aria_next_month:'Следующий месяц',
+    aria_today:'сегодня', aria_cal_dialog:'Выбор дат поездки',
+    chip_weekend:'Выходные', chip_week:'Неделя', chip_twoweeks:'Две недели',
+    cal_wx_legend:'<span class="lg-exact">☀️</span>прогноз (до 16 дней вперёд) &nbsp;·&nbsp; <span class="lg-est">☀️</span>оценка для более поздних дат, по данным за тот же период прошлого года &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
+    btn_done:'Готово',
+    label_passengers:'Путешественников', placeholder_passengers:'Путешественников', aria_pax_dialog:'Выбор числа путешественников',
+    opt_1adult:'1 взрослый', opt_2adults:'2 взрослых', opt_3adults:'3 взрослых', opt_4adults:'4 взрослых',
+    btn_search:'Старт',
+    btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Старт',
+    toggle_flight:'Перелёты', toggle_hotel:'Проживание', toggle_car:'Прокат авто', toggle_activity:'Активность',
+    eyebrow_no_idea:'Нет плана', h2_no_idea:'Не знаешь куда поехать?', sub_no_idea:'Скажи нам, сколько хочешь потратить, и мы найдём направления, которые подойдут.',
+    btn_no_idea_cta:'🎲 Удиви меня',
+    eyebrow_more_control:'Больше контроля', h2_build_own:'Хочешь больше контроля?',
+    eyebrow_content_control:'Контроль содержания', h2_content_control:'Сам реши, что тебе подходит',
+    control_teaser_sub:'Сам выбираешь перелёт, отель, транспорт, активности, страховку и eSIM — цена суммируется в реальном времени.',
+    ct_cta:'Открыть конструктор',
+    btn_choose:'Выбрать',
+    builder_addons_label:'Дополнения',
+    eyebrow_features:'Всё включено',
+    sub_build_own:'Сам выбираешь перелёт, проживание, авто и активности — мы считаем, сколько всё это будет стоить вместе.',
+    builder_flight_label:'Перелёт', chip_direct:'Прямой', chip_cheapest:'Самый дешёвый', chip_airline:'Определённая авиакомпания',
+    placeholder_airline:'напр. Lufthansa',
+    chip_priority_rating:'Приоритет: рейтинг', chip_priority_location:'Приоритет: расположение',
+    builder_transport_label:'Транспорт', chip_no_car:'Без авто', chip_small_car:'Маленькое авто', chip_suv:'Внедорожник',
+    builder_activities_label:'Активности',
+    aria_fewer_activities:'Меньше активностей', aria_more_activities:'Больше активностей',
+    builder_budget_label_html:'Бюджет <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(необязательно)</span>',
+    placeholder_budget:'напр. 700',
+    btn_make_arrangement:'Составить поездку',
+    builder_summary_head:'Твоя поездка', builder_total_sub:'итого',
+    builder_total_hint:'Сумма оценок за перелёт, отель, авто и активности — каждая позиция оплачивается отдельно у партнёра, а не одним платежом.',
+    disclaimer_illustrative:'⚠️ Иллюстративная оценка, не реальное предложение — сайт находится в разработке.',
+    btn_optimize:'Оптимизировать поездку', btn_save_trip:'Сохранить поездку', btn_price_alert:'Сообщить, когда цена упадёт',
+    builder_placeholder_text:'Здесь появится примерная цена, как только начнёшь выбирать — измени любую опцию слева.',
+    eyebrow_for_later:'На потом', h2_saved_trips:'Вернись, когда будешь готов',
+    sub_saved_trips:'Сохрани понравившиеся варианты и продолжи позже.',
+    h2_features:'Всё необходимое для поездки', sub_features:'От перелёта и проживания до авто, трансферов, активностей, страховки и интернета.',
+    f_flight_sub:'Прямые и с пересадками', f_hotel_sub:'Отели, апартаменты, хостелы',
+    f_car_name:'Авто', f_car_sub:'Получение в аэропорту',
+    f_tolls_name:'Дорожные сборы', f_tolls_sub:'Оценка по маршруту и стране',
+    f_activity_name:'Активности', f_activity_sub:'Билеты и туры заранее',
+    f_insurance_name:'Страховка', f_insurance_sub:'Медицинская и на случай отмены',
+    f_esim_sub:'Интернет сразу по прилёту',
+    f_transfer_name:'Трансферы', f_transfer_sub:'От аэропорта до места проживания',
+    postcard_caption:'Следующая поездка всегда впереди.',
+    eyebrow_ideas:'Идеи для следующей поездки', h2_popular_dest:'Куда дальше?',
+    sub_popular_dest:'Посмотри направления, которые путешественники из Сербии и региона выбирают чаще всего.',
+    pd_athens_name:'Афины, Греция', pd_athens_desc:'Античность, паромы на острова и первоклассная кухня — популярное летнее направление с частыми прямыми рейсами.',
+    pd_rome_name:'Рим, Италия', pd_rome_desc:'Колизей, Ватикан и уличная еда — город, который стоит обойти пешком, всего в паре часов лёта от Белграда.',
+    pd_barcelona_name:'Барселона, Испания', pd_barcelona_desc:'Архитектура Гауди, пляж и тапас-бары — любимое сочетание города и моря.',
+    pd_budva_name:'Будва, Черногория', pd_budva_desc:'Ближайшее море на машине или автобусе из Сербии — старый город и длинные пляжи.',
+    pd_istanbul_name:'Стамбул, Турция', pd_istanbul_desc:'Встреча Европы и Азии, базары и Босфор — доступная поездка в межсезонье.',
+    pd_vienna_name:'Вена, Австрия', pd_vienna_desc:'Музеи, кафе и рождественские ярмарки зимой — удобная городская поездка на выходные.',
+    pd_thessaloniki_name:'Салоники, Греция', pd_thessaloniki_desc:'Море без необходимости лететь — удобная поездка на машине или автобусе.',
+    pd_prague_name:'Прага, Чехия', pd_prague_desc:'Архитектура, пивные и прогулки по старому городу — популярная городская поездка.',
+    pd_budapest_name:'Будапешт, Венгрия', pd_budapest_desc:'Купальни, архитектура и короткий перелёт или поездка на машине — удобная городская поездка.',
+    cta_right:'Вся поездка.<br>Одна цена.',
+    eyebrow_faq:'Вопросы', h2_faq:'Перед бронированием',
+    sub_faq:'Ответы на самые частые вопросы о ценах, бронировании и изменениях.',
+    faq_q1:'Реальны ли показанные цены?',
+    faq_a1:'SKLOPI сейчас находится в разработке. Цены, которые ты видишь в поиске и конструкторе, — иллюстративная оценка, созданная для демонстрации, и не поступают напрямую с сайтов партнёров. Перед бронированием всегда уточняй точную цену и наличие прямо у партнёра (KAYAK, Booking.com, Viator).',
+    faq_q2:'Как работает конструктор поездки?',
+    faq_a2:'Ты сам выбираешь тип перелёта, категорию отеля, авто и количество активностей, а SKLOPI суммирует примерную цену за весь пакет. Кнопка «Оптимизировать поездку» предлагает изменение, которое может снизить цену при похожем качестве.',
+    faq_q3:'Как хранятся мои сохранённые поездки?',
+    faq_a3:'Ты создаёшь аккаунт с email и паролем в разделе сохранённых поездок. Твои данные привязаны к аккаунту, а не к этому устройству, поэтому ты можешь получить к ним доступ и с другого телефона или компьютера — просто войди с тем же email и паролем.',
+    faq_q4:'Взимает ли SKLOPI плату за бронирование?',
+    faq_a4:'Нет. SKLOPI не берёт плату напрямую — нажатие «Забронировать» или «Искать» переносит тебя на сайт партнёра (KAYAK, Booking.com или Viator), где происходит бронирование и оплата.',
+    faq_q5:'Есть вопрос, которого здесь нет?',
+    faq_a5:'Напиши на <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — мы с радостью поможем.',
+    whatsapp_aria:'Напиши нам в WhatsApp',
+    stat_searches:'поисков', stat_clicks:'кликов по предложениям', stat_last:'последнее направление',
+    footer_contact:'Контакты', footer_privacy:'Конфиденциальность', footer_terms:'Условия', footer_cookies:'Cookie',
+    foot_note:'SKLOPI — прототип продукта в разработке. Показанные цены иллюстративны (смоделированы для демонстрации), не поступают напрямую от партнёров и не являются реальным предложением или обязательством по цене. · <a href="#" id="cookieSettingsLink">Настройки cookie</a>',
+    cookie_text:'<b>Мы используем cookie для аналитики</b> (Google Analytics), чтобы понять, как используется сайт, и улучшить его. Мы не используем их для маркетинга и не передаём за пределы Google. Подробности в <a href="kolacici.html">Политике использования cookie</a>.',
+    cookie_decline:'Отклонить', cookie_accept:'Принять',
+    aria_close:'Закрыть', label_email:'Email',
+    label_alert_threshold:'Сообщить мне, когда общая примерная цена упадёт ниже', btn_set_alert:'Установить оповещение',
+    alert_modal_disclaimer:'⚠️ Всё ещё иллюстративная оценка, не реальное предложение партнёра. Отписаться можно в любой момент по ссылке в письме, которое ты получишь.',
+    match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">Не знаешь куда?</span><span class="ac-sub">Короткий опрос из 3 вопросов — найди 3 направления, которые действительно тебе подходят, а не случайные.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 Море</span><span class="match-preview-chip">🏙️ Город</span><span class="match-preview-chip">🌲 Природа</span><span class="match-preview-chip">🎉 Тусовка</span></span><span class="ac-cta"><span class="ac-cta-label">Найти мне направление</span><span class="ac-arrow">→</span></span>',
+    match_modal_title:'Найди свою поездку',
+    match_modal_sub:'Три коротких вопроса — мы оцениваем более 60 направлений по совпадению с тобой, сезоном и длительностью поездки, не наугад. Даты и число путешественников останутся как в форме выше.',
+    match_step1_title:'С кем ты путешествуешь?',
+    match_step2_title:'Что для тебя значит отдых?',
+    match_step3_title:'Какой у тебя общий бюджет?',
+    match_label_budget:'Общий бюджет (на всех путешественников, необязательно)', placeholder_match_budget:'напр. 400',
+    match_modal_btn:'🎯 Найти мне 3 направления',
+    match_modal_disclaimer:'⚠️ Иллюстративная оценка цены, объединённая с твоими ответами, — не реальное предложение партнёра.',
+    share_modal_title:'Поделиться с друзьями', share_modal_label_link:'Ссылка для отправки',
+    share_modal_copy:'📋 Копировать ссылку', share_modal_native:'📤 Поделиться через приложения',
+    share_modal_disclaimer:'Любой, кто откроет ссылку, увидит план и сможет ответить (Еду/Возможно/Не смогу) — без создания аккаунта.',
+    documents_check_link:'🧳 Проверь документы для поездки',
+    documents_modal_title:'Документы для поездки',
+    documents_modal_sub:'Паспорт и зелёная карта — всё в одном месте, в пару кликов.',
+    docs_tab_passport:'🛂 Паспорт',
+    docs_tab_greencard:'🪪 Зелёная карта',
+    passport_check_link:'🛂 Проверь, действителен ли твой паспорт для этой поездки',
+    passport_modal_sub:'Многие страны требуют, чтобы паспорт оставался действительным ещё некоторое время после возвращения — иначе тебя могут развернуть на границе или при регистрации, даже если сами даты поездки в порядке.',
+    passport_modal_title:'Действителен ли твой паспорт для этой поездки?',
+    passport_modal_label_expiry:'До какой даты действителен твой паспорт?',
+    passport_modal_btn:'Проверить',
+    passport_modal_disclaimer:'⚠️ Общие правила по странам, только для ориентира — перед поездкой всегда дополнительно уточняй в посольстве/консульстве или у авиакомпании.',
+    green_card_check_link:'🪪 Проверь, нужна ли зелёная карта для этого маршрута',
+    green_card_modal_title:'Нужна ли зелёная карта для авто?',
+    green_card_modal_sub:'Зелёная карта — это международное подтверждение автостраховки. У Сербии есть соглашения с большинством европейских стран, поэтому карта не нужна, но для некоторых направлений она всё же требуется — и оплачивается отдельно у страховщика, помимо стоимости аренды.',
+    green_card_modal_disclaimer:'⚠️ Общее правило для автомобилей, зарегистрированных в Сербии, только для ориентира — перед поездкой всегда уточняй у своего страховщика или АМСС, так как соглашения время от времени меняются.',
+    green_card_dest_missing:'Сначала укажи, куда едешь, в поле «Направление» выше, а затем вернись сюда — правило зависит от страны.',
+    green_card_scope_note:'Относится к поездке на собственном или арендованном в Сербии автомобиле через границу — не к прокатному авто, полученному на месте назначения (fly & drive).',
+    ac_searching:'Ищем…', ac_no_results:'Нет предложений для такого названия.',
+    results_back:'Назад', results_back_aria:'Назад на сайт',
+    night:'ночь', nights:'ночей', passenger:'путешественник', passengers:'путешественников',
+    fuel_estimate:'Топливо (оценка)', tolls_estimate:'Дорожные сборы (оценка)', insurance:'Страховка', esim_internet:'eSIM / интернет',
+    btn_search_kayak:'Искать на KAYAK', btn_book_booking:'Забронировать на Booking.com',
+    base_package_note:'Цена базового пакета — добавь страховку или eSIM по желанию.',
+    fits_budget:'Вписывается в твой бюджет ', over_budget:'Немного выше бюджета, но самый близкий вариант, который у нас есть.',
   }
 };
 function getLang(){
   try {
     const saved = localStorage.getItem('skoknica_lang');
-    if (saved === 'en' || saved === 'sr') return saved;
+    if (saved === 'en' || saved === 'sr' || saved === 'ru') return saved;
   } catch(e){}
   return 'sr';
 }
 function t(key){ const lang = getLang(); return (I18N[lang] && I18N[lang][key]) ?? (I18N.sr[key] ?? key); }
+// Mali helper za tekst koji nije u I18N objektu (retki hardkodovani stringovi
+// van data-i18n / t() sistema) — bira sr/en/ru granu prema trenutnom jeziku.
+function L3(sr, en, ru){
+  const lang = getLang();
+  if (lang === 'ru') return ru;
+  if (lang === 'en') return en;
+  return sr;
+}
 function applyStaticI18n(){
   const lang = getLang();
   document.documentElement.lang = lang;
@@ -297,17 +432,20 @@ function applyStaticI18n(){
   const btn = document.getElementById('langSwitchBtn');
   if (btn){
     btn.classList.toggle('is-en', lang === 'en');
-    btn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+    btn.setAttribute('data-lang', lang);
+    btn.setAttribute('aria-pressed', lang !== 'sr' ? 'true' : 'false');
   }
   const titleEl = document.querySelector('title');
-  if (titleEl) titleEl.textContent = lang === 'sr' ? 'SKLOPI — ceo izlet, jedna cena' : 'SKLOPI — one whole trip, one price';
+  if (titleEl) titleEl.textContent = L3('SKLOPI — ceo izlet, jedna cena', 'SKLOPI — one whole trip, one price', 'SKLOPI — вся поездка, одна цена');
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute('content', lang === 'sr'
-    ? 'SKLOPI pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.'
-    : 'SKLOPI finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.');
+  if (metaDesc) metaDesc.setAttribute('content', L3(
+    'SKLOPI pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.',
+    'SKLOPI finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.',
+    'SKLOPI находит перелёт, отель, авто и активности для твоей следующей поездки и суммирует их в одну цену. Составь собственную поездку или выбери готовый пакет по бюджету.'
+  ));
 }
 function setLang(lang){
-  localStorage.setItem('skoknica_lang', lang === 'en' ? 'en' : 'sr');
+  localStorage.setItem('skoknica_lang', (lang === 'en' || lang === 'ru') ? lang : 'sr');
   applyStaticI18n();
   // Ponovo iscrtaj dinamički generisan sadržaj (rezultati/builder/auth/saved)
   // u novom jeziku, ako trenutno postoji na strani.
@@ -368,6 +506,7 @@ function nightsBetween(a,b){
 function fmtDate(iso){
   const d = new Date(iso);
   if (getLang() === 'en') return d.toLocaleString('en-GB', {day:'numeric', month:'short'});
+  if (getLang() === 'ru') return d.toLocaleString('ru-RU', {day:'numeric', month:'long'});
   return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'long'});
 }
 function passengerLabel(adults){
@@ -556,7 +695,7 @@ function pickBestLocationMatch(results, query){
     const mySeq = ++wxRequestSeq;
     // odmah skini stare ikonice (mogu biti od prethodne destinacije) da ne ostane pogrešan utisak
     cells.forEach(cell => cell.querySelectorAll('.cal-wx').forEach(n => n.remove()));
-    setStatus((getLang()==='en' ? 'Looking up weather for “' + city + '”…' : 'Tražim vreme za „' + city + '“…'));
+    setStatus(L3('Tražim vreme za „' + city + '“…', 'Looking up weather for “' + city + '”…', 'Ищем погоду для «' + city + '»…'));
 
     const {geo, networkError: geoErr} = await wx.geocode(city);
     if (mySeq !== wxRequestSeq) return; // korisnik je u međuvremenu promenio destinaciju — ovaj odgovor je zastareo
@@ -1004,6 +1143,7 @@ function pickBestLocationMatch(results, query){
   // 11-14 koji uvek idu na "odraslih" bez obzira na poslednju cifru).
   function paxOptionLabel(n){
     if (getLang() === 'en') return n + ' ' + (n === 1 ? 'adult' : 'adults');
+    if (getLang() === 'ru') return n + ' ' + (n === 1 ? 'взрослый' : 'взрослых');
     const mod10 = n % 10, mod100 = n % 100;
     let word;
     if (mod100 >= 11 && mod100 <= 14) word = 'odraslih';
@@ -1196,6 +1336,11 @@ function ctaCopy(dest){
     return isCoastal
       ? 'History, great food, the sea and unforgettable experiences — now easier than ever to plan it all.'
       : 'History, great food and unforgettable experiences — now easier than ever to plan it all.';
+  }
+  if (getLang() === 'ru'){
+    return isCoastal
+      ? 'История, отличная еда, море и незабываемые впечатления — теперь спланировать всё это проще, чем когда-либо.'
+      : 'История, отличная еда и незабываемые впечатления — теперь спланировать всё это проще, чем когда-либо.';
   }
   return isCoastal
     ? 'Istorija, dobra hrana, more i nezaboravni doživljaji — a sad je lakše nego ikad da sve to isplaniraš.'
@@ -3231,7 +3376,7 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   window._lastSearchPkgs = pkgs;
   window._lastSearchCtx = {dest, from, to, adults, nights, flags};
 
-  document.getElementById('ctaTitle').textContent = getLang() === 'en' ? dest + ' is waiting for you.' : dest + ' te čeka.';
+  document.getElementById('ctaTitle').textContent = L3(dest + ' te čeka.', dest + ' is waiting for you.', dest + ' ждёт тебя.');
   document.getElementById('ctaDesc').textContent = ctaCopy(dest);
 
   const head = document.getElementById('resultsHead');
@@ -4475,8 +4620,8 @@ function updateCtaBanner(){
   const ctaDest = pickCtaDestFromTyping() || state.lastDest || '';
   if (ctaTitleEl){
     ctaTitleEl.textContent = ctaDest
-      ? (getLang() === 'en' ? ctaDest + ' is waiting for you.' : ctaDest + ' te čeka.')
-      : (getLang() === 'en' ? 'Your next destination is waiting.' : 'Sledeća destinacija te čeka.');
+      ? L3(ctaDest + ' te čeka.', ctaDest + ' is waiting for you.', ctaDest + ' ждёт тебя.')
+      : L3('Sledeća destinacija te čeka.', 'Your next destination is waiting.', 'Следующее направление уже ждёт.');
   }
   if (ctaDescEl) ctaDescEl.textContent = ctaCopy(ctaDest);
 }
@@ -5317,7 +5462,11 @@ function runPassportCheck(){
   }
 }
 const langSwitchBtn = document.getElementById('langSwitchBtn');
-if (langSwitchBtn) langSwitchBtn.addEventListener('click', () => setLang(getLang() === 'en' ? 'sr' : 'en'));
+if (langSwitchBtn) langSwitchBtn.addEventListener('click', () => {
+  const order = ['sr', 'en', 'ru'];
+  const next = order[(order.indexOf(getLang()) + 1) % order.length];
+  setLang(next);
+});
 
 const documentsCheckBtn = document.getElementById('documentsCheckBtn');
 if (documentsCheckBtn) documentsCheckBtn.addEventListener('click', openDocumentsModal);
