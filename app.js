@@ -1784,6 +1784,8 @@ const POPULAR_DESTINATIONS = [
   {name:'Palić', extra:'Srbija'}, {name:'Zlatarsko jezero', extra:'Srbija'}, {name:'Perućac', extra:'Srbija'},
   {name:'Srebrno jezero', extra:'Srbija'}, {name:'Borsko jezero', extra:'Srbija'}, {name:'Gružansko jezero', extra:'Srbija'},
   {name:'Đerdap', extra:'Srbija'}, {name:'Uvac', extra:'Srbija'}, {name:'Golubac', extra:'Srbija'},
+  {name:'Ćuprija', extra:'Srbija'}, {name:'Prokuplje', extra:'Srbija'}, {name:'Svilajnac', extra:'Srbija'},
+  {name:'Senta', extra:'Srbija'}, {name:'Kanjiža', extra:'Srbija'}, {name:'Temerin', extra:'Srbija'},
   // Region
   {name:'Podgorica', extra:'Crna Gora'}, {name:'Budva', extra:'Crna Gora'}, {name:'Kotor', extra:'Crna Gora'},
   {name:'Herceg Novi', extra:'Crna Gora'}, {name:'Igalo', extra:'Crna Gora'}, {name:'Bar', extra:'Crna Gora'},
@@ -1797,7 +1799,7 @@ const POPULAR_DESTINATIONS = [
   {name:'Durmitor', extra:'Crna Gora'}, {name:'Biogradska Gora', extra:'Crna Gora'}, {name:'Lovćen', extra:'Crna Gora'},
   {name:'Skadarsko Jezero', extra:'Crna Gora'},
   {name:'Virpazar', extra:'Crna Gora'}, {name:'Ada Bojana', extra:'Crna Gora'}, {name:'Čanj', extra:'Crna Gora'},
-  {name:'Buljarica', extra:'Crna Gora'}, {name:'Prčanj', extra:'Crna Gora'},
+  {name:'Buljarica', extra:'Crna Gora'}, {name:'Prčanj', extra:'Crna Gora'}, {name:'Ostrog', extra:'Crna Gora'},
   {name:'Sarajevo', extra:'Bosna i Hercegovina'}, {name:'Mostar', extra:'Bosna i Hercegovina'}, {name:'Banja Luka', extra:'Bosna i Hercegovina'},
   {name:'Trebinje', extra:'Bosna i Hercegovina'}, {name:'Bihać', extra:'Bosna i Hercegovina'}, {name:'Tuzla', extra:'Bosna i Hercegovina'},
   {name:'Zenica', extra:'Bosna i Hercegovina'},
@@ -1807,6 +1809,7 @@ const POPULAR_DESTINATIONS = [
   {name:'Višegrad', extra:'Bosna i Hercegovina'},
   {name:'Bjelašnica', extra:'Bosna i Hercegovina'}, {name:'Jahorina', extra:'Bosna i Hercegovina'}, {name:'Vlašić', extra:'Bosna i Hercegovina'}, {name:'Kupres', extra:'Bosna i Hercegovina'},
   {name:'Blagaj', extra:'Bosna i Hercegovina'}, {name:'Počitelj', extra:'Bosna i Hercegovina'}, {name:'Vrelo Bosne', extra:'Bosna i Hercegovina'},
+  {name:'Sutjeska', extra:'Bosna i Hercegovina'}, {name:'Una', extra:'Bosna i Hercegovina'}, {name:'Livno', extra:'Bosna i Hercegovina'},
   {name:'Zagreb', extra:'Hrvatska'}, {name:'Split', extra:'Hrvatska'}, {name:'Dubrovnik', extra:'Hrvatska'},
   {name:'Zadar', extra:'Hrvatska'}, {name:'Rijeka', extra:'Hrvatska'}, {name:'Pula', extra:'Hrvatska'}, {name:'Hvar', extra:'Hrvatska'},
   {name:'Makarska', extra:'Hrvatska'}, {name:'Trogir', extra:'Hrvatska'}, {name:'Šibenik', extra:'Hrvatska'}, {name:'Rovinj', extra:'Hrvatska'},
@@ -1828,6 +1831,7 @@ const POPULAR_DESTINATIONS = [
   {name:'Učka', extra:'Hrvatska'}, {name:'Medvednica', extra:'Hrvatska'},
   {name:'Varaždinske Toplice', extra:'Hrvatska'}, {name:'Stubičke Toplice', extra:'Hrvatska'},
   {name:'Krapinske Toplice', extra:'Hrvatska'}, {name:'Daruvarske Toplice', extra:'Hrvatska'},
+  {name:'Velebit', extra:'Hrvatska'}, {name:'Biokovo', extra:'Hrvatska'},
   {name:'Skoplje', extra:'Severna Makedonija'}, {name:'Ohrid', extra:'Severna Makedonija'},
   {name:'Bitola', extra:'Severna Makedonija'}, {name:'Tetovo', extra:'Severna Makedonija'},
   {name:'Kumanovo', extra:'Severna Makedonija'}, {name:'Prilep', extra:'Severna Makedonija'}, {name:'Strumica', extra:'Severna Makedonija'},
@@ -1843,6 +1847,18 @@ const POPULAR_DESTINATIONS = [
   {name:'Kamnik', extra:'Slovenija'}, {name:'Idrija', extra:'Slovenija'},
   {name:'Postojna', extra:'Slovenija'}, {name:'Bohinj', extra:'Slovenija'}, {name:'Bovec', extra:'Slovenija'},
   {name:'Kobarid', extra:'Slovenija'}, {name:'Logarska Dolina', extra:'Slovenija'}, {name:'Rogaška Slatina', extra:'Slovenija'},
+  {name:'Murska Sobota', extra:'Slovenija'}, {name:'Nova Gorica', extra:'Slovenija'}, {name:'Velenje', extra:'Slovenija'},
+  {name:'Jesenice', extra:'Slovenija'}, {name:'Slovenj Gradec', extra:'Slovenija'},
+  // Slovenija — banje
+  {name:'Čatež', extra:'Slovenija'}, {name:'Terme Ptuj', extra:'Slovenija'}, {name:'Dolenjske Toplice', extra:'Slovenija'},
+  {name:'Moravske Toplice', extra:'Slovenija'}, {name:'Laško', extra:'Slovenija'}, {name:'Radenci', extra:'Slovenija'},
+  // Slovenija — planine
+  {name:'Triglav', extra:'Slovenija'}, {name:'Vogel', extra:'Slovenija'}, {name:'Krvavec', extra:'Slovenija'},
+  {name:'Pohorje', extra:'Slovenija'}, {name:'Mangart', extra:'Slovenija'},
+  // Slovenija — turistički centri
+  {name:'Škocjanske jame', extra:'Slovenija'}, {name:'Predjama', extra:'Slovenija'}, {name:'Vintgar', extra:'Slovenija'},
+  // Slovenija — primorska mesta
+  {name:'Izola', extra:'Slovenija'}, {name:'Ankaran', extra:'Slovenija'},
   {name:'Tirana', extra:'Albanija'}, {name:'Sarande', extra:'Albanija'},
   {name:'Drač', extra:'Albanija'}, {name:'Vlora', extra:'Albanija'}, {name:'Ksamil', extra:'Albanija'},
   {name:'Skadar', extra:'Albanija'}, {name:'Kruja', extra:'Albanija'}, {name:'Berat', extra:'Albanija'},
@@ -1852,18 +1868,60 @@ const POPULAR_DESTINATIONS = [
   {name:'Bukurešt', extra:'Rumunija'}, {name:'Kluž', extra:'Rumunija'}, {name:'Brašov', extra:'Rumunija'}, {name:'Konstanca', extra:'Rumunija'},
   {name:'Sofija', extra:'Bugarska'}, {name:'Varna', extra:'Bugarska'}, {name:'Burgas', extra:'Bugarska'},
   {name:'Plovdiv', extra:'Bugarska'}, {name:'Nesebar', extra:'Bugarska'}, {name:'Bansko', extra:'Bugarska'},
+  {name:'Ruse', extra:'Bugarska'}, {name:'Stara Zagora', extra:'Bugarska'}, {name:'Pleven', extra:'Bugarska'},
+  {name:'Veliko Trnovo', extra:'Bugarska'}, {name:'Blagoevgrad', extra:'Bugarska'}, {name:'Šumen', extra:'Bugarska'},
+  {name:'Sliven', extra:'Bugarska'}, {name:'Vidin', extra:'Bugarska'}, {name:'Dobrič', extra:'Bugarska'},
+  {name:'Kjustendil', extra:'Bugarska'}, {name:'Gabrovo', extra:'Bugarska'}, {name:'Haskovo', extra:'Bugarska'},
+  // Bugarska — banje
+  {name:'Sandanski', extra:'Bugarska'}, {name:'Velingrad', extra:'Bugarska'}, {name:'Hisarja', extra:'Bugarska'},
+  {name:'Devin', extra:'Bugarska'}, {name:'Pavel Banja', extra:'Bugarska'}, {name:'Bankja', extra:'Bugarska'},
+  // Bugarska — planine
+  {name:'Borovec', extra:'Bugarska'}, {name:'Pamporovo', extra:'Bugarska'}, {name:'Vitoša', extra:'Bugarska'},
+  {name:'Čepelare', extra:'Bugarska'}, {name:'Rila', extra:'Bugarska'},
+  // Bugarska — turistički centri
+  {name:'Koprivštica', extra:'Bugarska'}, {name:'Melnik', extra:'Bugarska'}, {name:'Rilski manastir', extra:'Bugarska'},
+  {name:'Trjavna', extra:'Bugarska'}, {name:'Arbanasi', extra:'Bugarska'},
+  // Bugarska — primorska mesta
+  {name:'Sozopol', extra:'Bugarska'}, {name:'Sunčev Breg', extra:'Bugarska'}, {name:'Zlatni Pjasci', extra:'Bugarska'},
+  {name:'Primorsko', extra:'Bugarska'}, {name:'Balčik', extra:'Bugarska'}, {name:'Kavarna', extra:'Bugarska'},
+  {name:'Carevo', extra:'Bugarska'}, {name:'Pomorije', extra:'Bugarska'}, {name:'Ahtopol', extra:'Bugarska'},
   // Grčka i Egej
   {name:'Atina', extra:'Grčka'}, {name:'Solun', extra:'Grčka'}, {name:'Krf', extra:'Grčka'},
   {name:'Santorini', extra:'Grčka'}, {name:'Mikonos', extra:'Grčka'}, {name:'Rodos', extra:'Grčka'},
   {name:'Krit', extra:'Grčka'}, {name:'Halkidiki', extra:'Grčka'},
   {name:'Zakintos', extra:'Grčka'}, {name:'Kefalonija', extra:'Grčka'}, {name:'Lefkada', extra:'Grčka'},
   {name:'Paros', extra:'Grčka'}, {name:'Naksos', extra:'Grčka'}, {name:'Kos', extra:'Grčka'}, {name:'Volos', extra:'Grčka'},
+  // Grčka — gradovi
+  {name:'Patra', extra:'Grčka'}, {name:'Larisa', extra:'Grčka'}, {name:'Kavala', extra:'Grčka'},
+  {name:'Janjina', extra:'Grčka'}, {name:'Iraklion', extra:'Grčka'}, {name:'Kalamata', extra:'Grčka'},
+  // Grčka — banje
+  {name:'Lutraki', extra:'Grčka'}, {name:'Edipsos', extra:'Grčka'},
+  // Grčka — planine
+  {name:'Olimp', extra:'Grčka'}, {name:'Pilion', extra:'Grčka'},
+  // Grčka — turistički centri
+  {name:'Meteori', extra:'Grčka'}, {name:'Delfi', extra:'Grčka'}, {name:'Nafplion', extra:'Grčka'},
+  // Grčka — primorska mesta i ostrva
+  {name:'Tasos', extra:'Grčka'}, {name:'Samos', extra:'Grčka'}, {name:'Hios', extra:'Grčka'},
+  {name:'Skijatos', extra:'Grčka'}, {name:'Skopelos', extra:'Grčka'}, {name:'Evija', extra:'Grčka'},
+  {name:'Idra', extra:'Grčka'}, {name:'Spece', extra:'Grčka'}, {name:'Milos', extra:'Grčka'},
+  {name:'Ios', extra:'Grčka'}, {name:'Egina', extra:'Grčka'}, {name:'Poros', extra:'Grčka'},
   // Italija
   {name:'Rim', extra:'Italija'}, {name:'Milano', extra:'Italija'}, {name:'Napulj', extra:'Italija'},
   {name:'Venecija', extra:'Italija'}, {name:'Firenca', extra:'Italija'}, {name:'Bolonja', extra:'Italija'},
   {name:'Verona', extra:'Italija'}, {name:'Torino', extra:'Italija'}, {name:'Bari', extra:'Italija'}, {name:'Sicilija', extra:'Italija'},
   {name:'Đenova', extra:'Italija'}, {name:'Pisa', extra:'Italija'}, {name:'Trst', extra:'Italija'},
   {name:'Leče', extra:'Italija'}, {name:'Sardinija', extra:'Italija'}, {name:'Kaljari', extra:'Italija'},
+  {name:'Palermo', extra:'Italija'}, {name:'Katanija', extra:'Italija'}, {name:'Padova', extra:'Italija'}, {name:'Parma', extra:'Italija'},
+  {name:'Modena', extra:'Italija'}, {name:'Perudja', extra:'Italija'}, {name:'Brešija', extra:'Italija'}, {name:'Salerno', extra:'Italija'},
+  // Italija — banje
+  {name:'Abano Terme', extra:'Italija'}, {name:'Montekatini Terme', extra:'Italija'}, {name:'Fjuđi', extra:'Italija'}, {name:'Salsomađore Terme', extra:'Italija'},
+  // Italija — planine
+  {name:'Dolomiti', extra:'Italija'}, {name:'Kortina d\'Ampeco', extra:'Italija'}, {name:'Val Gardena', extra:'Italija'}, {name:'Livinjo', extra:'Italija'}, {name:'Etna', extra:'Italija'},
+  // Italija — turistički centri
+  {name:'Pompeji', extra:'Italija'}, {name:'Asizi', extra:'Italija'}, {name:'Sijena', extra:'Italija'}, {name:'San Đimonjano', extra:'Italija'}, {name:'Orvieto', extra:'Italija'}, {name:'Ravena', extra:'Italija'},
+  // Italija — primorska mesta
+  {name:'Amalfi', extra:'Italija'}, {name:'Pozitano', extra:'Italija'}, {name:'Sorento', extra:'Italija'}, {name:'Rimini', extra:'Italija'},
+  {name:'Kapri', extra:'Italija'}, {name:'Portofino', extra:'Italija'}, {name:'Elba', extra:'Italija'}, {name:'Taormina', extra:'Italija'},
   // Španija i Portugal
   {name:'Barselona', extra:'Španija'}, {name:'Madrid', extra:'Španija'}, {name:'Valensija', extra:'Španija'},
   {name:'Malaga', extra:'Španija'}, {name:'Ibica', extra:'Španija'}, {name:'Majorka', extra:'Španija'}, {name:'Sevilja', extra:'Španija'},
@@ -1879,6 +1937,15 @@ const POPULAR_DESTINATIONS = [
   {name:'Berlin', extra:'Nemačka'}, {name:'Minhen', extra:'Nemačka'}, {name:'Hamburg', extra:'Nemačka'}, {name:'Frankfurt', extra:'Nemačka'},
   {name:'Keln', extra:'Nemačka'}, {name:'Diseldorf', extra:'Nemačka'}, {name:'Štutgart', extra:'Nemačka'}, {name:'Drezden', extra:'Nemačka'},
   {name:'Beč', extra:'Austrija'}, {name:'Zalcburg', extra:'Austrija'}, {name:'Insbruk', extra:'Austrija'}, {name:'Graz', extra:'Austrija'},
+  {name:'Linc', extra:'Austrija'}, {name:'Klagenfurt', extra:'Austrija'}, {name:'Filah', extra:'Austrija'}, {name:'Vels', extra:'Austrija'}, {name:'Sankt Pelten', extra:'Austrija'},
+  // Austrija — banje
+  {name:'Bad Gastajn', extra:'Austrija'}, {name:'Bad Išl', extra:'Austrija'}, {name:'Bad Ausee', extra:'Austrija'}, {name:'Baden kod Beča', extra:'Austrija'},
+  // Austrija — planine i skijališta
+  {name:'Kicbil', extra:'Austrija'}, {name:'Zel am Zi', extra:'Austrija'}, {name:'Solden', extra:'Austrija'}, {name:'Išgl', extra:'Austrija'}, {name:'Majrhofen', extra:'Austrija'},
+  // Austrija — turistički centri
+  {name:'Halštat', extra:'Austrija'}, {name:'Verfen', extra:'Austrija'}, {name:'Melk', extra:'Austrija'},
+  // Austrija — jezera
+  {name:'Volfgangze', extra:'Austrija'}, {name:'Ahenze', extra:'Austrija'}, {name:'Vertersee', extra:'Austrija'},
   {name:'Prag', extra:'Češka'}, {name:'Brno', extra:'Češka'}, {name:'Budimpešta', extra:'Mađarska'}, {name:'Bratislava', extra:'Slovačka'},
   {name:'Varšava', extra:'Poljska'}, {name:'Krakov', extra:'Poljska'}, {name:'Vroclav', extra:'Poljska'},
   {name:'Stokholm', extra:'Švedska'}, {name:'Geteborg', extra:'Švedska'}, {name:'Oslo', extra:'Norveška'}, {name:'Kopenhagen', extra:'Danska'}, {name:'Helsinki', extra:'Finska'},
