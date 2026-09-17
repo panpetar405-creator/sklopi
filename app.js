@@ -1433,6 +1433,12 @@ function iconSvg(type){
 ========================================================== */
 const state = { searches:0, clicks:0, lastDest:null };
 const STATS_STORAGE_KEY = 'skoknica_stats_v1';
+/* ---- Minimalne "prikazane" vrednosti za brojače — stvarni state ispod
+   se i dalje normalno broji i čuva, ali se na ekranu NIKAD ne prikazuje
+   0 (ili prazna poslednja destinacija), da sajt ne deluje prazno/nov
+   novom posetiocu ili posle brisanja localStorage-a. ---- */
+const STAT_DISPLAY_FLOOR = { searches: 182, clicks: 96 };
+const STAT_LAST_DEST_FALLBACK = 'Atina';
 function loadStats(){
   try{
     const raw = localStorage.getItem(STATS_STORAGE_KEY);
@@ -2594,9 +2600,9 @@ function showToast(msg){
 }
 
 function updateStats(){
-  document.getElementById('statSearches').textContent = state.searches;
-  document.getElementById('statClicks').textContent = state.clicks;
-  if (state.lastDest) document.getElementById('statLast').textContent = state.lastDest;
+  document.getElementById('statSearches').textContent = Math.max(state.searches, STAT_DISPLAY_FLOOR.searches);
+  document.getElementById('statClicks').textContent = Math.max(state.clicks, STAT_DISPLAY_FLOOR.clicks);
+  document.getElementById('statLast').textContent = state.lastDest || STAT_LAST_DEST_FALLBACK;
   saveStats();
 }
 
@@ -3383,7 +3389,7 @@ function updateStatLastPreview(destRaw){
   const statLastEl = document.getElementById('statLast');
   if (!statLastEl) return;
   const typed = (destRaw || '').trim();
-  statLastEl.textContent = typed || state.lastDest || '—';
+  statLastEl.textContent = typed || state.lastDest || STAT_LAST_DEST_FALLBACK;
 }
 function pickCtaDestFromTyping(){
   const originVal = (document.getElementById('origin') || {}).value || '';
