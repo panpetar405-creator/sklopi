@@ -759,6 +759,8 @@ a{color:inherit;}
 .pd-desc{font-size:14px;line-height:1.5;color:var(--ink-soft);}
 @media (max-width:600px){.popular-dest-grid{grid-template-columns:1fr;}}
 #results{display:none;padding-top:34px;padding-bottom:100px;}
+#featureGuideSheet{display:none;padding-top:34px;padding-bottom:100px;}
+#featureGuideSheet.visible{display:block;}
 #results.visible{display:block;}
 /* Rezultati (3 kartice ponuda) — "bottom sheet" preko sadržaja stranice na
    mobilnom (vidi @media(max-width:760px) niže): sopstveni prozor sa 90dvh
@@ -1576,7 +1578,19 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .fg-content li{font-size:14px;line-height:1.55;color:var(--ink-soft);margin-bottom:7px;}
 .fg-content li:last-child{margin-bottom:0;}
 .fg-content li b{color:var(--ink);}
-.feature-guide-footnote{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:16px 0 0;}
+.fg-card-head{
+    padding:20px 22px 16px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:12px;
+}
+.fg-card-head .fg-card-ic{font-size:22px;flex:none;}
+.fg-card-head .fg-card-heading{min-width:0;}
+.fg-card-head .fg-card-step{
+    font-size:11.5px;letter-spacing:0.02em;color:var(--gold-text);font-weight:700;
+    display:block;margin-bottom:2px;
+}
+.fg-card-head h3{font-size:18px;font-family:'Manrope',sans-serif;color:var(--ink);}
+.fg-card-body{padding:20px 22px 22px;}
+.fg-disclaimer{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:14px 4px 0;}
 @media (max-width:480px){.alert-modal-docs{padding:24px 20px 20px;}}
 .btn-save svg{width:15px;height:15px;}
 .saved-wrap{margin-top:44px;}
@@ -1836,6 +1850,17 @@ footer{
     overflow:hidden;
     animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
 }
+#featureGuideSheet.visible{
+    position:fixed;left:0;right:0;bottom:0;top:auto;z-index:59;
+    height:95dvh;max-height:95dvh;
+    padding-top:0;padding-bottom:0;
+    background:var(--bg);
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -24px 50px -20px rgba(15,76,92,0.4);
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
+}
 /* .section (globalno .section{margin:0 auto;max-width:1180px}) je ovde
    flex-child unutar #results.visible (flex-direction:column). Auto
    margine na cross-axis flex-child-a poništavaju stretch i teraju ga
@@ -1849,12 +1874,18 @@ footer{
     margin:0;
     padding:0 20px calc(28px + env(safe-area-inset-bottom));
 }
+#featureGuideSheet.visible > .section{
+    flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    margin:0;
+    padding:0 20px calc(28px + env(safe-area-inset-bottom));
+}
 @keyframes resultsSheetUp{
     from{transform:translateY(24px);opacity:0.4;}
     to{transform:translateY(0);opacity:1;}
 }
 @media (prefers-reduced-motion:reduce){
     #results.visible{animation:none;}
+    #featureGuideSheet.visible{animation:none;}
 }
 .results-sheet-head{
     display:flex;align-items:center;position:sticky;top:0;z-index:2;
