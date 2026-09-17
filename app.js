@@ -5856,6 +5856,9 @@ function openFeatureGuide(key){
   initPackagesSlider(body.querySelector('.packages-slider-wrap'));
   openFeatureGuideSheet();
 }
+// Da li je otvaranje sheeta gurnulo unos u istoriju (samo na mobilnom,
+// vidi objašnjenje ispod).
+let _fgSheetHistoryPushed = false;
 function openFeatureGuideSheet(){
   const sheet = document.getElementById('featureGuideSheet');
   if (!sheet) return;
@@ -5866,6 +5869,13 @@ function openFeatureGuideSheet(){
     sheet.setAttribute('role', 'dialog');
     sheet.setAttribute('aria-modal', 'true');
     lockResultsPageScroll();
+    // Bez ovoga fizičko/gest "Nazad" dugme na telefonu ne zna da je sheet
+    // otvoren (stranica se tehnički nije promenila) i umesto da zatvori
+    // sheet, izlazi sa celog sajta. Guranjem praznog unosa u istoriju,
+    // "Nazad" prvo pukne TAJ unos — popstate handler ispod ga hvata i
+    // samo zatvara sheet, ne napušta stranicu.
+    history.pushState({fgSheet:true}, '');
+    _fgSheetHistoryPushed = true;
   }
 }
 function closeFeatureGuideSheet(){
@@ -5879,6 +5889,24 @@ function closeFeatureGuideSheet(){
   sheet.removeAttribute('aria-modal');
   if (wasLocked) unlockResultsPageScroll();
 }
+// Klik na "Nazad"/pozadinu treba da se ponaša identično fizičkom/gest
+// dugmetu telefona: ako je otvaranje gurnulo unos u istoriju, pop-ujemo
+// TAJ unos (history.back()) — samo zatvaranje obavlja popstate handler
+// ispod, da postoji jedan jedini put kojim se sheet zatvara.
+function requestCloseFeatureGuideSheet(){
+  if (_fgSheetHistoryPushed){
+    history.back();
+  } else {
+    closeFeatureGuideSheet();
+  }
+}
+window.addEventListener('popstate', () => {
+  const sheet = document.getElementById('featureGuideSheet');
+  if (sheet && sheet.classList.contains('visible')){
+    _fgSheetHistoryPushed = false;
+    closeFeatureGuideSheet();
+  }
+});
 document.querySelectorAll('.feature-strip .feature[data-feature]').forEach(el => {
   el.addEventListener('click', () => openFeatureGuide(el.dataset.feature));
   el.addEventListener('keydown', (e) => {
@@ -5886,9 +5914,10 @@ document.querySelectorAll('.feature-strip .feature[data-feature]').forEach(el =>
   });
 });
 const featureGuideBackBtn = document.getElementById('featureGuideBackBtn');
-if (featureGuideBackBtn) featureGuideBackBtn.addEventListener('click', closeFeatureGuideSheet);
+if (featureGuideBackBtn) featureGuideBackBtn.addEventListener('click', requestCloseFeatureGuideSheet);
 const featureGuideBackdropEl = document.getElementById('featureGuideBackdrop');
-if (featureGuideBackdropEl) featureGuideBackdropEl.addEventListener('click', closeFeatureGuideSheet);
+if (featureGuideBackdropEl) featureGuideBackdropEl.addEventListener('click', requestCloseFeatureGuideSheet);
+
 
 /* ==========================================================
    INICIJALIZACIJA
