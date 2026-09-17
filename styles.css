@@ -354,9 +354,9 @@ a{color:inherit;}
 /* ---------- Search "boarding pass" ---------- */
 .ticket{
     margin:44px 0 -70px;
-    background:rgba(15,76,92,0.12);
-    backdrop-filter:blur(6px);
-    -webkit-backdrop-filter:blur(6px);
+    background:rgba(15,76,92,0.22);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
     color:var(--ink);
     border-radius:14px;
     border:1px solid var(--line);
