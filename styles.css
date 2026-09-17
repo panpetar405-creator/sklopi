@@ -1360,6 +1360,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 }
 .q-text-field:focus{border-bottom-color:var(--gold);}
 .q-num-field{max-width:90px;}
+.q-row-head--static{cursor:default;}
 .builder-summary{
     background:var(--deep);color:var(--on-dark);border-radius:6px;
     padding:24px 24px 26px;position:sticky;top:78px;
@@ -1609,6 +1610,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .start-modal-head h3{font-size:22px;margin:0 0 6px;}
 .start-modal-sub{font-size:14px;color:var(--ink-soft);line-height:1.5;margin:0 0 20px;}
 .start-modal-body{display:flex;flex-direction:column;}
+.start-modal-body .q-form{padding:0;}
 .start-modal-body .builder-group{padding:16px 0;}
 .start-modal-body .builder-group:first-child{padding-top:0;}
 .start-modal-cta{width:100%;margin-top:20px;justify-content:center;}

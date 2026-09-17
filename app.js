@@ -5691,25 +5691,64 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && document.getElementById('startPrefsModal').classList.contains('open')) requestCloseStartPrefsModal();
 });
 
-wireChipGroup('spFlight', (val) => { startPrefs.flightPref = val; });
-wireChipGroup('spHotel', (val) => { startPrefs.hotelStars = Number(val); });
-wireChipGroup('spCar', (val) => { startPrefs.carPref = val; });
+// Radio grupe za let/hotel su statične (bez isključi-kučkice — let i hotel
+// su uvek deo osnovnog paketa), samo beleže izbor u startPrefs.
+document.querySelectorAll('input[name="spFlightPrefRadio"]').forEach(r=>{
+  r.addEventListener('change', () => { startPrefs.flightPref = r.value; });
+});
+document.querySelectorAll('input[name="spHotelStarsRadio"]').forEach(r=>{
+  r.addEventListener('change', () => { startPrefs.hotelStars = Number(r.value); });
+});
+document.getElementById('spPrioritizeRatingChk').addEventListener('change', (e) => {
+  startPrefs.prioritizeRating = e.target.checked;
+});
+document.getElementById('spPrioritizeLocationChk').addEventListener('change', (e) => {
+  startPrefs.prioritizeLocation = e.target.checked;
+});
 
-document.querySelectorAll('#startPrefsModal .toggle-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    chip.classList.toggle('on');
-    const key = chip.dataset.spToggle === 'rating' ? 'prioritizeRating' : 'prioritizeLocation';
-    startPrefs[key] = chip.classList.contains('on');
+// Rent a car: čekboks uključi/isključi (mapira se na carPref==='none'),
+// isti obrazac kao u glavnom upitniku (#builderPanel).
+let _spLastCarPref = startPrefs.carPref !== 'none' ? startPrefs.carPref : 'small';
+const spCarIncludeEl = document.getElementById('spCarInclude');
+qSyncRow('sp-car', spCarIncludeEl.checked);
+spCarIncludeEl.addEventListener('change', () => {
+  if (spCarIncludeEl.checked){
+    startPrefs.carPref = _spLastCarPref;
+  } else {
+    if (startPrefs.carPref !== 'none') _spLastCarPref = startPrefs.carPref;
+    startPrefs.carPref = 'none';
+  }
+  qSyncRow('sp-car', spCarIncludeEl.checked);
+});
+document.querySelectorAll('input[name="spCarPrefRadio"]').forEach(r=>{
+  r.addEventListener('change', () => {
+    startPrefs.carPref = r.value;
+    _spLastCarPref = r.value;
   });
 });
 
-document.getElementById('spActMinus').addEventListener('click', () => {
-  startPrefs.activityCount = Math.max(0, startPrefs.activityCount - 1);
-  document.getElementById('spActCount').textContent = startPrefs.activityCount;
+// Aktivnosti: čekboks uključi/isključi (mapira se na activityCount===0),
+// broj se unosi u polje umesto starog +/- stepera.
+let _spLastActivityCount = startPrefs.activityCount > 0 ? startPrefs.activityCount : 2;
+const spActIncludeEl = document.getElementById('spActivitiesInclude');
+const spActCountInput = document.getElementById('spActCountInput');
+qSyncRow('sp-activities', spActIncludeEl.checked);
+spActIncludeEl.addEventListener('change', () => {
+  if (spActIncludeEl.checked){
+    startPrefs.activityCount = _spLastActivityCount;
+    spActCountInput.value = _spLastActivityCount;
+  } else {
+    if (startPrefs.activityCount > 0) _spLastActivityCount = startPrefs.activityCount;
+    startPrefs.activityCount = 0;
+  }
+  qSyncRow('sp-activities', spActIncludeEl.checked);
 });
-document.getElementById('spActPlus').addEventListener('click', () => {
-  startPrefs.activityCount = Math.min(8, startPrefs.activityCount + 1);
-  document.getElementById('spActCount').textContent = startPrefs.activityCount;
+spActCountInput.addEventListener('input', () => {
+  const n = Math.max(0, Math.min(10, Math.floor(Number(spActCountInput.value)) || 0));
+  startPrefs.activityCount = n;
+  if (n > 0) _spLastActivityCount = n;
+  spActIncludeEl.checked = n > 0;
+  qSyncRow('sp-activities', spActIncludeEl.checked);
 });
 
 document.getElementById('spBudgetInput').addEventListener('input', (e) => {
