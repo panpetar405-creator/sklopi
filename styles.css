@@ -608,11 +608,29 @@ a{color:inherit;}
 .section-head h2{font-size:31.5px;margin-top:6px;}
 .section-head .section-sub{margin:10px 0 0;max-width:52ch;font-size:16.5px;line-height:1.55;color:var(--ink-soft);}
 /* ---------- Promo banner ---------- */
-.promo-banner{max-width:1180px;margin:96px auto;padding:0 40px;line-height:0;}
-.promo-banner img{display:block;width:100%;height:auto;border-radius:20px;}
+.promo-banner{max-width:1180px;margin:96px auto;padding:0 40px;}
+.promo-banner-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:20px;
+    padding:20px;
+}
+.promo-banner-photo{border-radius:14px;overflow:hidden;line-height:0;box-shadow:0 18px 40px -12px rgba(17,24,39,.28);}
+.promo-banner-photo img{display:block;width:100%;height:auto;filter:saturate(.85) brightness(.96) contrast(.97);}
+.promo-banner-cap{padding:18px 6px 4px;}
+.promo-banner-kicker{
+    display:flex;align-items:center;gap:12px;margin:0 0 10px;
+    font-family:'Work Sans',sans-serif;font-size:12.5px;font-weight:600;
+    letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-text);
+}
+.promo-banner-kicker::before{content:"";width:30px;height:1px;flex:none;background:var(--gold);}
+.promo-banner-quote{
+    font-family:'Fraunces',serif;font-weight:500;font-style:italic;
+    font-size:26px;line-height:1.3;margin:0;color:var(--ink);max-width:520px;
+}
 @media (max-width:900px){
     .promo-banner{margin:56px auto;padding:0 20px;}
-    .promo-banner img{border-radius:16px;}
+    .promo-banner-card{padding:14px;border-radius:16px;}
+    .promo-banner-photo{border-radius:12px;}
+    .promo-banner-quote{font-size:20px;}
 }
 /* ---------- FAQ ---------- */
 .faq-wrap{max-width:760px;margin:0;display:flex;flex-direction:column;gap:10px;}
