@@ -2183,3 +2183,11 @@ footer{padding:28px 20px;}
     .match-chip{padding:13px 8px;}
     .match-chip .mc-ic{font-size:21px;}
 }
+
+/* ---- 4 konkretna naslova u Deep Petrol boji (na zahtev) ---- */
+.price-chart-head h3,
+.saved-wrap .section-head h2,
+#popularDestHead,
+#faq .section-head h2{
+    color:var(--deep);
+}
