@@ -106,14 +106,14 @@ a{color:inherit;}
 .logo .mark svg{width:25.6px;height:25.6px;color:var(--gold);}
 .topbar nav{display:flex;align-items:center;gap:28px;font-size:15.5px;color:var(--ink-soft);}
 .topbar nav a{text-decoration:none;color:inherit;transition:color .15s ease;}
-.topbar nav a:hover{color:var(--ink);}
+
 .topbar .avatar{
     width:36px;height:36px;border-radius:50%;border:1.5px solid var(--gold);
     display:flex;align-items:center;justify-content:center;color:var(--gold);flex:none;
     cursor:pointer;background:var(--gold-soft);padding:0;
     transition:transform .15s ease, background .15s ease;
 }
-.topbar .avatar:hover{transform:rotate(-6deg);}
+
 .topbar .avatar svg{width:16px;height:16px;}
 .topbar .avatar.logged-in{border:1.5px solid var(--deep);background:var(--deep);color:var(--gold-soft);}
 .hamburger{
@@ -130,7 +130,7 @@ a{color:inherit;}
     padding:8px 13px;cursor:pointer;flex:none;letter-spacing:0.02em;
     transition:border-color .15s ease,background .15s ease;
 }
-.lang-switch:hover{border-color:var(--gold);background:var(--gold-soft);}
+
 .lang-switch .ls-sep{opacity:0.4;margin:0 3px;}
 .lang-switch .ls-sr,.lang-switch .ls-en,.lang-switch .ls-ru{opacity:0.4;}
 .lang-switch[data-lang="sr"] .ls-sr{opacity:1;}
@@ -163,7 +163,7 @@ a{color:inherit;}
     border-left:3px solid transparent;border-radius:2px;
     transition:background .15s ease,border-color .15s ease,padding-left .15s ease;
 }
-.mobile-panel .mp-nav a:hover{background:var(--gold-soft);border-left-color:var(--gold);padding-left:16px;}
+
 .mobile-panel .mp-nav a:last-child{border-bottom:none;}
 .auth-dropdown{
     display:none;position:absolute;top:100%;right:24px;width:min(320px, calc(100vw - 48px));
@@ -188,7 +188,7 @@ a{color:inherit;}
     display:flex;align-items:center;gap:6px;padding:2px 0;
     transition:color .15s ease;
 }
-.auth-dropdown-inner a:hover{color:var(--gold);text-decoration:underline;}
+
 .auth-dropdown-inner button{
     font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;
     border-radius:7px;padding:10px 14px;transition:all .15s ease;
@@ -197,16 +197,13 @@ a{color:inherit;}
     background:var(--paper);color:var(--coral-text);
     border:1px solid var(--line);align-self:flex-start;
 }
-.auth-dropdown-inner #dropdownLogoutBtn:hover{
-    background:var(--coral-soft);border-color:var(--coral);
-}
+
 .auth-dropdown-inner #dropdownLoginBtn,
 .auth-dropdown-inner .btn-primary{
     background:var(--deep);color:var(--on-dark-strong);border:none;
     width:100%;padding:12px 16px;
 }
-.auth-dropdown-inner #dropdownLoginBtn:hover,
-.auth-dropdown-inner .btn-primary:hover{background:var(--deep2);}
+
 .auth-dropdown-inner p{font-size:14px;color:var(--ink-soft);line-height:1.5;margin:0;}
 .auth-dropdown-inner .auth-input{width:100%;box-sizing:border-box;}
 /* ---------- Hero ---------- */
@@ -378,7 +375,7 @@ a{color:inherit;}
     font-family:'Work Sans',sans-serif;font-size:15.5px;color:var(--ink);line-height:1.35;
 }
 .loc-dropdown-item .ldi-extra{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:1px;}
-.loc-dropdown-item:hover,.loc-dropdown-item.is-active{background:var(--gold-soft);}
+.loc-dropdown-item.is-active{background:var(--gold-soft);}
 .ticket .stub .subrow{display:flex;gap:10px;margin-top:6px;}
 .ticket .stub .subrow input{font-family:'Work Sans',sans-serif;font-size:17.5px;width:auto;flex:1;color:var(--ink-soft);line-height:1.4;padding:2px 0;display:block;}
 .ticket .stub .subrow input::-webkit-calendar-picker-indicator{margin-left:2px;opacity:0.65;transform:translateY(1px);}
@@ -402,8 +399,8 @@ a{color:inherit;}
     background:var(--gold);color:var(--on-gold);font-size:17px;
     transition:transform .2s ease, background .2s ease;
 }
-.btn-primary:hover{transform:translateY(-2px);gap:18px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
-.btn-primary:hover::after{background:#A9803D;transform:rotate(-10deg) translateX(1px);}
+
+
 .btn-primary:active{transform:translateY(0);gap:14px;}
 /* ---------- Kalendar za izbor datuma (u stub-u "Od — Do") ---------- */
 .stub-dates{position:static;}
@@ -413,12 +410,12 @@ a{color:inherit;}
 }
 .date-display .dd-range{display:block;font-family:'Manrope',sans-serif;font-size:21.5px;color:var(--ink);transition:color .15s ease;}
 .date-display .dd-meta{display:block;margin-top:6px;font-size:17px;color:var(--ink-soft);}
-.date-display:hover .dd-range,.date-display[aria-expanded="true"] .dd-range{color:var(--gold-text);}
+.date-display[aria-expanded="true"] .dd-range{color:var(--gold-text);}
 /* placeholder stanje ("— – —") — ink-soft bez dodatne opacity (koja je nosila
    kontrast do ~2:1, ispod WCAG 4.5:1 minimuma za normalan tekst) */
 .date-display.is-empty .dd-range{color:var(--ink-soft);}
 .date-display.is-empty .dd-meta{color:var(--ink-soft);}
-.date-display.is-empty:hover .dd-range{color:var(--ink-soft);}
+
 .cal-card{
     display:none;position:absolute;bottom:calc(100% + 10px);top:auto;left:0;right:0;
     z-index:45;width:auto;overflow-anchor:none;
@@ -444,7 +441,7 @@ a{color:inherit;}
     display:flex;align-items:center;justify-content:center;color:var(--ink-soft);cursor:pointer;flex:none;
     transition:border-color .15s ease,color .15s ease;padding:0;
 }
-.cal-nav:hover{border-color:var(--gold);color:var(--gold-text);}
+
 .cal-nav svg{width:12px;height:12px;}
 .cal-months{display:flex;gap:33px;font-family:'Manrope',sans-serif;font-size:14px;color:var(--ink);white-space:nowrap;}
 .cal-months span:last-child{color:var(--ink-soft);}
@@ -467,7 +464,7 @@ a{color:inherit;}
 }
 .cal-day.is-empty{cursor:default;}
 .cal-day.is-disabled{color:var(--line);cursor:not-allowed;}
-.cal-day:not(.is-empty):not(.is-disabled):hover{background:var(--gold-soft);}
+
 .cal-day.range-mid{border-radius:0;background:var(--gold-soft);}
 .cal-day.range-start,.cal-day.range-end{background:var(--gold);color:var(--on-gold);font-weight:600;}
 .cal-day.range-start{border-radius:50% 0 0 50%;}
@@ -517,9 +514,9 @@ a{color:inherit;}
     font-family:'Manrope',sans-serif;font-size:21.5px;color:var(--ink);
     transition:color .15s ease;
 }
-.pax-display:hover,.pax-display[aria-expanded="true"]{color:var(--gold-text);}
+.pax-display[aria-expanded="true"]{color:var(--gold-text);}
 .pax-display.is-empty{color:var(--ink-soft);}
-.pax-display.is-empty:hover{color:var(--ink-soft);}
+
 /* Kalendar i kartica za putnike se na mobilnom, dok su otvorene, prebacuju
    direktno u <body> (van .hero-a) da bi position:fixed radio ispravno u
    odnosu na viewport (vidi JS — detachCalForMobile/detachPaxForMobile).
@@ -567,7 +564,7 @@ a{color:inherit;}
     padding:10px 8px;border-radius:8px;font-family:'Manrope',sans-serif;font-size:15px;
     color:var(--ink);transition:background-color .15s ease,color .15s ease;
 }
-.pax-option:hover{background-color:var(--gold-soft);}
+
 .pax-option.is-selected{background-color:var(--gold);color:var(--on-gold);font-weight:600;}
 @media (max-width:900px){
 .pax-card{padding:16px 15px 13px;}
@@ -598,7 +595,7 @@ a{color:inherit;}
     font-size:13.5px;font-weight:600;text-align:center;line-height:1.25;
     color:var(--on-dark-soft);transition:color .2s ease;white-space:nowrap;
 }
-.toggle:hover .tt-icon{transform:translateY(-3px);}
+
 .toggle.on .tt-icon{
     background:linear-gradient(135deg,var(--gold) 0%,#A9803D 100%);
     color:var(--on-gold);
@@ -690,7 +687,7 @@ a{color:inherit;}
     cursor:pointer;width:100%;font:inherit;
 }
 .feature:last-child{border-bottom:none;}
-.feature:hover{background:var(--bg);}
+
 .feature:focus-visible{outline:2px solid var(--gold-text);outline-offset:-2px;}
 .feature .ic{
     width:38px;height:38px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center;
@@ -727,7 +724,7 @@ a{color:inherit;}
     box-shadow:0 26px 50px -30px rgba(15,76,92,0.28);
     transition:box-shadow .25s ease, transform .2s ease;
 }
-.postcard:hover{transform:translateY(-3px);box-shadow:0 30px 56px -28px rgba(15,76,92,0.34);}
+
 .postcard-photo{
     width:100%;aspect-ratio:4/3;border:1px solid var(--line);border-radius:6px;overflow:hidden;
 }
@@ -753,7 +750,7 @@ a{color:inherit;}
     font-family:inherit;display:flex;flex-direction:column;gap:8px;
     transition:border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
-.popular-dest-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(15,76,92,0.3);}
+
 .popular-dest-card:active{transform:translateY(-1px);}
 .pd-name{font-family:'Manrope',sans-serif;font-size:19px;font-weight:600;color:var(--ink);}
 .pd-desc{font-size:14px;line-height:1.5;color:var(--ink-soft);}
@@ -775,7 +772,7 @@ a{color:inherit;}
     font-family:inherit;cursor:pointer;transition:border-color .15s ease,color .15s ease;
 }
 .results-back-btn svg{width:15px;height:15px;flex:none;}
-.results-back-btn:hover{border-color:var(--gold);color:var(--gold-text);}
+
 .results-backdrop{
     display:none;position:fixed;inset:0;z-index:58;
     background:rgba(15,76,92,0.45);backdrop-filter:blur(1px);
@@ -834,8 +831,8 @@ a{color:inherit;}
     width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--on-gold);
     font-size:15px;transition:transform .2s ease, background .2s ease;
 }
-.plan-continue-btn:hover{transform:translateY(-2px);gap:16px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
-.plan-continue-btn:hover .arrow{background:#A9803D;transform:rotate(-10deg) translateX(1px);}
+
+
 .plan-continue-btn:active{transform:translateY(0);}
 /* ---------- "Želiš više kontrole?" prečica na plan-kartici — vodi do
    istog builder panela kao teaser kartica u sekciji "Kontrola sadržaja",
@@ -848,7 +845,7 @@ a{color:inherit;}
     transition:border-color .2s ease, transform .15s ease;
     -webkit-tap-highlight-color:transparent;
 }
-.plan-control-link:hover{border-color:var(--gold);}
+
 .plan-control-link:active{transform:translateY(1px);}
 .plan-control-link .pcl-ic{
     width:36px;height:36px;border-radius:7px;flex:none;
@@ -865,7 +862,7 @@ a{color:inherit;}
     background:var(--gold-soft);color:var(--gold-text);font-size:13px;font-style:normal;
     transition:transform .2s ease, background .2s ease, color .2s ease;
 }
-.plan-control-link:hover .pcl-arrow{transform:translateX(3px);background:var(--gold);color:#fff;}
+
 .plan-card-loading .status-left p{margin-top:8px;}
 #resultsBody.rb-hidden{display:none;}
 #resultsBody.rb-reveal{animation:resultsFadeUp .45s ease both;}
@@ -940,9 +937,9 @@ a{color:inherit;}
     display:flex;align-items:center;justify-content:center;padding:0;
     transition:background .15s ease,color .15s ease;
 }
-.pkg-close:hover{background:var(--bg);color:var(--ink);}
+
 .pkg-close svg{width:14px;height:14px;}
-.pkg:hover{transform:translateY(-3px);box-shadow:0 20px 40px -26px rgba(15,76,92,0.3);}
+
 .pkg.best{border-top-color:var(--gold);}
 .pkg.comfort{border-top-color:var(--aqua);}
 .pkg.budget{border-top-color:var(--coral);}
@@ -1003,7 +1000,7 @@ a{color:inherit;}
     border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;
     transition:transform .18s ease, box-shadow .18s ease;
 }
-.item-card:hover{transform:translateY(-3px);box-shadow:0 16px 28px -18px rgba(15,76,92,0.32);}
+
 .item-photo{
     height:88px;display:flex;align-items:flex-end;padding:10px 12px;position:relative;
 }
@@ -1029,7 +1026,7 @@ a{color:inherit;}
     font-family:'Work Sans',sans-serif;font-size:14px;font-weight:600;color:var(--on-dark);cursor:pointer;
     transition:opacity .15s ease;
 }
-.item-btn:hover{opacity:0.88;}
+
 .item-btn.flight{background:var(--deep);}
 .item-btn.hotel{background:var(--gold);color:var(--on-gold);}
 .item-btn.car{background:var(--coral);}
@@ -1064,14 +1061,14 @@ a{color:inherit;}
     padding:6px 10px;border-radius:12px;cursor:pointer;white-space:nowrap;
     transition:opacity .15s ease;
 }
-.extra-btn:hover{opacity:0.85;}
+
 /* Osiguranje / eSIM — dodaci na paket, ne osnovni proizvod: bira ih se
 čekboksom po paketu, isključeni dok ih korisnik svesno ne uključi.
 Osiguranje (bez partnera za sad) je ceo tile jedan <label>, pa čekboks
 ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
 čekboks unutar posebnog <label class="addon-label"> na početku. */
 .extra.addon-extra{cursor:pointer;}
-.extra.addon-extra:hover{border-color:var(--gold-soft);}
+
 .addon-checkbox{width:17px;height:17px;accent-color:var(--gold);cursor:pointer;flex:none;}
 .insurance-extra .addon-checkbox{margin-left:auto;}
 .addon-label{display:flex;align-items:center;gap:9px;cursor:pointer;}
@@ -1175,9 +1172,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     transition:box-shadow .2s ease, transform .15s ease, border-color .2s ease;
     -webkit-tap-highlight-color:transparent;
 }
-.action-card:hover{
-    transform:translateY(-2px);box-shadow:0 16px 32px -22px rgba(15,76,92,0.3);border-left-color:var(--gold-text);
-}
+
 .action-card:active{transform:translateY(0);}
 .action-card .ac-ic{
     width:44px;height:44px;border-radius:8px;flex:none;position:relative;z-index:1;
@@ -1185,7 +1180,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     background:var(--gold-soft);color:var(--gold-text);
     transition:transform .2s ease;
 }
-.action-card:hover .ac-ic{transform:scale(1.04);}
+
 .action-card .ac-ic svg{width:22px;height:22px;}
 .action-card .ac-title{
     font-family:'Manrope',sans-serif;font-size:19px;font-weight:600;line-height:1.25;
@@ -1210,7 +1205,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     background:var(--gold-soft);color:var(--gold-text);font-size:14px;font-style:normal;
     transition:transform .25s ease, background .2s ease;
 }
-.action-card:hover .ac-arrow{background:var(--gold);color:#fff;transform:translateX(3px);}
+
 .control-teaser[aria-expanded="true"] .ac-arrow{transform:rotate(90deg);}
 @media (max-width:560px){
     .action-card{padding:20px 20px;gap:10px;border-radius:8px;}
@@ -1232,7 +1227,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     transition:background .15s ease, color .15s ease, transform .15s ease;
     z-index:3;
 }
-.builder-close:hover{background:var(--gold);color:var(--on-gold);transform:scale(1.06);}
+
 @media (max-width:900px){ .builder{grid-template-columns:1fr;} .builder-close{top:-14px;} }
 .builder-form{
     background:var(--paper);border:1px solid var(--line);border-radius:6px;
@@ -1268,7 +1263,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     padding:8px 15px;border-radius:20px;cursor:pointer;
     transition:all .15s ease;white-space:nowrap;
 }
-.chip:hover{border-color:var(--gold);color:var(--ink);transform:translateY(-1px);}
+
 .chip.on{background:var(--deep);border-color:var(--deep);color:var(--on-dark-strong);box-shadow:0 6px 14px -8px rgba(15,76,92,0.55);}
 .chip-row[data-group="hotelStars"] .chip.on{background:var(--gold);border-color:var(--gold);color:var(--on-gold);}
 .chip-row[data-group="carPref"] .chip.on{background:var(--coral);border-color:var(--coral);color:#FDEEEB;}
@@ -1290,7 +1285,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     display:flex;align-items:center;justify-content:center;
     transition:all .15s ease;
 }
-.stepper button:hover{border-color:var(--gold);color:var(--gold-text);}
+
 .stepper span{font-family:'Manrope',sans-serif;font-size:20px;font-weight:600;min-width:1.4em;text-align:center;}
 /* ---------- Upitnik (q-*) — checkbox/radio forma umesto chip dugmadi,
    koristi se u #builderPanel .builder-form. ---------- */
@@ -1413,7 +1408,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     width:36px;height:36px;border-radius:50%;
     background:var(--deep);color:var(--gold-soft);font-size:14px;
 }
-.btn-optimize:hover{transform:translateY(-1.5px);gap:15px;box-shadow:0 14px 26px -10px rgba(201,164,92,0.55);}
+
 .btn-optimize:active{transform:translateY(0);gap:12px;}
 .optimize-result{
     margin-top:14px;background:rgba(255,255,255,0.06);border-left:2px solid var(--gold-soft);
@@ -1425,7 +1420,7 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
     font-family:'Work Sans',sans-serif;font-size:13px;font-weight:700;
     padding:7px 12px;border-radius:14px;cursor:pointer;
 }
-.optimize-apply:hover{background:rgba(236,217,173,0.12);}
+
 .builder-book-links{margin-top:14px;padding-top:14px;border-top:1px solid rgba(227,240,241,0.25);}
 .builder-book-links .bbl-label{font-size:13px;color:var(--on-dark-soft);margin-bottom:9px;}
 .builder-book-row{display:flex;flex-wrap:wrap;gap:8px;}
@@ -1440,14 +1435,14 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 }
 .qa-item:last-child{border-bottom:none;}
 .qa-item svg{width:17px;height:17px;min-width:17px;stroke:var(--gold);transition:stroke .15s ease;}
-.qa-item:hover{color:#fff;}
-.qa-item:hover svg{stroke:var(--gold-soft);}
+
+
 .pkg-save-btn{
     width:calc(100% - 48px);margin:0 24px 24px;padding:11px;border:1px solid var(--line);border-radius:4px;
     background:transparent;color:var(--ink-soft);font-family:'Work Sans',sans-serif;font-weight:600;font-size:14px;
     cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:border-color .15s ease,color .15s ease;
 }
-.pkg-save-btn:hover{border-color:var(--gold);color:var(--gold-text);}
+
 /* .pkg-alert-btn (zvonce "Javi mi kad padne cena" na kartici ponude) — sad
 samo obična podvučena crvena poveznica, bez okvira/pozadine/ikonice, da se
 jasno razlikuje od punog dugmeta "Sačuvaj ovu ponudu" iznad. */
@@ -1460,7 +1455,7 @@ jasno razlikuje od punog dugmeta "Sačuvaj ovu ponudu" iznad. */
     transition:opacity .15s ease;
 }
 .pkg-alert-btn svg{display:none;}
-.pkg-alert-btn:hover{opacity:0.72;}
+
 .pkg-alert-btn:active{opacity:0.55;}
 .builder-summary-placeholder{
     border:1px solid var(--line);border-radius:6px;
@@ -1479,7 +1474,7 @@ jasno razlikuje od punog dugmeta "Sačuvaj ovu ponudu" iznad. */
     display:flex;align-items:center;justify-content:center;gap:8px;
     transition:background .15s ease, transform .15s ease, border-color .15s ease;
 }
-.btn-save:hover{background:rgba(110,156,156,0.18);border-color:#6FBAC4;transform:translateY(-1px);}
+
 .btn-save:active{transform:translateY(0);}
 /* .btn-alert had no rules at all before — buttons using it (price-alert
 CTA, native-share CTA) were rendering as unstyled browser defaults.
@@ -1494,8 +1489,8 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     transition:background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
 .btn-alert svg{width:16px;height:16px;flex:none;color:var(--gold-soft);transition:color .15s ease;}
-.btn-alert:hover{background:rgba(110,156,156,0.22);border-color:#6FBAC4;transform:translateY(-1px);box-shadow:0 10px 22px -12px rgba(110,156,156,0.4);}
-.btn-alert:hover svg{color:var(--gold);}
+
+
 .btn-alert:active{transform:translateY(0);}
 /* ---------- Modali (alert / match-quiz / share) — nije uopšte imalo CSS ---------- */
 .alert-modal-backdrop{
@@ -1518,7 +1513,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     border:1px solid var(--line);background:var(--bg);color:var(--ink-soft);
     cursor:pointer;font-size:14px;transition:background .15s ease, color .15s ease;
 }
-.alert-modal-close:hover{background:var(--gold-soft);color:var(--ink);}
+
 .alert-modal-ic{
     width:46px;height:46px;border-radius:8px;background:var(--gold-soft);
     display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:14px;
@@ -1537,7 +1532,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     font-size:14px;line-height:1.3;padding:10px 18px;cursor:pointer;
     transition:background .2s ease, border-color .2s ease, transform .15s ease;
 }
-.passport-check-btn:hover{background:var(--gold-soft);border-style:solid;transform:translateY(-1px);}
+
 .passport-check-btn:active{transform:translateY(0);}
 @media (max-width:520px){
     .passport-check-btn{font-size:13.5px;padding:9px 16px;width:100%;}
@@ -1561,7 +1556,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     width:38px;height:38px;font-size:16px;
     background:var(--deep);color:var(--on-dark-strong);
 }
-.btn-search-main:hover::after{background:var(--deep2);}
+
 .passport-rule-box{
     background:var(--paper);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
@@ -1641,7 +1636,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     color:var(--ink-soft);cursor:pointer;transition:background .15s ease,color .15s ease,box-shadow .15s ease;
 }
 .docs-tab.active{background:var(--paper);color:var(--ink);box-shadow:0 4px 12px -6px rgba(0,0,0,0.18);}
-.docs-tab:not(.active):hover{color:var(--ink);}
+
 .docs-action-row{margin-bottom:14px;}
 .docs-action-row[hidden]{display:none;}
 .docs-scroll{
@@ -1691,7 +1686,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     font-family:'Work Sans',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;white-space:nowrap;
     transition:opacity .15s ease;
 }
-.auth-btn:hover{opacity:0.88;}
+
 .auth-status{font-size:15px;color:var(--ink-soft);}
 .auth-status strong{color:var(--ink);font-family:'Manrope',sans-serif;font-weight:600;}
 .auth-hint{margin:8px 0 0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
@@ -1700,7 +1695,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     font-family:'Work Sans',sans-serif;font-weight:600;font-size:15px;
     color:var(--gold-text);text-decoration:underline;text-underline-offset:3px;
 }
-.auth-link:hover{color:var(--coral-text);}
+
 .saved-empty,.saved-loading{
     border:1px solid var(--line);border-radius:6px;background:var(--paper);
     padding:26px;text-align:center;color:var(--ink-soft);font-size:15px;
@@ -1729,7 +1724,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     font-family:'Work Sans',sans-serif;color:var(--ink);
     font-size:13.5px;font-weight:600;cursor:pointer;transition:opacity .15s ease,background .15s ease;
 }
-.saved-trip-btn:hover{opacity:0.85;}
+
 .saved-trip-btn.danger{color:var(--coral-text);border-color:var(--coral-soft);}
 /* ---------- Prijava (magic-link auth bar) ---------- */
 .auth-form{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
@@ -1743,7 +1738,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     border:1px solid var(--line);border-radius:4px;padding:9px 16px;background:var(--bg);color:var(--ink);
     font-family:'Work Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;transition:opacity .15s ease;
 }
-.auth-logout-btn:hover{opacity:0.8;}
+
 /* ---------- toast ---------- */
 #toast{
     position:fixed;top:26px;left:50%;transform:translateX(-50%) translateY(-20px);
@@ -1791,7 +1786,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     font-family:'Manrope',sans-serif;font-size:clamp(32px,5vw,40px);font-weight:700;
     color:var(--deep);letter-spacing:-0.01em;line-height:1.1;transition:transform .2s ease;
 }
-.stat:hover .val{transform:translateY(-2px);}
+
 .stat .lab{
     font-size:13.5px;color:var(--ink-soft);margin-top:8px;
     text-transform:uppercase;letter-spacing:0.05em;font-weight:600;line-height:1.4;
@@ -1817,8 +1812,8 @@ footer{
 .footer-logo em{color:var(--gold-soft);font-style:normal;margin-left:-8px;}
 .flinks{display:flex;gap:22px;color:var(--on-dark-soft);flex-wrap:wrap;}
 .flinks a{text-decoration:none;transition:color .15s ease;}
-.flinks a:hover{color:var(--gold-soft);}
-.flinks a:nth-child(2n):hover{color:var(--aqua);}
+
+
 .fsocial{display:flex;gap:14px;}
 .fsocial svg{width:15px;height:15px;color:var(--on-dark-soft);}
 .foot-note{margin-top:18px;font-size:13.5px;color:#8FB4B8;text-align:center;}
@@ -1998,7 +1993,7 @@ footer{padding:28px 20px;}
     transition:transform .18s ease, box-shadow .18s ease;
 }
 .whatsapp-fab svg{width:30px;height:30px;}
-.whatsapp-fab:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 18px 36px -10px rgba(15,76,92,0.55);}
+
 .whatsapp-fab:active{transform:translateY(0) scale(0.98);}
 @media (max-width:480px){
     .whatsapp-fab{right:14px;bottom:14px;width:52px;height:52px;}
@@ -2026,7 +2021,7 @@ footer{padding:28px 20px;}
     font-family:'Work Sans',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;
     white-space:nowrap;transition:opacity .15s ease;
 }
-.cookie-btn:hover{opacity:0.88;}
+
 .cookie-btn.accept{background:var(--gold);color:var(--on-gold);}
 .cookie-btn.decline{background:transparent;color:var(--on-dark-soft);border:1px solid var(--line-deep);}
 @media (max-width:640px){
@@ -2051,7 +2046,7 @@ footer{padding:28px 20px;}
     font-size:14.5px;color:var(--ink-soft);text-decoration:none;
     display:flex;align-items:center;gap:6px;transition:color .15s ease;
 }
-.legal-back:hover{color:var(--deep);}
+
 .legal-wrap{max-width:760px;margin:0 auto;padding:12px 24px 80px;}
 .legal-wrap h1{font-size:34px;margin:18px 0 6px;}
 .legal-wrap .legal-updated{color:var(--ink-soft);font-size:14px;margin:0 0 40px;}
@@ -2091,7 +2086,7 @@ footer{padding:28px 20px;}
     color:var(--ink);
     transition:opacity .2s ease;
 }
-.partner-badge:hover{opacity:.75;}
+
 .partner-badge::before{content:"";width:9px;height:9px;border-radius:50%;flex:none;}
 .partner-badge--kayak{color:#E85D04;}
 .partner-badge--kayak::before{background:#FF690F;}
@@ -2179,15 +2174,12 @@ footer{padding:28px 20px;}
     border-left:4px solid var(--emerald);
     border-color:rgba(255,255,255,0.08);
 }
-.match-trigger:hover{
-    border-left-color:var(--gold);
-    box-shadow:0 20px 40px -22px rgba(75,35,84,0.55);
-}
+
 .match-trigger .ac-ic{
     background:var(--gold);color:var(--on-gold);
     box-shadow:0 0 0 3px rgba(201,164,92,0.25);
 }
-.match-trigger:hover .ac-ic{background:#D8B96E;}
+
 .match-trigger .ac-title{color:var(--paper);}
 .match-trigger .ac-sub{color:#D8C7CE;} /* svetla dusty-rose nijansa za čitljivost na tamnom */
 .match-preview-row{
@@ -2201,7 +2193,7 @@ footer{padding:28px 20px;}
 .match-trigger .ac-cta{border-top-color:rgba(255,255,255,0.14);}
 .match-trigger .ac-cta-label{color:var(--gold);}
 .match-trigger .ac-arrow{background:var(--gold);color:var(--on-gold);}
-.match-trigger:hover .ac-arrow{background:#D8B96E;color:var(--on-gold);}
+
 @media (max-width:560px){
     .match-preview-chip{font-size:11px;padding:3px 9px;}
 }
@@ -2221,7 +2213,7 @@ footer{padding:28px 20px;}
 .match-modal .alert-modal-close{
     background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.16);color:var(--paper);
 }
-.match-modal .alert-modal-close:hover{background:var(--gold);color:var(--on-gold);border-color:var(--gold);}
+
 .match-modal .alert-modal-disclaimer{color:#C6A9B0;}
 .match-modal .alert-modal-row label{color:#D8C7CE;}
 
@@ -2244,7 +2236,7 @@ footer{padding:28px 20px;}
     font-size:12.5px;font-weight:600;color:var(--dusty-rose);
     display:inline-flex;align-items:center;gap:4px;
 }
-.match-back:hover{color:var(--gold);}
+
 
 .match-chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .match-chip{
@@ -2260,7 +2252,7 @@ footer{padding:28px 20px;}
 .match-chip .mc-ic{font-size:24px;line-height:1;}
 .match-chip-wide .mc-ic{font-size:19px;}
 .match-chip .mc-label{font-size:13.5px;font-weight:600;text-align:center;}
-.match-chip:hover{border-color:var(--gold);transform:translateY(-1px);}
+
 .match-chip.on{
     background:rgba(8,127,91,0.32);border-color:var(--emerald);
     box-shadow:0 0 0 1px var(--emerald), 0 10px 22px -12px rgba(8,127,91,0.6);
@@ -2271,7 +2263,7 @@ footer{padding:28px 20px;}
     background:linear-gradient(120deg, var(--emerald) 0%, #0A9E71 100%);
     box-shadow:0 16px 30px -16px rgba(8,127,91,0.6);
 }
-.match-submit-btn:hover{background:linear-gradient(120deg, #0A9E71 0%, var(--emerald) 100%);}
+
 .match-submit-btn::after{background:var(--gold);}
 .match-modal #matchBudget{
     background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.18);color:var(--paper);
@@ -2305,11 +2297,11 @@ footer{padding:28px 20px;}
 .match-refine-chip{
     border-color:var(--royal-plum);color:var(--royal-plum);background:transparent;
 }
-.match-refine-chip:hover{background:var(--royal-plum);border-color:var(--royal-plum);color:var(--paper);transform:translateY(-1px);}
+
 .match-reroll-btn{border-color:var(--emerald);color:var(--emerald);}
 .match-reroll-btn svg{color:var(--emerald);}
-.match-reroll-btn:hover{background:rgba(8,127,91,0.12);border-color:var(--emerald);}
-.match-reroll-btn:hover svg{color:var(--emerald);}
+
+
 
 @media (max-width:560px){
     .match-chip{padding:13px 8px;}
@@ -2325,4 +2317,88 @@ footer{padding:28px 20px;}
 #popularDestHead,
 #faq .section-head h2{
     color:var(--deep);
+}
+
+/* ====== HOVER STILOVI: samo za uredjaje sa pravim hover-om (mis), ne na dodir (telefon/tablet) ====== */
+
+@media (hover: hover) and (pointer: fine) {
+.topbar nav a:hover{color:var(--ink);}
+.topbar .avatar:hover{transform:rotate(-6deg);}
+.lang-switch:hover{border-color:var(--gold);background:var(--gold-soft);}
+.mobile-panel .mp-nav a:hover{background:var(--gold-soft);border-left-color:var(--gold);padding-left:16px;}
+.auth-dropdown-inner a:hover{color:var(--gold);text-decoration:underline;}
+.auth-dropdown-inner #dropdownLogoutBtn:hover{
+    background:var(--coral-soft);border-color:var(--coral);
+}
+.auth-dropdown-inner #dropdownLoginBtn:hover,.auth-dropdown-inner .btn-primary:hover{background:var(--deep2);}
+.loc-dropdown-item:hover{background:var(--gold-soft);}
+.btn-primary:hover{transform:translateY(-2px);gap:18px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
+.btn-primary:hover::after{background:#A9803D;transform:rotate(-10deg) translateX(1px);}
+.date-display:hover .dd-range{color:var(--gold-text);}
+.date-display.is-empty:hover .dd-range{color:var(--ink-soft);}
+.cal-nav:hover{border-color:var(--gold);color:var(--gold-text);}
+.cal-day:not(.is-empty):not(.is-disabled):hover{background:var(--gold-soft);}
+.pax-display:hover{color:var(--gold-text);}
+.pax-display.is-empty:hover{color:var(--ink-soft);}
+.pax-option:hover{background-color:var(--gold-soft);}
+.toggle:hover .tt-icon{transform:translateY(-3px);}
+.feature:hover{background:var(--bg);}
+.postcard:hover{transform:translateY(-3px);box-shadow:0 30px 56px -28px rgba(15,76,92,0.34);}
+.popular-dest-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(15,76,92,0.3);}
+.results-back-btn:hover{border-color:var(--gold);color:var(--gold-text);}
+.plan-continue-btn:hover{transform:translateY(-2px);gap:16px;box-shadow:0 20px 36px -14px rgba(15,76,92,0.58);}
+.plan-continue-btn:hover .arrow{background:#A9803D;transform:rotate(-10deg) translateX(1px);}
+.plan-control-link:hover{border-color:var(--gold);}
+.plan-control-link:hover .pcl-arrow{transform:translateX(3px);background:var(--gold);color:#fff;}
+.pkg-close:hover{background:var(--bg);color:var(--ink);}
+.pkg:hover{transform:translateY(-3px);box-shadow:0 20px 40px -26px rgba(15,76,92,0.3);}
+.item-card:hover{transform:translateY(-3px);box-shadow:0 16px 28px -18px rgba(15,76,92,0.32);}
+.item-btn:hover{opacity:0.88;}
+.extra-btn:hover{opacity:0.85;}
+.extra.addon-extra:hover{border-color:var(--gold-soft);}
+.action-card:hover{
+    transform:translateY(-2px);box-shadow:0 16px 32px -22px rgba(15,76,92,0.3);border-left-color:var(--gold-text);
+}
+.action-card:hover .ac-ic{transform:scale(1.04);}
+.action-card:hover .ac-arrow{background:var(--gold);color:#fff;transform:translateX(3px);}
+.builder-close:hover{background:var(--gold);color:var(--on-gold);transform:scale(1.06);}
+.chip:hover{border-color:var(--gold);color:var(--ink);transform:translateY(-1px);}
+.stepper button:hover{border-color:var(--gold);color:var(--gold-text);}
+.btn-optimize:hover{transform:translateY(-1.5px);gap:15px;box-shadow:0 14px 26px -10px rgba(201,164,92,0.55);}
+.optimize-apply:hover{background:rgba(236,217,173,0.12);}
+.qa-item:hover{color:#fff;}
+.qa-item:hover svg{stroke:var(--gold-soft);}
+.pkg-save-btn:hover{border-color:var(--gold);color:var(--gold-text);}
+.pkg-alert-btn:hover{opacity:0.72;}
+.btn-save:hover{background:rgba(110,156,156,0.18);border-color:#6FBAC4;transform:translateY(-1px);}
+.btn-alert:hover{background:rgba(110,156,156,0.22);border-color:#6FBAC4;transform:translateY(-1px);box-shadow:0 10px 22px -12px rgba(110,156,156,0.4);}
+.btn-alert:hover svg{color:var(--gold);}
+.alert-modal-close:hover{background:var(--gold-soft);color:var(--ink);}
+.passport-check-btn:hover{background:var(--gold-soft);border-style:solid;transform:translateY(-1px);}
+.btn-search-main:hover::after{background:var(--deep2);}
+.docs-tab:not(.active):hover{color:var(--ink);}
+.auth-btn:hover{opacity:0.88;}
+.auth-link:hover{color:var(--coral-text);}
+.saved-trip-btn:hover{opacity:0.85;}
+.auth-logout-btn:hover{opacity:0.8;}
+.stat:hover .val{transform:translateY(-2px);}
+.flinks a:hover{color:var(--gold-soft);}
+.flinks a:nth-child(2n):hover{color:var(--aqua);}
+.whatsapp-fab:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 18px 36px -10px rgba(15,76,92,0.55);}
+.cookie-btn:hover{opacity:0.88;}
+.legal-back:hover{color:var(--deep);}
+.partner-badge:hover{opacity:.75;}
+.match-trigger:hover{
+    border-left-color:var(--gold);
+    box-shadow:0 20px 40px -22px rgba(75,35,84,0.55);
+}
+.match-trigger:hover .ac-ic{background:#D8B96E;}
+.match-trigger:hover .ac-arrow{background:#D8B96E;color:var(--on-gold);}
+.match-modal .alert-modal-close:hover{background:var(--gold);color:var(--on-gold);border-color:var(--gold);}
+.match-back:hover{color:var(--gold);}
+.match-chip:hover{border-color:var(--gold);transform:translateY(-1px);}
+.match-submit-btn:hover{background:linear-gradient(120deg, #0A9E71 0%, var(--emerald) 100%);}
+.match-refine-chip:hover{background:var(--royal-plum);border-color:var(--royal-plum);color:var(--paper);transform:translateY(-1px);}
+.match-reroll-btn:hover{background:rgba(8,127,91,0.12);border-color:var(--emerald);}
+.match-reroll-btn:hover svg{color:var(--emerald);}
 }
