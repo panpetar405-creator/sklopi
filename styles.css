@@ -2051,10 +2051,10 @@ footer{padding:28px 20px;}
     box-shadow:0 20px 40px -22px rgba(75,35,84,0.55);
 }
 .match-trigger .ac-ic{
-    background:var(--emerald);color:var(--paper);
-    box-shadow:0 0 0 3px rgba(8,127,91,0.25);
+    background:var(--gold);color:var(--on-gold);
+    box-shadow:0 0 0 3px rgba(201,164,92,0.25);
 }
-.match-trigger:hover .ac-ic{background:#0A9E71;}
+.match-trigger:hover .ac-ic{background:#D8B96E;}
 .match-trigger .ac-title{color:var(--paper);}
 .match-trigger .ac-sub{color:#D8C7CE;} /* svetla dusty-rose nijansa za čitljivost na tamnom */
 .match-preview-row{
@@ -2067,8 +2067,8 @@ footer{padding:28px 20px;}
 }
 .match-trigger .ac-cta{border-top-color:rgba(255,255,255,0.14);}
 .match-trigger .ac-cta-label{color:var(--gold);}
-.match-trigger .ac-arrow{background:var(--emerald);color:var(--paper);}
-.match-trigger:hover .ac-arrow{background:var(--gold);color:var(--on-gold);}
+.match-trigger .ac-arrow{background:var(--gold);color:var(--on-gold);}
+.match-trigger:hover .ac-arrow{background:#D8B96E;color:var(--on-gold);}
 @media (max-width:560px){
     .match-preview-chip{font-size:11px;padding:3px 9px;}
 }
