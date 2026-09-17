@@ -607,13 +607,6 @@ a{color:inherit;}
 .section-head .eyebrow{font-size:14.5px;color:var(--gold-text);font-weight:600;}
 .section-head h2{font-size:31.5px;margin-top:6px;}
 .section-head .section-sub{margin:10px 0 0;max-width:52ch;font-size:16.5px;line-height:1.55;color:var(--ink-soft);}
-/* ---------- Promo banner (odmor) — foto sa ugrađenim tekstom, uklopljen u kontejner ---------- */
-.promo-banner{max-width:1180px;margin:96px auto;padding:0 40px;line-height:0;}
-.promo-banner img{display:block;width:100%;height:auto;border-radius:20px;}
-@media (max-width:900px){
-    .promo-banner{margin:56px auto;padding:0 20px;}
-    .promo-banner img{border-radius:16px;}
-}
 /* ---------- FAQ ---------- */
 .faq-wrap{max-width:760px;margin:0;display:flex;flex-direction:column;gap:10px;}
 .faq-item{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:4px 20px;}
