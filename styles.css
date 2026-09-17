@@ -1800,7 +1800,7 @@ footer{padding:28px 20px;}
 }
 
 /* ---------- Business strip: partners trust row + price breakdown chart ---------- */
-.business-strip{padding-top:44px;padding-bottom:8px;}
+.business-strip{padding-bottom:8px;}
 .partners-row{
     display:flex;align-items:center;flex-wrap:wrap;gap:12px;
     padding-bottom:30px;margin-bottom:30px;border-bottom:1px solid var(--line);
@@ -1861,8 +1861,8 @@ footer{padding:28px 20px;}
 .dot-car{background:var(--coral);}
 .dot-activity{background:var(--aqua);}
 @media (max-width:640px){
-    .business-strip{padding-top:28px;}
-    .partners-row{gap:10px;padding-bottom:20px;margin-bottom:20px;}
+    .partners-row{gap:8px;padding-bottom:20px;margin-bottom:20px;}
+    .partner-badge{padding:8px 14px;font-size:13px;}
     .partners-label{width:100%;margin-right:0;margin-bottom:2px;}
     .price-chart{padding:20px 18px 18px;}
     .pb-seg{font-size:0;padding:0;}
