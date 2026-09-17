@@ -113,12 +113,15 @@ const I18N = {
     aria_close:'Zatvori', label_email:'Email',
     label_alert_threshold:'Javi mi kad ukupna procenjena cena padne ispod', btn_set_alert:'Postavi alert',
     alert_modal_disclaimer:'⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.',
-    surprise_trigger:'<span class="ac-ic"><svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg></span><span class="ac-title">Nemaš ideju kuda?</span><span class="ac-sub">Reci nam budžet — predložićemo 3 destinacije koje se uklapaju.</span><span class="ac-cta"><span class="ac-cta-label">Iznenadi me</span><span class="ac-arrow">→</span></span>',
-    surprise_modal_title:'Iznenadi me',
-    surprise_modal_sub:'Nemaš konkretnu destinaciju na umu? Reci nam samo budžet — probaćemo preko 100 gradova i predložićemo 3 koja se uklapaju. Datumi i broj putnika ostaju kao u formi iznad.',
-    surprise_modal_label_budget:'Ukupan budžet (za sve putnike)', placeholder_surprise_budget:'npr. 400',
-    surprise_modal_btn:'🎲 Predloži 3 destinacije',
-    surprise_modal_disclaimer:'⚠️ Ilustrativna procena cene po gradu, ne stvarna ponuda partnera.',
+    match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">Nemaš ideju kuda?</span><span class="ac-sub">Kratak upitnik od 3 pitanja — pronađi 3 destinacije koje ti stvarno odgovaraju, ne nasumične.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 More</span><span class="match-preview-chip">🏙️ Grad</span><span class="match-preview-chip">🌲 Priroda</span><span class="match-preview-chip">🎉 Provod</span></span><span class="ac-cta"><span class="ac-cta-label">Pronađi mi destinaciju</span><span class="ac-arrow">→</span></span>',
+    match_modal_title:'Pronađi svoj izlet',
+    match_modal_sub:'Tri kratka pitanja — mi bodujemo preko 60 destinacija po poklapanju sa tobom, sezonom i dužinom puta, ne nasumično. Datumi i broj putnika ostaju kao u formi iznad.',
+    match_step1_title:'Sa kim putuješ?',
+    match_step2_title:'Šta ti znači odmor?',
+    match_step3_title:'Koliki je ukupan budžet?',
+    match_label_budget:'Ukupan budžet (za sve putnike, opciono)', placeholder_match_budget:'npr. 400',
+    match_modal_btn:'🎯 Pronađi mi 3 destinacije',
+    match_modal_disclaimer:'⚠️ Ilustrativna procena cene, kombinovana sa tvojim odgovorima — ne stvarna ponuda partnera.',
     share_modal_title:'Podeli sa prijateljima', share_modal_label_link:'Link za deljenje',
     share_modal_copy:'📋 Kopiraj link', share_modal_native:'📤 Podeli preko aplikacija',
     share_modal_disclaimer:'Svako ko otvori link vidi predlog i može da ostavi odgovor (Idem/Možda/Ne mogu) — bez pravljenja naloga.',
@@ -238,12 +241,15 @@ const I18N = {
     aria_close:'Close', label_email:'Email',
     label_alert_threshold:'Notify me when the total estimated price drops below', btn_set_alert:'Set alert',
     alert_modal_disclaimer:'⚠️ Still an illustrative estimate, not a real partner offer. You can unsubscribe anytime via the link in the email you receive.',
-    surprise_trigger:'<span class="ac-ic"><svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg></span><span class="ac-title">No idea where to go?</span><span class="ac-sub">Tell us your budget — we\'ll suggest 3 destinations that fit.</span><span class="ac-cta"><span class="ac-cta-label">Surprise me</span><span class="ac-arrow">→</span></span>',
-    surprise_modal_title:'Surprise me',
-    surprise_modal_sub:'No specific destination in mind? Just tell us your budget — we’ll try over 100 cities and suggest 3 that fit. Dates and traveler count stay as set in the form above.',
-    surprise_modal_label_budget:'Total budget (for all travelers)', placeholder_surprise_budget:'e.g. 400',
-    surprise_modal_btn:'🎲 Suggest 3 destinations',
-    surprise_modal_disclaimer:'⚠️ Illustrative price estimate per city, not a real partner offer.',
+    match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">No idea where to go?</span><span class="ac-sub">A short 3-question quiz — find 3 destinations that actually fit you, not random picks.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 Beach</span><span class="match-preview-chip">🏙️ City</span><span class="match-preview-chip">🌲 Nature</span><span class="match-preview-chip">🎉 Nightlife</span></span><span class="ac-cta"><span class="ac-cta-label">Find my destination</span><span class="ac-arrow">→</span></span>',
+    match_modal_title:'Find your trip',
+    match_modal_sub:'Three quick questions — we score 60+ destinations by fit with you, the season and trip length, not at random. Dates and traveler count stay as set in the form above.',
+    match_step1_title:'Who are you traveling with?',
+    match_step2_title:'What does a vacation mean to you?',
+    match_step3_title:'What\'s your total budget?',
+    match_label_budget:'Total budget (for all travelers, optional)', placeholder_match_budget:'e.g. 400',
+    match_modal_btn:'🎯 Find my 3 destinations',
+    match_modal_disclaimer:'⚠️ Illustrative price estimate, combined with your answers — not a real partner offer.',
     share_modal_title:'Share with friends', share_modal_label_link:'Share link',
     share_modal_copy:'📋 Copy link', share_modal_native:'📤 Share via apps',
     share_modal_disclaimer:'Anyone who opens the link can see the plan and RSVP (Going/Maybe/Can’t make it) — no account needed.',
@@ -2806,49 +2812,207 @@ function computePackagesLocally(dest, from, to, nights, days, adults, flags, ori
 }
 
 /* ==========================================================
-   "IZNENADI ME" — pretraga samo po budžetu, bez destinacije.
-   Korisnik unese samo iznos; sajt proba svih ~100 gradova iz
-   POPULAR_DESTINATIONS na 'best' tieru (isti flagovi kao u glavnoj
-   formi) i vrati 3 nasumične koje se uklapaju u budžet.
-
-   Namerno koristi ISTI seed kao computePackagesLocally za 'best'
-   tier (hashSeed(dest+dest.length+nights+adults), pa rng potrošen
-   redom best->comfort->budget) — cena koju "Iznenadi me" pokaže za
-   neki grad je BIT-ZA-BIT ista kao kad bi korisnik taj grad ukucao
-   ručno u glavnu pretragu. Nema dupliranja logike, samo poziva
-   buildPackage direktno za jedan tier umesto sva tri.
+   "PRONAĐI SVOJ IZLET" — pravi alat za odlučivanje, ne kocka.
+   Umesto da nasumično bira grad koji se uklapa u budžet, korisnik
+   prođe kratak upitnik (sa kim putuje, šta mu znači odmor, budžet)
+   i svaki grad iz kurirane MATCH_DESTINATIONS baze se BODUJE po
+   poklapanju sa odgovorima + sezonom (mesec iz already-selected
+   datuma) + dužinom puta (broj noći iz already-selected datuma) +
+   budžetom. Vraćaju se 3 grada sa najvišim skorom i objašnjenjem
+   ZAŠTO baš oni odgovaraju — ne samo cenom.
 ========================================================== */
-function computeSurpriseCandidates(from, to, adults, flags){
+/* Kurirana baza destinacija sa tagovima za bodovanje (podskup
+   POPULAR_DESTINATIONS — namerno manji i pažljivije tagovan, jer je
+   ovde tačnost preporuke važnija od broja gradova).
+   vibes: 'sea' | 'city' | 'nature' | 'nightlife' (grad može imati više)
+   months: meseci (1-12) kad je destinacija najbolja sezona
+   distance: 'near' (Balkan/susedne zemlje), 'medium' (ostatak Evrope,
+             Turska, sev. Afrika), 'far' (interkontinentalni letovi)
+   family: da li je pogodna za porodice sa decom
+   nightlife: da li ima jak noćni život/provod */
+const MATCH_DESTINATIONS = [
+  {name:'Budimpešta', extra:'Mađarska', vibes:['city'], months:[3,4,5,6,9,10,11,12], distance:'near', family:true, nightlife:true},
+  {name:'Beč', extra:'Austrija', vibes:['city'], months:[1,2,3,4,5,9,10,11,12], distance:'near', family:true, nightlife:false},
+  {name:'Sofija', extra:'Bugarska', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Solun', extra:'Grčka', vibes:['city','sea'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:true},
+  {name:'Skoplje', extra:'Severna Makedonija', vibes:['city'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Ohrid', extra:'Severna Makedonija', vibes:['sea','nature'], months:[6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Tirana', extra:'Albanija', vibes:['city'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:true},
+  {name:'Sarande', extra:'Albanija', vibes:['sea'], months:[6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Budva', extra:'Crna Gora', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'near', family:false, nightlife:true},
+  {name:'Kotor', extra:'Crna Gora', vibes:['sea','nature'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Herceg Novi', extra:'Crna Gora', vibes:['sea','nature'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Dubrovnik', extra:'Hrvatska', vibes:['sea','city'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Split', extra:'Hrvatska', vibes:['sea','city','nightlife'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:true},
+  {name:'Hvar', extra:'Hrvatska', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'near', family:false, nightlife:true},
+  {name:'Zagreb', extra:'Hrvatska', vibes:['city'], months:[3,4,5,6,9,10,11,12], distance:'near', family:true, nightlife:false},
+  {name:'Ljubljana', extra:'Slovenija', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Bled', extra:'Slovenija', vibes:['nature'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Sarajevo', extra:'Bosna i Hercegovina', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Mostar', extra:'Bosna i Hercegovina', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Bukurešt', extra:'Rumunija', vibes:['city','nightlife'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:true},
+  {name:'Varna', extra:'Bugarska', vibes:['sea'], months:[6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Istanbul', extra:'Turska', vibes:['city'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:true},
+  {name:'Prag', extra:'Češka', vibes:['city','nightlife'], months:[3,4,5,6,9,10,11,12], distance:'medium', family:true, nightlife:true},
+  {name:'Bratislava', extra:'Slovačka', vibes:['city'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Krf', extra:'Grčka', vibes:['sea','nature'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Atina', extra:'Grčka', vibes:['city','sea'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Santorini', extra:'Grčka', vibes:['sea'], months:[5,6,7,8,9,10], distance:'medium', family:false, nightlife:false},
+  {name:'Mikonos', extra:'Grčka', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'medium', family:false, nightlife:true},
+  {name:'Rodos', extra:'Grčka', vibes:['sea'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Krit', extra:'Grčka', vibes:['sea','nature'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Rim', extra:'Italija', vibes:['city'], months:[3,4,5,9,10,11], distance:'medium', family:true, nightlife:false},
+  {name:'Milano', extra:'Italija', vibes:['city','nightlife'], months:[3,4,5,9,10], distance:'medium', family:false, nightlife:true},
+  {name:'Venecija', extra:'Italija', vibes:['city'], months:[3,4,5,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Firenca', extra:'Italija', vibes:['city'], months:[4,5,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Barselona', extra:'Španija', vibes:['sea','city','nightlife'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:true},
+  {name:'Madrid', extra:'Španija', vibes:['city','nightlife'], months:[4,5,9,10], distance:'medium', family:true, nightlife:true},
+  {name:'Malaga', extra:'Španija', vibes:['sea'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Ibica', extra:'Španija', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'medium', family:false, nightlife:true},
+  {name:'Lisabon', extra:'Portugalija', vibes:['city','sea','nightlife'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:true},
+  {name:'Porto', extra:'Portugalija', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Pariz', extra:'Francuska', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Nica', extra:'Francuska', vibes:['sea','city'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'London', extra:'Velika Britanija', vibes:['city','nightlife'], months:[4,5,6,9], distance:'medium', family:true, nightlife:true},
+  {name:'Amsterdam', extra:'Holandija', vibes:['city','nightlife'], months:[4,5,6,9], distance:'medium', family:true, nightlife:true},
+  {name:'Berlin', extra:'Nemačka', vibes:['city','nightlife'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:true},
+  {name:'Minhen', extra:'Nemačka', vibes:['city'], months:[5,6,9], distance:'medium', family:true, nightlife:false},
+  {name:'Cirih', extra:'Švajcarska', vibes:['city','nature'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Antalija', extra:'Turska', vibes:['sea'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Bodrum', extra:'Turska', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'medium', family:false, nightlife:true},
+  {name:'Kapadokija', extra:'Turska', vibes:['nature'], months:[4,5,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Tel Aviv', extra:'Izrael', vibes:['sea','city','nightlife'], months:[4,5,6,9,10], distance:'medium', family:false, nightlife:true},
+  {name:'Dubai', extra:'UAE', vibes:['city'], months:[11,12,1,2,3], distance:'medium', family:true, nightlife:true},
+  {name:'Kairo', extra:'Egipat', vibes:['city','nature'], months:[10,11,12,1,2,3], distance:'medium', family:true, nightlife:false},
+  {name:'Šarm El Šeik', extra:'Egipat', vibes:['sea'], months:[10,11,12,1,2,3,4], distance:'medium', family:true, nightlife:false},
+  {name:'Marakeš', extra:'Maroko', vibes:['city'], months:[3,4,10,11], distance:'medium', family:true, nightlife:false},
+  {name:'Njujork', extra:'SAD', vibes:['city','nightlife'], months:[4,5,9,10,12], distance:'far', family:true, nightlife:true},
+  {name:'Majami', extra:'SAD', vibes:['sea','nightlife'], months:[11,12,1,2,3,4], distance:'far', family:true, nightlife:true},
+  {name:'Los Anđeles', extra:'SAD', vibes:['city','sea'], months:[3,4,5,9,10], distance:'far', family:true, nightlife:false},
+  {name:'Bangkok', extra:'Tajland', vibes:['city','nightlife'], months:[11,12,1,2], distance:'far', family:true, nightlife:true},
+  {name:'Puket', extra:'Tajland', vibes:['sea'], months:[11,12,1,2,3], distance:'far', family:true, nightlife:false},
+  {name:'Tokio', extra:'Japan', vibes:['city'], months:[3,4,5,10,11], distance:'far', family:true, nightlife:false},
+  {name:'Bali', extra:'Indonezija', vibes:['sea','nature'], months:[5,6,7,8,9], distance:'far', family:true, nightlife:false},
+  {name:'Singapur', extra:'Singapur', vibes:['city'], months:[1,2,3,4,11,12], distance:'far', family:true, nightlife:true},
+  {name:'Sidnej', extra:'Australija', vibes:['city','sea'], months:[10,11,12,1,2,3], distance:'far', family:true, nightlife:false},
+  {name:'Kejptaun', extra:'Južnoafrička Republika', vibes:['nature','sea'], months:[10,11,12,1,2,3], distance:'far', family:true, nightlife:false},
+];
+
+const MATCH_VIBE_LABELS = {sea:'more i plažu', city:'grad i kulturu', nature:'prirodu i planinu', nightlife:'dobar provod', mix:'kombinaciju svega'};
+const MATCH_MONTH_NAMES = ['januar','februar','mart','april','maj','jun','jul','avgust','septembar','oktobar','novembar','decembar'];
+
+// Deo bodovanja koji NE zavisi od cene (poklapanje sa odgovorima,
+// sezonom i dužinom puta) — cena/budžet se dodaje posebno u
+// pickMatchDestinations, pošto cena zavisi od već izračunatog pkg-a.
+function computeMatchFitScore(cand, answers, nights, month){
+  const tags = cand.tags;
+  const reasons = [];
+  let score = 0;
+
+  // Šta ti znači odmor? (do 34 poena)
+  if (answers.vibe === 'mix'){
+    score += Math.min(34, 14 + tags.vibes.length * 7);
+    reasons.push('vibe_mix');
+  } else if (tags.vibes.includes(answers.vibe)){
+    score += 34;
+    reasons.push('vibe_' + answers.vibe);
+  } else {
+    score += 6;
+  }
+
+  // Sezona — mesec polaska iz već izabranih datuma (do 22 poena)
+  if (tags.months.includes(month)){
+    score += 22;
+    reasons.push('season');
+  } else {
+    const prev = month === 1 ? 12 : month - 1;
+    const next = month === 12 ? 1 : month + 1;
+    if (tags.months.includes(prev) || tags.months.includes(next)) score += 11;
+  }
+
+  // Dužina puta iz već izabranih datuma vs udaljenost destinacije (do 20 poena)
+  // — vikend putovanje ne predlaže interkontinentalni let, dug odmor
+  // favorizuje udaljenije destinacije.
+  if (nights <= 3){
+    if (tags.distance === 'near') { score += 20; reasons.push('near_fit'); }
+    else if (tags.distance === 'medium') score += 6;
+  } else if (nights <= 7){
+    if (tags.distance === 'medium') { score += 18; reasons.push('length_fit'); }
+    else if (tags.distance === 'near') score += 14;
+    else score += 9;
+  } else {
+    if (tags.distance === 'far') { score += 20; reasons.push('length_fit'); }
+    else score += 13;
+  }
+
+  // Sa kim putuješ? (do 14 poena)
+  if (answers.companion === 'family'){
+    if (tags.family) { score += 14; reasons.push('family'); }
+    else score += 2;
+  } else if (answers.companion === 'friends'){
+    if (tags.nightlife) { score += 14; reasons.push('nightlife'); }
+    else score += 6;
+  } else if (answers.companion === 'couple'){
+    if (tags.vibes.includes('sea') || tags.vibes.includes('city')) { score += 12; reasons.push('romantic'); }
+    else score += 6;
+  } else {
+    score += 10;
+  }
+
+  return {score, reasons};
+}
+
+function computeMatchCandidates(from, to, adults, flags){
   const nights = nightsBetween(from, to);
   const days = nights;
-  return POPULAR_DESTINATIONS.map(d => {
+  return MATCH_DESTINATIONS.map(d => {
     const seed = hashSeed(d.name.toLowerCase()+d.name.length+nights+adults);
     const rng = seededRandom(seed);
     const factor = marketFactor(d.name, todayStr());
     const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags, factor);
     attachAffiliateLinks(pkg, d.name, from, to, adults);
-    return {dest:d.name, country:d.extra||'', pkg};
+    return {dest:d.name, country:d.extra||'', pkg, tags:d};
   });
 }
 
-// Bira 3 grada. Ako manje od 3 uopšte stane u budžet, umesto da vrati
-// prazno (razočaravajuće), vraća 3 NAJJEFTINIJE opcije uz jasnu napomenu —
-// sajt nikad ne sme da ostavi korisnika bez ijednog predloga.
-function pickSurpriseDestinations(budget, candidates, count){
-  const fitting = candidates.filter(c => c.pkg.total <= budget);
-  const usedFallback = fitting.length < count;
-  const pool = usedFallback ? candidates.slice().sort((a,b)=>a.pkg.total-b.pkg.total).slice(0, Math.max(count*3, count)) : fitting;
+// Rangira SVE kandidate po poklapanju + budžetu i vraća top `count`,
+// plus ceo rangirani pool (za "Drugih 3 predloga" i fino podešavanje
+// bez ponovnog otvaranja upitnika).
+function pickMatchDestinations(answers, budget, candidates, nights, month, count){
+  const scored = candidates.map(c => {
+    const fit = computeMatchFitScore(c, answers, nights, month);
+    let bonus = 0;
+    let fitsBudget = true;
+    if (budget){
+      const ratio = c.pkg.total / budget;
+      fitsBudget = ratio <= 1;
+      bonus = fitsBudget ? 10 : Math.max(-24, 10 - (ratio - 1) * 40);
+      if (fitsBudget) fit.reasons.push('budget');
+    }
+    const total = fit.score + bonus;
+    const matchPct = Math.max(35, Math.min(98, Math.round(total)));
+    return Object.assign({}, c, {matchScore: total, matchPct, reasons: fit.reasons, fitsBudget});
+  });
+  scored.sort((a, b) => b.matchScore - a.matchScore);
+  const usedFallback = !!budget && !scored.slice(0, count).every(s => s.fitsBudget);
+  return {picks: scored.slice(0, count), pool: scored, usedFallback};
+}
 
-  // Obično (Fisher-Yates) mešanje — namerno NIJE seed-ovano kao ostatak
-  // cenovne logike, jer ovde želimo da svaki klik na "Probaj ponovo" da
-  // drugačiju trojku. Cena svakog grada ostaje deterministička, samo je
-  // IZBOR koja 3 grada se prikazuju nasumičan.
-  const shuffled = pool.slice();
-  for (let i = shuffled.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return {picks: shuffled.slice(0, count), usedFallback};
+// Kratka rečenica "Zato što…" — objašnjava PREPORUKU umesto da samo
+// pokaže cenu, tako da korisnik vidi zašto baš taj grad, ne samo koliko košta.
+function matchReasonSentence(pick, answers, month){
+  const bits = [];
+  const r = pick.reasons;
+  if (r.some(x => x.startsWith('vibe_'))) bits.push('nudi ' + (MATCH_VIBE_LABELS[answers.vibe] || 'tvoj stil odmora'));
+  if (r.includes('season')) bits.push('baš je sezona za ' + MATCH_MONTH_NAMES[month - 1]);
+  if (r.includes('near_fit') || r.includes('length_fit')) bits.push('dužina puta se dobro uklapa');
+  if (r.includes('family')) bits.push('pogodna je za porodice');
+  if (r.includes('nightlife')) bits.push('odlična je za izlazak s društvom');
+  if (r.includes('romantic')) bits.push('ima romantičnu atmosferu za parove');
+  if (r.includes('budget')) bits.push('uklapa se u budžet');
+  const top = bits.slice(0, 2);
+  if (!top.length) return 'Solidna opcija u okviru tvog budžeta.';
+  return 'Zato što ' + top.join(' i ') + '.';
 }
 
 /* ==========================================================
@@ -3204,26 +3368,27 @@ function closePkgCard(btn){
 }
 
 /* ==========================================================
-   Prikaz rezultata za "Iznenadi me" — 3 RAZLIČITE destinacije
-   (uvek 'best' tier) umesto 3 tier-a ISTE destinacije. Deli
+   Prikaz rezultata za "Pronađi svoj izlet" — 3 RAZLIČITE destinacije
+   sa procentom poklapanja i objašnjenjem, ne samo cenom. Deli
    #resultsHead/#resultsBody sa običnom pretragom (isti kontejner),
-   samo drugačiji sadržaj.
+   samo drugačiji sadržaj + poseban jewel-tone match bedž.
 ========================================================== */
-function surprisePkgHtml(pick, idx, budget, adults){
-  const {dest, country, pkg} = pick;
+function matchPkgHtml(pick, idx, budget, answers, month){
+  const {dest, country, pkg, matchPct, fitsBudget} = pick;
   const itemsRow = [
     itemCardHtml(pkg.flight,'flight'),
     itemCardHtml(pkg.hotel,'hotel'),
     itemCardHtml(pkg.car,'car')
   ].filter(Boolean).join('');
-  const fits = pkg.total <= budget;
-  const busNote = busTrainNoteFor(dest, adults);
+  const busNote = busTrainNoteFor(dest, pick.adults);
+  const reasonText = matchReasonSentence(pick, answers, month);
 
   return `
-  <div class="pkg surprise-pkg" data-base-total="${pkg.total}">
+  <div class="pkg match-pkg" data-base-total="${pkg.total}">
+    <div class="match-ribbon"><span class="match-ribbon-num">${matchPct}%</span><span class="match-ribbon-lab">poklapanje</span></div>
     <div class="pkg-head">
       <div>
-        <span class="pkg-badge surprise-badge">🎲 Predlog</span>
+        <span class="pkg-badge match-badge">🧭 Predlog za tebe</span>
         <h3>${escapeHtml(dest)}</h3>
         <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px;">${escapeHtml(country)} · Best Value</div>
       </div>
@@ -3233,17 +3398,18 @@ function surprisePkgHtml(pick, idx, budget, adults){
         <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
       </div>
     </div>
+    <div class="match-reason">💡 ${escapeHtml(reasonText)}</div>
     ${busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''}
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     <div class="confirm-banner">
-      <span>${iconSvg('check')} ${fits ? t('fits_budget') + fmtEUR(budget) + '.' : t('over_budget')}</span>
+      <span>${iconSvg('check')} ${budget ? (fitsBudget ? t('fits_budget') + fmtEUR(budget) + '.' : t('over_budget')) : 'Bez zadatog budžeta — rangirano samo po poklapanju.'}</span>
       <span><span class="amt-lab">Ukupno:</span><span class="amt tabular">${fmtEUR(pkg.total)}</span></span>
     </div>
-    <button type="button" class="pkg-save-btn" onclick="exploreSurpriseDestination(${idx})">
+    <button type="button" class="pkg-save-btn" onclick="exploreMatchDestination(${idx})">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M9 18l6-6-6-6"/></svg>
-      Vidi sve opcije za ${escapeHtml(dest)}
+      Napravi aranžman za ${escapeHtml(dest)}
     </button>
-    <button type="button" class="pkg-save-btn" onclick="saveSurprisePackage(${idx})">
+    <button type="button" class="pkg-save-btn" onclick="saveMatchPackage(${idx})">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
       Sačuvaj ovu ponudu
     </button>
@@ -3254,16 +3420,19 @@ function surprisePkgHtml(pick, idx, budget, adults){
   </div>`;
 }
 
-function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
-  window._lastSurprisePicks = picks;
-  window._lastSurpriseCtx = ctxBase;
+function renderMatchResults(picks, ctxBase, budget, answers, usedFallback){
+  window._lastMatchPicks = picks;
+  window._lastMatchCtx = ctxBase;
+  window._lastMatchAnswers = answers;
 
+  const month = new Date(ctxBase.from).getMonth() + 1;
+  const vibeLab = MATCH_VIBE_LABELS[answers.vibe] || '';
   const head = document.getElementById('resultsHead');
   head.innerHTML = `
-    <div class="status-banner">
+    <div class="status-banner match-status-banner">
       <div class="status-left">
-        <div class="status-check">🎲</div>
-        <div><h3>3 predloga za budžet od ${fmtEUR(budget)}.</h3><p>${usedFallback ? 'Nijedan grad se u potpunosti nije uklopio u budžet — evo 3 najjeftinije opcije koje imamo.' : 'Nasumično odabrano od preko 100 gradova koji se uklapaju u tvoj budžet.'}</p></div>
+        <div class="status-check">🧭</div>
+        <div><h3>3 destinacije koje ti najbolje odgovaraju.</h3><p>${usedFallback ? 'Nijedna se u potpunosti nije uklopila u budžet — evo 3 najbliže opcije po poklapanju i ceni.' : ('Rangirano po tvojim odgovorima' + (vibeLab ? ' (' + vibeLab + ')' : '') + ', sezoni i dužini puta — ne nasumično.')}</p></div>
       </div>
       <div class="status-pills">
         <div class="pill">${iconSvg('calendar')} ${fmtDate(ctxBase.from)} – ${fmtDate(ctxBase.to)}</div>
@@ -3277,17 +3446,26 @@ function renderSurpriseResults(picks, ctxBase, budget, usedFallback){
   body.classList.add('rb-swap-out');
   setTimeout(() => {
     body.innerHTML = `
-      ${packagesSliderHtml(picks.map((p,i)=>surprisePkgHtml(p, i, budget, ctxBase.adults)))}
-      <button type="button" class="btn-alert surprise-reroll-btn" onclick="runSurpriseSearch(true)">🎲 Probaj druga 3 predloga</button>
+      ${packagesSliderHtml(picks.map((p,i)=>matchPkgHtml(p, i, budget, answers, month)))}
+      <div class="match-refine-row">
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('sea')">🌊 Više plaže</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nightlife')">🎉 Više provoda</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nature')">🌲 Više prirode</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('cheaper')">💶 Manji budžet</button>
+      </div>
+      <button type="button" class="btn-alert match-reroll-btn" onclick="runMatchSearch(true)">🔁 Probaj drugih 3 predloga</button>
     `;
     initPackagesSlider(body.querySelector('.packages-slider-wrap'));
     body.classList.remove('rb-swap-out');
   }, hadSkeleton ? 180 : 0);
 }
 
-async function runSurpriseSearch(isReroll){
-  const budget = Number(document.getElementById('surpriseBudget').value);
-  if (!budget || budget <= 0){ showToast('Unesi budžet veći od 0.'); return; }
+// Trenutno stanje upitnika (popunjava se klikom na chip-ove u modalu)
+const matchQuizState = { companion:null, vibe:null };
+
+async function runMatchSearch(isReroll){
+  const budgetInput = document.getElementById('matchBudget');
+  const budget = Number(budgetInput.value) || 0;
 
   const from = document.getElementById('dateFrom').value;
   const to = document.getElementById('dateTo').value;
@@ -3298,48 +3476,81 @@ async function runSurpriseSearch(isReroll){
     car:       document.querySelector('.toggle[data-t="car"]').classList.contains('on'),
     activity:  document.querySelector('.toggle[data-t="activity"]').classList.contains('on'),
   };
+  const answers = isReroll && window._lastMatchAnswers ? window._lastMatchAnswers : Object.assign({}, matchQuizState);
+  if (!answers.companion || !answers.vibe){ showToast('Odgovori na oba pitanja pre pretrage.'); return; }
 
-  if (!isReroll) closeSurpriseModal();
+  if (!isReroll) closeMatchModal();
 
   const results = document.getElementById('results');
   openResultsSheet();
   if (!isReroll){
     document.getElementById('resultsHead').innerHTML = '';
-    document.getElementById('resultsBody').innerHTML = skeletonResultsHtml(getLang()==='en' ? 'Searching 3 destinations that fit your budget…' : 'Tražimo 3 destinacije koje se uklapaju u tvoj budžet…');
+    document.getElementById('resultsBody').innerHTML = skeletonResultsHtml('Tražimo destinacije koje ti najbolje odgovaraju…');
     if (!isMobileResults()) results.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
-  bumpSearchStat('🎲 ' + fmtEUR(budget));
+  bumpSearchStat('🧭 ' + (budget ? fmtEUR(budget) : 'Match'));
 
   setTimeout(()=>{
     const nights = nightsBetween(from, to);
-    const candidates = computeSurpriseCandidates(from, to, adults, flags);
-    const {picks, usedFallback} = pickSurpriseDestinations(budget, candidates, 3);
-    renderSurpriseResults(picks, {from, to, adults, nights, flags}, budget, usedFallback);
+    const month = new Date(from).getMonth() + 1;
+    const candidates = computeMatchCandidates(from, to, adults, flags).map(c => Object.assign(c, {adults}));
+    const excludeNames = isReroll ? (window._lastMatchPicks || []).map(p => p.dest) : [];
+    const pool = excludeNames.length ? candidates.filter(c => !excludeNames.includes(c.dest)) : candidates;
+    const {picks, usedFallback} = pickMatchDestinations(answers, budget, pool, nights, month, 3);
+    renderMatchResults(picks, {from, to, adults, nights, flags}, budget, answers, usedFallback);
   }, isReroll ? 0 : 700);
 }
 
-// Klik na "Vidi sve opcije za {grad}" — prebacuje na normalnu pretragu
+// Fino podešavanje BEZ ponovnog otvaranja upitnika — menja jedan
+// parametar (vibe ili budžet) i odmah ponovo rangira, kao pravi filter.
+function refineMatchSearch(kind){
+  const ctx = window._lastMatchCtx;
+  const answers = Object.assign({}, window._lastMatchAnswers || matchQuizState);
+  let budget = Number(document.getElementById('matchBudget').value) || 0;
+  if (!ctx){ showToast('Pokreni "Pronađi svoj izlet" ponovo.'); return; }
+
+  if (kind === 'cheaper'){
+    budget = budget ? Math.round(budget * 0.75) : 0;
+    if (!budget){ showToast('Prvo unesi budžet da bi mogao da ga smanjiš.'); return; }
+    document.getElementById('matchBudget').value = budget;
+  } else {
+    answers.vibe = kind;
+  }
+
+  const results = document.getElementById('results');
+  openResultsSheet();
+  document.getElementById('resultsBody').innerHTML = skeletonResultsHtml('Prilagođavamo predloge…');
+  setTimeout(()=>{
+    const nights = nightsBetween(ctx.from, ctx.to);
+    const month = new Date(ctx.from).getMonth() + 1;
+    const candidates = computeMatchCandidates(ctx.from, ctx.to, ctx.adults, ctx.flags).map(c => Object.assign(c, {adults: ctx.adults}));
+    const {picks, usedFallback} = pickMatchDestinations(answers, budget, candidates, nights, month, 3);
+    renderMatchResults(picks, ctx, budget, answers, usedFallback);
+  }, 350);
+}
+
+// Klik na "Napravi aranžman za {grad}" — prebacuje na normalnu pretragu
 // (sva 3 tier-a) za taj konkretni grad, umesto samo 'best' predloga.
-function exploreSurpriseDestination(idx){
-  const pick = (window._lastSurprisePicks || [])[idx];
+function exploreMatchDestination(idx){
+  const pick = (window._lastMatchPicks || [])[idx];
   if (!pick) return;
   document.getElementById('dest').value = pick.dest;
   runSearch(true);
 }
 
-async function saveSurprisePackage(idx){
+async function saveMatchPackage(idx){
   const user = await getCurrentUser();
   if (!user){
     promptLogin('Prijavi se emailom da sačuvaš ponudu.');
     return;
   }
-  const pick = (window._lastSurprisePicks || [])[idx];
-  const ctx = window._lastSurpriseCtx;
+  const pick = (window._lastMatchPicks || [])[idx];
+  const ctx = window._lastMatchCtx;
   if (!pick || !ctx){ showToast('Ponuda više nije dostupna — probaj ponovo.'); return; }
 
   const summaryTags = [
-    '🎲 Iznenadi me',
+    '🧭 ' + pick.matchPct + '% poklapanje',
     pick.pkg.flight ? pick.pkg.flight.name : 'Bez leta',
     pick.pkg.hotel ? pick.pkg.hotel.name : 'Bez hotela',
     pick.pkg.car ? 'Sa autom' : 'Bez auta'
@@ -3351,7 +3562,7 @@ async function saveSurprisePackage(idx){
     date_from: ctx.from,
     date_to: ctx.to,
     adults: Number(ctx.adults),
-    selection: {kind:'search', tier:'best', tierLabel:'Best Value (Iznenadi me)', summaryTags},
+    selection: {kind:'search', tier:'best', tierLabel:'Best Value (Pronađi svoj izlet)', summaryTags},
     total: pick.pkg.total
   });
   if (error){ showToast('Greška pri čuvanju: ' + error.message); return; }
@@ -3359,15 +3570,38 @@ async function saveSurprisePackage(idx){
   showToast(pick.dest + ' sačuvan (' + fmtEUR(pick.pkg.total) + ').');
 }
 
-function openSurpriseModal(){
-  document.getElementById('surpriseBudget').value = '';
-  document.getElementById('surpriseModalBackdrop').classList.add('open');
-  document.getElementById('surpriseModal').classList.add('open');
-  document.getElementById('surpriseBudget').focus();
+/* ---- Kviz modal: 3 koraka (sa kim / vibe / budžet), chip-select sa
+   auto-napredovanjem na sledeći korak, kao pravi kratak upitnik. ---- */
+function goToMatchStep(n){
+  document.querySelectorAll('#matchModal .match-step').forEach(el => {
+    el.classList.toggle('active', Number(el.dataset.step) === n);
+  });
+  document.querySelectorAll('#matchModal .match-dot').forEach(el => {
+    el.classList.toggle('active', Number(el.dataset.step) === n);
+  });
+  if (n === 3){
+    const btn = document.getElementById('matchModalSubmit');
+    if (btn) setTimeout(() => document.getElementById('matchBudget').focus(), 200);
+  }
 }
-function closeSurpriseModal(){
-  document.getElementById('surpriseModalBackdrop').classList.remove('open');
-  document.getElementById('surpriseModal').classList.remove('open');
+function selectMatchChip(group, value, chipEl, nextStep){
+  matchQuizState[group] = value;
+  chipEl.closest('.match-chip-grid').querySelectorAll('.match-chip').forEach(c => c.classList.remove('on'));
+  chipEl.classList.add('on');
+  if (nextStep) setTimeout(() => goToMatchStep(nextStep), 260);
+}
+function openMatchModal(){
+  matchQuizState.companion = null;
+  matchQuizState.vibe = null;
+  document.querySelectorAll('#matchModal .match-chip').forEach(c => c.classList.remove('on'));
+  document.getElementById('matchBudget').value = '';
+  goToMatchStep(1);
+  document.getElementById('matchModalBackdrop').classList.add('open');
+  document.getElementById('matchModal').classList.add('open');
+}
+function closeMatchModal(){
+  document.getElementById('matchModalBackdrop').classList.remove('open');
+  document.getElementById('matchModal').classList.remove('open');
 }
 
 /* Uživo sabiranje dodataka (osiguranje/eSIM) na cenu paketa — bez ponovne
@@ -4378,7 +4612,7 @@ function busTrainNoteFor(destRaw, adults){
    ("sb = window.su..."), pa je sve od ove tačke pa do kraja fajla
    dopisano da bi sajt uopšte proradio. Šema tabele "trips" (user_id,
    dest, date_from, date_to, adults, selection, total) je preuzeta iz
-   poziva koji već postoje gore u fajlu (saveSurprisePackage) — to je
+   poziva koji već postoje gore u fajlu (saveMatchPackage) — to je
    sigurno tačno. Ime tabele "price_alerts" i imena globalnih promenljivih
    iz config.js (window.SUPABASE_URL / window.SUPABASE_ANON_KEY) NISU
    potvrđena — ako se config.js zove drugačije, ispravi te dve linije
@@ -4752,8 +4986,8 @@ async function openAlertModal(kind, tier, total, destOverride){
     // od gotove ponude: tip leta, zvezdice hotela, tip auta...).
     params = { kind:'builder', dest: ctx.dest, nights: ctx.nights, days: ctx.days, adults: ctx.adults, sel: builderState };
   } else {
-    const isSurprise = !!destOverride;
-    const ctx = isSurprise ? window._lastSurpriseCtx : window._lastSearchCtx;
+    const isMatchPick = !!destOverride;
+    const ctx = isMatchPick ? window._lastMatchCtx : window._lastSearchCtx;
     dest = destOverride || (window._lastSearchCtx && window._lastSearchCtx.dest) || document.getElementById('dest').value.trim() || 'Atina';
     params = ctx ? { kind:'search', dest, tier, nights: ctx.nights, adults: Number(ctx.adults), flags: ctx.flags } : null;
   }
@@ -4912,15 +5146,18 @@ if (hamburgerBtn && mobilePanel){
   });
 }
 
-/* ---- "Iznenadi me" dugme na stranici otvara modal (koristi runSurpriseSearch iznad) ---- */
-const noIdeaCtaBtn = document.getElementById('noIdeaCtaBtn');
-if (noIdeaCtaBtn) noIdeaCtaBtn.addEventListener('click', openSurpriseModal);
-const surpriseModalClose = document.getElementById('surpriseModalClose');
-if (surpriseModalClose) surpriseModalClose.addEventListener('click', closeSurpriseModal);
-const surpriseModalBackdrop = document.getElementById('surpriseModalBackdrop');
-if (surpriseModalBackdrop) surpriseModalBackdrop.addEventListener('click', closeSurpriseModal);
-const surpriseModalSubmit = document.getElementById('surpriseModalSubmit');
-if (surpriseModalSubmit) surpriseModalSubmit.addEventListener('click', () => runSurpriseSearch(false));
+/* ---- "Pronađi svoj izlet" dugme na stranici otvara kviz modal (koristi runMatchSearch iznad) ---- */
+const matchTriggerBtn = document.getElementById('matchTriggerBtn');
+if (matchTriggerBtn) matchTriggerBtn.addEventListener('click', openMatchModal);
+const matchModalClose = document.getElementById('matchModalClose');
+if (matchModalClose) matchModalClose.addEventListener('click', closeMatchModal);
+const matchModalBackdrop = document.getElementById('matchModalBackdrop');
+if (matchModalBackdrop) matchModalBackdrop.addEventListener('click', closeMatchModal);
+const matchModalSubmit = document.getElementById('matchModalSubmit');
+if (matchModalSubmit) matchModalSubmit.addEventListener('click', () => runMatchSearch(false));
+document.querySelectorAll('#matchModal .match-back').forEach(btn => {
+  btn.addEventListener('click', () => goToMatchStep(Number(btn.dataset.back)));
+});
 
 /* ---- Jedinstvena kartica "Dokumenta za put": pasoš + zelena karta, sa tabovima i scrollom ---- */
 /* docsActionRow (unos datuma + dugme "Proveri") se prikazuje samo na tabu

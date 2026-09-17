@@ -287,11 +287,12 @@ SKLOPI<em>.</em>
 </div>
 <div class="section action-cards-wrap">
 <div class="action-cards">
-<button type="button" class="action-card surprise-trigger" id="surpriseTriggerBtn" data-i18n-html="surprise_trigger">
-<span class="ac-ic"><svg class="dice-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="8.3" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.05" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.05" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.05" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.05" fill="currentColor" stroke="none"/></svg></span>
+<button type="button" class="action-card match-trigger" id="matchTriggerBtn" data-i18n-html="match_trigger">
+<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span>
 <span class="ac-title">Nemaš ideju kuda?</span>
-<span class="ac-sub">Reci nam budžet — predložićemo 3 destinacije koje se uklapaju.</span>
-<span class="ac-cta"><span class="ac-cta-label">Iznenadi me</span><span class="ac-arrow">→</span></span>
+<span class="ac-sub">Kratak upitnik od 3 pitanja — pronađi 3 destinacije koje ti stvarno odgovaraju, ne nasumične.</span>
+<span class="match-preview-row"><span class="match-preview-chip">🌊 More</span><span class="match-preview-chip">🏙️ Grad</span><span class="match-preview-chip">🌲 Priroda</span><span class="match-preview-chip">🎉 Provod</span></span>
+<span class="ac-cta"><span class="ac-cta-label">Pronađi mi destinaciju</span><span class="ac-arrow">→</span></span>
 </button>
 </div>
 </div>
@@ -669,20 +670,49 @@ SKLOPI<em>.</em>
 <button type="button" class="btn-primary" id="alertModalSubmit" style="width:100%;margin-top:8px;" data-i18n="btn_set_alert">Postavi alert</button>
 <p class="alert-modal-disclaimer" data-i18n="alert_modal_disclaimer">⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.</p>
 </div>
-<div class="alert-modal-backdrop" id="surpriseModalBackdrop"></div>
-<div class="alert-modal" id="surpriseModal" role="dialog" aria-modal="true" aria-labelledby="surpriseModalTitle">
-<button type="button" class="alert-modal-close" id="surpriseModalClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
-<div class="alert-modal-ic">🎲</div>
-<h3 id="surpriseModalTitle" data-i18n="surprise_modal_title">Iznenadi me</h3>
-<p class="alert-modal-sub" data-i18n="surprise_modal_sub">Nemaš konkretnu destinaciju na umu? Reci nam samo budžet — probaćemo preko 100 gradova i predložićemo 3 koja se uklapaju. Datumi i broj putnika ostaju kao u formi iznad.</p>
-<div class="alert-modal-row">
-<label for="surpriseBudget" data-i18n="surprise_modal_label_budget">Ukupan budžet (za sve putnike)</label>
+<div class="alert-modal-backdrop" id="matchModalBackdrop"></div>
+<div class="alert-modal match-modal" id="matchModal" role="dialog" aria-modal="true" aria-labelledby="matchModalTitle">
+<button type="button" class="alert-modal-close" id="matchModalClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
+<div class="alert-modal-ic match-modal-ic">🧭</div>
+<h3 id="matchModalTitle" data-i18n="match_modal_title">Pronađi svoj izlet</h3>
+<p class="alert-modal-sub" data-i18n="match_modal_sub">Tri kratka pitanja — mi bodujemo preko 60 destinacija po poklapanju sa tobom, sezonom i dužinom puta, ne nasumično. Datumi i broj putnika ostaju kao u formi iznad.</p>
+<div class="match-dots">
+<span class="match-dot active" data-step="1"></span>
+<span class="match-dot" data-step="2"></span>
+<span class="match-dot" data-step="3"></span>
+</div>
+<div class="match-step active" data-step="1">
+<div class="match-step-title" data-i18n="match_step1_title">Sa kim putuješ?</div>
+<div class="match-chip-grid">
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','solo',this,2)"><span class="mc-ic">🧍</span><span class="mc-label">Sam/a</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','couple',this,2)"><span class="mc-ic">💑</span><span class="mc-label">Par</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','friends',this,2)"><span class="mc-ic">🎉</span><span class="mc-label">Društvo</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','family',this,2)"><span class="mc-ic">👨‍👩‍👧</span><span class="mc-label">Porodica</span></button>
+</div>
+</div>
+<div class="match-step" data-step="2">
+<button type="button" class="match-back" data-back="1">← Nazad</button>
+<div class="match-step-title" data-i18n="match_step2_title">Šta ti znači odmor?</div>
+<div class="match-chip-grid">
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','sea',this,3)"><span class="mc-ic">🌊</span><span class="mc-label">More i plaža</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','city',this,3)"><span class="mc-ic">🏙️</span><span class="mc-label">Grad i kultura</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','nature',this,3)"><span class="mc-ic">🌲</span><span class="mc-label">Priroda i planina</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','nightlife',this,3)"><span class="mc-ic">🎶</span><span class="mc-label">Noćni život</span></button>
+<button type="button" class="match-chip match-chip-wide" onclick="selectMatchChip('vibe','mix',this,3)"><span class="mc-ic">✨</span><span class="mc-label">Malo od svega</span></button>
+</div>
+</div>
+<div class="match-step" data-step="3">
+<button type="button" class="match-back" data-back="2">← Nazad</button>
+<div class="match-step-title" data-i18n="match_step3_title">Koliki je ukupan budžet?</div>
+<div class="alert-modal-row" style="margin-top:2px;">
+<label for="matchBudget" data-i18n="match_label_budget">Ukupan budžet (za sve putnike, opciono)</label>
 <div class="builder-budget-row">
-<span>€</span><input type="number" id="surpriseBudget" class="builder-input" min="1" step="1" data-i18n-placeholder="placeholder_surprise_budget" placeholder="npr. 400" style="max-width:none;">
+<span>€</span><input type="number" id="matchBudget" class="builder-input" min="1" step="1" data-i18n-placeholder="placeholder_match_budget" placeholder="npr. 400" style="max-width:none;">
 </div>
 </div>
-<button type="button" class="btn-primary" id="surpriseModalSubmit" style="width:100%;margin-top:8px;" data-i18n="surprise_modal_btn">🎲 Predloži 3 destinacije</button>
-<p class="alert-modal-disclaimer" data-i18n="surprise_modal_disclaimer">⚠️ Ilustrativna procena cene po gradu, ne stvarna ponuda partnera.</p>
+<button type="button" class="btn-primary match-submit-btn" id="matchModalSubmit" data-i18n="match_modal_btn">🎯 Pronađi mi 3 destinacije</button>
+</div>
+<p class="alert-modal-disclaimer" data-i18n="match_modal_disclaimer">⚠️ Ilustrativna procena cene, kombinovana sa tvojim odgovorima — ne stvarna ponuda partnera.</p>
 </div>
 <div class="alert-modal-backdrop" id="shareModalBackdrop"></div>
 <div class="alert-modal" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">

@@ -38,6 +38,14 @@ i teško se videla na mobilnom (linije između polja "nestajale"). */
     --gold-on-soft:#8A6D2E;
     --burgundy:#7F1D1D;      /* secret-weapon accent — used sparingly */
     --burgundy-soft:#F3DEDD;
+    /* Dodatne boje SAMO za "Pronađi svoj izlet" (match-quiz) — namerno
+       nova mini-paleta da ta kartica/modal vizuelno odskaču od ostatka
+       sajta (koji je ivory/gold/petrol), umesto da liče na još jednu
+       akcionu karticu. Midnight Navy/Gold/Burgundy/Ivory iznad se i dalje
+       koriste, ova tri su jedina zaista nova: */
+    --emerald:#087F5B;
+    --royal-plum:#4B2354;
+    --dusty-rose:#B76E79;
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
@@ -1135,8 +1143,8 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
     margin-top:44px;
 }
 /* ---------- Dve akcione kartice: "Želiš više kontrole?" (otvara builder)
-i "Nemaš ideju kuda?" (surprise) — ranije builder teaser + posebno "Odaberi"
-dugme ispod njega (dupliran klik na istu akciju), plus surprise dugme kao
+i "Nemaš ideju kuda?" (match-quiz) — ranije builder teaser + posebno "Odaberi"
+dugme ispod njega (dupliran klik na istu akciju), plus match-quiz dugme kao
 usamljena pilula negde drugde na strani. Sad su to dve kartice iste težine,
 jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 .action-cards{
@@ -1398,7 +1406,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 .btn-alert:hover{background:rgba(110,156,156,0.22);border-color:#6FBAC4;transform:translateY(-1px);box-shadow:0 10px 22px -12px rgba(110,156,156,0.4);}
 .btn-alert:hover svg{color:var(--gold);}
 .btn-alert:active{transform:translateY(0);}
-/* ---------- Modali (alert / surprise / share) — nije uopšte imalo CSS ---------- */
+/* ---------- Modali (alert / match-quiz / share) — nije uopšte imalo CSS ---------- */
 .alert-modal-backdrop{
     display:none;position:fixed;inset:0;z-index:60;
     background:rgba(15,76,92,0.55);backdrop-filter:blur(2px);
@@ -2019,4 +2027,159 @@ footer{padding:28px 20px;}
     .phr-nums{grid-area:nums;flex-direction:row;align-items:baseline;gap:6px;}
     .phr-track{grid-area:track;}
     .price-hbar-list{gap:14px;}
+}
+
+/* ==========================================================
+   "PRONAĐI SVOJ IZLET" (match-quiz) — namerna jewel-tone paleta
+   (Emerald / Royal Plum / Midnight Navy / Champagne Gold / Burgundy /
+   Dusty Rose / Ivory) da ova kartica, modal i njeni rezultati vizuelno
+   odskaču od ostatka sajta (ivory/gold/petrol), umesto da liče na još
+   jednu akcionu karticu ili paket.
+========================================================== */
+
+/* ---- Trigger kartica na početnoj (zamena za staru "surprise" karticu) ---- */
+.match-trigger{
+    background:
+        radial-gradient(circle at 88% -10%, rgba(200,164,92,0.28) 0%, transparent 46%),
+        radial-gradient(circle at 6% 112%, rgba(8,127,91,0.35) 0%, transparent 52%),
+        linear-gradient(150deg, var(--royal-plum) 0%, var(--ink) 72%);
+    border-left:4px solid var(--emerald);
+    border-color:rgba(255,255,255,0.08);
+}
+.match-trigger:hover{
+    border-left-color:var(--gold);
+    box-shadow:0 20px 40px -22px rgba(75,35,84,0.55);
+}
+.match-trigger .ac-ic{
+    background:var(--emerald);color:var(--paper);
+    box-shadow:0 0 0 3px rgba(8,127,91,0.25);
+}
+.match-trigger:hover .ac-ic{background:#0A9E71;}
+.match-trigger .ac-title{color:var(--paper);}
+.match-trigger .ac-sub{color:#D8C7CE;} /* svetla dusty-rose nijansa za čitljivost na tamnom */
+.match-preview-row{
+    display:flex;flex-wrap:wrap;gap:7px;position:relative;z-index:1;margin-top:-2px;
+}
+.match-preview-chip{
+    font-size:12px;font-weight:600;color:var(--paper);
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);
+    border-radius:20px;padding:4px 11px;white-space:nowrap;
+}
+.match-trigger .ac-cta{border-top-color:rgba(255,255,255,0.14);}
+.match-trigger .ac-cta-label{color:var(--gold);}
+.match-trigger .ac-arrow{background:var(--emerald);color:var(--paper);}
+.match-trigger:hover .ac-arrow{background:var(--gold);color:var(--on-gold);}
+@media (max-width:560px){
+    .match-preview-chip{font-size:11px;padding:3px 9px;}
+}
+
+/* ---- Kviz modal (3 koraka) ---- */
+.match-modal{
+    background:
+        radial-gradient(circle at 100% 0%, rgba(200,164,92,0.16) 0%, transparent 50%),
+        linear-gradient(165deg, var(--royal-plum) 0%, var(--ink) 78%);
+    border-top:4px solid var(--emerald);
+    color:var(--paper);
+    width:min(420px, calc(100vw - 40px));
+}
+.match-modal-ic{background:var(--emerald);color:var(--paper);}
+.match-modal h3{color:var(--paper);}
+.match-modal .alert-modal-sub{color:#D8C7CE;}
+.match-modal .alert-modal-close{
+    background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.16);color:var(--paper);
+}
+.match-modal .alert-modal-close:hover{background:var(--gold);color:var(--on-gold);border-color:var(--gold);}
+.match-modal .alert-modal-disclaimer{color:#C6A9B0;}
+.match-modal .alert-modal-row label{color:#D8C7CE;}
+
+.match-dots{display:flex;gap:7px;margin:2px 0 20px;}
+.match-dot{
+    width:22px;height:4px;border-radius:3px;background:rgba(255,255,255,0.16);
+    transition:background .2s ease;
+}
+.match-dot.active{background:var(--emerald);}
+
+.match-step{display:none;}
+.match-step.active{display:block;animation:matchStepIn .28s cubic-bezier(.2,.8,.2,1) both;}
+@keyframes matchStepIn{from{opacity:0;transform:translateX(8px);}to{opacity:1;transform:translateX(0);}}
+.match-step-title{
+    font-family:'Manrope',sans-serif;font-size:17px;font-weight:700;color:var(--paper);
+    margin-bottom:14px;
+}
+.match-back{
+    background:none;border:none;padding:0;margin-bottom:12px;cursor:pointer;
+    font-size:12.5px;font-weight:600;color:var(--dusty-rose);
+    display:inline-flex;align-items:center;gap:4px;
+}
+.match-back:hover{color:var(--gold);}
+
+.match-chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.match-chip{
+    grid-column:span 1;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px;padding:16px 10px;cursor:pointer;
+    font-family:'Work Sans',sans-serif;color:var(--paper);
+    transition:background .15s ease, border-color .15s ease, transform .15s ease;
+    -webkit-tap-highlight-color:transparent;
+}
+.match-chip-wide{grid-column:span 2;flex-direction:row;justify-content:center;padding:12px;}
+.match-chip .mc-ic{font-size:24px;line-height:1;}
+.match-chip-wide .mc-ic{font-size:19px;}
+.match-chip .mc-label{font-size:13.5px;font-weight:600;text-align:center;}
+.match-chip:hover{border-color:var(--gold);transform:translateY(-1px);}
+.match-chip.on{
+    background:rgba(8,127,91,0.32);border-color:var(--emerald);
+    box-shadow:0 0 0 1px var(--emerald), 0 10px 22px -12px rgba(8,127,91,0.6);
+}
+
+.match-submit-btn{
+    width:100%;margin-top:6px;
+    background:linear-gradient(120deg, var(--emerald) 0%, #0A9E71 100%);
+    box-shadow:0 16px 30px -16px rgba(8,127,91,0.6);
+}
+.match-submit-btn:hover{background:linear-gradient(120deg, #0A9E71 0%, var(--emerald) 100%);}
+.match-submit-btn::after{background:var(--gold);}
+.match-modal #matchBudget{
+    background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.18);color:var(--paper);
+}
+.match-modal #matchBudget::placeholder{color:#B7A6AE;}
+.match-modal .builder-budget-row span{color:var(--gold);}
+
+/* ---- Rezultati: match% ribon, bedž i "Zato što…" objašnjenje ---- */
+.pkg.match-pkg{border-top-color:var(--emerald);}
+.match-ribbon{
+    position:absolute;top:14px;right:14px;z-index:2;
+    display:flex;flex-direction:column;align-items:center;line-height:1.05;
+    background:linear-gradient(135deg, var(--emerald) 0%, var(--royal-plum) 100%);
+    color:var(--paper);border-radius:10px;padding:7px 12px;
+    box-shadow:0 10px 20px -10px rgba(8,127,91,0.5);
+}
+.match-ribbon-num{font-family:'Manrope',sans-serif;font-size:16px;font-weight:800;}
+.match-ribbon-lab{font-size:9px;letter-spacing:0.04em;text-transform:uppercase;opacity:0.9;}
+.match-badge{background:rgba(8,127,91,0.14);color:var(--emerald);}
+.pkg.match-pkg .pkg-head{padding-right:96px;}
+.match-reason{
+    margin:0 22px 16px;padding:11px 14px;border-radius:8px;
+    background:rgba(183,110,121,0.12);border:1px solid rgba(183,110,121,0.3);
+    font-size:13px;line-height:1.5;color:#7A4450;
+}
+.match-status-banner .status-check{background:var(--emerald);color:var(--paper);}
+
+.match-refine-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px;}
+.match-refine-chip{
+    border-color:var(--royal-plum);color:var(--royal-plum);background:transparent;
+}
+.match-refine-chip:hover{background:var(--royal-plum);border-color:var(--royal-plum);color:var(--paper);transform:translateY(-1px);}
+.match-reroll-btn{border-color:var(--emerald);color:var(--emerald);}
+.match-reroll-btn svg{color:var(--emerald);}
+.match-reroll-btn:hover{background:rgba(8,127,91,0.12);border-color:var(--emerald);}
+.match-reroll-btn:hover svg{color:var(--emerald);}
+
+@media (max-width:560px){
+    .match-ribbon{top:10px;right:10px;padding:6px 10px;}
+    .match-ribbon-num{font-size:14px;}
+    .pkg.match-pkg .pkg-head{padding-right:82px;}
+    .match-chip{padding:13px 8px;}
+    .match-chip .mc-ic{font-size:21px;}
 }
