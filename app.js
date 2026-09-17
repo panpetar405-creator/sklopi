@@ -3408,8 +3408,12 @@ function pickCtaDestFromTyping(){
 function updateCtaBanner(){
   const ctaTitleEl = document.getElementById('ctaTitle');
   const ctaDescEl = document.getElementById('ctaDesc');
-  const ctaDest = pickCtaDestFromTyping() || 'Atina';
-  if (ctaTitleEl) ctaTitleEl.textContent = getLang() === 'en' ? ctaDest + ' is waiting for you.' : ctaDest + ' te čeka.';
+  const ctaDest = pickCtaDestFromTyping() || state.lastDest || '';
+  if (ctaTitleEl){
+    ctaTitleEl.textContent = ctaDest
+      ? (getLang() === 'en' ? ctaDest + ' is waiting for you.' : ctaDest + ' te čeka.')
+      : (getLang() === 'en' ? 'Your next destination is waiting.' : 'Sledeća destinacija te čeka.');
+  }
   if (ctaDescEl) ctaDescEl.textContent = ctaCopy(ctaDest);
 }
 
@@ -4418,6 +4422,7 @@ document.getElementById('startPrefsContinue').addEventListener('click', () => {
 ========================================================== */
 applyStaticI18n();
 updateStats();
+updateCtaBanner();
 renderSavedTrips();
 renderAccountMenu();
 // Ako se jezik promeni, ponovo iscrtaj "Gde bi sledeće?" u novom jeziku —
@@ -4428,12 +4433,7 @@ window.onLangChange = function(lang){
   if (typeof _prevOnLangChange === 'function') _prevOnLangChange(lang);
   const originVal = (document.getElementById('origin') || {}).value || '';
   if (!originVal.trim()) renderDefaultPopularDestinations();
-  // Ako je CTA baner već popunjen (korisnik je pretraživao), osveži i njega na novom jeziku.
-  if (window._lastSearchCtx && window._lastSearchCtx.dest){
-    const dest = window._lastSearchCtx.dest;
-    const ctaTitleEl = document.getElementById('ctaTitle');
-    const ctaDescEl = document.getElementById('ctaDesc');
-    if (ctaTitleEl) ctaTitleEl.textContent = lang === 'en' ? dest + ' is waiting for you.' : dest + ' te čeka.';
-    if (ctaDescEl) ctaDescEl.textContent = ctaCopy(dest);
-  }
+  // Osveži CTA baner na novom jeziku (prati istu logiku: uneti tekst →
+  // poslednja stvarna destinacija → generički tekst bez imena grada).
+  updateCtaBanner();
 };
