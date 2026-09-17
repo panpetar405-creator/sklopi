@@ -816,6 +816,43 @@ function pickBestLocationMatch(results, query){
     window.scrollTo(0, calScrollY);
   }
 
+  // .ticket ima backdrop-filter (zbog blur efekta), a to po CSS spec-u
+  // pravi NOV containing block za position:fixed potomke — position:fixed
+  // se onda ne računa od viewport-a nego od ivice .ticket-a. Zato je kalendar
+  // na mobilnom "iskakao" na pogrešno mesto (oko sredine forme, prekrivajući
+  // polje za destinaciju) umesto da se otvori tačno iznad polja "Od — Do",
+  // sa punim tamnim overlay-em preko celog ekrana. Rešenje: dok je kartica
+  // otvorena na mobilnom, privremeno je (i njen backdrop) prebacujemo direktno
+  // u <body> — van .ticket-a — gde position:fixed opet radi normalno, prema
+  // stvarnom viewport-u. Vraćamo je na originalno mesto pri zatvaranju, da
+  // desktop raspored (position:absolute vezan za stub) ostane netaknut.
+  let calHomeParent = null, calHomeNext = null;
+  let calBackdropHomeParent = null, calBackdropHomeNext = null;
+  function detachCalForMobile(){
+    if (calCard.parentElement !== document.body){
+      calHomeParent = calCard.parentElement;
+      calHomeNext = calCard.nextSibling;
+      document.body.appendChild(calCard);
+    }
+    if (calBackdrop && calBackdrop.parentElement !== document.body){
+      calBackdropHomeParent = calBackdrop.parentElement;
+      calBackdropHomeNext = calBackdrop.nextSibling;
+      document.body.appendChild(calBackdrop);
+    }
+  }
+  function reattachCal(){
+    if (calHomeParent){
+      if (calHomeNext) calHomeParent.insertBefore(calCard, calHomeNext);
+      else calHomeParent.appendChild(calCard);
+      calHomeParent = null; calHomeNext = null;
+    }
+    if (calBackdropHomeParent){
+      if (calBackdropHomeNext) calBackdropHomeParent.insertBefore(calBackdrop, calBackdropHomeNext);
+      else calBackdropHomeParent.appendChild(calBackdrop);
+      calBackdropHomeParent = null; calBackdropHomeNext = null;
+    }
+  }
+
   function openCal(){
     viewYear = today.getFullYear();
     viewMonth = today.getMonth();
@@ -824,7 +861,7 @@ function pickBestLocationMatch(results, query){
     calCard.classList.add('open');
     if (calBackdrop) calBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
-    if (isMobileCal()){ lockPageScroll(); positionCalMobile(); }
+    if (isMobileCal()){ detachCalForMobile(); lockPageScroll(); positionCalMobile(); }
     // fokus tastature/screen readera ide direktno na selektovani (ili
     // današnji) dan — bez ovoga dijalog se otvara vizuelno, ali korisnik
     // koji ne koristi miša nema signal da se nešto promenilo.
@@ -836,6 +873,7 @@ function pickBestLocationMatch(results, query){
     if (calBackdrop) calBackdrop.classList.remove('open');
     displayBtn.setAttribute('aria-expanded', 'false');
     if (document.body.style.position === 'fixed') unlockPageScroll();
+    reattachCal();
     if (shouldCommit && selStart && selEnd){
       commit();
     } else if (!selStart || !selEnd){
@@ -1008,6 +1046,10 @@ function pickBestLocationMatch(results, query){
     updateDisplay();
     hiddenField.dispatchEvent(new Event('input', {bubbles:true}));
     hiddenField.dispatchEvent(new Event('change', {bubbles:true}));
+    // Sam klik na broj putnika sad odmah čuva izbor i zatvara karticu — dugme
+    // "Gotovo" ostaje kao rezerva, ali izbor više ne zavisi od toga da se do
+    // njega dogura (na dužim listama, npr. blizu 30, ranije je bilo van dohvata).
+    closePax();
   }
 
   const isMobilePax = () => window.matchMedia('(max-width:760px)').matches;
@@ -1047,11 +1089,42 @@ function pickBestLocationMatch(results, query){
     paxCard.style.maxHeight = Math.max(160, (rect.top - gap - top)) + 'px';
   }
 
+  // Isti razlog i isto rešenje kao kod kalendara (vidi detachCalForMobile
+  // gore) — .ticket ima backdrop-filter, što pravi containing block za
+  // position:fixed potomke, pa se kartica bez ovoga otvara na pogrešnom
+  // mestu na mobilnom umesto tačno iznad polja "Putnika".
+  let paxHomeParent = null, paxHomeNext = null;
+  let paxBackdropHomeParent = null, paxBackdropHomeNext = null;
+  function detachPaxForMobile(){
+    if (paxCard.parentElement !== document.body){
+      paxHomeParent = paxCard.parentElement;
+      paxHomeNext = paxCard.nextSibling;
+      document.body.appendChild(paxCard);
+    }
+    if (paxBackdrop && paxBackdrop.parentElement !== document.body){
+      paxBackdropHomeParent = paxBackdrop.parentElement;
+      paxBackdropHomeNext = paxBackdrop.nextSibling;
+      document.body.appendChild(paxBackdrop);
+    }
+  }
+  function reattachPax(){
+    if (paxHomeParent){
+      if (paxHomeNext) paxHomeParent.insertBefore(paxCard, paxHomeNext);
+      else paxHomeParent.appendChild(paxCard);
+      paxHomeParent = null; paxHomeNext = null;
+    }
+    if (paxBackdropHomeParent){
+      if (paxBackdropHomeNext) paxBackdropHomeParent.insertBefore(paxBackdrop, paxBackdropHomeNext);
+      else paxBackdropHomeParent.appendChild(paxBackdrop);
+      paxBackdropHomeParent = null; paxBackdropHomeNext = null;
+    }
+  }
+
   function openPax(){
     paxCard.classList.add('open');
     if (paxBackdrop) paxBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
-    if (isMobilePax()){ lockPageScroll(); positionPaxMobile(); }
+    if (isMobilePax()){ detachPaxForMobile(); lockPageScroll(); positionPaxMobile(); }
     const focusTarget = paxList.querySelector('.pax-option.is-selected') || paxList.querySelector('.pax-option');
     if (focusTarget) focusTarget.focus();
   }
@@ -1061,6 +1134,7 @@ function pickBestLocationMatch(results, query){
     if (paxBackdrop) paxBackdrop.classList.remove('open');
     displayBtn.setAttribute('aria-expanded', 'false');
     if (isMobilePax() && document.body.style.position === 'fixed') unlockPageScroll();
+    reattachPax();
     if (wasOpen && document.activeElement && paxCard.contains(document.activeElement)){
       displayBtn.focus();
     }
