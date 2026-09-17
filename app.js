@@ -11,6 +11,57 @@ window.addEventListener('error', function(e){ document.title = 'GRESKA: ' + e.me
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncTopbarHeight);
 })();
 /* ==========================================================
+   UNIVERZALNI GUARD ZA FIZIČKO/GEST "NAZAD" DUGME NA TELEFONU
+   ----------------------------------------------------------
+   Kad se otvori modal/sheet/kartica (kalendar, putnici, match kviz,
+   deljenje, alert, dokumenta, start-prefs, rezultati, feature-guide...),
+   stranica se tehnički ne menja — nema novog unosa u history. Zato
+   "Nazad" dugme ne zna da treba da zatvori TAJ overlay i umesto toga
+   izlazi sa celog sajta.
+   Rešenje: pri otvaranju svakog overlay-a guramo prazan unos u
+   history (guardOverlayOpen). "Nazad" prvo pop-uje TAJ unos — jedini
+   popstate handler ispod ga hvata i zatvara najgornji otvoreni
+   overlay (raw close funkcija, bez ponovnog diranja historije).
+   Kad se overlay zatvara na neki drugi način (X dugme, klik na
+   pozadinu, Escape, "Primeni"...), koristi se guardOverlayRequestClose
+   — ona samo prosledi na history.back(), da postoji JEDAN jedini put
+   kojim se overlay zatvara i history stek ostane čist.
+========================================================== */
+const _historyOverlays = []; // stek { id, close(rawCloseFn) }
+
+function guardOverlayOpen(id, closeFn){
+  // Ako je ovaj overlay (npr. kalendar) već otvoren i gurnut, ne guramo
+  // duplo — samo ažuriramo close funkciju (može se promeniti po pozivu).
+  const existing = _historyOverlays.find(o => o.id === id);
+  if (existing){ existing.close = closeFn; return; }
+  _historyOverlays.push({ id, close: closeFn });
+  history.pushState({ overlayGuard: true, id }, '');
+}
+// Vraća true ako je overlay bio gurnut u historiju (i time preuzima
+// zatvaranje preko history.back() → popstate). Vraća false ako nije
+// bio gurnut — u tom slučaju pozivač treba sam da zatvori overlay.
+function guardOverlayRequestClose(id){
+  const idx = _historyOverlays.findIndex(o => o.id === id);
+  if (idx === -1) return false;
+  _historyOverlays.splice(idx, 1);
+  history.back();
+  return true;
+}
+window.addEventListener('popstate', () => {
+  const top = _historyOverlays.pop();
+  if (top) top.close();
+});
+// Za slučajeve kad se overlay zatvori "sam od sebe" van normalnog toka
+// (npr. rotacija ekrana/promena veličine prozora ugasi mobilni prikaz) —
+// samo skida overlay sa steka, BEZ history.back(), da ne bismo nepotrebno
+// vratili korisnika na prethodnu stranicu. Unos u historiji ostaje (biće
+// tiho pokupljen sledećim "Nazad", bez efekta jer je stek već čist).
+function guardOverlayDrop(id){
+  const idx = _historyOverlays.findIndex(o => o.id === id);
+  if (idx !== -1) _historyOverlays.splice(idx, 1);
+}
+
+/* ==========================================================
    I18N — srpski (podrazumevano) i engleski
    ==========================================================
    Princip: statički tekst u HTML-u se prevodi preko data-i18n /
@@ -1009,11 +1060,20 @@ function pickBestLocationMatch(results, query){
     calCard.classList.add('open');
     if (calBackdrop) calBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
-    if (isMobileCal()){ detachCalForMobile(); lockPageScroll(); positionCalMobile(); }
+    if (isMobileCal()){
+      detachCalForMobile(); lockPageScroll(); positionCalMobile();
+      guardOverlayOpen('cal', () => closeCal(true));
+    }
     // fokus tastature/screen readera ide direktno na selektovani (ili
     // današnji) dan — bez ovoga dijalog se otvara vizuelno, ali korisnik
     // koji ne koristi miša nema signal da se nešto promenilo.
     focusDayButton(activeDate);
+  }
+  // "Meki" zahtev za zatvaranje (klik na dugme, Escape...) — ako je
+  // kartica na mobilnom gurnula unos u historiju, prosleđuje se na
+  // "Nazad" da postoji jedan jedini put kojim se zatvara.
+  function requestCloseCal(){
+    if (!guardOverlayRequestClose('cal')) closeCal(true);
   }
   function closeCal(shouldCommit){
     const wasOpen = calCard.classList.contains('open');
@@ -1037,12 +1097,12 @@ function pickBestLocationMatch(results, query){
 
   displayBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (calCard.classList.contains('open')) closeCal(true);
+    if (calCard.classList.contains('open')) requestCloseCal();
     else openCal();
   });
   applyBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (selStart && selEnd) closeCal(true);
+    if (selStart && selEnd) requestCloseCal();
   });
   prevBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -1094,10 +1154,10 @@ function pickBestLocationMatch(results, query){
   });
 
   document.addEventListener('click', () => {
-    if (calCard.classList.contains('open')) closeCal(true);
+    if (calCard.classList.contains('open')) requestCloseCal();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && calCard.classList.contains('open')) closeCal(true);
+    if (e.key === 'Escape' && calCard.classList.contains('open')) requestCloseCal();
   });
   window.addEventListener('resize', () => {
     if (calCard.classList.contains('open')) positionCalMobile();
@@ -1198,7 +1258,7 @@ function pickBestLocationMatch(results, query){
     // Sam klik na broj putnika sad odmah čuva izbor i zatvara karticu — dugme
     // "Gotovo" ostaje kao rezerva, ali izbor više ne zavisi od toga da se do
     // njega dogura (na dužim listama, npr. blizu 30, ranije je bilo van dohvata).
-    closePax();
+    requestClosePax();
   }
 
   const isMobilePax = () => window.matchMedia('(max-width:760px)').matches;
@@ -1268,9 +1328,15 @@ function pickBestLocationMatch(results, query){
     paxCard.classList.add('open');
     if (paxBackdrop) paxBackdrop.classList.add('open');
     displayBtn.setAttribute('aria-expanded', 'true');
-    if (isMobilePax()){ detachPaxForMobile(); lockPageScroll(); positionPaxMobile(); }
+    if (isMobilePax()){
+      detachPaxForMobile(); lockPageScroll(); positionPaxMobile();
+      guardOverlayOpen('pax', closePax);
+    }
     const focusTarget = paxList.querySelector('.pax-option.is-selected') || paxList.querySelector('.pax-option');
     if (focusTarget) focusTarget.focus();
+  }
+  function requestClosePax(){
+    if (!guardOverlayRequestClose('pax')) closePax();
   }
   function closePax(){
     const wasOpen = paxCard.classList.contains('open');
@@ -1286,10 +1352,10 @@ function pickBestLocationMatch(results, query){
 
   displayBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (paxCard.classList.contains('open')) closePax();
+    if (paxCard.classList.contains('open')) requestClosePax();
     else openPax();
   });
-  if (applyBtn) applyBtn.addEventListener('click', (e) => { e.stopPropagation(); closePax(); });
+  if (applyBtn) applyBtn.addEventListener('click', (e) => { e.stopPropagation(); requestClosePax(); });
   paxCard.addEventListener('click', (e) => e.stopPropagation());
   // Focus trap dok je "dijalog" otvoren — isti obrazac kao kod kalendara.
   paxCard.addEventListener('keydown', (e) => {
@@ -1301,10 +1367,10 @@ function pickBestLocationMatch(results, query){
     else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
   });
   document.addEventListener('click', () => {
-    if (paxCard.classList.contains('open')) closePax();
+    if (paxCard.classList.contains('open')) requestClosePax();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && paxCard.classList.contains('open')) closePax();
+    if (e.key === 'Escape' && paxCard.classList.contains('open')) requestClosePax();
   });
   window.addEventListener('resize', () => {
     if (paxCard.classList.contains('open')) positionPaxMobile();
@@ -3322,7 +3388,12 @@ function openResultsSheet(){
     results.setAttribute('role', 'dialog');
     results.setAttribute('aria-modal', 'true');
     if (!wasVisible || document.body.style.position !== 'fixed') lockResultsPageScroll();
+    guardOverlayOpen('results', closeResultsSheet);
   }
+}
+
+function requestCloseResultsSheet(){
+  if (!guardOverlayRequestClose('results')) closeResultsSheet();
 }
 
 function closeResultsSheet(){
@@ -3342,12 +3413,12 @@ function closeResultsSheet(){
 (function(){
   const backBtn = document.getElementById('resultsBackBtn');
   const backdrop = document.getElementById('resultsBackdrop');
-  if (backBtn) backBtn.addEventListener('click', () => closeResultsSheet());
-  if (backdrop) backdrop.addEventListener('click', () => closeResultsSheet());
+  if (backBtn) backBtn.addEventListener('click', () => requestCloseResultsSheet());
+  if (backdrop) backdrop.addEventListener('click', () => requestCloseResultsSheet());
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     const results = document.getElementById('results');
-    if (results && results.classList.contains('visible') && isMobileResults()) closeResultsSheet();
+    if (results && results.classList.contains('visible') && isMobileResults()) requestCloseResultsSheet();
   });
   // Ako se ekran "prebaci" preko 760px dok je sheet otvoren (npr. rotacija
   // tableta), skini zaključavanje skrola — na širem ekranu #results više
@@ -3361,6 +3432,7 @@ function closeResultsSheet(){
       if (backdrop) backdrop.classList.remove('open');
       results.removeAttribute('role');
       results.removeAttribute('aria-modal');
+      guardOverlayDrop('results');
     }
   });
 })();
@@ -3629,7 +3701,7 @@ async function runMatchSearch(isReroll){
   const answers = isReroll && window._lastMatchAnswers ? window._lastMatchAnswers : Object.assign({}, matchQuizState);
   if (!answers.companion || !answers.vibe){ showToast('Odgovori na oba pitanja pre pretrage.'); return; }
 
-  if (!isReroll) closeMatchModal();
+  if (!isReroll) requestCloseMatchModal();
 
   const results = document.getElementById('results');
   openResultsSheet();
@@ -3748,6 +3820,10 @@ function openMatchModal(){
   goToMatchStep(1);
   document.getElementById('matchModalBackdrop').classList.add('open');
   document.getElementById('matchModal').classList.add('open');
+  guardOverlayOpen('match', closeMatchModal);
+}
+function requestCloseMatchModal(){
+  if (!guardOverlayRequestClose('match')) closeMatchModal();
 }
 function closeMatchModal(){
   document.getElementById('matchModalBackdrop').classList.remove('open');
@@ -5092,13 +5168,17 @@ function openShareModal(tripId){
   document.getElementById('shareModalBackdrop').classList.add('open');
   document.getElementById('shareModal').classList.add('open');
   window._pendingShareLink = link;
+  guardOverlayOpen('share', closeShareModal);
+}
+function requestCloseShareModal(){
+  if (!guardOverlayRequestClose('share')) closeShareModal();
 }
 function closeShareModal(){
   document.getElementById('shareModalBackdrop').classList.remove('open');
   document.getElementById('shareModal').classList.remove('open');
 }
-document.getElementById('shareModalClose').addEventListener('click', closeShareModal);
-document.getElementById('shareModalBackdrop').addEventListener('click', closeShareModal);
+document.getElementById('shareModalClose').addEventListener('click', requestCloseShareModal);
+document.getElementById('shareModalBackdrop').addEventListener('click', requestCloseShareModal);
 document.getElementById('shareModalCopy').addEventListener('click', async () => {
   const input = document.getElementById('shareModalLink');
   input.select();
@@ -5147,13 +5227,17 @@ async function openAlertModal(kind, tier, total, destOverride){
   document.getElementById('alertThreshold').value = Math.max(1, Math.round(total * 0.9));
   document.getElementById('alertModalBackdrop').classList.add('open');
   document.getElementById('alertModal').classList.add('open');
+  guardOverlayOpen('alert', closeAlertModal);
+}
+function requestCloseAlertModal(){
+  if (!guardOverlayRequestClose('alert')) closeAlertModal();
 }
 function closeAlertModal(){
   document.getElementById('alertModalBackdrop').classList.remove('open');
   document.getElementById('alertModal').classList.remove('open');
 }
-document.getElementById('alertModalClose').addEventListener('click', closeAlertModal);
-document.getElementById('alertModalBackdrop').addEventListener('click', closeAlertModal);
+document.getElementById('alertModalClose').addEventListener('click', requestCloseAlertModal);
+document.getElementById('alertModalBackdrop').addEventListener('click', requestCloseAlertModal);
 document.getElementById('alertBuilderBtn').addEventListener('click', () => {
   const pkg = window._lastBuilderPkg;
   if (!pkg){ showToast('Napravi izlet pre postavljanja alerta.'); return; }
@@ -5165,7 +5249,7 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
   const submitBtn = document.getElementById('alertModalSubmit');
   if (!email || !email.includes('@')){ showToast('Unesi ispravnu email adresu.'); return; }
   if (!threshold || threshold <= 0){ showToast('Unesi ispravan iznos.'); return; }
-  if (!_pendingAlert){ closeAlertModal(); return; }
+  if (!_pendingAlert){ requestCloseAlertModal(); return; }
 
   if (!sb) {
     showToast('Alerti trenutno nisu dostupni — pokušaj kasnije.');
@@ -5186,7 +5270,7 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
       params: _pendingAlert.params
     });
     if (error) throw error;
-    closeAlertModal();
+    requestCloseAlertModal();
     showToast('Javićemo ti na ' + email + ' kad cena za ' + _pendingAlert.dest + ' padne ispod ' + fmtEUR(threshold) + '.');
   } catch(err) {
     console.warn('[skoknica] čuvanje alerta nije uspelo:', err.message);
@@ -5300,9 +5384,9 @@ if (hamburgerBtn && mobilePanel){
 const matchTriggerBtn = document.getElementById('matchTriggerBtn');
 if (matchTriggerBtn) matchTriggerBtn.addEventListener('click', openMatchModal);
 const matchModalClose = document.getElementById('matchModalClose');
-if (matchModalClose) matchModalClose.addEventListener('click', closeMatchModal);
+if (matchModalClose) matchModalClose.addEventListener('click', requestCloseMatchModal);
 const matchModalBackdrop = document.getElementById('matchModalBackdrop');
-if (matchModalBackdrop) matchModalBackdrop.addEventListener('click', closeMatchModal);
+if (matchModalBackdrop) matchModalBackdrop.addEventListener('click', requestCloseMatchModal);
 const matchModalSubmit = document.getElementById('matchModalSubmit');
 if (matchModalSubmit) matchModalSubmit.addEventListener('click', () => runMatchSearch(false));
 document.querySelectorAll('#matchModal .match-back').forEach(btn => {
@@ -5412,6 +5496,10 @@ function openDocumentsModal(){
   switchDocsTab('passport');
   document.getElementById('documentsModalBackdrop').classList.add('open');
   document.getElementById('documentsModal').classList.add('open');
+  guardOverlayOpen('documents', closeDocumentsModal);
+}
+function requestCloseDocumentsModal(){
+  if (!guardOverlayRequestClose('documents')) closeDocumentsModal();
 }
 function closeDocumentsModal(){
   document.getElementById('documentsModalBackdrop').classList.remove('open');
@@ -5471,9 +5559,9 @@ if (langSwitchBtn) langSwitchBtn.addEventListener('click', () => {
 const documentsCheckBtn = document.getElementById('documentsCheckBtn');
 if (documentsCheckBtn) documentsCheckBtn.addEventListener('click', openDocumentsModal);
 const documentsModalClose = document.getElementById('documentsModalClose');
-if (documentsModalClose) documentsModalClose.addEventListener('click', closeDocumentsModal);
+if (documentsModalClose) documentsModalClose.addEventListener('click', requestCloseDocumentsModal);
 const documentsModalBackdrop = document.getElementById('documentsModalBackdrop');
-if (documentsModalBackdrop) documentsModalBackdrop.addEventListener('click', closeDocumentsModal);
+if (documentsModalBackdrop) documentsModalBackdrop.addEventListener('click', requestCloseDocumentsModal);
 const docsTabPassport = document.getElementById('docsTabPassport');
 if (docsTabPassport) docsTabPassport.addEventListener('click', () => switchDocsTab('passport'));
 const docsTabGreenCard = document.getElementById('docsTabGreenCard');
@@ -5499,6 +5587,10 @@ const startPrefs = {
 function openStartPrefsModal(){
   document.getElementById('startPrefsBackdrop').classList.add('open');
   document.getElementById('startPrefsModal').classList.add('open');
+  guardOverlayOpen('startPrefs', closeStartPrefsModal);
+}
+function requestCloseStartPrefsModal(){
+  if (!guardOverlayRequestClose('startPrefs')) closeStartPrefsModal();
 }
 function closeStartPrefsModal(){
   document.getElementById('startPrefsBackdrop').classList.remove('open');
@@ -5511,10 +5603,10 @@ function closeStartPrefsModal(){
   syncBuilderStateFromStartPrefs();
   restoreBuilderSummaryPosition();
 }
-document.getElementById('startPrefsClose').addEventListener('click', closeStartPrefsModal);
-document.getElementById('startPrefsBackdrop').addEventListener('click', closeStartPrefsModal);
+document.getElementById('startPrefsClose').addEventListener('click', requestCloseStartPrefsModal);
+document.getElementById('startPrefsBackdrop').addEventListener('click', requestCloseStartPrefsModal);
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('startPrefsModal').classList.contains('open')) closeStartPrefsModal();
+  if (e.key === 'Escape' && document.getElementById('startPrefsModal').classList.contains('open')) requestCloseStartPrefsModal();
 });
 
 wireChipGroup('spFlight', (val) => { startPrefs.flightPref = val; });
@@ -5618,7 +5710,7 @@ document.getElementById('spMakeBtn').addEventListener('click', () => {
 });
 
 document.getElementById('startPrefsContinue').addEventListener('click', () => {
-  closeStartPrefsModal();
+  requestCloseStartPrefsModal();
   // Auto/aktivnosti biramo ovde jer stvarno utiču na to koje se stavke
   // pojavljuju u gotovim ponudama (isto polje kao toggle-row iznad forme).
   // Let i hotel ostaju kakvi su već podešeni gore — let namerno ne
@@ -5856,9 +5948,6 @@ function openFeatureGuide(key){
   initPackagesSlider(body.querySelector('.packages-slider-wrap'));
   openFeatureGuideSheet();
 }
-// Da li je otvaranje sheeta gurnulo unos u istoriju (samo na mobilnom,
-// vidi objašnjenje ispod).
-let _fgSheetHistoryPushed = false;
 function openFeatureGuideSheet(){
   const sheet = document.getElementById('featureGuideSheet');
   if (!sheet) return;
@@ -5869,13 +5958,7 @@ function openFeatureGuideSheet(){
     sheet.setAttribute('role', 'dialog');
     sheet.setAttribute('aria-modal', 'true');
     lockResultsPageScroll();
-    // Bez ovoga fizičko/gest "Nazad" dugme na telefonu ne zna da je sheet
-    // otvoren (stranica se tehnički nije promenila) i umesto da zatvori
-    // sheet, izlazi sa celog sajta. Guranjem praznog unosa u istoriju,
-    // "Nazad" prvo pukne TAJ unos — popstate handler ispod ga hvata i
-    // samo zatvara sheet, ne napušta stranicu.
-    history.pushState({fgSheet:true}, '');
-    _fgSheetHistoryPushed = true;
+    guardOverlayOpen('featureGuide', closeFeatureGuideSheet);
   }
 }
 function closeFeatureGuideSheet(){
@@ -5890,23 +5973,12 @@ function closeFeatureGuideSheet(){
   if (wasLocked) unlockResultsPageScroll();
 }
 // Klik na "Nazad"/pozadinu treba da se ponaša identično fizičkom/gest
-// dugmetu telefona: ako je otvaranje gurnulo unos u istoriju, pop-ujemo
-// TAJ unos (history.back()) — samo zatvaranje obavlja popstate handler
-// ispod, da postoji jedan jedini put kojim se sheet zatvara.
+// dugmetu telefona — koristi isti univerzalni guard sistem kao ostali
+// modali (vidi definiciju guardOverlayOpen/guardOverlayRequestClose na
+// vrhu fajla), da postoji jedan jedini put kojim se sheet zatvara.
 function requestCloseFeatureGuideSheet(){
-  if (_fgSheetHistoryPushed){
-    history.back();
-  } else {
-    closeFeatureGuideSheet();
-  }
+  if (!guardOverlayRequestClose('featureGuide')) closeFeatureGuideSheet();
 }
-window.addEventListener('popstate', () => {
-  const sheet = document.getElementById('featureGuideSheet');
-  if (sheet && sheet.classList.contains('visible')){
-    _fgSheetHistoryPushed = false;
-    closeFeatureGuideSheet();
-  }
-});
 document.querySelectorAll('.feature-strip .feature[data-feature]').forEach(el => {
   el.addEventListener('click', () => openFeatureGuide(el.dataset.feature));
   el.addEventListener('keydown', (e) => {
