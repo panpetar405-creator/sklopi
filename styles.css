@@ -410,7 +410,14 @@ a{color:inherit;}
     background:var(--gold);color:var(--on-gold);font-size:17px;
     transition:transform .2s ease, background .2s ease;
 }
-
+/* Upitnik (q-form) submit dugme — ravno, bez zlatne kružne strelice,
+   isto kao u odobrenom konceptu ("Prikaži cenu" makete). */
+.btn-primary.q-submit{
+    padding:16px;justify-content:center;border-radius:11px;
+    box-shadow:0 14px 28px -12px rgba(15,76,92,0.4);
+}
+.btn-primary.q-submit::after{display:none;}
+.btn-primary.q-submit:hover{transform:translateY(-1px);gap:14px;box-shadow:0 18px 34px -14px rgba(15,76,92,0.5);}
 
 .btn-primary:active{transform:translateY(0);gap:14px;}
 /* ---------- Kalendar za izbor datuma (u stub-u "Od — Do") ---------- */
