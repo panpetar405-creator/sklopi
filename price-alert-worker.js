@@ -34,6 +34,26 @@ export default {
       return handleUnsubscribe(url, env);
     }
 
+    if (
+      (url.pathname === '/go/confirm-alert' ||
+        url.pathname === '/confirm-alert') &&
+      request.method === 'GET'
+    ) {
+      return handleConfirmAlert(url, env);
+    }
+
+    if (
+      url.pathname === '/go/send-confirmation' ||
+      url.pathname === '/send-confirmation'
+    ) {
+      if (request.method === 'OPTIONS') {
+        return corsPreflightResponse(env);
+      }
+      if (request.method === 'POST') {
+        return handleSendConfirmation(request, env);
+      }
+    }
+
     return new Response('SKLOPI price-alert worker.', {
       status: 200
     });
@@ -131,6 +151,297 @@ async function handleUnsubscribe(url, env) {
       }
     }
   );
+}
+
+
+/* ==========================================================
+   CONFIRM ALERT (double opt-in)
+
+   Klik na link iz potvrdnog mejla — prebacuje alert iz
+   pending_confirmation u active. Worker koristi service_role,
+   pa ovo radi bez obzira na RLS (browser sam ne može ni da
+   pročita ni da promeni status — vidi price_alerts.sql).
+========================================================== */
+
+async function handleConfirmAlert(url, env) {
+  const token = url.searchParams.get('token');
+
+  if (!token) {
+    return new Response('Nedostaje token.', {
+      status: 400
+    });
+  }
+
+  const res = await sbFetch(
+    env,
+    `price_alerts?confirmation_token=eq.${encodeURIComponent(token)}` +
+      `&status=eq.pending_confirmation`,
+    {
+      method: 'PATCH',
+      headers: {
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify({
+        status: 'active',
+        confirmed_at: new Date().toISOString()
+      })
+    }
+  );
+
+  if (!res.ok) {
+    console.error(
+      '[price-alert-worker] confirm update nije uspeo:',
+      await safeResponseText(res)
+    );
+
+    return new Response(
+      'Došlo je do greške. Pokušaj ponovo kasnije.',
+      { status: 500 }
+    );
+  }
+
+  const updatedRows = await res.json();
+
+  if (!Array.isArray(updatedRows) || updatedRows.length === 0) {
+    /*
+     * Token ne postoji, ili je alert već potvrđen/otkazan ranije —
+     * u oba slučaja nema šta dalje da se PATCH-uje (status filter
+     * gore je eq.pending_confirmation, pa drugi pokušaj klika na
+     * isti link legitimno ne pogađa nijedan red).
+     */
+    return new Response(
+      'Link je nevažeći, već iskorišćen, ili je alert u međuvremenu otkazan.',
+      { status: 404 }
+    );
+  }
+
+  const siteUrl = env.SITE_URL || 'https://sklopi.rs';
+
+  return new Response(
+    `<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SKLOPI — Alert potvrđen</title>
+</head>
+<body style="font-family:sans-serif;max-width:480px;margin:60px auto;text-align:center;color:#16242A;padding:20px;">
+  <h2>Alert je aktiviran ✅</h2>
+  <p>
+    Javićemo ti mejlom kad procenjena cena padne ispod praga
+    koji si postavio/la.
+  </p>
+  <a
+    href="${escapeHtml(siteUrl)}"
+    style="color:#8f6423;"
+  >
+    ← Nazad na Skoknicu
+  </a>
+</body>
+</html>`,
+    {
+      status: 200,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-store'
+      }
+    }
+  );
+}
+
+
+/* ==========================================================
+   SEND CONFIRMATION EMAIL (pozvano sa sajta odmah posle insert-a)
+
+   Browser sme samo INSERT u price_alerts (vidi RLS u
+   price_alerts.sql) — nema SELECT, pa ne može sam da pročita
+   confirmation_token novog reda da bi napravio link. Umesto
+   toga, sajt pozove OVAJ endpoint sa istim poljima koja je
+   upravo upisao; worker (service_role) pronađe TAJ red i pošalje
+   mejl sa pravim tokenom.
+========================================================== */
+
+async function handleSendConfirmation(request, env) {
+  const cors = corsHeaders(env);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return new Response('Neispravan JSON.', { status: 400, headers: cors });
+  }
+
+  const { email, dest, date_from, date_to, threshold } = body || {};
+
+  if (!email || !dest || !date_from || !date_to || !threshold) {
+    return new Response(
+      'Nedostaju obavezna polja (email, dest, date_from, date_to, threshold).',
+      { status: 400, headers: cors }
+    );
+  }
+
+  /*
+   * Nalazimo NAJNOVIJI pending_confirmation red koji odgovara
+   * ovim poljima — dovoljno precizno jer je isti email/dest/datumi/
+   * threshold jedinstven dok je pending (vidi unique index u
+   * 20260918100005_price_alerts_double_optin.sql). Ako korisnik
+   * dupli-klikne "Postavi alert" pre nego što stigne mejl, insert #2
+   * bi pao na unique constraint na serveru pre nego što ovde
+   * stignemo — ovaj endpoint uvek gleda ono što STVARNO postoji u
+   * bazi, ne ono što je klijent poslao kao "istina".
+   */
+  const lookupPath =
+    `price_alerts?email=eq.${encodeURIComponent(String(email).toLowerCase().trim())}` +
+    `&dest=eq.${encodeURIComponent(dest)}` +
+    `&date_from=eq.${encodeURIComponent(date_from)}` +
+    `&date_to=eq.${encodeURIComponent(date_to)}` +
+    `&threshold=eq.${encodeURIComponent(threshold)}` +
+    `&status=eq.pending_confirmation` +
+    `&order=created_at.desc&limit=1&select=*`;
+
+  const res = await sbFetch(env, lookupPath, {
+    headers: { Prefer: 'return=representation' }
+  });
+
+  if (!res.ok) {
+    console.error(
+      '[price-alert-worker] lookup za potvrdni mejl nije uspeo:',
+      await safeResponseText(res)
+    );
+    return new Response('Greška servera.', { status: 500, headers: cors });
+  }
+
+  const rows = await res.json();
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return new Response(
+      'Alert nije pronađen (možda je već potvrđen ili istekao).',
+      { status: 404, headers: cors }
+    );
+  }
+
+  const sent = await sendConfirmationEmail(rows[0], env);
+
+  if (!sent) {
+    return new Response(
+      'Potvrdni mejl nije uspeo da se pošalje — pokušaj ponovo kasnije.',
+      { status: 502, headers: cors }
+    );
+  }
+
+  return new Response('OK', { status: 200, headers: cors });
+}
+
+
+function corsHeaders(env) {
+  return {
+    'Access-Control-Allow-Origin': env.SITE_URL || 'https://sklopi.rs',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'content-type': 'text/plain; charset=utf-8'
+  };
+}
+
+function corsPreflightResponse(env) {
+  return new Response(null, { status: 204, headers: corsHeaders(env) });
+}
+
+
+async function sendConfirmationEmail(alert, env) {
+  const siteUrl = env.SITE_URL || 'https://sklopi.rs';
+
+  const confirmUrl =
+    `${siteUrl.replace(/\/$/, '')}` +
+    `/go/confirm-alert?token=${encodeURIComponent(alert.confirmation_token)}`;
+
+  const safeDest = String(alert.dest).replace(/[\r\n]/g, ' ');
+  const subject = `Potvrdi svoj price alert za ${safeDest}`;
+
+  const html = `
+    <div style="
+      font-family:'Work Sans',Arial,sans-serif;
+      max-width:520px;
+      margin:0 auto;
+      color:#16242A;
+      line-height:1.6;
+    ">
+      <h2 style="
+        font-family:Georgia,serif;
+        color:#123138;
+      ">
+        SKLOPI 🔔
+      </h2>
+
+      <p>
+        Skoro gotovo — potvrdi da si to zaista ti tražio/la
+        obaveštenje o ceni za
+        <b>${escapeHtml(alert.dest)}</b>,
+        ispod
+        <b style="font-size:18px;color:#8f6423;">${alert.threshold}€</b>.
+      </p>
+
+      <p>
+        <a
+          href="${escapeHtml(confirmUrl)}"
+          style="
+            display:inline-block;
+            background:#B8863B;
+            color:#241505;
+            padding:12px 20px;
+            border-radius:4px;
+            text-decoration:none;
+            font-weight:600;
+          "
+        >
+          Potvrdi alert →
+        </a>
+      </p>
+
+      <p style="
+        color:#4B5D62;
+        font-size:13px;
+      ">
+        Ako nisi ti tražio/la ovo, samo ignoriši ovaj mejl —
+        alert ostaje neaktivan i ne dobijaš ništa dalje.
+      </p>
+    </div>
+  `;
+
+  try {
+    const res = await fetch(
+      'https://api.resend.com/emails',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: env.ALERT_FROM_EMAIL || 'SKLOPI <alerti@sklopi.rs>',
+          to: alert.email,
+          subject,
+          html
+        })
+      }
+    );
+
+    if (!res.ok) {
+      console.error(
+        '[price-alert-worker] Resend (potvrda) slanje nije uspelo:',
+        await safeResponseText(res)
+      );
+      return false;
+    }
+
+    return true;
+
+  } catch (err) {
+    console.error(
+      '[price-alert-worker] Resend (potvrda) network greška:',
+      err
+    );
+    return false;
+  }
 }
 
 

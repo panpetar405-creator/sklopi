@@ -182,7 +182,7 @@ const I18N = {
     cookie_decline:'Odbijam', cookie_accept:'Prihvatam',
     aria_close:'Zatvori', label_email:'Email',
     label_alert_threshold:'Javi mi kad ukupna procenjena cena padne ispod', btn_set_alert:'Postavi alert',
-    alert_modal_disclaimer:'⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.',
+    alert_modal_disclaimer:'⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Poslaćemo ti mejl da potvrdiš — alert se aktivira tek nakon klika na link u njemu. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.',
     match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">Nemaš ideju kuda?</span><span class="ac-sub">Kratak upitnik od 3 pitanja — pronađi 3 destinacije koje ti stvarno odgovaraju, ne nasumične.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 More</span><span class="match-preview-chip">🏙️ Grad</span><span class="match-preview-chip">🌲 Priroda</span><span class="match-preview-chip">🎉 Provod</span></span><span class="ac-cta"><span class="ac-cta-label">Pronađi mi destinaciju</span><span class="ac-arrow">→</span></span>',
     match_modal_title:'Pronađi svoj izlet',
     match_modal_sub:'Tri kratka pitanja — mi bodujemo preko 60 destinacija po poklapanju sa tobom, sezonom i dužinom puta, ne nasumično. Datumi i broj putnika ostaju kao u formi iznad.',
@@ -316,7 +316,7 @@ const I18N = {
     cookie_decline:'Decline', cookie_accept:'Accept',
     aria_close:'Close', label_email:'Email',
     label_alert_threshold:'Notify me when the total estimated price drops below', btn_set_alert:'Set alert',
-    alert_modal_disclaimer:'⚠️ Still an illustrative estimate, not a real partner offer. You can unsubscribe anytime via the link in the email you receive.',
+    alert_modal_disclaimer:'⚠️ Still an illustrative estimate, not a real partner offer. We\u2019ll send you a confirmation email — the alert only becomes active once you click the link in it. You can unsubscribe anytime via the link in the email you receive.',
     match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">No idea where to go?</span><span class="ac-sub">A short 3-question quiz — find 3 destinations that actually fit you, not random picks.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 Beach</span><span class="match-preview-chip">🏙️ City</span><span class="match-preview-chip">🌲 Nature</span><span class="match-preview-chip">🎉 Nightlife</span></span><span class="ac-cta"><span class="ac-cta-label">Find my destination</span><span class="ac-arrow">→</span></span>',
     match_modal_title:'Find your trip',
     match_modal_sub:'Three quick questions — we score 60+ destinations by fit with you, the season and trip length, not at random. Dates and traveler count stay as set in the form above.',
@@ -449,7 +449,7 @@ const I18N = {
     cookie_decline:'Отклонить', cookie_accept:'Принять',
     aria_close:'Закрыть', label_email:'Email',
     label_alert_threshold:'Сообщить мне, когда общая примерная цена упадёт ниже', btn_set_alert:'Установить оповещение',
-    alert_modal_disclaimer:'⚠️ Всё ещё иллюстративная оценка, не реальное предложение партнёра. Отписаться можно в любой момент по ссылке в письме, которое ты получишь.',
+    alert_modal_disclaimer:'⚠️ Всё ещё иллюстративная оценка, не реальное предложение партнёра. Мы пришлём письмо с подтверждением — оповещение включится только после клика по ссылке в нём. Отписаться можно в любой момент по ссылке в письме, которое ты получишь.',
     match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">Не знаешь куда?</span><span class="ac-sub">Короткий опрос из 3 вопросов — найди 3 направления, которые действительно тебе подходят, а не случайные.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 Море</span><span class="match-preview-chip">🏙️ Город</span><span class="match-preview-chip">🌲 Природа</span><span class="match-preview-chip">🎉 Тусовка</span></span><span class="ac-cta"><span class="ac-cta-label">Найти мне направление</span><span class="ac-arrow">→</span></span>',
     match_modal_title:'Найди свою поездку',
     match_modal_sub:'Три коротких вопроса — мы оцениваем более 60 направлений по совпадению с тобой, сезоном и длительностью поездки, не наугад. Даты и число путешественников останутся как в форме выше.',
@@ -3956,6 +3956,20 @@ function trackAffiliateClick(kind, price, dest, tier){
   });
 }
 
+/* ---- GA4: gornji/srednji dio funnel-a (affiliate_click iznad je već
+   dno funnel-a). Isti "ćuti ako GA nije učitan" obrazac kao gore —
+   pozivi ispod se dešavaju i kad su kolačići odbijeni, samo bez efekta.
+   Tri koraka koje ovo prati:
+     search_submit  — korisnik je potvrdio destinaciju/datume (Start)
+     builder_open   — otvorio "Napravi svoj aranžman" (custom put)
+     offers_view    — dobio 3 gotove ponude (Budget/Best/Comfort put)
+   Ovo je namerno odvojeno od bumpSearchStat/bumpClickStat, koji pišu u
+   site_stats (javni brojač na sajtu, ne GA/funnel podatak). ---- */
+function trackFunnelEvent(name, params){
+  if (typeof window.gtag !== 'function') return;
+  window.gtag('event', name, params || {});
+}
+
 function showToast(msg){
   const t = document.getElementById('toast');
   document.getElementById('toastText').textContent = msg;
@@ -4087,6 +4101,9 @@ async function runSearch(shouldScroll, autoReveal){
 
 document.getElementById('searchForm').addEventListener('submit', function(e){
   e.preventDefault();
+  trackFunnelEvent('search_submit', {
+    destination: document.getElementById('dest').value.trim() || 'Atina'
+  });
   openStartPrefsModal();
 });
 
@@ -5357,6 +5374,24 @@ document.getElementById('shareModalNative').addEventListener('click', async () =
    ALERT ZA CENU (Javi mi kad padne cena)
 ========================================================== */
 let _pendingAlert = null;
+/* ---- Double opt-in: traži od worker-a da pošalje potvrdni mejl za
+   alert koji je upravo upisan kao 'pending_confirmation'. Fire-and-
+   -forget — čak i ako ovaj pozit ne uspe (npr. Worker Route još nije
+   podešen, vidi SKLOPI_ALERT_WORKER_URL u config.js), red u bazi i
+   dalje postoji, samo ostaje pending dok korisnik ne zatraži novi
+   alert ili se problem ne reši; ne blokiramo UI čekajući ovo. ---- */
+function requestConfirmationEmail(payload){
+  const base = window.SKLOPI_ALERT_WORKER_URL;
+  if (!base) return;
+  fetch(base.replace(/\/$/, '') + '/go/send-confirmation', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  }).catch(err => {
+    console.warn('[sklopi] slanje potvrdnog mejla nije uspelo:', err.message);
+  });
+}
+
 async function openAlertModal(kind, tier, total, destOverride){
   const user = await getCurrentUser();
   if (!user){
@@ -5442,10 +5477,28 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
       selection: _pendingAlert.selection,
       threshold,
       last_price: _pendingAlert.currentTotal
+      // Napomena: NE šaljemo status — kolona ima default
+      // 'pending_confirmation' (double opt-in, vidi
+      // 20260918100005_price_alerts_double_optin.sql). Alert postaje
+      // 'active' (i worker ga počinje da proverava) tek kad korisnik
+      // klikne link iz mejla koji šaljemo ispod.
     });
     if (error) throw error;
+
+    // Browser nema SELECT pravo na price_alerts (namerno, vidi RLS u
+    // price_alerts.sql), pa ne dobijamo nazad confirmation_token iz
+    // insert-a — zato worker sam pronalazi red po ovim istim poljima
+    // (vidi handleSendConfirmation u price-alert-worker.js).
+    requestConfirmationEmail({
+      email,
+      dest: _pendingAlert.dest,
+      date_from: _pendingAlert.dateFrom,
+      date_to: _pendingAlert.dateTo,
+      threshold
+    });
+
     requestCloseAlertModal();
-    showToast('Javićemo ti na ' + email + ' kad cena za ' + _pendingAlert.dest + ' padne ispod ' + fmtEUR(threshold) + '.');
+    showToast('Poslali smo ti mejl na ' + email + ' — potvrdi klikom da aktiviraš alert za ' + _pendingAlert.dest + '.');
   } catch(err) {
     console.warn('[sklopi] čuvanje alerta nije uspelo:', err.message);
     showToast('Postavljanje alerta nije uspelo — pokušaj ponovo.');
@@ -5936,6 +5989,10 @@ document.getElementById('spMakeBtn').addEventListener('click', () => {
     return;
   }
 
+  trackFunnelEvent('builder_open', {
+    destination: destInput.value.trim()
+  });
+
   const slot = document.getElementById('spBuilderSlot');
   const bs = document.getElementById('builderSummary');
   if (slot && bs.parentElement !== slot) slot.appendChild(bs);
@@ -5958,6 +6015,9 @@ document.getElementById('startPrefsContinue').addEventListener('click', () => {
   // polje koje ovaj modal ne prikuplja.
   setTransportToggle('car', startPrefs.carPref !== 'none');
   setTransportToggle('activity', startPrefs.activityCount > 0);
+  trackFunnelEvent('offers_view', {
+    destination: document.getElementById('dest').value.trim() || 'Atina'
+  });
   // Odmah skrolujemo ka rezultatima (na loading skeleton) — ranije se ovde
   // NIJE skrolovalo dok se ponude ne učitaju, pa je stranica ostajala pri
   // vrhu, a onda naglo skočila dole na kartice kad se učitavanje završi.
