@@ -1027,6 +1027,15 @@ a{color:inherit;}
     transition:opacity .15s ease;
 }
 
+/* Vidljiva oznaka "affiliate/sponzorisan link" — transparentnost prema
+   korisniku da SKLOPI može ostvariti provizuju od partnera preko dugmeta. */
+.aff-badge{
+    display:inline-flex;align-items:center;gap:3px;
+    font-family:'Work Sans',sans-serif;font-size:10.5px;font-weight:600;
+    letter-spacing:.02em;color:var(--ink-soft);
+    background:rgba(120,120,120,0.12);border-radius:5px;
+    padding:2px 7px;margin-top:6px;white-space:nowrap;cursor:help;
+}
 .item-btn.flight{background:var(--deep);}
 .item-btn.hotel{background:var(--gold);color:var(--on-gold);}
 .item-btn.car{background:var(--coral);}
@@ -1424,7 +1433,8 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 .builder-book-links{margin-top:14px;padding-top:14px;border-top:1px solid rgba(227,240,241,0.25);}
 .builder-book-links .bbl-label{font-size:13px;color:var(--on-dark-soft);margin-bottom:9px;}
 .builder-book-row{display:flex;flex-wrap:wrap;gap:8px;}
-.builder-book-row .item-btn{flex:1;min-width:90px;justify-content:center;padding:10px 8px;font-size:13.5px;}
+.builder-book-row .bbl-item{flex:1;min-width:90px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.builder-book-row .item-btn{width:100%;justify-content:center;padding:10px 8px;font-size:13.5px;}
 .qa-list{margin-top:18px;padding-top:4px;border-top:1px solid var(--line-deep);}
 .qa-item{
     display:flex;align-items:center;gap:10px;width:100%;

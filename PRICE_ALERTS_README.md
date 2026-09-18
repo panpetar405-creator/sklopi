@@ -22,7 +22,7 @@
    2. `price_alerts.sql`
    3. `share_trip.sql` (deljenje sačuvanog izleta sa prijateljima; zavisi od `trips.sql`)
    4. `supabase_site_stats.sql`
-2. **Resend (ili sličan servis)** — napravi nalog, verifikuj domen sa kog šalješ mejlove (`alerti@skoknica.rs` ili slično), uzmi API ključ. Supabase Auth NE može ovo da radi — to je samo za auth mejlove.
+2. **Resend (ili sličan servis)** — napravi nalog, verifikuj domen sa kog šalješ mejlove (`alerti@sklopi.rs` ili slično), uzmi API ključ. Supabase Auth NE može ovo da radi — to je samo za auth mejlove.
 3. **Cloudflare Worker:**
    ```
    wrangler secret put SUPABASE_SERVICE_ROLE_KEY   # iz Supabase → Project Settings → API (NE anon key!)
@@ -30,7 +30,7 @@
    wrangler deploy
    ```
 4. Proveri da `SITE_URL` i `SUPABASE_URL` u `wrangler` (wrangler.toml) odgovaraju pravim vrednostima kad domen bude zakupljen.
-5. (Opciono, kasnije) Podesi Cloudflare Route tako da `skoknica.rs/go/unsubscribe` prosleđuje na Worker, ili zameni `unsubUrl` u `price-alert-worker.js` direktnom `*.workers.dev` adresom dok to ne uradiš.
+5. (Opciono, kasnije) Podesi Cloudflare Route tako da `sklopi.rs/go/unsubscribe` prosleđuje na Worker, ili zameni `unsubUrl` u `price-alert-worker.js` direktnom `*.workers.dev` adresom dok to ne uradiš.
 
 ## Poznata ograničenja (namerno, za ovu fazu)
 

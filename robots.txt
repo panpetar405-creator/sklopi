@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://skoknica.rs/sitemap.xml
+Sitemap: https://sklopi.rs/sitemap.xml

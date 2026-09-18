@@ -218,6 +218,7 @@ const I18N = {
     night:'noć', nights:'noći', passenger:'putnik', passengers:'putnika',
     fuel_estimate:'Gorivo (procena)', tolls_estimate:'Putarine (procena)', insurance:'Osiguranje', esim_internet:'eSIM / internet',
     btn_search_kayak:'Pretraži na KAYAK-u', btn_book_booking:'Rezerviši na Booking.com',
+    aff_badge:'Afilijacija', aff_badge_title:'Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.',
     base_package_note:'Cena osnovnog paketa — dodaj osiguranje ili eSIM po želji.',
     fits_budget:'Uklapa se u tvoj budžet od ', over_budget:'Malo iznad budžeta, ali najbliža opcija koju imamo.',
   },
@@ -350,6 +351,7 @@ const I18N = {
     night:'night', nights:'nights', passenger:'traveler', passengers:'travelers',
     fuel_estimate:'Fuel (estimate)', tolls_estimate:'Tolls (estimate)', insurance:'Insurance', esim_internet:'eSIM / internet',
     btn_search_kayak:'Search on KAYAK', btn_book_booking:'Book on Booking.com',
+    aff_badge:'Affiliate', aff_badge_title:'This is an affiliate (sponsored) link — if you book through it, SKLOPI may earn a commission from the partner. Your price stays the same.',
     base_package_note:'Base package price — add insurance or eSIM if you like.',
     fits_budget:'Fits your budget of ', over_budget:'Slightly over budget, but the closest option we have.',
   },
@@ -482,13 +484,14 @@ const I18N = {
     night:'ночь', nights:'ночей', passenger:'путешественник', passengers:'путешественников',
     fuel_estimate:'Топливо (оценка)', tolls_estimate:'Дорожные сборы (оценка)', insurance:'Страховка', esim_internet:'eSIM / интернет',
     btn_search_kayak:'Искать на KAYAK', btn_book_booking:'Забронировать на Booking.com',
+    aff_badge:'Партнёрская ссылка', aff_badge_title:'Это партнёрская (спонсируемая) ссылка — если вы забронируете через неё, SKLOPI может получить комиссию от партнёра. Цена для вас не меняется.',
     base_package_note:'Цена базового пакета — добавь страховку или eSIM по желанию.',
     fits_budget:'Вписывается в твой бюджет ', over_budget:'Немного выше бюджета, но самый близкий вариант, который у нас есть.',
   }
 };
 function getLang(){
   try {
-    const saved = localStorage.getItem('skoknica_lang');
+    const saved = localStorage.getItem('sklopi_lang');
     if (saved === 'en' || saved === 'sr' || saved === 'ru') return saved;
   } catch(e){}
   return 'sr';
@@ -525,7 +528,7 @@ function applyStaticI18n(){
   ));
 }
 function setLang(lang){
-  localStorage.setItem('skoknica_lang', (lang === 'en' || lang === 'ru') ? lang : 'sr');
+  localStorage.setItem('sklopi_lang', (lang === 'en' || lang === 'ru') ? lang : 'sr');
   applyStaticI18n();
   // Ponovo iscrtaj dinamički generisan sadržaj (rezultati/builder/auth/saved)
   // u novom jeziku, ako trenutno postoji na strani.
@@ -712,7 +715,7 @@ function pickBestLocationMatch(results, query){
           }
         } catch(err){
           networkError = true;
-          console.warn('[skoknica] geokodiranje odredišta nije uspelo:', err.message);
+          console.warn('[sklopi] geokodiranje odredišta nije uspelo:', err.message);
         }
       }
       return {geo:null, networkError};
@@ -732,7 +735,7 @@ function pickBestLocationMatch(results, query){
         }
         this.forecastCache[key] = out;
         return {data:out, networkError:false};
-      } catch(err){ console.warn('[skoknica] prognoza nije uspela:', err.message); return {data:{}, networkError:true}; }
+      } catch(err){ console.warn('[sklopi] prognoza nije uspela:', err.message); return {data:{}, networkError:true}; }
     },
     async getClimateRange(geo, minISO, maxISO){
       const key = geo.lat + ',' + geo.lon + '|' + minISO + '|' + maxISO;
@@ -757,7 +760,7 @@ function pickBestLocationMatch(results, query){
         this.climateCache[key] = out;
         return {data:out, networkError:false};
       } catch(err){
-        console.warn('[skoknica] istorijski podaci nisu uspeli:', err.message);
+        console.warn('[sklopi] istorijski podaci nisu uspeli:', err.message);
         return {data:out, networkError:true};
       }
     }
@@ -1456,10 +1459,7 @@ const PARTNERS = {
    POPULAR_DESTINATIONS koja se već koristi za predloge gradova — svaki unos
    tamo ima "extra" polje sa nazivom države na srpskom, koje ovde prevodimo
    u Airalo-ov URL slug (engleski naziv države, malim slovima, sa crticama).
-   NAPOMENA: slug format je potvrđen za par država (italy-esim, greece-esim),
-   ostatak je najbolja moguća pretpostavka po istoj šemi — pre pravog
-   affiliate ugovora vredi proveriti da li svaka od ovih stranica zaista
-   postoji na Airalo sajtu. ---- */
+   Status ovog mapiranja: vidi STATUS PRE PRODUKCIJE blok ispod. ---- */
 const COUNTRY_SLUG_SR = {
   'Srbija':'serbia', 'Crna Gora':'montenegro', 'Bosna i Hercegovina':'bosnia-and-herzegovina',
   'Hrvatska':'croatia', 'Severna Makedonija':'north-macedonia', 'Kosovo':'kosovo',
@@ -1480,13 +1480,50 @@ function airaloCountrySlug(destName){
 }
 
 /* ==========================================================
-   AFFILIATE DEEP LINKS
-   Builds a real search URL on the partner's own site, pre-filled
-   with destination/dates/passengers. No live pricing API is called
-   client-side — replace AFF_ID placeholders with real affiliate IDs
-   once each partner program is approved.
+   AFFILIATE DEEP LINKS — STATUS PRE PRODUKCIJE
+   Jedino mesto gde treba gledati šta je spremno, umesto komentara
+   rasutih kroz fajl. Pravi ID-jevi idu u config.js
+   (window.SKLOPI_AFF_IDS) — dok tamo za neki partner stoji
+   'SKLOPI', taj link vodi na partnera ali NE PRATI proviziju.
+
+   ✅ POTVRĐENO protiv partnerske dokumentacije:
+      - Airalo slug za Italiju i Grčku (italy-esim, greece-esim)
+      - World Nomads PRODAJE rezidentima Srbije: "Serbia" se pojavljuje
+        kao opcija u njihovom "country of residence" izborniku na
+        service.worldnomads.com i worldnomads.com/eu (help centar),
+        provereno 2026-09-18. Srbija nije u EU (za koju trenutno imaju
+        posebno ograničenje) ni na listi sankcionisanih zemalja
+        (Iran/Sirija/Sudan/S.Koreja/Krim/Kuba) — rezidentska strana
+        pitanja više NIJE blokator.
+
+   ⚠️ NAJBOLJA PRETPOSTAVKA — provera pre produkcije:
+      - Kayak      flights/anywhere-<grad>/<from>/<to>?...&ref=
+      - Booking    hotel: searchresults.html?ss=...&aid=
+      - Booking    auto:  cars/results.html?ss=...&aid=
+      - Viator     searchResults/all?text=...&pid=
+      - Airalo     airalo.com/<drzava>-esim?ref= — slug za SVE ostale
+        države (osim Italije/Grčke) je pretpostavka po istoj šemi,
+        nije provereno da stranica zaista postoji za svaku od njih
+
+   ❌ NIJE SPREMNO — ne puštati u produkciju dok se ne reši:
+      - World Nomads: rezidentska strana je ✅ rešena (vidi gore), ali
+        AFFILIATE LINK i dalje nije. Program je od nov. 2022 EXKLUZIVNO
+        preko CJ Affiliate (Commission Junction) — stari direktni
+        worldnomads.com referral linkovi NE PRATE proviziju. Potreban
+        je stvarni ljudski korak, ne kod: (1) registruj se kao Publisher
+        na cj.com, (2) potraži "World Nomads" i prijavi se na program,
+        (3) nakon odobrenja, generiši prave tracking linkove kroz CJ
+        Account Manager (Links → Search) — ti linkovi idu preko CJ-jevog
+        sopstvenog tracking domena, ne direktno na worldnomads.com/?ref=.
+        Dok se to ne uradi, trenutni URL ispod je samo placeholder koji
+        VODI na sajt ali NE DONOSI proviziju.
+        Trenutni rizik je nizak: insurance dugme/CTA se generiše
+        (pkg.insuranceBookUrl) ali se NIGDE ne renderuje u UI-ju
+        (uklonjeno sa kartica — vidi pkgHtml), tako da ovaj link
+        još nije user-facing.
 ========================================================== */
-const AFF_ID = 'SKOKNICA'; // TODO: replace per-partner with real affiliate/tracking IDs
+const AFF_IDS = window.SKLOPI_AFF_IDS || {};
+function affId(kind){ return AFF_IDS[PARTNERS[kind].provider] || 'SKLOPI'; }
 
 function buildAffiliateLink(kind, ctx){
   const enc = encodeURIComponent;
@@ -1494,32 +1531,24 @@ function buildAffiliateLink(kind, ctx){
   switch(kind){
     case 'flight':
       // Kayak supports "anywhere-<city>" as an origin placeholder when no origin airport is known.
-      return `https://www.kayak.com/flights/anywhere-${dest}/${ctx.from}/${ctx.to}?adults=${ctx.adults}&sort=bestflight_a&ref=${AFF_ID}`;
+      return `https://www.kayak.com/flights/anywhere-${dest}/${ctx.from}/${ctx.to}?adults=${ctx.adults}&sort=bestflight_a&ref=${affId('flight')}`;
     case 'hotel':
-      return `https://www.booking.com/searchresults.html?ss=${dest}&checkin=${ctx.from}&checkout=${ctx.to}&group_adults=${ctx.adults}&no_rooms=1&aid=${AFF_ID}`;
+      return `https://www.booking.com/searchresults.html?ss=${dest}&checkin=${ctx.from}&checkout=${ctx.to}&group_adults=${ctx.adults}&no_rooms=1&aid=${affId('hotel')}`;
     case 'car':
-      return `https://www.booking.com/cars/results.html?ss=${dest}&pickupDate=${ctx.from}&dropoffDate=${ctx.to}&aid=${AFF_ID}`;
+      return `https://www.booking.com/cars/results.html?ss=${dest}&pickupDate=${ctx.from}&dropoffDate=${ctx.to}&aid=${affId('car')}`;
     case 'activity':
-      return `https://www.viator.com/searchResults/all?text=${dest}&pid=${AFF_ID}`;
+      return `https://www.viator.com/searchResults/all?text=${dest}&pid=${affId('activity')}`;
     case 'esim': {
       const slug = airaloCountrySlug(ctx.dest);
       // Ako ne prepoznamo državu iz grada, vodimo na opštu prodavnicu
       // (bolje nego pogrešan/nepostojeći URL za državu).
       return slug
-        ? `https://www.airalo.com/${slug}-esim?ref=${AFF_ID}`
-        : `https://www.airalo.com/esim?ref=${AFF_ID}`;
+        ? `https://www.airalo.com/${slug}-esim?ref=${affId('esim')}`
+        : `https://www.airalo.com/esim?ref=${affId('esim')}`;
     }
     case 'insurance':
-      // Za razliku od ostalih partnera, World Nomads nema potvrđen javni
-      // URL šablon za deep-link sa unapred popunjenom destinacijom/datumima
-      // (proces dobijanja ponude ide kroz njihov sopstveni wizard, ne kroz
-      // query parametre na ovoj stranici) — zato vodi na opštu stranicu za
-      // ponudu, ne na nešto specifično za ${ctx.dest}. Kad se prijava na
-      // affiliate program (preko CJ mreže) odobri, ovaj URL treba zameniti
-      // pravim CJ tracking linkom (obično na drugom domenu, ne worldnomads.com).
-      // TODO takođe: potvrditi da World Nomads uopšte prodaje rezidentima Srbije
-      // pre nego što ovo ide u produkciju — nije potvrđeno u istraživanju.
-      return `https://www.worldnomads.com/travel-insurance?ref=${AFF_ID}`;
+      // Vidi STATUS PRE PRODUKCIJE iznad — ova stavka je ❌ nije spremna.
+      return `https://www.worldnomads.com/travel-insurance?ref=${affId('insurance')}`;
   }
 }
 
@@ -2053,7 +2082,7 @@ function isLimitedNetworkOrigin(originRaw){
    regionalni gradovi bez aerodroma). Vlasnik sajta ručno pregleda listu
    (showAirportDbMisses() u konzoli) i bira šta stvarno vredi dodati.
 ========================================================== */
-const AIRPORT_MISS_STORAGE_KEY = 'skoknica_airport_misses_v1';
+const AIRPORT_MISS_STORAGE_KEY = 'sklopi_airport_misses_v1';
 const AIRPORT_MISS_STORAGE_CAP = 300; // ne dozvoli da lokalna lista raste unedogled
 function loadAirportMisses(){
   try{
@@ -2084,7 +2113,7 @@ function logAirportDbMiss(cityRaw, field){
   if (typeof sb !== 'undefined' && sb){
     sb.from('airport_db_misses').insert({city, field, normalized:norm})
       .then(({error}) => {
-        if (error) console.warn('[skoknica] Deljeno logovanje promašaja AIRPORT_DB nije uspelo (tabela verovatno ne postoji još):', error.message);
+        if (error) console.warn('[sklopi] Deljeno logovanje promašaja AIRPORT_DB nije uspelo (tabela verovatno ne postoji još):', error.message);
       });
   }
 }
@@ -2276,7 +2305,7 @@ function iconSvg(type){
    STATE + RENDER
 ========================================================== */
 const state = { searches:0, clicks:0, lastDest:null };
-const STATS_STORAGE_KEY = 'skoknica_stats_v1';
+const STATS_STORAGE_KEY = 'sklopi_stats_v1';
 /* ---- Minimalne "prikazane" vrednosti za brojače — stvarni state ispod
    se i dalje normalno broji i čuva, ali se na ekranu NIKAD ne prikazuje
    0 (ili prazna poslednja destinacija), da sajt ne deluje prazno/nov
@@ -2304,6 +2333,7 @@ function fmtEUR(n){ return '€' + n.toLocaleString('de-DE'); }
 
 function attachAffiliateLinks(pkg, dest, from, to, adults){
   const ctx = {dest, from, to, adults};
+  pkg.dest = dest; // sačuvano na pkg da bi analitika (GA4 affiliate_click) znala destinaciju/tier klika
   if (pkg.flight)   pkg.flight.bookUrl   = buildAffiliateLink('flight', ctx);
   if (pkg.hotel)    pkg.hotel.bookUrl    = buildAffiliateLink('hotel', ctx);
   if (pkg.car)      pkg.car.bookUrl      = buildAffiliateLink('car', ctx);
@@ -2322,8 +2352,8 @@ function attachAffiliateLinks(pkg, dest, from, to, adults){
    sajt NIKAD ne sme da ostane bez rezultata korisniku.
 ========================================================== */
 // Postavi ovo na URL svog backenda kad ga deploy-ujes, npr:
-// window.SKOKNICA_API_BASE = 'https://api.skoknica.rs';
-const API_BASE = window.SKOKNICA_API_BASE || '';
+// window.SKLOPI_API_BASE = 'https://api.sklopi.rs';
+const API_BASE = window.SKLOPI_API_BASE || '';
 
 /* ---- Autocomplete destinacije: prvo /api/locations (ako je backend podešen),
    a ako nema backend-a (ili poziv ne uspe) — Open-Meteo geokodiranje, isti
@@ -2927,7 +2957,7 @@ async function fetchLocationSuggestions(q, datalistId){
           if (json.results) addAll(json.results.map(r => ({name:r.cityName, extra:r.countryName})));
         }
       } catch(err){
-        console.warn('[skoknica] backend predlozi nedostupni, prelazim na Open-Meteo:', err.message);
+        console.warn('[sklopi] backend predlozi nedostupni, prelazim na Open-Meteo:', err.message);
       }
     }
 
@@ -2944,7 +2974,7 @@ async function fetchLocationSuggestions(q, datalistId){
             addAll(sorted.map(r => ({name:r.name, extra:[r.admin1, r.country].filter(Boolean).join(', ')})));
           }
         } catch(err){
-          console.warn('[skoknica] predlozi mesta (Open-Meteo) nisu uspeli:', err.message);
+          console.warn('[sklopi] predlozi mesta (Open-Meteo) nisu uspeli:', err.message);
         }
       }
     }
@@ -3022,7 +3052,7 @@ async function fetchPackagesFromBackend(payload){
     const json = await res.json();
     return json.packages;
   } catch(err){
-    console.warn('[skoknica] backend nedostupan, koristim lokalni mock:', err.message);
+    console.warn('[sklopi] backend nedostupan, koristim lokalni mock:', err.message);
     return null;
   }
 }
@@ -3509,7 +3539,13 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   }, hadSkeleton ? 180 : 0);
 }
 
-function itemCardHtml(item, kind){
+/* ---- Vidljiva oznaka "affiliate/sponzorisan link" pored svake CTA
+   rezervacije — potrošačka zaštita/transparentnost, ne samo FTC. ---- */
+function affBadgeHtml(){
+  return `<span class="aff-badge" title="${escapeHtml(t('aff_badge_title'))}" tabindex="0">🔗 ${escapeHtml(t('aff_badge'))}</span>`;
+}
+
+function itemCardHtml(item, kind, pkg){
   if (!item) return '';
   const labels = {flight:'Let', hotel:'Hotel', car:'Auto'};
   const btnLabel = {flight:t('btn_search_kayak'), hotel:t('btn_book_booking'), car:t('btn_book_booking')};
@@ -3521,7 +3557,8 @@ function itemCardHtml(item, kind){
       <div class="item-name">${escapeHtml(item.name)}</div>
       <div class="item-sub">${escapeHtml(item.sub)}</div>
       <div class="item-price tabular">${fmtEUR(item.price)}</div>
-      <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" onclick="bookItem(this)">${btnLabel[kind]}</a>
+      <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" data-dest="${escapeHtml(pkg&&pkg.dest||'')}" data-tier="${escapeHtml(pkg&&pkg.tier||'')}" onclick="bookItem(this)">${btnLabel[kind]}</a>
+      ${affBadgeHtml()}
     </div>
   </div>`;
 }
@@ -3530,9 +3567,9 @@ function pkgHtml(pkg){
   const meta = TIER_META[pkg.tier];
   const featured = pkg.recommended;
   const itemsRow = [
-    itemCardHtml(pkg.flight,'flight'),
-    itemCardHtml(pkg.hotel,'hotel'),
-    itemCardHtml(pkg.car,'car')
+    itemCardHtml(pkg.flight,'flight',pkg),
+    itemCardHtml(pkg.hotel,'hotel',pkg),
+    itemCardHtml(pkg.car,'car',pkg)
   ].filter(Boolean).join('');
 
   return `
@@ -3560,7 +3597,7 @@ function pkgHtml(pkg){
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     ${(() => {
       const extraTiles = [
-        pkg.activity ? `<div class="extra activity-extra">${iconSvg('activity')}<div><div class="lab">${escapeHtml(pkg.activity.name.split(' — ')[0])}</div><div class="val tabular">${fmtEUR(pkg.activity.price)}</div></div><a class="extra-btn" href="${escapeHtml(pkg.activity.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(pkg.activity.bookUrl||'')}" onclick="bookItem(this)">Viator</a></div>` : '',
+        pkg.activity ? `<div class="extra activity-extra">${iconSvg('activity')}<div><div class="lab">${escapeHtml(pkg.activity.name.split(' — ')[0])}</div><div class="val tabular">${fmtEUR(pkg.activity.price)}</div></div><a class="extra-btn" href="${escapeHtml(pkg.activity.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(pkg.activity.bookUrl||'')}" data-dest="${escapeHtml(pkg.dest||'')}" data-tier="${escapeHtml(pkg.tier||'')}" onclick="bookItem(this)">Viator</a>${affBadgeHtml()}</div>` : '',
         pkg.car ? `<div class="extra fuel-extra">${iconSvg('fuel')}<div><div class="lab">${t('fuel_estimate')}</div><div class="val tabular">${fmtEUR(pkg.fuel)}</div></div></div>` : '',
         pkg.car ? `<div class="extra tolls-extra">${iconSvg('tolls')}<div><div class="lab">${t('tolls_estimate')}</div><div class="val tabular">${fmtEUR(pkg.tolls)}</div></div></div>` : ''
         // Osiguranje i eSIM dodaci su uklonjeni sa ovih kartica — sad se
@@ -3623,9 +3660,9 @@ function matchPkgHtml(pick, idx, budget, answers, month){
   const {dest, country, pkg, matchPct, fitsBudget} = pick;
   const featured = idx === 0;
   const itemsRow = [
-    itemCardHtml(pkg.flight,'flight'),
-    itemCardHtml(pkg.hotel,'hotel'),
-    itemCardHtml(pkg.car,'car')
+    itemCardHtml(pkg.flight,'flight',pkg),
+    itemCardHtml(pkg.hotel,'hotel',pkg),
+    itemCardHtml(pkg.car,'car',pkg)
   ].filter(Boolean).join('');
   const busNote = busTrainNoteFor(dest, pick.adults);
   const reasonText = matchReasonSentence(pick, answers, month);
@@ -3882,7 +3919,10 @@ function bookItem(btn){
   const kind = btn.dataset.kind;
   const price = Number(btn.dataset.price);
   const url = btn.dataset.url;
+  const dest = btn.dataset.dest || '';
+  const tier = btn.dataset.tier || '';
   bumpClickStat();
+  trackAffiliateClick(kind, price, dest, tier);
   const labels = {
     flight:   'let na KAYAK-u',
     hotel:    'smeštaj na Booking.com',
@@ -3897,6 +3937,23 @@ function bookItem(btn){
   // kako treba sa originalnim tabom, pa dugme "nazad" na partnerskom sajtu
   // ume da zatvori ceo browser umesto da vrati korisnika na Skoknicu.
   // Pravi <a> link je pouzdaniji način da se to izbegne.
+}
+
+/* ---- GA4: koji partner/destinacija/tier generiše affiliate klikove.
+   Ćuti ako GA nije učitan (kolačići odbijeni ili korisnik još nije birao) —
+   vidi cookies.js/loadGA(). bumpClickStat() iznad i dalje radi nezavisno
+   od ovoga (to je opšti brojač, ne po partneru/destinaciji). ---- */
+function trackAffiliateClick(kind, price, dest, tier){
+  if (typeof window.gtag !== 'function') return;
+  const partner = {flight:'kayak', hotel:'booking', car:'booking', activity:'viator', esim:'airalo', insurance:'worldnomads'}[kind] || kind;
+  window.gtag('event', 'affiliate_click', {
+    item_kind: kind,
+    partner: partner,
+    destination: dest,
+    tier: tier,
+    value: price,
+    currency: 'EUR'
+  });
 }
 
 function showToast(msg){
@@ -3931,7 +3988,7 @@ async function bumpSearchStat(destLabel){
         return;
       }
     }catch(err){
-      console.warn('[skoknica] Deljeni brojač pretraga nije uspeo, koristim lokalni:', err.message);
+      console.warn('[sklopi] Deljeni brojač pretraga nije uspeo, koristim lokalni:', err.message);
     }
   }
   state.searches += 1;
@@ -3952,7 +4009,7 @@ async function bumpClickStat(){
         return;
       }
     }catch(err){
-      console.warn('[skoknica] Deljeni brojač klikova nije uspeo, koristim lokalni:', err.message);
+      console.warn('[sklopi] Deljeni brojač klikova nije uspeo, koristim lokalni:', err.message);
     }
   }
   state.clicks += 1;
@@ -4257,16 +4314,16 @@ function renderBuilder(){
   });
   const bookBtns = [];
   if (builderState.includeFlight){
-    bookBtns.push(`<a class="item-btn flight" href="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" target="_blank" rel="noopener" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" onclick="bookItem(this)">✈️ KAYAK</a>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn flight" href="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" target="_blank" rel="noopener" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">✈️ KAYAK</a>${affBadgeHtml()}</span>`);
   }
   if (builderState.includeHotel){
-    bookBtns.push(`<a class="item-btn hotel" href="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" onclick="bookItem(this)">🏨 Booking.com</a>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn hotel" href="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🏨 Booking.com</a>${affBadgeHtml()}</span>`);
   }
   if (builderState.carPref !== 'none'){
-    bookBtns.push(`<a class="item-btn car" href="${escapeHtml(buildAffiliateLink('car', linkCtx))}" target="_blank" rel="noopener" data-kind="car" data-price="${pkg.car.price}" data-url="${escapeHtml(buildAffiliateLink('car', linkCtx))}" onclick="bookItem(this)">🚗 Booking.com</a>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn car" href="${escapeHtml(buildAffiliateLink('car', linkCtx))}" target="_blank" rel="noopener" data-kind="car" data-price="${pkg.car.price}" data-url="${escapeHtml(buildAffiliateLink('car', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🚗 Booking.com</a>${affBadgeHtml()}</span>`);
   }
   if (builderState.activityCount > 0){
-    bookBtns.push(`<a class="item-btn" style="background:var(--aqua);" href="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" onclick="bookItem(this)">🎟️ Viator</a>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn" style="background:var(--aqua);" href="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🎟️ Viator</a>${affBadgeHtml()}</span>`);
   }
   document.getElementById('builderBookLinks').innerHTML =
     '<div class="bbl-label">Rezerviši svaku stavku direktno kod partnera:</div>' +
@@ -4953,13 +5010,13 @@ function busTrainNoteFor(destRaw, adults){
 ========================================================== */
 let sb = null;
 try {
-  if (window.supabase && window.SKOKNICA_SUPABASE_URL && window.SKOKNICA_SUPABASE_KEY) {
-    sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
+  if (window.supabase && window.SKLOPI_SUPABASE_URL && window.SKLOPI_SUPABASE_KEY) {
+    sb = window.supabase.createClient(window.SKLOPI_SUPABASE_URL, window.SKLOPI_SUPABASE_KEY);
   } else {
-    console.warn('[skoknica] Supabase konfiguracija (config.js) nije pronađena — nalozi i sačuvani izleti su isključeni, ostatak sajta radi normalno.');
+    console.warn('[sklopi] Supabase konfiguracija (config.js) nije pronađena — nalozi i sačuvani izleti su isključeni, ostatak sajta radi normalno.');
   }
 } catch (err) {
-  console.warn('[skoknica] Supabase inicijalizacija nije uspela:', err.message);
+  console.warn('[sklopi] Supabase inicijalizacija nije uspela:', err.message);
   sb = null;
 }
 
@@ -4978,7 +5035,7 @@ async function loadStatsFromSupabase(){
       updateStats();
     }
   }catch(err){
-    console.warn('[skoknica] Deljena statistika nije dostupna (tabela site_stats?), ostajem na lokalnoj:', err.message);
+    console.warn('[sklopi] Deljena statistika nije dostupna (tabela site_stats?), ostajem na lokalnoj:', err.message);
   }
 }
 loadStatsFromSupabase();
@@ -4990,11 +5047,11 @@ async function getCurrentUser(){
   if (_cachedUser !== undefined) return _cachedUser;
   try {
     const { data, error } = await sb.auth.getSession();
-    if (error) { console.warn('[skoknica] getSession greška:', error.message); _cachedUser = null; return null; }
+    if (error) { console.warn('[sklopi] getSession greška:', error.message); _cachedUser = null; return null; }
     _cachedUser = data.session ? data.session.user : null;
     return _cachedUser;
   } catch(err) {
-    console.warn('[skoknica] getSession nije uspeo:', err.message);
+    console.warn('[sklopi] getSession nije uspeo:', err.message);
     _cachedUser = null;
     return null;
   }
@@ -5067,7 +5124,7 @@ function renderAuthBar(user){
         showToast('Link za prijavu je poslat na ' + email + ' — proveri inbox.');
         bar.innerHTML = '<p class="auth-hint">✓ Proveri email (' + escapeHtml(email) + ') i klikni na link za prijavu.</p>';
       } catch(err) {
-        console.warn('[skoknica] slanje magic linka nije uspelo:', err.message);
+        console.warn('[sklopi] slanje magic linka nije uspelo:', err.message);
         showToast('Slanje linka nije uspelo — pokušaj ponovo.');
         sendBtn.disabled = false;
         sendBtn.textContent = 'Pošalji link za prijavu';
@@ -5114,7 +5171,7 @@ async function renderSavedTrips(){
     window._savedTripsCache = data;
     listEl.innerHTML = data.map(tripCardHtml).join('');
   } catch(err) {
-    console.warn('[skoknica] učitavanje sačuvanih izleta nije uspelo:', err.message);
+    console.warn('[sklopi] učitavanje sačuvanih izleta nije uspelo:', err.message);
     listEl.innerHTML = '<p class="saved-empty">Sačuvani izleti trenutno nisu dostupni — probaj ponovo kasnije.</p>';
   }
 }
@@ -5173,7 +5230,7 @@ async function saveSearchPackage(tier){
     renderSavedTrips();
     showToast(ctx.dest + ' sačuvan (' + fmtEUR(pkg.total) + ').');
   } catch(err) {
-    console.warn('[skoknica] čuvanje ponude nije uspelo:', err.message);
+    console.warn('[sklopi] čuvanje ponude nije uspelo:', err.message);
     showToast('Čuvanje nije uspelo — pokušaj ponovo.');
   }
 }
@@ -5207,7 +5264,7 @@ document.getElementById('saveTripBtn').addEventListener('click', async () => {
     renderSavedTrips();
     showToast('Izlet sačuvan (' + fmtEUR(pkg.total) + ').');
   } catch(err) {
-    console.warn('[skoknica] čuvanje izleta nije uspelo:', err.message);
+    console.warn('[sklopi] čuvanje izleta nije uspelo:', err.message);
     showToast('Čuvanje nije uspelo — pokušaj ponovo.');
   }
 });
@@ -5246,7 +5303,7 @@ async function deleteSavedTrip(tripId){
     renderSavedTrips();
     showToast('Izlet obrisan.');
   } catch(err) {
-    console.warn('[skoknica] brisanje nije uspelo:', err.message);
+    console.warn('[sklopi] brisanje nije uspelo:', err.message);
     showToast('Brisanje nije uspelo — pokušaj ponovo.');
   }
 }
@@ -5390,7 +5447,7 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
     requestCloseAlertModal();
     showToast('Javićemo ti na ' + email + ' kad cena za ' + _pendingAlert.dest + ' padne ispod ' + fmtEUR(threshold) + '.');
   } catch(err) {
-    console.warn('[skoknica] čuvanje alerta nije uspelo:', err.message);
+    console.warn('[sklopi] čuvanje alerta nije uspelo:', err.message);
     showToast('Postavljanje alerta nije uspelo — pokušaj ponovo.');
   } finally {
     submitBtn.disabled = false;
@@ -5463,7 +5520,7 @@ function renderAccountMenu(){
         showToast('Link za prijavu je poslat na ' + email + ' — proveri inbox.');
         dropdown.innerHTML = '<div class="auth-dropdown-inner"><p class="auth-hint">✓ Proveri email (' + escapeHtml(email) + ') i klikni na link za prijavu.</p></div>';
       } catch(err) {
-        console.warn('[skoknica] slanje magic linka nije uspelo:', err.message);
+        console.warn('[sklopi] slanje magic linka nije uspelo:', err.message);
         showToast('Slanje linka nije uspelo — pokušaj ponovo.');
         sendBtn.disabled = false;
         sendBtn.textContent = 'Pošalji link za prijavu';

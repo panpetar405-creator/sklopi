@@ -1,5 +1,5 @@
 -- ============================================================
--- SKOKNICA — PRICE ALERTS
+-- SKLOPI — PRICE ALERTS
 -- Production version (hardened)
 --
 -- Pokreni u:
@@ -387,7 +387,7 @@ with check (
 -- ============================================================
 
 comment on table public.price_alerts is
-  'Skoknica price alerts. Browser insert-only; Cloudflare Worker koristi service_role za proveru i slanje emailova.';
+  'SKLOPI price alerts. Browser insert-only; Cloudflare Worker koristi service_role za proveru i slanje emailova.';
 
 comment on column public.price_alerts.status is
   'active = worker proverava; triggered = email uspešno poslat; cancelled = korisnik se odjavio.';

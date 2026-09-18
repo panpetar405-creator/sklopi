@@ -1,4 +1,4 @@
-name = "skoknica-price-alerts"
+name = "sklopi-price-alerts"
 main = "price-alert-worker.js"
 compatibility_date = "2025-09-01"
 
@@ -13,5 +13,5 @@ crons = ["0 8 * * *"]
 #   wrangler secret put RESEND_API_KEY
 [vars]
 SUPABASE_URL = "https://qmiyaaepdvmgwesagnar.supabase.co"
-ALERT_FROM_EMAIL = "Skoknica <alerti@skoknica.rs>"
-SITE_URL = "https://skoknica.rs"
+ALERT_FROM_EMAIL = "SKLOPI <alerti@sklopi.rs>"
+SITE_URL = "https://sklopi.rs"

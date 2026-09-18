@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Predlog putovanja — Skoknica</title>
+<title>Predlog putovanja — SKLOPI</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -81,7 +81,7 @@
   <div class="topbar">
     <a href="index.html" class="logo">
       <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></div>
-      Skoknica<em>.</em>
+      SKLOPI<em>.</em>
     </a>
   </div>
 </div>
@@ -90,9 +90,10 @@
   <div class="state-msg" id="loadingMsg"><div class="big">⏳</div>Učitavam predlog putovanja…</div>
 </div>
 
-<footer>Skoknica — prototip proizvoda u razvoju. · <a href="privatnost.html">Privatnost</a> · <a href="uslovi-koriscenja.html">Uslovi</a> · <a href="kolacici.html">Kolačići</a></footer>
+<footer>SKLOPI — prototip proizvoda u razvoju. · <a href="privatnost.html">Privatnost</a> · <a href="uslovi-koriscenja.html">Uslovi</a> · <a href="kolacici.html">Kolačići</a></footer>
 
 <script src="config.js"></script>
+<script src="cookies.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ==========================================================
@@ -102,7 +103,7 @@
    supabase/share_trip.sql — vidi taj fajl za objašnjenje zašto
    NEMA direktnog .from('trips').select() ovde.
 ========================================================== */
-const sb = window.supabase.createClient(window.SKOKNICA_SUPABASE_URL, window.SKOKNICA_SUPABASE_KEY);
+const sb = window.supabase.createClient(window.SKLOPI_SUPABASE_URL, window.SKLOPI_SUPABASE_KEY);
 
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -240,7 +241,7 @@ function renderResponses(list){
 
 async function refreshResponses(){
   const { data, error } = await sb.rpc('get_trip_responses', {p_token: token});
-  if (error){ console.warn('[skoknica] ucitavanje odgovora nije uspelo:', error.message); return; }
+  if (error){ console.warn('[sklopi] ucitavanje odgovora nije uspelo:', error.message); return; }
   renderResponses(data || []);
 }
 

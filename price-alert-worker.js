@@ -1,5 +1,5 @@
 /* ==========================================================
-   SKOKNICA — Price Alert Worker
+   SKLOPI — Price Alert Worker
 
    Radi dve stvari:
    1) Cron proverava aktivne price_alerts i šalje email
@@ -34,7 +34,7 @@ export default {
       return handleUnsubscribe(url, env);
     }
 
-    return new Response('Skoknica price-alert worker.', {
+    return new Response('SKLOPI price-alert worker.', {
       status: 200
     });
   },
@@ -107,7 +107,7 @@ async function handleUnsubscribe(url, env) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Skoknica — Alert ugašen</title>
+  <title>SKLOPI — Alert ugašen</title>
 </head>
 <body style="font-family:sans-serif;max-width:480px;margin:60px auto;text-align:center;color:#16242A;padding:20px;">
   <h2>Alert je ugašen.</h2>
@@ -116,7 +116,7 @@ async function handleUnsubscribe(url, env) {
     Možeš napraviti novi alert bilo kada na Skoknici.
   </p>
   <a
-    href="${escapeHtml(env.SITE_URL || 'https://skoknica.rs')}"
+    href="${escapeHtml(env.SITE_URL || 'https://sklopi.rs')}"
     style="color:#8f6423;"
   >
     ← Nazad na Skoknicu
@@ -305,7 +305,7 @@ async function checkOneAlert(alert, todayKey, env) {
 
 async function sendAlertEmail(alert, price, env) {
   const siteUrl =
-    env.SITE_URL || 'https://skoknica.rs';
+    env.SITE_URL || 'https://sklopi.rs';
 
   const unsubUrl =
     `${siteUrl.replace(/\/$/, '')}` +
@@ -340,7 +340,7 @@ async function sendAlertEmail(alert, price, env) {
         font-family:Georgia,serif;
         color:#123138;
       ">
-        Skoknica 🔔
+        SKLOPI 🔔
       </h2>
 
       <p>
@@ -418,7 +418,7 @@ async function sendAlertEmail(alert, price, env) {
         body: JSON.stringify({
           from:
             env.ALERT_FROM_EMAIL ||
-            'Skoknica <alerti@skoknica.rs>',
+            'SKLOPI <alerti@sklopi.rs>',
           to: alert.email,
           subject,
           html

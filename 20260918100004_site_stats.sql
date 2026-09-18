@@ -1,5 +1,5 @@
 -- ==========================================================
--- Skoknica — deljeni (globalni) brojači: pretrage, klikovi,
+-- SKLOPI — deljeni (globalni) brojači: pretrage, klikovi,
 -- poslednja destinacija. Jedan red (id=1) koji svi posetioci dele.
 --
 -- Pokreni ovo JEDNOM u Supabase Dashboard -> SQL Editor -> New query.
