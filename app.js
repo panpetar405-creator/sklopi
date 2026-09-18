@@ -81,6 +81,26 @@ function guardOverlayDrop(id){
   const idx = _historyOverlays.findIndex(o => o.id === id);
   if (idx !== -1) _historyOverlays.splice(idx, 1);
 }
+// Za prelazak SA jednog guarded overlay-a DIREKTNO na drugi (npr. "Nastavi"
+// unutar "Prilagodi svoj plan" ili match kviz -> rezultati): korisnik ide
+// NAPRED, ne izlazi nazad, pa nema razloga da čekamo history.back()/popstate
+// da zatvori stari overlay pre nego što se otvori novi. Kad bi se ovde
+// pozvao guardOverlayRequestClose (back) pa odmah zatim guardOverlayOpen
+// (push) za novi overlay, oba idu kroz odvojene setTimeout(0) pozive koji se
+// mogu izvršiti PRE nego što browser stvarno završi back-navigaciju — novi
+// overlay bi već bio na steku kad stigne popstate od starog zatvaranja, pa bi
+// popstate handler pogrešno zatvorio NOVI overlay umesto starog (otud je novi
+// ekran ostajao otvoren "iza" starog, koji se nikad stvarno nije zatvorio).
+// Rešenje: zatvori stari overlay ODMAH, sinhrono (raw close, bez back()), i
+// PREPIŠI postojeći history unos (replaceState) da sad predstavlja novi
+// overlay — jedan unos u historiji i dalje odgovara jednom otvorenom
+// overlay-u, bez ikakve back/push trke.
+function guardOverlayReplace(oldId, newId, closeFn){
+  const idx = _historyOverlays.findIndex(o => o.id === oldId);
+  if (idx === -1) return;
+  _historyOverlays[idx] = { id: newId, close: closeFn };
+  history.replaceState({ overlayGuard: true, id: newId }, '');
+}
 
 /* ==========================================================
    I18N — srpski (podrazumevano) i engleski
@@ -3812,7 +3832,12 @@ async function runMatchSearch(isReroll){
   const answers = isReroll && window._lastMatchAnswers ? window._lastMatchAnswers : Object.assign({}, matchQuizState);
   if (!answers.companion || !answers.vibe){ showToast('Odgovori na oba pitanja pre pretrage.'); return; }
 
-  if (!isReroll) requestCloseMatchModal();
+  // Direktan prelazak na rezultate — vidi komentar uz guardOverlayReplace
+  // (zašto NE koristimo requestCloseMatchModal ovde).
+  if (!isReroll){
+    closeMatchModal();
+    guardOverlayReplace('match', 'results', closeResultsSheet);
+  }
 
   const results = document.getElementById('results');
   openResultsSheet();
@@ -6052,7 +6077,10 @@ document.getElementById('spMakeBtn').addEventListener('click', () => {
 });
 
 document.getElementById('startPrefsContinue').addEventListener('click', () => {
-  requestCloseStartPrefsModal();
+  // Direktan prelazak na rezultate — vidi komentar uz guardOverlayReplace
+  // (zašto NE koristimo requestCloseStartPrefsModal ovde).
+  closeStartPrefsModal();
+  guardOverlayReplace('startPrefs', 'results', closeResultsSheet);
   // Auto/aktivnosti biramo ovde jer stvarno utiču na to koje se stavke
   // pojavljuju u gotovim ponudama (isto polje kao toggle-row iznad forme).
   // Let i hotel ostaju kakvi su već podešeni gore — let namerno ne
