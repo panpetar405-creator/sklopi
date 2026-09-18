@@ -1550,15 +1550,33 @@ function airaloCountrySlug(destName){
         posebno ograničenje) ni na listi sankcionisanih zemalja
         (Iran/Sirija/Sudan/S.Koreja/Krim/Kuba) — rezidentska strana
         pitanja više NIJE blokator.
+      - Kayak: PARAMETAR JE BIO POGREŠAN, sad ispravljen. Zvanični
+        KAYAK Affiliate help centar (help.affiliates.kayak.com) kaže
+        eksplicitno: "please ensure that all your affiliate links
+        include your unique affiliate ID 'a' at the very least" — dakle
+        parametar se zove 'a', NE 'ref' (staro ${'&ref='} nikad ne bi
+        pratilo proviziju, ni sa pravim ID-jem). Napomena istog help
+        centra: pravi (portal) deep-link generator dodaje i granularne
+        tracking parametre (Click ID/Label, Location ID) — 'a' je samo
+        apsolutni minimum, korisno je jednom kad se odobri nalog
+        proveriti i njihov Deeplink Generator za bolju atribuciju.
+      - Booking.com: 'aid=' je potvrđen kao ispravan naziv parametra
+        (potvrđeno kroz primer stvarnog linka trećeg partnera). Njihov
+        zvanični link generator dodaje i 'label=' za finiju kampanjsku
+        atribuciju — nije obavezno, ali vredi dodati kad se nalog odobri.
+      - Viator: 'pid=' je potvrđen kao ispravan (stvaran primer iz
+        njihove API dokumentacije: ...?mcid=42383&pid=P00063937...).
+        NAPOMENA: taj isti primer ima i 'mcid=' (Viator-ov marketing
+        campaign ID, poseban broj koji ONI dodeljuju) pored pid-a — kad
+        se nalog odobri, pitati account managera da li je mcid obavezan
+        i za osnovni link, ili samo za API pozive.
 
    ⚠️ NAJBOLJA PRETPOSTAVKA — provera pre produkcije:
-      - Kayak      flights/anywhere-<grad>/<from>/<to>?...&ref=
-      - Booking    hotel: searchresults.html?ss=...&aid=
-      - Booking    auto:  cars/results.html?ss=...&aid=
-      - Viator     searchResults/all?text=...&pid=
       - Airalo     airalo.com/<drzava>-esim?ref= — slug za SVE ostale
         države (osim Italije/Grčke) je pretpostavka po istoj šemi,
-        nije provereno da stranica zaista postoji za svaku od njih
+        nije provereno da stranica zaista postoji za svaku od njih;
+        parametar 'ref=' za Airalo takođe nije potvrđen (nije nađena
+        zvanična dokumentacija affiliate linka, samo da program postoji)
 
    ❌ NIJE SPREMNO — ne puštati u produkciju dok se ne reši:
       - World Nomads: rezidentska strana je ✅ rešena (vidi gore), ali
@@ -1586,7 +1604,9 @@ function buildAffiliateLink(kind, ctx){
   switch(kind){
     case 'flight':
       // Kayak supports "anywhere-<city>" as an origin placeholder when no origin airport is known.
-      return `https://www.kayak.com/flights/anywhere-${dest}/${ctx.from}/${ctx.to}?adults=${ctx.adults}&sort=bestflight_a&ref=${affId('flight')}`;
+      // Parametar je 'a' (affiliate ID), NE 'ref' — potvrđeno na
+      // help.affiliates.kayak.com. Vidi STATUS PRE PRODUKCIJE iznad.
+      return `https://www.kayak.com/flights/anywhere-${dest}/${ctx.from}/${ctx.to}?adults=${ctx.adults}&sort=bestflight_a&a=${affId('flight')}`;
     case 'hotel':
       return `https://www.booking.com/searchresults.html?ss=${dest}&checkin=${ctx.from}&checkout=${ctx.to}&group_adults=${ctx.adults}&no_rooms=1&aid=${affId('hotel')}`;
     case 'car':
