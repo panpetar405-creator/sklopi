@@ -1,2 +1,2 @@
 window.SKLOPI_SUPABASE_URL = 'https://qmiyaaepdvmgwesagnar.supabase.co';
-window.SKLOPI_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtaXlhYWVwZHZtZ3dlc2FnbmFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NDMwMzEsImV4cCI6MjEwNDUwOTAzMX0.L6M7fHEkZwTt7v78QVtzvrEFJ-4fcS9Jx3NF8WANRlI';
+window.SKLOPI_SUPABASE_KEY = 'sb_publishable_09taoChvrqBGyieWjp_CRQ_oS4b-Qqt';
