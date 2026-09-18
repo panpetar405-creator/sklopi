@@ -92,8 +92,8 @@ const I18N = {
     nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
     aria_account:'Nalog', aria_menu:'Meni',
     hero_kicker:'Pažljivo osmišljena putovanja',
-    hero_title:'SKLOPI',
-    hero_lede:'Sve u jednu cenu.',
+    hero_title:'Sastavi svoj putni paket <span class="accent">u jednu cenu</span>',
+    hero_lede:'SKLOPI spaja let, hotel, auto i aktivnosti u jednu procenjenu cenu.',
     promo_banner_kicker:'Trenutak za sebe',
     promo_banner_quote:'Neka mesta jednostavno nemaju cenu.',
     partners_label:'Rezervacija ide direktno preko partnera',
@@ -225,8 +225,8 @@ const I18N = {
     nav_how:'How it works', nav_dest:'Destinations', nav_about:'About',
     aria_account:'Account', aria_menu:'Menu',
     hero_kicker:'Thoughtfully designed trips',
-    hero_title:'SKLOPI',
-    hero_lede:'One price for the whole trip.',
+    hero_title:'Build your trip package <span class="accent">into one price</span>',
+    hero_lede:'SKLOPI combines flight, hotel, car and activities into one estimated price.',
     promo_banner_kicker:'A moment for yourself',
     promo_banner_quote:'Some places simply have no price.',
     partners_label:'Booking goes directly through our partners',
@@ -357,8 +357,8 @@ const I18N = {
     nav_how:'Как это работает', nav_dest:'Направления', nav_about:'О нас',
     aria_account:'Аккаунт', aria_menu:'Меню',
     hero_kicker:'Продуманные путешествия',
-    hero_title:'SKLOPI',
-    hero_lede:'Всё включено в одну цену.',
+    hero_title:'Собери свою поездку <span class="accent">в одну цену</span>',
+    hero_lede:'SKLOPI объединяет перелёт, отель, авто и активности в одну ориентировочную цену.',
     promo_banner_kicker:'Момент для себя',
     promo_banner_quote:'Некоторые места просто бесценны.',
     partners_label:'Бронирование проходит напрямую через партнёров',
@@ -488,6 +488,14 @@ const I18N = {
 };
 function getLang(){
   try {
+    const params = new URLSearchParams(window.location.search);
+    const fromUrl = params.get('lang');
+    if (fromUrl === 'en' || fromUrl === 'sr' || fromUrl === 'ru') {
+      localStorage.setItem('skoknica_lang', fromUrl);
+      return fromUrl;
+    }
+  } catch(e){}
+  try {
     const saved = localStorage.getItem('skoknica_lang');
     if (saved === 'en' || saved === 'sr' || saved === 'ru') return saved;
   } catch(e){}
@@ -516,13 +524,20 @@ function applyStaticI18n(){
     btn.setAttribute('aria-pressed', lang !== 'sr' ? 'true' : 'false');
   }
   const titleEl = document.querySelector('title');
-  if (titleEl) titleEl.textContent = L3('SKLOPI — ceo izlet, jedna cena', 'SKLOPI — one whole trip, one price', 'SKLOPI — вся поездка, одна цена');
+  if (titleEl) titleEl.textContent = L3('SKLOPI — sastavi putni paket, jedna cena', 'SKLOPI — build your trip package, one price', 'SKLOPI — собери турпакет, одна цена');
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', L3(
-    'SKLOPI pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.',
-    'SKLOPI finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.',
-    'SKLOPI находит перелёт, отель, авто и активности для твоей следующей поездки и суммирует их в одну цену. Составь собственную поездку или выбери готовый пакет по бюджету.'
+    'SKLOPI spaja let, hotel, auto i aktivnosti u jednu procenjenu cenu. Sastavi sopstveni putni paket ili biraj gotove predloge po budžetu.',
+    'SKLOPI combines flight, hotel, car and activities into one estimated price. Build your own trip or browse ready-made picks by budget.',
+    'SKLOPI объединяет перелёт, отель, авто и активности в одну ориентировочную цену. Собери свою поездку или выбери готовый вариант по бюджету.'
   ));
+  // Canonical i og:url prate trenutni jezični parametar (usklađeno sa hreflang tagovima u <head>).
+  const canonicalEl = document.querySelector('link[rel="canonical"]');
+  if (canonicalEl) canonicalEl.setAttribute('href', lang === 'sr' ? 'https://skoknica.rs/' : `https://skoknica.rs/?lang=${lang}`);
+  const ogUrlEl = document.querySelector('meta[property="og:url"]');
+  if (ogUrlEl) ogUrlEl.setAttribute('content', lang === 'sr' ? 'https://skoknica.rs/' : `https://skoknica.rs/?lang=${lang}`);
+  const ogLocaleEl = document.querySelector('meta[property="og:locale"]');
+  if (ogLocaleEl) ogLocaleEl.setAttribute('content', lang === 'en' ? 'en_US' : (lang === 'ru' ? 'ru_RU' : 'sr_RS'));
 }
 function setLang(lang){
   localStorage.setItem('skoknica_lang', (lang === 'en' || lang === 'ru') ? lang : 'sr');
@@ -5253,13 +5268,22 @@ async function deleteSavedTrip(tripId){
 
 /* ==========================================================
    PODELI SA PRIJATELJIMA
-   Deljeni link vodi na zajedno.html sa ?trip=<id> parametrom;
-   ta stranica (van obima ovog prolaza) čita parametar i prikazuje
-   RSVP (Idem/Možda/Ne mogu) bez potrebe za nalogom.
+   Deljeni link vodi na zajedno.html sa ?t=<share_token> parametrom
+   (posebna kolona, ne primarni ključ — vidi supabase/share_trip.sql);
+   ta stranica čita parametar i prikazuje RSVP (Idem/Možda/Ne mogu)
+   bez potrebe za nalogom.
 ========================================================== */
 function openShareModal(tripId){
   const trip = (window._savedTripsCache || []).find(t => String(t.id) === String(tripId));
-  const link = window.location.origin + '/zajedno.html?trip=' + encodeURIComponent(tripId);
+  // VAŽNO: link mora nositi share_token (posebna, nasumična kolona),
+  // ne sirov `id` — i parametar se mora zvati "t" (ne "trip"), jer
+  // zajedno.html čita params.get('t'). Ranija verzija je slala
+  // ?trip=<id>, pa je svaki deljeni link do sada pucao sa "link nije
+  // potpun" greškom, bez obzira na bazu.
+  if (trip && !trip.share_token) {
+    console.warn('[skoknica] trip.share_token nedostaje — pokreni supabase/share_trip.sql migraciju.');
+  }
+  const link = window.location.origin + '/zajedno.html?t=' + encodeURIComponent(trip ? trip.share_token : tripId);
   document.getElementById('shareModalSub').textContent = trip
     ? 'Pošalji predlog za ' + trip.dest + ' prijateljima.'
     : 'Pošalji ovaj predlog prijateljima.';
@@ -5327,11 +5351,12 @@ async function openAlertModal(kind, tier, total, destOverride){
     dateFrom = ctx && ctx.from;
     dateTo = ctx && ctx.to;
     adults = ctx ? Number(ctx.adults) : 2;
-    // Worker (pricing-core.js → computeAlertPrice) prepoznaje 'search' po
-    // selection.kind i računa cenu preko computeSearchTierTotal(dest,
-    // nights, adults, tier) — tier je jedino što mu treba osim onoga što
-    // već ima u redu (dest/date_from/date_to/adults).
-    selection = { kind: 'search', tier };
+    // Worker (pricing-core.js → computeSearchTierTotal) prepoznaje 'search'
+    // po selection.kind. Pored tier-a MORA dobiti i flags (koje su usluge
+    // uopšte bile uključene: let/hotel/auto/aktivnost) — bez toga server
+    // ne zna da li da računa npr. cenu auta koji korisnik nikad nije tražio,
+    // pa bi poređenje sa threshold-om bilo pogrešno.
+    selection = { kind: 'search', tier, flags: (ctx && ctx.flags) || undefined };
   }
   if (!dateFrom || !dateTo) {
     showToast('Nedostaju datumi putovanja — pokušaj ponovo iz pretrage.');
