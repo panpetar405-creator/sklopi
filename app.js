@@ -1030,21 +1030,37 @@ function pickBestLocationMatch(results, query){
   });
 
   let calScrollY = 0;
+  let _calScrollLocked = false;
+  // Isti uzrok i isto rešenje kao guardOverlayOpen (vidi komentar na vrhu
+  // fajla): menjanje body position-a u 'fixed' USRED obrade dodira je
+  // drugi (do sada nepopravljeni) razlog zašto je na mobilnom trebalo dva
+  // tapa za SVAKU narednu radnju — izbor datuma, X za zatvaranje, Nastavi...
+  // Logičko stanje (_calScrollLocked) se ažurira ODMAH da ostatak koda zna
+  // je li "zaključano", ali sama promena na <body> se odlaže za sledeći
+  // tick, da ne ometa isporuku klika koji je zaključavanje i pokrenuo.
   function lockPageScroll(){
+    if (_calScrollLocked) return;
+    _calScrollLocked = true;
     calScrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + calScrollY + 'px';
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
+    setTimeout(() => {
+      if (!_calScrollLocked) return; // otključano pre nego što je ovo stiglo
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + calScrollY + 'px';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    }, 0);
   }
   function unlockPageScroll(){
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    window.scrollTo(0, calScrollY);
+    _calScrollLocked = false;
+    setTimeout(() => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, calScrollY);
+    }, 0);
   }
 
   // .ticket ima backdrop-filter (zbog blur efekta), a to po CSS spec-u
@@ -1112,7 +1128,7 @@ function pickBestLocationMatch(results, query){
     calCard.classList.remove('open');
     if (calBackdrop) calBackdrop.classList.remove('open');
     displayBtn.setAttribute('aria-expanded', 'false');
-    if (document.body.style.position === 'fixed') unlockPageScroll();
+    if (_calScrollLocked) unlockPageScroll();
     reattachCal();
     if (shouldCommit && selStart && selEnd){
       commit();
@@ -1296,21 +1312,33 @@ function pickBestLocationMatch(results, query){
   const isMobilePax = () => window.matchMedia('(max-width:760px)').matches;
 
   let paxScrollY = 0;
+  let _paxScrollLocked = false;
+  // Isti razlog/rešenje kao kod kalendara — vidi komentar uz lockPageScroll
+  // tamo (odlaganje body position promene za jedan tick, da ne "zaglavi"
+  // isporuku sledećeg klika na mobilnom).
   function lockPageScroll(){
+    if (_paxScrollLocked) return;
+    _paxScrollLocked = true;
     paxScrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + paxScrollY + 'px';
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
+    setTimeout(() => {
+      if (!_paxScrollLocked) return;
+      document.body.style.position = 'fixed';
+      document.body.style.top = '-' + paxScrollY + 'px';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    }, 0);
   }
   function unlockPageScroll(){
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    window.scrollTo(0, paxScrollY);
+    _paxScrollLocked = false;
+    setTimeout(() => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, paxScrollY);
+    }, 0);
   }
 
   // Isti razlog kao kod positionCalMobile gore — kartica je sad fullscreen
@@ -1375,7 +1403,7 @@ function pickBestLocationMatch(results, query){
     paxCard.classList.remove('open');
     if (paxBackdrop) paxBackdrop.classList.remove('open');
     displayBtn.setAttribute('aria-expanded', 'false');
-    if (isMobilePax() && document.body.style.position === 'fixed') unlockPageScroll();
+    if (isMobilePax() && _paxScrollLocked) unlockPageScroll();
     reattachPax();
     if (wasOpen && document.activeElement && paxCard.contains(document.activeElement)){
       displayBtn.focus();
@@ -3419,21 +3447,31 @@ function scrollIntoCenterBelowHeader(el){
 let _resultsScrollY = 0;
 const isMobileResults = () => window.matchMedia('(max-width:760px)').matches;
 
+let _resultsScrollLocked = false;
+// Isti razlog/rešenje kao kod kalendara/putnika (vidi lockPageScroll tamo).
 function lockResultsPageScroll(){
+  if (_resultsScrollLocked) return;
+  _resultsScrollLocked = true;
   _resultsScrollY = window.scrollY;
-  document.body.style.position = 'fixed';
-  document.body.style.top = '-' + _resultsScrollY + 'px';
-  document.body.style.left = '0';
-  document.body.style.right = '0';
-  document.body.style.width = '100%';
+  setTimeout(() => {
+    if (!_resultsScrollLocked) return;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + _resultsScrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }, 0);
 }
 function unlockResultsPageScroll(){
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.left = '';
-  document.body.style.right = '';
-  document.body.style.width = '';
-  window.scrollTo(0, _resultsScrollY);
+  _resultsScrollLocked = false;
+  setTimeout(() => {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, _resultsScrollY);
+  }, 0);
 }
 
 function openResultsSheet(){
@@ -3446,7 +3484,7 @@ function openResultsSheet(){
     if (backdrop) backdrop.classList.add('open');
     results.setAttribute('role', 'dialog');
     results.setAttribute('aria-modal', 'true');
-    if (!wasVisible || document.body.style.position !== 'fixed') lockResultsPageScroll();
+    if (!wasVisible || !_resultsScrollLocked) lockResultsPageScroll();
     guardOverlayOpen('results', closeResultsSheet);
   }
 }
@@ -3459,7 +3497,7 @@ function closeResultsSheet(){
   const results = document.getElementById('results');
   if (!results) return;
   const backdrop = document.getElementById('resultsBackdrop');
-  const wasLocked = document.body.style.position === 'fixed';
+  const wasLocked = _resultsScrollLocked;
   results.classList.remove('visible');
   if (backdrop) backdrop.classList.remove('open');
   results.removeAttribute('role');
@@ -3485,7 +3523,7 @@ function closeResultsSheet(){
   window.addEventListener('resize', () => {
     const results = document.getElementById('results');
     if (!results || !results.classList.contains('visible')) return;
-    if (!isMobileResults() && document.body.style.position === 'fixed'){
+    if (!isMobileResults() && _resultsScrollLocked){
       unlockResultsPageScroll();
       const backdrop = document.getElementById('resultsBackdrop');
       if (backdrop) backdrop.classList.remove('open');
@@ -6254,7 +6292,7 @@ function closeFeatureGuideSheet(){
   const sheet = document.getElementById('featureGuideSheet');
   if (!sheet) return;
   const backdrop = document.getElementById('featureGuideBackdrop');
-  const wasLocked = document.body.style.position === 'fixed';
+  const wasLocked = _resultsScrollLocked;
   sheet.classList.remove('visible');
   if (backdrop) backdrop.classList.remove('open');
   sheet.removeAttribute('role');
