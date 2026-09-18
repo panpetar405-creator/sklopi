@@ -51,11 +51,18 @@ function guardOverlayOpen(id, closeFn){
 // zatvaranje preko history.back() → popstate). Vraća false ako nije
 // bio gurnut — u tom slučaju pozivač treba sam da zatvori overlay.
 function guardOverlayRequestClose(id){
-  const idx = _historyOverlays.findIndex(o => o.id === id);
-  if (idx === -1) return false;
-  _historyOverlays.splice(idx, 1);
-  // Isti razlog kao gore — history.back() odložen za sledeći tick, da ne
-  // ometa isporuku klika koji je zatvaranje i pokrenuo.
+  const entry = _historyOverlays.find(o => o.id === id);
+  if (!entry) return false;
+  // NE skidamo overlay sa steka ovde — to radi ISKLJUČIVO popstate handler
+  // ispod, kad back-navigacija stvarno stigne. history.back() je asinhron
+  // (odložen i sam po sebi za jedan tick), pa ako overlay skinemo odmah,
+  // popstate koji stigne kasnije ne nađe ništa na steku i nikad ne pozove
+  // close() — otud je trebalo DVA klika da se overlay stvarno zatvori
+  // (tek drugi klik, kad guard ne nađe overlay, sam direktno zove close()).
+  // 'closing' flag samo sprečava da brzi uzastopni klikovi pokrenu više
+  // history.back() poziva dok se prvi još ne obradi.
+  if (entry.closing) return true;
+  entry.closing = true;
   setTimeout(() => {
     history.back();
   }, 0);
