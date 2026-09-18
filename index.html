@@ -515,7 +515,7 @@ SKLOPI<em>.</em>
 </div>
 </div>
 
-<button type="button" class="btn-primary q-submit" id="makeBuilderBtn" style="margin:18px 0 22px;width:100%;" data-i18n="btn_make_arrangement">Napravi aranžman</button>
+<button type="button" class="btn-primary q-submit" id="makeBuilderBtn" style="margin:18px 0 22px;width:100%;" data-i18n="btn_show_price">Prikaži cenu</button>
 </div>
 <div class="builder-summary" id="builderSummary" style="display:none;">
 <div class="builder-summary-head" data-i18n="builder_summary_head">Tvoj aranžman</div>
@@ -530,19 +530,16 @@ SKLOPI<em>.</em>
 <div class="qa-list">
 <button type="button" class="qa-item" id="optimizeBtn">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>
-<span data-i18n="btn_optimize">Optimizuj moj izlet</span>
+<span data-i18n="btn_optimize">Optimizuj cenu</span>
 </button>
 <div class="optimize-result" id="optimizeResult" style="display:none;"></div>
 <button type="button" class="qa-item" id="saveTripBtn">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-<span data-i18n="btn_save_trip">Sačuvaj izlet</span>
-</button>
-<button type="button" class="qa-item" id="alertBuilderBtn">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.75-.98 2.4L4.6 15h14.8l-1.42-1.4a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 19a2.6 2.6 0 005 0"/></svg>
-<span data-i18n="btn_price_alert">Javi mi kad padne cena</span>
+<span data-i18n="btn_save_trip">Sačuvaj</span>
 </button>
 </div>
-<div class="builder-book-links" id="builderBookLinks"></div>
+<button type="button" class="btn-primary q-submit" id="builderContinueBtn" style="margin:18px 0 0;width:100%;" data-i18n="btn_continue">Nastavi</button>
+<div class="builder-book-links" id="builderBookLinks" style="display:none;"></div>
 </div>
 <div class="builder-summary-placeholder" id="builderPlaceholder">
 <div class="placeholder-ic">🧭</div>
@@ -771,7 +768,7 @@ SKLOPI<em>.</em>
 </div>
 </div>
 
-<button type="button" class="btn-primary q-submit" id="spMakeBtn" style="margin:18px 0 4px;width:100%;" data-i18n="btn_make_arrangement">Napravi izlet</button>
+<button type="button" class="btn-primary q-submit" id="spMakeBtn" style="margin:18px 0 4px;width:100%;" data-i18n="btn_show_price">Prikaži cenu</button>
 <div id="spBuilderSlot"></div>
 </div>
 </div>

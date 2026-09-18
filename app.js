@@ -160,11 +160,11 @@ const I18N = {
     q_budget_desc:'Reci nam okvirni budžet da uporedimo',
     builder_budget_label_html:'Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span>',
     placeholder_budget:'npr. 700',
-    btn_make_arrangement:'Napravi izlet',
+    btn_make_arrangement:'Napravi izlet', btn_show_price:'Prikaži cenu', btn_continue:'Nastavi',
     builder_summary_head:'Tvoj izlet', builder_total_sub:'ukupno',
     builder_total_hint:'Zbir procena za let, hotel, auto i aktivnosti — svaka stavka se plaća zasebno kod partnera, ne u jednom plaćanju.',
     disclaimer_illustrative:'⚠️ Ilustrativna procena, ne stvarna ponuda — sajt je u razvoju.',
-    btn_optimize:'Optimizuj moj izlet', btn_save_trip:'Sačuvaj izlet', btn_price_alert:'Javi mi kad padne cena',
+    btn_optimize:'Optimizuj cenu', btn_save_trip:'Sačuvaj', btn_price_alert:'Javi mi kad padne cena',
     builder_placeholder_text:'Ovde ćeš videti procenjenu cenu čim počneš da biraš — promeni bilo koju opciju levo.',
     eyebrow_for_later:'Za kasnije', h2_saved_trips:'Vrati se kad budeš spreman',
     sub_saved_trips:'Sačuvaj opcije koje ti se dopadaju i nastavi kasnije.',
@@ -294,11 +294,11 @@ const I18N = {
     q_budget_desc:'Tell us your rough budget so we can compare',
     builder_budget_label_html:'Budget <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(optional)</span>',
     placeholder_budget:'e.g. 700',
-    btn_make_arrangement:'Build my trip',
+    btn_make_arrangement:'Build my trip', btn_show_price:'Show price', btn_continue:'Continue',
     builder_summary_head:'Your trip', builder_total_sub:'total',
     builder_total_hint:'Sum of estimates for flight, hotel, car and activities — each item is paid separately at the partner, not in one payment.',
     disclaimer_illustrative:'⚠️ Illustrative estimate, not a real offer — the site is in development.',
-    btn_optimize:'Optimize my trip', btn_save_trip:'Save trip', btn_price_alert:'Notify me when the price drops',
+    btn_optimize:'Optimize price', btn_save_trip:'Save', btn_price_alert:'Notify me when the price drops',
     builder_placeholder_text:'You’ll see an estimated price here as soon as you start choosing — change any option on the left.',
     eyebrow_for_later:'For later', h2_saved_trips:'Come back when you’re ready',
     sub_saved_trips:'Save the options you like and pick up later.',
@@ -427,11 +427,11 @@ const I18N = {
     q_budget_desc:'Скажи нам примерный бюджет, чтобы сравнить',
     builder_budget_label_html:'Бюджет <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(необязательно)</span>',
     placeholder_budget:'напр. 700',
-    btn_make_arrangement:'Составить поездку',
+    btn_make_arrangement:'Составить поездку', btn_show_price:'Показать цену', btn_continue:'Продолжить',
     builder_summary_head:'Твоя поездка', builder_total_sub:'итого',
     builder_total_hint:'Сумма оценок за перелёт, отель, авто и активности — каждая позиция оплачивается отдельно у партнёра, а не одним платежом.',
     disclaimer_illustrative:'⚠️ Иллюстративная оценка, не реальное предложение — сайт находится в разработке.',
-    btn_optimize:'Оптимизировать поездку', btn_save_trip:'Сохранить поездку', btn_price_alert:'Сообщить, когда цена упадёт',
+    btn_optimize:'Оптимизировать цену', btn_save_trip:'Сохранить', btn_price_alert:'Сообщить, когда цена упадёт',
     builder_placeholder_text:'Здесь появится примерная цена, как только начнёшь выбирать — измени любую опцию слева.',
     eyebrow_for_later:'На потом', h2_saved_trips:'Вернись, когда будешь готов',
     sub_saved_trips:'Сохрани понравившиеся варианты и продолжи позже.',
@@ -5015,6 +5015,18 @@ document.getElementById('makeBuilderBtn').addEventListener('click', ()=>{
   renderBuilder();
   document.getElementById('builderSummary').style.display = 'block';
   document.getElementById('builderPlaceholder').style.display = 'none';
+  document.getElementById('builderBookLinks').style.display = 'none';
+});
+
+// "Nastavi" — otkriva linkove za rezervaciju kod partnera (kayak/booking/
+// itd.), koji su već izračunati u renderBuilder() ali ostaju sakriveni dok
+// korisnik ne pregleda cenu/optimizaciju i svesno odluči da nastavi.
+document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
+  const links = document.getElementById('builderBookLinks');
+  links.style.display = 'block';
+  requestAnimationFrame(() => {
+    links.scrollIntoView({behavior:'smooth', block:'center'});
+  });
 });
 
 /* ==========================================================
@@ -5729,6 +5741,7 @@ function loadSavedTrip(tripId){
     renderBuilder();
     document.getElementById('builderSummary').style.display = 'block';
     document.getElementById('builderPlaceholder').style.display = 'none';
+    document.getElementById('builderBookLinks').style.display = 'none';
     openControlPanel();
     document.querySelector('.builder-wrap').scrollIntoView({behavior:'smooth', block:'start'});
   } else {
@@ -5872,7 +5885,7 @@ function closeAlertModal(){
 }
 document.getElementById('alertModalClose').addEventListener('click', requestCloseAlertModal);
 document.getElementById('alertModalBackdrop').addEventListener('click', requestCloseAlertModal);
-document.getElementById('alertBuilderBtn').addEventListener('click', () => {
+document.getElementById('alertBuilderBtn')?.addEventListener('click', () => {
   const pkg = window._lastBuilderPkg;
   if (!pkg){ showToast('Napravi izlet pre postavljanja alerta.'); return; }
   openAlertModal('builder', null, pkg.total);
@@ -6432,6 +6445,7 @@ document.getElementById('spMakeBtn').addEventListener('click', () => {
   renderBuilder();
   bs.style.display = 'block';
   document.getElementById('builderPlaceholder').style.display = 'none';
+  document.getElementById('builderBookLinks').style.display = 'none';
 
   requestAnimationFrame(() => {
     bs.scrollIntoView({behavior:'smooth', block:'start'});

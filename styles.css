@@ -410,14 +410,15 @@ a{color:inherit;}
     background:var(--gold);color:var(--on-gold);font-size:17px;
     transition:transform .2s ease, background .2s ease;
 }
-/* Upitnik (q-form) submit dugme — ravno, bez zlatne kružne strelice,
-   isto kao u odobrenom konceptu ("Prikaži cenu" makete). */
+/* Upitnik (q-form) submit dugmad ("Prikaži cenu", "Nastavi") — ravna,
+   bez zlatne kružne strelice, isto kao u odobrenom konceptu makete. */
 .btn-primary.q-submit{
     padding:16px;justify-content:center;border-radius:11px;
     box-shadow:0 14px 28px -12px rgba(15,76,92,0.4);
 }
 .btn-primary.q-submit::after{display:none;}
 .btn-primary.q-submit:hover{transform:translateY(-1px);gap:14px;box-shadow:0 18px 34px -14px rgba(15,76,92,0.5);}
+
 
 .btn-primary:active{transform:translateY(0);gap:14px;}
 /* ---------- Kalendar za izbor datuma (u stub-u "Od — Do") ---------- */
@@ -1384,43 +1385,43 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 .q-num-field{max-width:90px;}
 .q-row-head--static{cursor:default;}
 .builder-summary{
-    background:var(--deep);color:var(--on-dark);border-radius:6px;
+    background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:6px;
     padding:24px 24px 26px;position:sticky;top:78px;
-    box-shadow:0 0 0 8px rgba(15,76,92,0.05), 0 22px 48px -22px rgba(15,76,92,0.55);
+    box-shadow:0 0 0 8px rgba(15,76,92,0.04), 0 22px 48px -22px rgba(15,76,92,0.28);
     z-index:5;
 }
 .builder-summary::before{
     content:"";position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);
-    width:54px;height:20px;background:rgba(236,217,173,0.55);
-    box-shadow:0 2px 4px rgba(0,0,0,0.15);
+    width:54px;height:20px;background:rgba(201,164,92,0.4);
+    box-shadow:0 2px 4px rgba(0,0,0,0.1);
 }
 .builder-summary-head{
     font-family:'Manrope',sans-serif;font-size:14.5px;text-transform:uppercase;
-    letter-spacing:0.07em;color:var(--gold-soft);margin-bottom:16px;
+    letter-spacing:0.07em;color:var(--ink-soft);margin-bottom:16px;
 }
 .builder-lines{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
 .builder-line{
     display:flex;justify-content:space-between;align-items:center;
-    font-size:15px;color:var(--on-dark-soft);padding-bottom:10px;
-    border-bottom:1px solid var(--line-deep);
+    font-size:15px;color:var(--ink-soft);padding-bottom:10px;
+    border-bottom:1px solid var(--line);
 }
 .builder-line:last-child{border-bottom:none;padding-bottom:0;}
 .builder-line .lname{display:flex;align-items:center;gap:8px;}
-.builder-line .lval{font-family:'Manrope',sans-serif;font-weight:600;color:var(--on-dark-strong);}
+.builder-line .lval{font-family:'Manrope',sans-serif;font-weight:600;color:var(--ink);}
 .builder-total{
     display:flex;align-items:baseline;justify-content:space-between;
-    padding-top:14px;border-top:1px solid var(--line-deep);margin-top:4px;
+    padding-top:14px;border-top:1px solid var(--line);margin-top:4px;
 }
-.builder-total #builderTotal{font-family:'Manrope',sans-serif;font-size:33.5px;font-weight:600;color:var(--on-dark-strong);}
-.builder-total-sub{font-size:14.5px;color:#9FC0C4;}
-.builder-total-hint{font-size:12.5px;color:#9FC0C4;opacity:0.85;margin-top:6px;}
+.builder-total #builderTotal{font-family:'Manrope',sans-serif;font-size:33.5px;font-weight:600;color:var(--deep);}
+.builder-total-sub{font-size:14.5px;color:var(--ink-soft);}
+.builder-total-hint{font-size:12.5px;color:var(--ink-soft);opacity:0.85;margin-top:6px;}
 .builder-budget-status{
     margin-top:12px;font-size:14px;padding:9px 12px;border-radius:4px;
     display:none;align-items:center;gap:8px;
 }
 .builder-budget-status.show{display:flex;}
-.builder-budget-status.ok{background:rgba(110,156,156,0.18);color:#BEE9EA;}
-.builder-budget-status.over{background:rgba(193,87,60,0.22);color:#F6CFC4;}
+.builder-budget-status.ok{background:var(--deep-soft);color:var(--deep);}
+.builder-budget-status.over{background:var(--coral-soft);color:var(--coral-text);}
 .btn-optimize{
     width:100%;margin-top:18px;
     display:flex;align-items:center;justify-content:center;gap:12px;
@@ -1438,28 +1439,28 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 
 .btn-optimize:active{transform:translateY(0);gap:12px;}
 .optimize-result{
-    margin-top:14px;background:rgba(255,255,255,0.06);border-left:2px solid var(--gold-soft);
-    border-radius:0 4px 4px 0;padding:12px 14px;font-size:14.5px;line-height:1.55;color:#E3F0F1;
+    margin-top:14px;background:var(--deep-soft);border-left:2px solid var(--gold);
+    border-radius:0 4px 4px 0;padding:12px 14px;font-size:14.5px;line-height:1.55;color:var(--ink);
 }
-.optimize-result .save{font-family:'Manrope',sans-serif;font-weight:600;color:var(--gold-soft);font-size:17px;display:block;margin-bottom:4px;}
+.optimize-result .save{font-family:'Manrope',sans-serif;font-weight:600;color:var(--deep);font-size:17px;display:block;margin-bottom:4px;}
 .optimize-apply{
-    margin-top:10px;border:1px solid var(--gold-soft);background:transparent;color:var(--gold-soft);
+    margin-top:10px;border:1px solid var(--deep);background:transparent;color:var(--deep);
     font-family:'Work Sans',sans-serif;font-size:13px;font-weight:700;
     padding:7px 12px;border-radius:14px;cursor:pointer;
 }
 
-.builder-book-links{margin-top:14px;padding-top:14px;border-top:1px solid rgba(227,240,241,0.25);}
-.builder-book-links .bbl-label{font-size:13px;color:var(--on-dark-soft);margin-bottom:9px;}
+.builder-book-links{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+.builder-book-links .bbl-label{font-size:13px;color:var(--ink-soft);margin-bottom:9px;}
 .builder-book-row{display:flex;flex-wrap:wrap;gap:8px;}
 .builder-book-row .bbl-item{flex:1;min-width:90px;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .builder-book-row .item-btn{width:100%;justify-content:center;padding:10px 8px;font-size:13.5px;}
-.qa-list{margin-top:18px;padding-top:4px;border-top:1px solid var(--line-deep);}
+.qa-list{margin-top:18px;padding-top:4px;border-top:1px solid var(--line);}
 .qa-item{
     display:flex;align-items:center;gap:10px;width:100%;
-    background:none;border:none;border-bottom:1px solid var(--line-deep);
+    background:none;border:none;border-bottom:1px solid var(--line);
     padding:12px 2px;cursor:pointer;text-align:left;
     font-family:'Manrope',sans-serif;font-weight:600;font-size:14.5px;
-    color:var(--gold-soft);transition:color .15s ease;
+    color:var(--deep);transition:color .15s ease;
 }
 .qa-item:last-child{border-bottom:none;}
 .qa-item svg{width:17px;height:17px;min-width:17px;stroke:var(--gold);transition:stroke .15s ease;}
@@ -2394,8 +2395,8 @@ footer{padding:28px 20px;}
 .stepper button:hover{border-color:var(--gold);color:var(--gold-text);}
 .btn-optimize:hover{transform:translateY(-1.5px);gap:15px;box-shadow:0 14px 26px -10px rgba(201,164,92,0.55);}
 .optimize-apply:hover{background:rgba(236,217,173,0.12);}
-.qa-item:hover{color:#fff;}
-.qa-item:hover svg{stroke:var(--gold-soft);}
+.qa-item:hover{color:var(--gold-text);}
+.qa-item:hover svg{stroke:var(--deep);}
 .pkg-save-btn:hover{border-color:var(--gold);color:var(--gold-text);}
 .pkg-alert-btn:hover{opacity:0.72;}
 .btn-save:hover{background:rgba(110,156,156,0.18);border-color:#6FBAC4;transform:translateY(-1px);}
