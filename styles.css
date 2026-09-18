@@ -50,6 +50,18 @@ i teško se videla na mobilnom (linije između polja "nestajale"). */
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;overflow-x:hidden;max-width:100%;}
+/* Bez ovoga mobilni browseri (Safari, Chrome, i in-app webview-ovi) na
+   SVAKI tap čekaju ~300ms da vide da li dolazi drugi tap (double-tap-to-zoom
+   gest, jer viewport meta ne zabranjuje pinch-zoom — namerno, zbog
+   pristupačnosti). Ta neizvesnost je na sporijim uređajima umela da se
+   oseti kao "treba dupli klik" na baš svakom dugmetu/linku/polju na sajtu.
+   touch-action:manipulation gasi SAMO double-tap-zoom na ovim elementima
+   (klik/tap i dalje odmah radi), a pinch-zoom prstima ostaje dostupan
+   jer se ovo NE stavlja na html/body nego samo na interaktivne elemente. */
+a,button,input,select,textarea,label,[role="button"],[onclick],
+.toggle,.chip,.cal-day,.pax-option,.loc-dropdown-item,.cookie-btn{
+    touch-action:manipulation;
+}
 body{
     margin:0;
     background:var(--bg);
