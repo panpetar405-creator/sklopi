@@ -203,7 +203,7 @@ const I18N = {
     faq_a5:'Piši na <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — rado odgovaramo.',
     whatsapp_aria:'Piši nam na WhatsApp',
     stat_searches:'pretraga', stat_clicks:'klikova na ponude', stat_last:'poslednja destinacija',
-    footer_contact:'Kontakt', footer_privacy:'Privatnost', footer_terms:'Uslovi', footer_cookies:'Kolačići',
+    footer_contact:'Kontakt', footer_privacy:'Privatnost', footer_terms:'Uslovi', footer_cookies:'Kolačići', footer_guides:'Vodiči',
     foot_note:'SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a>',
     cookie_text:'<b>Koristimo kolačiće za analitiku</b> (Google Analytics) da bismo razumeli kako se sajt koristi i unapredili ga. Ne koristimo ih za marketing niti ih delimo van Google-a. Detalji u <a href="kolacici.html">Politici kolačića</a>.',
     cookie_decline:'Odbijam', cookie_accept:'Prihvatam',
@@ -337,7 +337,7 @@ const I18N = {
     faq_a5:'Write to <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — we’re happy to help.',
     whatsapp_aria:'Message us on WhatsApp',
     stat_searches:'searches', stat_clicks:'clicks on offers', stat_last:'last destination',
-    footer_contact:'Contact', footer_privacy:'Privacy', footer_terms:'Terms', footer_cookies:'Cookies',
+    footer_contact:'Contact', footer_privacy:'Privacy', footer_terms:'Terms', footer_cookies:'Cookies', footer_guides:'Guides',
     foot_note:'SKLOPI — a product prototype in development. Prices shown are illustrative (simulated for demonstration), don’t come live from partners, and don’t represent a real offer or price commitment. · <a href="#" id="cookieSettingsLink">Cookie settings</a>',
     cookie_text:'<b>We use cookies for analytics</b> (Google Analytics) to understand how the site is used and improve it. We don’t use them for marketing or share them beyond Google. Details in the <a href="kolacici.html">Cookie Policy</a>.',
     cookie_decline:'Decline', cookie_accept:'Accept',
@@ -470,7 +470,7 @@ const I18N = {
     faq_a5:'Напиши на <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — мы с радостью поможем.',
     whatsapp_aria:'Напиши нам в WhatsApp',
     stat_searches:'поисков', stat_clicks:'кликов по предложениям', stat_last:'последнее направление',
-    footer_contact:'Контакты', footer_privacy:'Конфиденциальность', footer_terms:'Условия', footer_cookies:'Cookie',
+    footer_contact:'Контакты', footer_privacy:'Конфиденциальность', footer_terms:'Условия', footer_cookies:'Cookie', footer_guides:'Гайды',
     foot_note:'SKLOPI — прототип продукта в разработке. Показанные цены иллюстративны (смоделированы для демонстрации), не поступают напрямую от партнёров и не являются реальным предложением или обязательством по цене. · <a href="#" id="cookieSettingsLink">Настройки cookie</a>',
     cookie_text:'<b>Мы используем cookie для аналитики</b> (Google Analytics), чтобы понять, как используется сайт, и улучшить его. Мы не используем их для маркетинга и не передаём за пределы Google. Подробности в <a href="kolacici.html">Политике использования cookie</a>.',
     cookie_decline:'Отклонить', cookie_accept:'Принять',
@@ -2666,7 +2666,61 @@ function saveStats(){
 }
 loadStats();
 
-function fmtEUR(n){ return '€' + n.toLocaleString('de-DE'); }
+/* ==========================================================
+   VALUTA — EUR/RSD prikaz
+
+   Sve cene na sajtu su i onako ilustrativna procena (vidi
+   disclaimer_illustrative), pa RSD prikaz koristi FIKSAN kurs za
+   konverziju, ne uživo/NBS kurs — dovoljno je za "koliko je to
+   otprilike u dinarima", ne za tačno plaćanje. Kad affiliate API
+   proradi i cene postanu prave, ovde bi trebalo uvesti pravi kurs
+   (ili konvertovati na serveru, zavisno od partnera).
+
+   fmtEUR() ostaje pod istim imenom (koristi se na 20+ mesta u
+   kodu) da bi se izbeglo preimenovanje svuda — samo je interno
+   postala "prikaži cenu u trenutno izabranoj valuti".
+========================================================== */
+const RSD_PER_EUR = 117; // fiksni prikazni kurs, ažuriraj povremeno rucno
+let currentCurrency = (localStorage.getItem('sklopi_currency') === 'RSD') ? 'RSD' : 'EUR';
+
+function fmtEUR(n){
+  if (currentCurrency === 'RSD'){
+    return Math.round(n * RSD_PER_EUR).toLocaleString('sr-RS') + ' RSD';
+  }
+  return '€' + n.toLocaleString('de-DE');
+}
+
+function applyCurrencyToggleUi(){
+  const btn = document.getElementById('currencySwitchBtn');
+  if (!btn) return;
+  btn.setAttribute('data-currency', currentCurrency);
+  btn.setAttribute('aria-pressed', currentCurrency === 'RSD' ? 'true' : 'false');
+}
+
+// Ponovo iscrtava VEĆ PRIKAZANE cene u novoj valuti — ne pokreće novu
+// pretragu od nule. Builder je jeftin (renderBuilder je sinhron, isti
+// deterministički seed → isti brojevi, samo nov format), a gotove
+// ponude (Budget/Best/Comfort) prolaze kroz runSearch jer je to jedini
+// siguran ulaz koji renderResults ume da pozove sa svim potrebnim
+// argumentima (originCode, autoReveal...); isti seed → cene se ne
+// menjaju, samo se ponovo formatiraju.
+function refreshDisplayedPrices(){
+  const builderPanel = document.getElementById('builderPanel');
+  if (window._lastBuilderPkg && builderPanel && builderPanel.style.display !== 'none'){
+    renderBuilder();
+  }
+  const results = document.getElementById('results');
+  if (window._lastSearchCtx && results && results.classList.contains('visible')){
+    runSearch(false);
+  }
+}
+
+function setCurrency(cur){
+  currentCurrency = (cur === 'RSD') ? 'RSD' : 'EUR';
+  localStorage.setItem('sklopi_currency', currentCurrency);
+  applyCurrencyToggleUi();
+  refreshDisplayedPrices();
+}
 
 function attachAffiliateLinks(pkg, dest, from, to, adults){
   const ctx = {dest, from, to, adults};
@@ -5377,8 +5431,8 @@ function busTrainNoteFor(destRaw, adults){
   const oneWay = Math.round(route.price * n);
   const roundTrip = Math.round(route.price * n * 1.8);
   return 'Ovo je oko ' + route.hours + 'h vožnje autobusom iz Srbije (npr. Lasta, FlixBus, Ekol) — procena cene je oko '
-    + route.price + '€ po osobi u jednom pravcu. Za ' + n + ' ' + passengerLabel(n) + ' to je otprilike ' + oneWay
-    + '€ u jednom pravcu, odnosno grubo ' + roundTrip + '€ povratno. Za kraće izlete i manje grupe ovo često izađe jeftinije od leta — vredi uporediti pre nego što rezervišeš.';
+    + fmtEUR(route.price) + ' po osobi u jednom pravcu. Za ' + n + ' ' + passengerLabel(n) + ' to je otprilike ' + fmtEUR(oneWay)
+    + ' u jednom pravcu, odnosno grubo ' + fmtEUR(roundTrip) + ' povratno. Za kraće izlete i manje grupe ovo često izađe jeftinije od leta — vredi uporediti pre nego što rezervišeš.';
 }
 
 /* ==========================================================
@@ -6155,6 +6209,12 @@ if (langSwitchBtn) langSwitchBtn.addEventListener('click', () => {
   setLang(next);
 });
 
+const currencySwitchBtn = document.getElementById('currencySwitchBtn');
+if (currencySwitchBtn) currencySwitchBtn.addEventListener('click', () => {
+  setCurrency(currentCurrency === 'EUR' ? 'RSD' : 'EUR');
+});
+applyCurrencyToggleUi(); // odraz sačuvanog izbora (localStorage) pri učitavanju
+
 const documentsCheckBtn = document.getElementById('documentsCheckBtn');
 if (documentsCheckBtn) documentsCheckBtn.addEventListener('click', openDocumentsModal);
 const documentsModalClose = document.getElementById('documentsModalClose');
@@ -6663,6 +6723,21 @@ updateStats();
 updateCtaBanner();
 renderSavedTrips();
 renderAccountMenu();
+
+// Dolazak sa spoljašnjeg linka sa ?dest=Grad (npr. iz vodiča na
+// /vodici.html) — prepuni polje Destinacija i skroluj do forme, ali
+// NE pokreći pretragu automatski (korisnik i dalje bira datume).
+(function prefillDestFromQuery(){
+  const params = new URLSearchParams(window.location.search);
+  const destParam = params.get('dest');
+  if (!destParam) return;
+  const destInput = document.getElementById('dest');
+  if (!destInput) return;
+  destInput.value = destParam;
+  requestAnimationFrame(() => {
+    document.getElementById('searchForm').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+})();
 // Ako se jezik promeni, ponovo iscrtaj "Gde bi sledeće?" u novom jeziku —
 // isti dnevni izbor, samo prevedeni tekst (regionalne kartice po gradu
 // polaska ostaju na srpskom, kao i do sada — ovde se menja samo podrazumevani skup).
