@@ -247,6 +247,74 @@ const I18N = {
     ac_searching:'Tražim…', ac_no_results:'Nema predloga za taj naziv.',
     results_back:'Nazad', results_back_aria:'Nazad na sajt',
     night:'noć', nights:'noći', passenger:'putnik', passengers:'putnika',
+    // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
+    flight_sub_direct:'direktan let',
+    flight_sub_stopover:'jedno presedanje',
+    flight_sub_limited:'let (proveri sezonske/direktne linije)',
+    flight_sub_nearest:'let do {arrival}, najbližeg aerodroma',
+    flight_sub_pax:'cena za svih {n} putnika',
+    hotel_sub_rating:'ocena {r}',
+    hotel_sub_rooms:'cena za {rooms}',
+    car_sub_gearbox:'automatski/ručni menjač',
+    act_walk_old_town:'Obilazak starog grada peške',
+    act_halfday_tour:'Poludnevna tura s vodičem',
+    act_main_tickets:'Ulaznica za glavne znamenitosti',
+    act_private_tour:'Privatna tura s vodičem',
+    act_food_tour:'Gastronomska tura uz degustaciju',
+    act_eg:'npr.',
+    act_per_person:'po osobi',
+    item_label_flight:'Let',
+    item_label_hotel:'Hotel',
+    item_label_car:'Auto',
+    pkg_close:'Zatvori ovu ponudu',
+    pkg_recommended:'★ Preporučeno',
+    pkg_total_hint:'zbir odvojenih rezervacija, ne jedno plaćanje',
+    pkg_score_label:'odnos cene i&nbsp;kvaliteta',
+    pkg_total_line:'Ukupno:',
+    pkg_save_offer:'Sačuvaj ovu ponudu',
+    pkg_all_closed:'Sklonio si sve ponude sa liste.',
+    pkg_search_again:'Pretraži ponovo',
+    match_badge_suggestion:'🧭 Predlog za tebe',
+    match_score_label:'poklapanje',
+    match_score_sub:'sa tvojim odgovorima',
+    match_bus_title:'Razmisli i o autobusu',
+    match_no_budget:'Bez zadatog budžeta — rangirano samo po poklapanju.',
+    match_build_for:'Napravi aranžman za {dest}',
+    match_results_title:'3 destinacije koje ti najbolje odgovaraju.',
+    match_results_sub:'Rangirano po tvojim odgovorima{vibe}, sezoni i dužini puta — ne nasumično.',
+    match_results_sub_fallback:'Nijedna se u potpunosti nije uklopila u budžet — evo 3 najbliže opcije po poklapanju i ceni.',
+    match_refine_sea:'🌊 Više plaže',
+    match_refine_nightlife:'🎉 Više provoda',
+    match_refine_nature:'🌲 Više prirode',
+    match_refine_cheaper:'💶 Manji budžet',
+    match_reroll:'🔁 Probaj drugih 3 predloga',
+    mvibe_sea:'more i plažu',
+    mvibe_city:'grad i kulturu',
+    mvibe_nature:'prirodu i planinu',
+    mvibe_nightlife:'dobar provod',
+    mvibe_mix:'kombinaciju svega',
+    mvibe_default:'tvoj stil odmora',
+    mreason_intro:'Zato što {reasons}.',
+    mreason_vibe:'nudi {vibe}',
+    mreason_season:'baš je sezona za {month}',
+    mreason_length:'dužina puta se dobro uklapa',
+    mreason_family:'pogodna je za porodice',
+    mreason_nightlife:'odlična je za izlazak s društvom',
+    mreason_romantic:'ima romantičnu atmosferu za parove',
+    mreason_budget:'uklapa se u budžet',
+    mreason_fallback:'Solidna opcija u okviru tvog budžeta.',
+    airport_use_instead:'Koristi {near} umesto',
+    airport_note_tpl:'{city} nema {lack} — najbliži je {near} (oko {time} vožnje){alt}.',
+    airport_note_alt:', {alt} je alternativa',
+    airport_in:'u',
+    airport_lack_own:'svoj aerodrom',
+    airport_lack_plain:'aerodrom',
+    airport_lack_major:'veći aerodrom',
+    airport_lack_comm:'komercijalni aerodrom',
+    airport_lack_sched:'aerodrom sa redovnim letovima',
+    airport_lack_nearby:'aerodrom u blizini',
+    unit_h:'h',
+    unit_min:'min',
     fuel_estimate:'Gorivo (procena)', tolls_estimate:'Putarine (procena)', insurance:'Osiguranje', esim_internet:'eSIM / internet',
     btn_search_kayak:'Pretraži na KAYAK-u', btn_book_booking:'Rezerviši na Booking.com',
     aff_badge:'Afilijacija', aff_badge_title:'Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.',
@@ -399,6 +467,74 @@ const I18N = {
     ac_searching:'Searching…', ac_no_results:'No suggestions for that name.',
     results_back:'Back', results_back_aria:'Back to site',
     night:'night', nights:'nights', passenger:'traveler', passengers:'travelers',
+    // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
+    flight_sub_direct:'direct flight',
+    flight_sub_stopover:'one stopover',
+    flight_sub_limited:'flight (check seasonal/direct routes)',
+    flight_sub_nearest:'flight to {arrival}, the nearest airport',
+    flight_sub_pax:'price for all {n} travelers',
+    hotel_sub_rating:'rating {r}',
+    hotel_sub_rooms:'price for {rooms}',
+    car_sub_gearbox:'automatic/manual transmission',
+    act_walk_old_town:'Old town walking tour',
+    act_halfday_tour:'Half-day guided tour',
+    act_main_tickets:'Tickets to the main sights',
+    act_private_tour:'Private guided tour',
+    act_food_tour:'Food tour with tastings',
+    act_eg:'e.g.',
+    act_per_person:'per person',
+    item_label_flight:'Flight',
+    item_label_hotel:'Hotel',
+    item_label_car:'Car',
+    pkg_close:'Close this offer',
+    pkg_recommended:'★ Recommended',
+    pkg_total_hint:'sum of separate bookings, not a single payment',
+    pkg_score_label:'price-to-quality ratio',
+    pkg_total_line:'Total:',
+    pkg_save_offer:'Save this offer',
+    pkg_all_closed:'You’ve removed all the offers from the list.',
+    pkg_search_again:'Search again',
+    match_badge_suggestion:'🧭 Suggested for you',
+    match_score_label:'match',
+    match_score_sub:'with your answers',
+    match_bus_title:'Consider the bus, too',
+    match_no_budget:'No budget set — ranked by match only.',
+    match_build_for:'Build a package for {dest}',
+    match_results_title:'The 3 destinations that suit you best.',
+    match_results_sub:'Ranked by your answers{vibe}, the season and trip length — not at random.',
+    match_results_sub_fallback:'None fully fit your budget — here are the 3 closest options by match and price.',
+    match_refine_sea:'🌊 More beach',
+    match_refine_nightlife:'🎉 More nightlife',
+    match_refine_nature:'🌲 More nature',
+    match_refine_cheaper:'💶 Lower budget',
+    match_reroll:'🔁 Try 3 other suggestions',
+    mvibe_sea:'sea and beaches',
+    mvibe_city:'city life and culture',
+    mvibe_nature:'nature and mountains',
+    mvibe_nightlife:'great nightlife',
+    mvibe_mix:'a bit of everything',
+    mvibe_default:'your kind of getaway',
+    mreason_intro:'Because {reasons}.',
+    mreason_vibe:'it offers {vibe}',
+    mreason_season:'it’s a great time to go in {month}',
+    mreason_length:'the trip length is a good fit',
+    mreason_family:'it suits families',
+    mreason_nightlife:'it’s great for a night out with friends',
+    mreason_romantic:'it has a romantic vibe for couples',
+    mreason_budget:'it fits your budget',
+    mreason_fallback:'A solid option within your budget.',
+    airport_use_instead:'Use {near} instead',
+    airport_note_tpl:'{city} {lack} — the nearest is {near} (about {time} by car){alt}.',
+    airport_note_alt:'; {alt} is an alternative',
+    airport_in:'in',
+    airport_lack_own:'has no airport of its own',
+    airport_lack_plain:'has no airport',
+    airport_lack_major:'has no major airport',
+    airport_lack_comm:'has no commercial airport',
+    airport_lack_sched:'has no airport with scheduled flights',
+    airport_lack_nearby:'has no airport nearby',
+    unit_h:'h',
+    unit_min:'min',
     fuel_estimate:'Fuel (estimate)', tolls_estimate:'Tolls (estimate)', insurance:'Insurance', esim_internet:'eSIM / internet',
     btn_search_kayak:'Search on KAYAK', btn_book_booking:'Book on Booking.com',
     aff_badge:'Affiliate', aff_badge_title:'This is an affiliate (sponsored) link — if you book through it, SKLOPI may earn a commission from the partner. Your price stays the same.',
@@ -551,6 +687,74 @@ const I18N = {
     ac_searching:'Ищем…', ac_no_results:'Нет предложений для такого названия.',
     results_back:'Назад', results_back_aria:'Назад на сайт',
     night:'ночь', nights:'ночей', passenger:'путешественник', passengers:'путешественников',
+    // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
+    flight_sub_direct:'прямой рейс',
+    flight_sub_stopover:'одна пересадка',
+    flight_sub_limited:'перелёт (уточни сезонные и прямые рейсы)',
+    flight_sub_nearest:'перелёт (ближайший аэропорт: {arrival})',
+    flight_sub_pax:'цена за всех {n} путешественников',
+    hotel_sub_rating:'рейтинг {r}',
+    hotel_sub_rooms:'цена за {rooms}',
+    car_sub_gearbox:'автомат/механика',
+    act_walk_old_town:'Пешая экскурсия по старому городу',
+    act_halfday_tour:'Экскурсия с гидом на полдня',
+    act_main_tickets:'Билеты в главные достопримечательности',
+    act_private_tour:'Частная экскурсия с гидом',
+    act_food_tour:'Гастрономический тур с дегустацией',
+    act_eg:'напр.',
+    act_per_person:'на человека',
+    item_label_flight:'Перелёт',
+    item_label_hotel:'Отель',
+    item_label_car:'Авто',
+    pkg_close:'Закрыть это предложение',
+    pkg_recommended:'★ Рекомендуем',
+    pkg_total_hint:'сумма отдельных бронирований, а не один платёж',
+    pkg_score_label:'соотношение цены и&nbsp;качества',
+    pkg_total_line:'Итого:',
+    pkg_save_offer:'Сохранить это предложение',
+    pkg_all_closed:'Ты убрал(а) все предложения из списка.',
+    pkg_search_again:'Искать снова',
+    match_badge_suggestion:'🧭 Предложение для тебя',
+    match_score_label:'совпадение',
+    match_score_sub:'с твоими ответами',
+    match_bus_title:'Подумай и об автобусе',
+    match_no_budget:'Бюджет не задан — рейтинг только по совпадению.',
+    match_build_for:'Собрать поездку: {dest}',
+    match_results_title:'3 направления, которые подходят тебе лучше всего.',
+    match_results_sub:'Ранжировано по твоим ответам{vibe}, сезону и длительности поездки — не наугад.',
+    match_results_sub_fallback:'Ни одно не уложилось в бюджет полностью — вот 3 ближайших варианта по совпадению и цене.',
+    match_refine_sea:'🌊 Больше пляжей',
+    match_refine_nightlife:'🎉 Больше развлечений',
+    match_refine_nature:'🌲 Больше природы',
+    match_refine_cheaper:'💶 Бюджет поменьше',
+    match_reroll:'🔁 Показать ещё 3 варианта',
+    mvibe_sea:'море и пляжи',
+    mvibe_city:'городская жизнь и культура',
+    mvibe_nature:'природа и горы',
+    mvibe_nightlife:'хорошие развлечения',
+    mvibe_mix:'всего понемногу',
+    mvibe_default:'твой стиль отдыха',
+    mreason_intro:'Потому что {reasons}.',
+    mreason_vibe:'здесь есть {vibe}',
+    mreason_season:'самое время ехать в {month}',
+    mreason_length:'длительность поездки подходит',
+    mreason_family:'подходит для семей',
+    mreason_nightlife:'отлично подходит для вечеров с друзьями',
+    mreason_romantic:'здесь романтичная атмосфера для пар',
+    mreason_budget:'укладывается в бюджет',
+    mreason_fallback:'Хороший вариант в рамках твоего бюджета.',
+    airport_use_instead:'Вместо этого — {near}',
+    airport_note_tpl:'{city}: {lack}, ближайший — {near} (около {time} на машине){alt}.',
+    airport_note_alt:'; альтернатива — {alt}',
+    airport_in:'в',
+    airport_lack_own:'собственного аэропорта нет',
+    airport_lack_plain:'аэропорта нет',
+    airport_lack_major:'крупного аэропорта нет',
+    airport_lack_comm:'коммерческого аэропорта нет',
+    airport_lack_sched:'аэропорта с регулярными рейсами нет',
+    airport_lack_nearby:'аэропорта поблизости нет',
+    unit_h:'ч',
+    unit_min:'мин',
     fuel_estimate:'Топливо (оценка)', tolls_estimate:'Дорожные сборы (оценка)', insurance:'Страховка', esim_internet:'eSIM / интернет',
     btn_search_kayak:'Искать на KAYAK', btn_book_booking:'Забронировать на Booking.com',
     aff_badge:'Партнёрская ссылка', aff_badge_title:'Это партнёрская (спонсируемая) ссылка — если вы забронируете через неё, SKLOPI может получить комиссию от партнёра. Цена для вас не меняется.',
@@ -580,7 +784,59 @@ function getLang(){
   } catch(e){}
   return 'sr';
 }
-function t(key){ const lang = getLang(); return (I18N[lang] && I18N[lang][key]) ?? (I18N.sr[key] ?? key); }
+/* ==========================================================
+   DEV-ONLY PROVERA PREVODA (isti duh kao assertFlightSubConsistency):
+   u dev okruženju (localhost ili ?debug) konzola odmah prijavi
+     1) ključ koji postoji u jednom jeziku a fali u drugom (sr/en/ru),
+     2) prazan prevod,
+     3) različit skup {placeholder}-a između jezika (npr. {n} fali u ru),
+     4) t('kljuc') sa ključem koji uopšte ne postoji u I18N.sr,
+     5) t('kljuc') koji u en/ru pada nazad na srpski (nedostaje prevod).
+   Ne menja ponašanje — t() vraća isto što i ranije. U produkciji je
+   isključena. Ne hvata stringove pisane direktno u kodu (van t/tf/L3) —
+   to i dalje ostaje na pravilu pri pisanju koda.
+========================================================== */
+const _I18N_DEV = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /(^|[?&])debug(=1)?(&|$)/.test(location.search);
+const _i18nWarned = new Set();
+function _i18nWarn(id, msg){
+  if (_i18nWarned.has(id)) return;
+  _i18nWarned.add(id);
+  console.warn('[sklopi][i18n] ' + msg);
+}
+function t(key){
+  const lang = getLang();
+  const own = I18N[lang] && I18N[lang][key];
+  if (_I18N_DEV && (own === undefined || own === null)){
+    if (I18N.sr[key] === undefined) _i18nWarn('unknown|' + key, 'nepoznat ključ t("' + key + '") — ne postoji ni u sr.');
+    else if (lang !== 'sr') _i18nWarn(lang + '|' + key, 'nedostaje ' + lang.toUpperCase() + ' prevod za "' + key + '" — prikazuje se srpski.');
+  }
+  return own ?? (I18N.sr[key] ?? key);
+}
+function checkI18nCompleteness(){
+  if (!_I18N_DEV) return;
+  const langs = ['sr', 'en', 'ru'];
+  const all = new Set();
+  langs.forEach(l => Object.keys(I18N[l] || {}).forEach(k => all.add(k)));
+  const ph = v => (String(v).match(/\{\w+\}/g) || []).sort().join(',');
+  let problems = 0;
+  all.forEach(k => {
+    const missing = langs.filter(l => !(I18N[l] && k in I18N[l]));
+    if (missing.length){ problems++; _i18nWarn('miss|' + k, 'ključ "' + k + '" nedostaje u: ' + missing.join(', ')); return; }
+    langs.forEach(l => {
+      if (String(I18N[l][k]).trim() === ''){ problems++; _i18nWarn('empty|' + l + '|' + k, 'prazan prevod: ' + l + '.' + k); }
+    });
+    const base = ph(I18N.sr[k]);
+    langs.slice(1).forEach(l => {
+      if (ph(I18N[l][k]) !== base){
+        problems++;
+        _i18nWarn('ph|' + l + '|' + k, 'placeholderi se razlikuju u "' + k + '": sr={' + base + '} ' + l + '={' + ph(I18N[l][k]) + '}');
+      }
+    });
+  });
+  if (!problems) console.log('[sklopi][i18n] svi ključevi (' + all.size + ') postoje u sr/en/ru, bez praznih prevoda i neusklađenih placeholdera.');
+  else console.warn('[sklopi][i18n] ukupno ' + problems + ' problema u prevodima (vidi gore).');
+}
+checkI18nCompleteness();
 // Mali helper za tekst koji nije u I18N objektu (retki hardkodovani stringovi
 // van data-i18n / t() sistema) — bira sr/en/ru granu prema trenutnom jeziku.
 function L3(sr, en, ru){
@@ -589,6 +845,662 @@ function L3(sr, en, ru){
   if (lang === 'en') return en;
   return sr;
 }
+/* ==========================================================
+   PREVOD DINAMIČKIH STRINGOVA — pomoćnici
+   ==========================================================
+   tf('kljuc', {n:3})  — t() + zamena {placeholder}-a.
+   pluralForm / nightsLabel / daysLabel / roomsLabel / activitiesLabel
+       — množina za sr (1 / 2-4 / 5+), en (1 / ostalo) i ru (1 / 2-4 / 5+).
+   cityLabel / countryLabel — prevod naziva gradova i država koje
+       aplikacija drži na srpskom (aerodromi iz AIRPORT_DB, kartice
+       "Pronađi svoj izlet"). Nepoznat naziv (npr. ono što je korisnik
+       sam ukucao) ostaje nepromenjen — nikad se ne nagađa.
+   VAŽNO: vrednost u poljima Polazak/Destinacija ostaje na srpskom
+   (airportInfoFor/iataFor/isKnownDestination rade nad srpskim
+   nazivima); ovde se prevodi samo PRIKAZ.
+========================================================== */
+function tf(key, vars){
+  return t(key).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] !== undefined) ? vars[k] : m);
+}
+// forms: {sr:[1, 2-4, 5+], en:[1, ostalo], ru:[1, 2-4, 5+]}
+function pluralForm(n, forms){
+  n = Math.abs(Math.round(Number(n)) || 0);
+  const lang = getLang();
+  if (lang === 'en') return (forms.en || forms.sr)[n === 1 ? 0 : 1];
+  const f = forms[lang] || forms.sr;
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 14) return f[2];
+  if (mod10 === 1) return f[0];
+  if (mod10 >= 2 && mod10 <= 4) return f[1];
+  return f[2];
+}
+function nightsLabel(n){ return n + ' ' + pluralForm(n, {sr:['noć','noći','noći'], en:['night','nights'], ru:['ночь','ночи','ночей']}); }
+function daysLabel(n){ return n + ' ' + pluralForm(n, {sr:['dan','dana','dana'], en:['day','days'], ru:['день','дня','дней']}); }
+function roomsLabel(n){ return n + ' ' + pluralForm(n, {sr:['sobu','sobe','soba'], en:['room','rooms'], ru:['номер','номера','номеров']}); }
+function activitiesLabel(n){ return n + ' ' + pluralForm(n, {sr:['aktivnost','aktivnosti','aktivnosti'], en:['activity','activities'], ru:['активность','активности','активностей']}); }
+
+// [en, ru] po srpskom nazivu (ključ se poredi preko normalizeSr — bez dijakritika).
+const CITY_L10N = {
+  'Adana':['Adana','Адана'],
+  'Amsterdam':['Amsterdam','Амстердам'],
+  'Ankara':['Ankara','Анкара'],
+  'Ankona':['Ancona','Анкона'],
+  'Antalija':['Antalya','Анталья'],
+  'Araksos':['Araxos','Аракс'],
+  'Atina':['Athens','Афины'],
+  'Banja Luka':['Banja Luka','Баня-Лука'],
+  'Bari':['Bari','Бари'],
+  'Bazel':['Basel','Базель'],
+  'Beograd':['Belgrade','Белград'],
+  'Berlin':['Berlin','Берлин'],
+  'Bern':['Bern','Берн'],
+  'Beč':['Vienna','Вена'],
+  'Bidgosc':['Bydgoszcz','Быдгощ'],
+  'Bidgošć':['Bydgoszcz','Быдгощ'],
+  'Bilund':['Billund','Биллунн'],
+  'Bolcano':['Bolzano','Больцано'],
+  'Bolonja':['Bologna','Болонья'],
+  'Bratislava':['Bratislava','Братислава'],
+  'Brašov':['Brașov','Брашов'],
+  'Brindizi':['Brindisi','Бриндизи'],
+  'Brisel':['Brussels','Брюссель'],
+  'Budimpešta':['Budapest','Будапешт'],
+  'Bukurešt':['Bucharest','Бухарест'],
+  'Burgas':['Burgas','Бургас'],
+  'Canakkale':['Çanakkale','Чанаккале'],
+  'Čanakale':['Çanakkale','Чанаккале'],
+  'Cirih':['Zurich','Цюрих'],
+  'Dalaman':['Dalaman','Даламан'],
+  'Denizli':['Denizli','Денизли'],
+  'Dubrovnik':['Dubrovnik','Дубровник'],
+  'Faro':['Faro','Фару'],
+  'Firenca':['Florence','Флоренция'],
+  'Frankfurt':['Frankfurt','Франкфурт'],
+  'Fridrihshafen':['Friedrichshafen','Фридрихсхафен'],
+  'Gdanjsk':['Gdańsk','Гданьск'],
+  'Hamburg':['Hamburg','Гамбург'],
+  'Helsinki':['Helsinki','Хельсинки'],
+  'Herez':['Jerez','Херес'],
+  'Herez de la Frontera':['Jerez de la Frontera','Херес-де-ла-Фронтера'],
+  'Insbruk':['Innsbruck','Инсбрук'],
+  'Istanbul':['Istanbul','Стамбул'],
+  'Izmir':['Izmir','Измир'],
+  'Katanija':['Catania','Катания'],
+  'Katovice':['Katowice','Катовице'],
+  'Kavala':['Kavala','Кавала'],
+  'Keln':['Cologne','Кёльн'],
+  'Keln/Bon':['Cologne/Bonn','Кёльн/Бонн'],
+  'Kisinjev':['Chișinău','Кишинёв'],
+  'Kišinjev':['Chișinău','Кишинёв'],
+  'Konstanca':['Constanța','Констанца'],
+  'Kopenhagen':['Copenhagen','Копенгаген'],
+  'Krakov':['Kraków','Краков'],
+  'Lajpcig':['Leipzig','Лейпциг'],
+  'Linc':['Linz','Линц'],
+  'Lion':['Lyon','Лион'],
+  'Lisabon':['Lisbon','Лиссабон'],
+  'Ljubljana':['Ljubljana','Любляна'],
+  'London':['London','Лондон'],
+  'Luksemburg':['Luxembourg','Люксембург'],
+  'Madrid':['Madrid','Мадрид'],
+  'Malaga':['Málaga','Малага'],
+  'Malatja':['Malatya','Малатья'],
+  'Malme':['Malmö','Мальмё'],
+  'Maribor':['Maribor','Марибор'],
+  'Milano':['Milan','Милан'],
+  'Nansi':['Nancy','Нанси'],
+  'Nant':['Nantes','Нант'],
+  'Napulj':['Naples','Неаполь'],
+  'Nevsehir':['Nevşehir','Невшехир'],
+  'Nevšehir':['Nevşehir','Невшехир'],
+  'Nica':['Nice','Ницца'],
+  'Nirnberg':['Nuremberg','Нюрнберг'],
+  'Niš':['Niš','Ниш'],
+  'Ohrid':['Ohrid','Охрид'],
+  'Olesund':['Ålesund','Олесунн'],
+  'Osijek':['Osijek','Осиек'],
+  'Oslo':['Oslo','Осло'],
+  'Ostrava':['Ostrava','Острава'],
+  'Pariz':['Paris','Париж'],
+  'Parma':['Parma','Парма'],
+  'Perudja':['Perugia','Перуджа'],
+  'Pisa':['Pisa','Пиза'],
+  'Plovdiv':['Plovdiv','Пловдив'],
+  'Podgorica':['Podgorica','Подгорица'],
+  'Poprad':['Poprad','Попрад'],
+  'Porto':['Porto','Порту'],
+  'Prag':['Prague','Прага'],
+  'Preveza':['Preveza','Превеза'],
+  'Preveza/Aktion':['Preveza/Actium','Превеза/Актион'],
+  'Priština':['Pristina','Приштина'],
+  'Pula':['Pula','Пула'],
+  'Rim':['Rome','Рим'],
+  'Rimini':['Rimini','Римини'],
+  'Roterdam':['Rotterdam','Роттердам'],
+  'Salcburg':['Salzburg','Зальцбург'],
+  'Sanliurfa':['Şanlıurfa','Шанлыурфа'],
+  'Šanlıurfa':['Şanlıurfa','Шанлыурфа'],
+  'Santorini':['Santorini','Санторини'],
+  'Sarajevo':['Sarajevo','Сараево'],
+  'Sevilja':['Seville','Севилья'],
+  'Skijatos':['Skiathos','Скиатос'],
+  'Skoplje':['Skopje','Скопье'],
+  'Sofija':['Sofia','София'],
+  'Solun':['Thessaloniki','Салоники'],
+  'Split':['Split','Сплит'],
+  'Stokholm':['Stockholm','Стокгольм'],
+  'Stutgart':['Stuttgart','Штутгарт'],
+  'Štutgart':['Stuttgart','Штутгарт'],
+  'Tirana':['Tirana','Тирана'],
+  'Tivat':['Tivat','Тиват'],
+  'Trabzon':['Trabzon','Трабзон'],
+  'Trst':['Trieste','Триест'],
+  'Tuzla':['Tuzla','Тузла'],
+  'Varna':['Varna','Варна'],
+  'Varsava':['Warsaw','Варшава'],
+  'Varšava':['Warsaw','Варшава'],
+  'Venecija':['Venice','Венеция'],
+  'Verona':['Verona','Верона'],
+  'Zagreb':['Zagreb','Загреб'],
+  'Zesuv':['Rzeszów','Жешув'],
+  'Žešuv':['Rzeszów','Жешув'],
+  'Đenova':['Genoa','Генуя'],
+  'Šarlroa':['Charleroi','Шарлеруа'],
+  'Ženeva':['Geneva','Женева'],
+  'Brno':['Brno','Брно'],
+  'Poznanj':['Poznań','Познань'],
+  'Gaziantep':['Gaziantep','Газиантеп'],
+  'Tur':['Tours','Тур'],
+  'Krf':['Corfu','Корфу'],
+  'Naksos':['Naxos','Наксос'],
+  'Kajseri':['Kayseri','Кайсери'],
+  'Gazipaša':['Gazipaşa','Газипаша'],
+  'Padova':['Padua','Падуя'],
+  'Zadar':['Zadar','Задар'],
+  'Segedin':['Szeged','Сегед'],
+  'Mersin':['Mersin','Мерсин'],
+  'Kapadokija':['Cappadocia','Каппадокия'],
+  'Marmaris':['Marmaris','Мармарис'],
+  'Fetije':['Fethiye','Фетхие'],
+  'Side':['Side','Сиде'],
+  'Alanja':['Alanya','Аланья'],
+  'Kušadasi':['Kuşadası','Кушадасы'],
+  'Česme':['Çeşme','Чешме'],
+  'Pamukale':['Pamukkale','Памуккале'],
+  'Jalova':['Yalova','Ялова'],
+  'Afjon Karahisar':['Afyonkarahisar','Афьонкарахисар'],
+  'Haymana':['Haymana','Хаймана'],
+  'Kizildžahamam':['Kızılcahamam','Кызылджахамам'],
+  'Efes':['Ephesus','Эфес'],
+  'Troja':['Troy','Троя'],
+  'Pergamon':['Pergamon','Пергам'],
+  'Hijerapolis':['Hierapolis','Иераполис'],
+  'Sumela':['Sumela','Сумела'],
+  'Nemrut':['Nemrut','Немрут'],
+  'Safranbolu':['Safranbolu','Сафранболу'],
+  'Gjobekli Tepe':['Göbekli Tepe','Гёбекли-Тепе'],
+  'Kaš':['Kaş','Каш'],
+  'Kalkan':['Kalkan','Калкан'],
+  'Datča':['Datça','Датча'],
+  'Didim':['Didim','Дидим'],
+  'Ajvalik':['Ayvalık','Айвалык'],
+  'Silifke':['Silifke','Силифке'],
+  'Koimbra':['Coimbra','Коимбра'],
+  'Braga':['Braga','Брага'],
+  'Sintra':['Sintra','Синтра'],
+  'Albufeira':['Albufeira','Албуфейра'],
+  'Evora':['Évora','Эвора'],
+  'Kaskais':['Cascais','Кашкайш'],
+  'Nazare':['Nazaré','Назаре'],
+  'Fatima':['Fátima','Фатима'],
+  'Zakopane':['Zakopane','Закопане'],
+  'Torunj':['Toruń','Торунь'],
+  'Vjelička':['Wieliczka','Величка'],
+  'Gdinja':['Gdynia','Гдыня'],
+  'Čenstohova':['Częstochowa','Ченстохова'],
+  'Plzenj':['Plzeň','Пльзень'],
+  'Češki Krumlov':['Český Krumlov','Чески-Крумлов'],
+  'Olomouc':['Olomouc','Оломоуц'],
+  'Kutna Hora':['Kutná Hora','Кутна-Гора'],
+  'Češke Budejovice':['České Budějovice','Ческе-Будеёвице'],
+  'Hradec Kralove':['Hradec Králové','Градец-Кралове'],
+  'Liberec':['Liberec','Либерец'],
+  'Briž':['Bruges','Брюгге'],
+  'Gent':['Ghent','Гент'],
+  'Namir':['Namur','Намюр'],
+  'Halkidiki':['Halkidiki','Халкидики'],
+  'Lefkada':['Lefkada','Лефкада'],
+  'Volos':['Volos','Волос'],
+  'Patra':['Patras','Патры'],
+  'Larisa':['Larissa','Лариса'],
+  'Lutraki':['Loutraki','Лутраки'],
+  'Edipsos':['Edipsos','Эдипсос'],
+  'Olimp':['Mount Olympus','Олимп'],
+  'Pilion':['Pelion','Пелион'],
+  'Meteori':['Meteora','Метеоры'],
+  'Delfi':['Delphi','Дельфы'],
+  'Nafplion':['Nafplio','Нафплион'],
+  'Tasos':['Thasos','Тасос'],
+  'Skopelos':['Skopelos','Скопелос'],
+  'Evija':['Evia','Эвия'],
+  'Idra':['Hydra','Идра'],
+  'Spece':['Spetses','Спеце'],
+  'Ios':['Ios','Иос'],
+  'Egina':['Aegina','Эгина'],
+  'Poros':['Poros','Порос'],
+  'Nesebar':['Nessebar','Несебр'],
+  'Bansko':['Bansko','Банско'],
+  'Ruse':['Ruse','Русе'],
+  'Stara Zagora':['Stara Zagora','Стара-Загора'],
+  'Pleven':['Pleven','Плевен'],
+  'Veliko Trnovo':['Veliko Tarnovo','Велико-Тырново'],
+  'Blagoevgrad':['Blagoevgrad','Благоевград'],
+  'Šumen':['Shumen','Шумен'],
+  'Sliven':['Sliven','Сливен'],
+  'Vidin':['Vidin','Видин'],
+  'Dobrič':['Dobrich','Добрич'],
+  'Kjustendil':['Kyustendil','Кюстендил'],
+  'Gabrovo':['Gabrovo','Габрово'],
+  'Haskovo':['Haskovo','Хасково'],
+  'Sandanski':['Sandanski','Сандански'],
+  'Velingrad':['Velingrad','Велинград'],
+  'Hisarja':['Hisarya','Хисаря'],
+  'Devin':['Devin','Девин'],
+  'Pavel Banja':['Pavel Banya','Павел-Баня'],
+  'Bankja':['Bankya','Банкя'],
+  'Borovec':['Borovets','Боровец'],
+  'Pamporovo':['Pamporovo','Пампорово'],
+  'Vitoša':['Vitosha','Витоша'],
+  'Čepelare':['Chepelare','Чепеларе'],
+  'Rila':['Rila','Рила'],
+  'Koprivštica':['Koprivshtitsa','Копривштица'],
+  'Melnik':['Melnik','Мелник'],
+  'Rilski manastir':['Rila Monastery','Рильский монастырь'],
+  'Trjavna':['Tryavna','Трявна'],
+  'Arbanasi':['Arbanasi','Арбанаси'],
+  'Sozopol':['Sozopol','Созополь'],
+  'Sunčev Breg':['Sunny Beach','Солнечный берег'],
+  'Zlatni Pjasci':['Golden Sands','Золотые Пески'],
+  'Primorsko':['Primorsko','Приморско'],
+  'Balčik':['Balchik','Балчик'],
+  'Kavarna':['Kavarna','Каварна'],
+  'Carevo':['Tsarevo','Царево'],
+  'Pomorije':['Pomorie','Поморие'],
+  'Ahtopol':['Ahtopol','Ахтополь'],
+  'Sinaja':['Sinaia','Синая'],
+  'Bran':['Bran','Бран'],
+  'Mamaja':['Mamaia','Мамая'],
+  'Leče':['Lecce','Лечче'],
+  'Modena':['Modena','Модена'],
+  'Brešija':['Brescia','Брешиа'],
+  'Salerno':['Salerno','Салерно'],
+  'Abano Terme':['Abano Terme','Абано-Терме'],
+  'Montekatini Terme':['Montecatini Terme','Монтекатини-Терме'],
+  'Fjuđi':['Fiuggi','Фьюджи'],
+  'Salsomađore Terme':['Salsomaggiore Terme','Сальсомаджоре-Терме'],
+  'Dolomiti':['The Dolomites','Доломиты'],
+  'Val Gardena':['Val Gardena','Валь-Гардена'],
+  'Livinjo':['Livigno','Ливиньо'],
+  'Etna':['Mount Etna','Этна'],
+  'Pompeji':['Pompeii','Помпеи'],
+  'Asizi':['Assisi','Ассизи'],
+  'Sijena':['Siena','Сиена'],
+  'San Đimonjano':['San Gimignano','Сан-Джиминьяно'],
+  'Orvieto':['Orvieto','Орвието'],
+  'Ravena':['Ravenna','Равенна'],
+  'Amalfi':['Amalfi','Амальфи'],
+  'Pozitano':['Positano','Позитано'],
+  'Sorento':['Sorrento','Сорренто'],
+  'Kapri':['Capri','Капри'],
+  'Portofino':['Portofino','Портофино'],
+  'Elba':['Elba','Эльба'],
+  'Taormina':['Taormina','Таормина'],
+  'Luka':['Lucca','Лукка'],
+  'Činkve Tere':['Cinque Terre','Чинкве-Терре'],
+  'San Marino':['San Marino','Сан-Марино'],
+  'Vatikan':['Vatican City','Ватикан'],
+  'Mantova':['Mantua','Мантуя'],
+  'Ferara':['Ferrara','Феррара'],
+  'Urbino':['Urbino','Урбино'],
+  'Matera':['Matera','Матера'],
+  'Alberobelo':['Alberobello','Альберобелло'],
+  'Ostuni':['Ostuni','Остуни'],
+  'Poljinjano a Mare':['Polignano a Mare','Полиньяно-а-Маре'],
+  'Salamanka':['Salamanca','Саламанка'],
+  'Toledo':['Toledo','Толедо'],
+  'Kordoba':['Córdoba','Кордова'],
+  'Segovija':['Segovia','Сеговия'],
+  'Ronda':['Ronda','Ронда'],
+  'Kadiz':['Cádiz','Кадис'],
+  'Marbelja':['Marbella','Марбелья'],
+  'Kuenka':['Cuenca','Куэнка'],
+  'Avila':['Ávila','Авила'],
+  'Halštat':['Hallstatt','Гальштат'],
+  'Cel am Ze':['Zell am See','Целль-ам-Зее'],
+  'Kicbuel':['Kitzbühel','Кицбюэль'],
+  'Sankt Anton am Arlberg':['St. Anton am Arlberg','Санкт-Антон-ам-Арльберг'],
+  'Baden kod Beča':['Baden bei Wien','Баден под Веной'],
+  'Melk':['Melk','Мельк'],
+  'Verfen':['Werfen','Верфен'],
+  'Banska Bistrica':['Banská Bystrica','Банска-Бистрица'],
+  'Visoke Tatre':['High Tatras','Высокие Татры'],
+  'Kembridž':['Cambridge','Кембридж'],
+  'Oksford':['Oxford','Оксфорд'],
+  'Versaj':['Versailles','Версаль'],
+  'Kan':['Caen','Кан'],
+  'Dižon':['Dijon','Дижон'],
+  'Anže':['Angers','Анже'],
+  'Le Mans':['Le Mans','Ле-Ман'],
+  'Amjen':['Amiens','Амьен'],
+  'Orlean':['Orléans','Орлеан'],
+  'Mec':['Metz','Мец'],
+  'Hajdelberg':['Heidelberg','Гейдельберг'],
+  'Bon':['Bonn','Бонн'],
+  'Visbaden':['Wiesbaden','Висбаден'],
+  'Majnc':['Mainz','Майнц'],
+  'Ahen':['Aachen','Ахен'],
+  'Regensburg':['Regensburg','Регенсбург'],
+  'Vurcburg':['Würzburg','Вюрцбург'],
+  'Trir':['Trier','Трир'],
+  'Potsdam':['Potsdam','Потсдам'],
+  'Kil':['Kiel','Киль'],
+  'Magdeburg':['Magdeburg','Магдебург'],
+  'Kemnic':['Chemnitz','Хемниц'],
+  'Ulm':['Ulm','Ульм'],
+  'Frajburg':['Freiburg','Фрайбург'],
+  'Konstanc':['Konstanz','Констанц'],
+  'Hag':['The Hague','Гаага'],
+  'Utreht':['Utrecht','Утрехт'],
+  'Lilehamer':['Lillehammer','Лиллехаммер'],
+  'Gejrangerfjord':['Geirangerfjord','Гейрангер-фьорд'],
+  'Upsala':['Uppsala','Уппсала'],
+  'Lund':['Lund','Лунд'],
+  'Odense':['Odense','Оденсе'],
+  'Roskilde':['Roskilde','Роскилле'],
+  'Helsingor':['Helsingør','Хельсингёр'],
+  'Lahti':['Lahti','Лахти'],
+  'Sankt Moric':['St. Moritz','Санкт-Мориц'],
+  'Lucern':['Lucerne','Люцерн'],
+  'Interlaken':['Interlaken','Интерлакен'],
+  'Cermat':['Zermatt','Церматт'],
+  'Davos':['Davos','Давос'],
+  'Kijev':['Kyiv','Киев'],
+  'Lavov':['Lviv','Львов'],
+  'Odesa':['Odesa','Одесса'],
+  'Harkov':['Kharkiv','Харьков'],
+  'Mostar':['Mostar','Мостар'],
+  'Mikonos':['Mykonos','Миконос'],
+  'Rodos':['Rhodes','Родос'],
+  'Krit':['Crete','Крит'],
+  'Barselona':['Barcelona','Барселона'],
+  'Ibica':['Ibiza','Ибица'],
+  'Minhen':['Munich','Мюнхен'],
+  'Tel Aviv':['Tel Aviv','Тель-Авив'],
+  'Dubai':['Dubai','Дубай'],
+  'Kairo':['Cairo','Каир'],
+  'Šarm El Šeik':['Sharm El Sheikh','Шарм-эш-Шейх'],
+  'Marakeš':['Marrakech','Марракеш'],
+  'Njujork':['New York','Нью-Йорк'],
+  'Majami':['Miami','Майами'],
+  'Los Anđeles':['Los Angeles','Лос-Анджелес'],
+  'Bangkok':['Bangkok','Бангкок'],
+  'Puket':['Phuket','Пхукет'],
+  'Tokio':['Tokyo','Токио'],
+  'Bali':['Bali','Бали'],
+  'Singapur':['Singapore','Сингапур'],
+  'Sidnej':['Sydney','Сидней'],
+  'Kejptaun':['Cape Town','Кейптаун'],
+  'Bodrum':['Bodrum','Бодрум'],
+  'Kortina d\'Ampeco':['Cortina d\'Ampezzo','Кортина-д\'Ампеццо'],
+  'Novi Sad':['Novi Sad','Нови-Сад'],
+  'Subotica':['Subotica','Суботица'],
+  'Kragujevac':['Kragujevac','Крагуевац'],
+  'Kraljevo':['Kraljevo','Кралево'],
+  'Novi Pazar':['Novi Pazar','Нови-Пазар'],
+  'Šabac':['Šabac','Шабац'],
+  'Zrenjanin':['Zrenjanin','Зренянин'],
+  'Pančevo':['Pančevo','Панчево'],
+  'Čačak':['Čačak','Чачак'],
+  'Kruševac':['Kruševac','Крушевац'],
+  'Leskovac':['Leskovac','Лесковац'],
+  'Vranje':['Vranje','Вранье'],
+  'Užice':['Užice','Ужице'],
+  'Valjevo':['Valjevo','Валево'],
+  'Smederevo':['Smederevo','Смедерево'],
+  'Sombor':['Sombor','Сомбор'],
+  'Zaječar':['Zaječar','Заечар'],
+  'Pirot':['Pirot','Пирот'],
+  'Loznica':['Loznica','Лозница'],
+  'Požarevac':['Požarevac','Пожаревац'],
+  'Sremska Mitrovica':['Sremska Mitrovica','Сремска-Митровица'],
+  'Vršac':['Vršac','Вршац'],
+  'Kikinda':['Kikinda','Кикинда'],
+  'Jagodina':['Jagodina','Ягодина'],
+  'Paraćin':['Paraćin','Параджин'],
+  'Bor':['Bor','Бор'],
+  'Negotin':['Negotin','Неготин'],
+  'Prijepolje':['Prijepolje','Приеполье'],
+  'Priboj':['Priboj','Прибой'],
+  'Sjenica':['Sjenica','Сеница'],
+  'Prokuplje':['Prokuplje','Прокупле'],
+  'Vrnjačka Banja':['Vrnjačka Banja','Врнячка-Баня'],
+  'Sokobanja':['Sokobanja','Сокобаня'],
+  'Aleksinac':['Aleksinac','Алексинац'],
+  'Vlasotince':['Vlasotince','Власотинце'],
+  'Surdulica':['Surdulica','Сурдулица'],
+  'Ivanjica':['Ivanjica','Иваньица'],
+  'Ćuprija':['Ćuprija','Чуприя'],
+  'Svilajnac':['Svilajnac','Свилайнац'],
+  'Senta':['Senta','Сента'],
+  'Bečej':['Bečej','Бечей'],
+  'Vrbas':['Vrbas','Врбас'],
+  'Bačka Palanka':['Bačka Palanka','Бачка-Паланка'],
+  'Ruma':['Ruma','Рума'],
+  'Inđija':['Inđija','Инджия'],
+  'Stara Pazova':['Stara Pazova','Стара-Пазова'],
+  'Šid':['Šid','Шид'],
+  'Budva':['Budva','Будва'],
+  'Danilovgrad':['Danilovgrad','Даниловград'],
+  'Pljevlja':['Pljevlja','Плевля'],
+  'Berane':['Berane','Беране'],
+  'Rožaje':['Rožaje','Рожае'],
+  'Bijelo Polje':['Bijelo Polje','Биело-Поле'],
+  'Bar':['Bar','Бар'],
+  'Herceg Novi':['Herceg Novi','Херцег-Нови'],
+  'Igalo':['Igalo','Игало'],
+  'Nikšić':['Nikšić','Никшич'],
+  'Cetinje':['Cetinje','Цетине'],
+  'Ulcinj':['Ulcinj','Ульцинь'],
+  'Petrovac':['Petrovac','Петровац'],
+  'Sutomore':['Sutomore','Сутоморе'],
+  'Perast':['Perast','Пераст'],
+  'Risan':['Risan','Рисан'],
+  'Kotor':['Kotor','Котор'],
+  'Kolašin':['Kolašin','Колашин'],
+  'Žabljak':['Žabljak','Жабляк'],
+  'Zenica':['Zenica','Зеница'],
+  'Prijedor':['Prijedor','Приедор'],
+  'Bihać':['Bihać','Бихач'],
+  'Doboj':['Doboj','Добой'],
+  'Trebinje':['Trebinje','Требинье'],
+  'Foča':['Foča','Фоча'],
+  'Bijeljina':['Bijeljina','Биелина'],
+  'Brčko':['Brčko','Брчко'],
+  'Travnik':['Travnik','Травник'],
+  'Livno':['Livno','Ливно'],
+  'Goražde':['Goražde','Горажде'],
+  'Vukovar':['Vukovar','Вуковар'],
+  'Slavonski Brod':['Slavonski Brod','Славонски-Брод'],
+  'Varaždin':['Varaždin','Вараждин'],
+  'Knin':['Knin','Книн'],
+  'Šibenik':['Šibenik','Шибеник'],
+  'Makarska':['Makarska','Макарска'],
+  'Trogir':['Trogir','Трогир'],
+  'Hvar':['Hvar','Хвар'],
+  'Rovinj':['Rovinj','Ровинь'],
+  'Sisak':['Sisak','Сисак'],
+  'Karlovac':['Karlovac','Карловац'],
+  'Bitolj':['Bitola','Битоль'],
+  'Tetovo':['Tetovo','Тетово'],
+  'Kumanovo':['Kumanovo','Куманово'],
+  'Gostivar':['Gostivar','Гостивар'],
+  'Strumica':['Strumica','Струмица'],
+  'Prilep':['Prilep','Прилеп'],
+  'Struga':['Struga','Струга'],
+  'Veles':['Veles','Велес'],
+  'Prizren':['Prizren','Призрен'],
+  'Peć':['Peć','Печ'],
+  'Đakovica':['Đakovica','Джяковица'],
+  'Mitrovica':['Mitrovica','Митровица'],
+  'Skadar':['Shkodër','Шкодер'],
+  'Sarandë':['Sarandë','Саранда'],
+  'Sarande':['Sarandë','Саранда'],
+  'Vlorë':['Vlorë','Влёра'],
+  'Durrës':['Durrës','Дуррес'],
+  'Bled':['Bled','Блед'],
+  'Kranjska Gora':['Kranjska Gora','Краньска-Гора'],
+  'Kranj':['Kranj','Крань'],
+  'Bohinj':['Bohinj','Бохинь'],
+  'Bovec':['Bovec','Бовец'],
+  'Kobarid':['Kobarid','Кобарид'],
+  'Logarska Dolina':['Logarska Dolina','Логарская долина'],
+  'Idrija':['Idrija','Идрия'],
+  'Postojna':['Postojna','Постойна'],
+  'Škocjanske jame':['Škocjan Caves','Шкоцянские пещеры'],
+  'Predjama':['Predjama','Предъяма'],
+  'Vintgar':['Vintgar','Винтгар'],
+  'Kamnik':['Kamnik','Камник'],
+  'Celje':['Celje','Целье'],
+  'Novo Mesto':['Novo Mesto','Ново-Место'],
+  'Rogaška Slatina':['Rogaška Slatina','Рогашка-Слатина'],
+  'Dolenjske Toplice':['Dolenjske Toplice','Доленьске-Топлице'],
+  'Laško':['Laško','Лашко'],
+  'Triglav':['Triglav','Триглав'],
+  'Vogel':['Vogel','Вогел'],
+  'Krvavec':['Krvavec','Крвавец'],
+  'Mangart':['Mangart','Мангарт'],
+  'Škofja Loka':['Škofja Loka','Шкофья-Лока'],
+  'Nova Gorica':['Nova Gorica','Нова-Горица'],
+  'Jesenice':['Jesenice','Есенице'],
+  'Velenje':['Velenje','Веленье'],
+  'Čatež':['Čatež','Чатеж'],
+  'Ptuj':['Ptuj','Птуй'],
+  'Terme Ptuj':['Terme Ptuj','Терме-Птуй'],
+  'Pohorje':['Pohorje','Похорье'],
+  'Slovenj Gradec':['Slovenj Gradec','Словень-Градец'],
+  'Murska Sobota':['Murska Sobota','Мурска-Собота'],
+  'Moravske Toplice':['Moravske Toplice','Моравске-Топлице'],
+  'Radenci':['Radenci','Раденци'],
+  'Koper':['Koper','Копер'],
+  'Piran':['Piran','Пиран'],
+  'Portorož':['Portorož','Порторож'],
+  'Izola':['Izola','Изола'],
+  'Ankaran':['Ankaran','Анкаран'],
+};
+const COUNTRY_L10N = {
+  'Albanija':['Albania','Албания'],
+  'Argentina':['Argentina','Аргентина'],
+  'Australija':['Australia','Австралия'],
+  'Austrija':['Austria','Австрия'],
+  'Azerbejdžan':['Azerbaijan','Азербайджан'],
+  'Belgija':['Belgium','Бельгия'],
+  'Bosna i Hercegovina':['Bosnia and Herzegovina','Босния и Герцеговина'],
+  'Brazil':['Brazil','Бразилия'],
+  'Bugarska':['Bulgaria','Болгария'],
+  'Crna Gora':['Montenegro','Черногория'],
+  'Danska':['Denmark','Дания'],
+  'Egipat':['Egypt','Египет'],
+  'Estonija':['Estonia','Эстония'],
+  'Filipini':['Philippines','Филиппины'],
+  'Finska':['Finland','Финляндия'],
+  'Francuska':['France','Франция'],
+  'Gruzija':['Georgia','Грузия'],
+  'Grčka':['Greece','Греция'],
+  'Holandija':['Netherlands','Нидерланды'],
+  'Hrvatska':['Croatia','Хорватия'],
+  'Indija':['India','Индия'],
+  'Indonezija':['Indonesia','Индонезия'],
+  'Irska':['Ireland','Ирландия'],
+  'Island':['Iceland','Исландия'],
+  'Italija':['Italy','Италия'],
+  'Izrael':['Israel','Израиль'],
+  'Japan':['Japan','Япония'],
+  'Južna Koreja':['South Korea','Южная Корея'],
+  'Južnoafrička Republika':['South Africa','Южно-Африканская Республика'],
+  'Kanada':['Canada','Канада'],
+  'Katar':['Qatar','Катар'],
+  'Kenija':['Kenya','Кения'],
+  'Kina':['China','Китай'],
+  'Kipar':['Cyprus','Кипр'],
+  'Kolumbija':['Colombia','Колумбия'],
+  'Kosovo':['Kosovo','Косово'],
+  'Letonija':['Latvia','Латвия'],
+  'Litvanija':['Lithuania','Литва'],
+  'Luksemburg':['Luxembourg','Люксембург'],
+  'Maldivi':['Maldives','Мальдивы'],
+  'Malezija':['Malaysia','Малайзия'],
+  'Malta':['Malta','Мальта'],
+  'Maroko':['Morocco','Марокко'],
+  'Mađarska':['Hungary','Венгрия'],
+  'Meksiko':['Mexico','Мексика'],
+  'Monako':['Monaco','Монако'],
+  'Nemačka':['Germany','Германия'],
+  'Norveška':['Norway','Норвегия'],
+  'Novi Zeland':['New Zealand','Новая Зеландия'],
+  'Peru':['Peru','Перу'],
+  'Poljska':['Poland','Польша'],
+  'Portugalija':['Portugal','Португалия'],
+  'Rumunija':['Romania','Румыния'],
+  'SAD':['USA','США'],
+  'Saudijska Arabija':['Saudi Arabia','Саудовская Аравия'],
+  'Severna Makedonija':['North Macedonia','Северная Македония'],
+  'Singapur':['Singapore','Сингапур'],
+  'Slovačka':['Slovakia','Словакия'],
+  'Slovenija':['Slovenia','Словения'],
+  'Srbija':['Serbia','Сербия'],
+  'Tajland':['Thailand','Таиланд'],
+  'Turska':['Turkey','Турция'],
+  'UAE':['UAE','ОАЭ'],
+  'Velika Britanija':['United Kingdom','Великобритания'],
+  'Vijetnam':['Vietnam','Вьетнам'],
+  'Češka':['Czechia','Чехия'],
+  'Španija':['Spain','Испания'],
+  'Švajcarska':['Switzerland','Швейцария'],
+  'Švedska':['Sweden','Швеция'],
+};
+// Padež "u + država" (samo za napomene o aerodromima): [en, ru].
+const COUNTRY_LOC_L10N = {'Hrvatskoj':['Croatia','Хорватии'], 'Italiji':['Italy','Италии']};
+let _cityNorm = null, _countryNorm = null;
+function _normTable(srcTable){
+  const o = {};
+  Object.keys(srcTable).forEach(k => { o[normalizeSr(k)] = srcTable[k]; });
+  return o;
+}
+function cityLabel(name){
+  const lang = getLang();
+  if (lang === 'sr' || name == null) return name;
+  const raw = String(name).trim();
+  if (!raw) return name;
+  if (!_cityNorm) _cityNorm = _normTable(CITY_L10N);
+  const e = _cityNorm[normalizeSr(raw)];
+  return e ? (lang === 'ru' ? e[1] : e[0]) : name;
+}
+function countryLabel(name){
+  const lang = getLang();
+  if (lang === 'sr' || name == null) return name;
+  if (!_countryNorm) _countryNorm = _normTable(COUNTRY_L10N);
+  const e = _countryNorm[normalizeSr(String(name).trim())];
+  return e ? (lang === 'ru' ? e[1] : e[0]) : name;
+}
+// '1h30' / '40 min' / '2h' (format iz AIRPORT_DB) → '1 h 30 min' / '1 ч 30 мин'
+function driveTimeLabel(tStr){
+  if (getLang() === 'sr') return tStr;
+  const m = /^(?:(\d+)h(\d+)?)?(?:(\d+) min)?$/.exec(String(tStr || '').trim());
+  if (!m) return tStr;
+  const hh = m[1], mm = m[2] || m[3];
+  return [hh ? hh + ' ' + t('unit_h') : '', mm ? mm + ' ' + t('unit_min') : ''].filter(Boolean).join(' ');
+}
+
 function applyStaticI18n(){
   const lang = getLang();
   document.documentElement.lang = lang;
@@ -596,6 +1508,7 @@ function applyStaticI18n(){
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
   document.querySelectorAll('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label'))); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.setAttribute('title', t(el.getAttribute('data-i18n-title'))); });
   const btn = document.getElementById('langSwitchBtn');
   if (btn){
     btn.classList.toggle('is-en', lang === 'en');
@@ -1850,177 +2763,177 @@ const AIRPORT_DB = {
   'beograd': {hasAirport:true},
   'nis': {hasAirport:true, limited:true},
   // --- Srbija: bez sopstvenog aerodroma ---
-  'novi sad': {nearest:'Beograd', note:'Novi Sad nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
-  'subotica': {nearest:'Budimpešta', note:'Subotica nema svoj aerodrom — najbliži je Budimpešta (oko 2h30 vožnje), bliže nego Beograd.'},
-  'kragujevac': {nearest:'Beograd', note:'Kragujevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
-  'kraljevo': {nearest:'Niš', note:'Kraljevo nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa za neke pravce.'},
-  'novi pazar': {nearest:'Beograd', note:'Novi Pazar nema svoj aerodrom — najbliži veći izbor letova je Beograd, a Podgorica je bliža za neke pravce.'},
-  'sabac': {nearest:'Beograd', note:'Šabac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
-  'zrenjanin': {nearest:'Beograd', note:'Zrenjanin nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
-  'pancevo': {nearest:'Beograd', note:'Pančevo nema svoj aerodrom — najbliži je Beograd (oko 30 min vožnje).'},
-  'cacak': {nearest:'Beograd', note:'Čačak nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
-  'krusevac': {nearest:'Niš', note:'Kruševac nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
-  'leskovac': {nearest:'Niš', note:'Leskovac nema svoj aerodrom — najbliži je Niš (oko 40 min vožnje).'},
-  'vranje': {nearest:'Niš', note:'Vranje nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
-  'uzice': {nearest:'Beograd', note:'Užice nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje).'},
-  'valjevo': {nearest:'Beograd', note:'Valjevo nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
-  'smederevo': {nearest:'Beograd', note:'Smederevo nema svoj aerodrom — najbliži je Beograd (oko 45 min vožnje).'},
-  'sombor': {nearest:'Beograd', note:'Sombor nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
-  'zajecar': {nearest:'Niš', note:'Zaječar nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).'},
-  'pirot': {nearest:'Niš', note:'Pirot nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
-  'loznica': {nearest:'Beograd', note:'Loznica nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
-  'pozarevac': {nearest:'Beograd', note:'Požarevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
-  'sremska mitrovica': {nearest:'Beograd', note:'Sremska Mitrovica nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
-  'vrsac': {nearest:'Beograd', note:'Vršac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
-  'kikinda': {nearest:'Beograd', note:'Kikinda nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).'},
-  'jagodina': {nearest:'Niš', note:'Jagodina nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa.'},
-  'paracin': {nearest:'Niš', note:'Paraćin nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
-  'bor': {nearest:'Niš', note:'Bor nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).'},
-  'negotin': {nearest:'Niš', note:'Negotin nema svoj aerodrom — najbliži je Niš (oko 2h vožnje).'},
-  'prijepolje': {nearest:'Podgorica', note:'Prijepolje nema svoj aerodrom — najbliži je Podgorica (oko 1h30 vožnje), Beograd je alternativa.'},
-  'priboj': {nearest:'Podgorica', note:'Priboj nema svoj aerodrom — najbliži je Podgorica (oko 1h30 vožnje).'},
-  'sjenica': {nearest:'Beograd', note:'Sjenica nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje), Podgorica je alternativa.'},
-  'prokuplje': {nearest:'Niš', note:'Prokuplje nema svoj aerodrom — najbliži je Niš (oko 40 min vožnje).'},
-  'vrnjacka banja': {nearest:'Niš', note:'Vrnjačka Banja nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje), Beograd je alternativa.'},
-  'sokobanja': {nearest:'Niš', note:'Sokobanja nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
-  'aleksinac': {nearest:'Niš', note:'Aleksinac nema svoj aerodrom — najbliži je Niš (oko 30 min vožnje).'},
-  'vlasotince': {nearest:'Niš', note:'Vlasotince nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).'},
-  'surdulica': {nearest:'Niš', note:'Surdulica nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).'},
-  'ivanjica': {nearest:'Beograd', note:'Ivanjica nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje).'},
-  'cuprija': {nearest:'Niš', note:'Ćuprija nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa.'},
-  'svilajnac': {nearest:'Beograd', note:'Svilajnac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
-  'senta': {nearest:'Beograd', note:'Senta nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje), Budimpešta je alternativa.'},
-  'becej': {nearest:'Beograd', note:'Bečej nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
-  'vrbas': {nearest:'Beograd', note:'Vrbas nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
-  'backa palanka': {nearest:'Beograd', note:'Bačka Palanka nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).'},
-  'ruma': {nearest:'Beograd', note:'Ruma nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).'},
-  'indjija': {nearest:'Beograd', note:'Inđija nema svoj aerodrom — najbliži je Beograd (oko 40 min vožnje).'},
-  'stara pazova': {nearest:'Beograd', note:'Stara Pazova nema svoj aerodrom — najbliži je Beograd (oko 30 min vožnje).'},
-  'sid': {nearest:'Beograd', note:'Šid nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje), Zagreb je alternativa.'},
+  'novi sad': {nearest:'Beograd', note:'Novi Sad nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Novi Sad', k:'own', t:'1h'},
+  'subotica': {nearest:'Budimpešta', note:'Subotica nema svoj aerodrom — najbliži je Budimpešta (oko 2h30 vožnje), bliže nego Beograd.', i18n:{en:'Subotica has no airport of its own — the nearest is Budapest (about 2 h 30 min by car), closer than Belgrade.', ru:'Суботица: собственного аэропорта нет, ближайший — Будапешт (около 2 ч 30 мин на машине), он ближе, чем Белград.'}},
+  'kragujevac': {nearest:'Beograd', note:'Kragujevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Kragujevac', k:'own', t:'1h'},
+  'kraljevo': {nearest:'Niš', note:'Kraljevo nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa za neke pravce.', i18n:{en:'Kraljevo has no airport of its own — the nearest is Niš (about 1 h by car); Belgrade is an alternative for some routes.', ru:'Кралево: собственного аэропорта нет, ближайший — Ниш (около 1 ч на машине); для некоторых направлений альтернатива — Белград.'}},
+  'novi pazar': {nearest:'Beograd', note:'Novi Pazar nema svoj aerodrom — najbliži veći izbor letova je Beograd, a Podgorica je bliža za neke pravce.', i18n:{en:'Novi Pazar has no airport of its own — the widest choice of flights nearby is from Belgrade, while Podgorica is closer for some routes.', ru:'Нови-Пазар: собственного аэропорта нет, ближайший большой выбор рейсов — в Белграде, а для некоторых направлений ближе Подгорица.'}},
+  'sabac': {nearest:'Beograd', note:'Šabac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Šabac', k:'own', t:'1h30'},
+  'zrenjanin': {nearest:'Beograd', note:'Zrenjanin nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Zrenjanin', k:'own', t:'1h'},
+  'pancevo': {nearest:'Beograd', note:'Pančevo nema svoj aerodrom — najbliži je Beograd (oko 30 min vožnje).', c:'Pančevo', k:'own', t:'30 min'},
+  'cacak': {nearest:'Beograd', note:'Čačak nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).', c:'Čačak', k:'own', t:'2h'},
+  'krusevac': {nearest:'Niš', note:'Kruševac nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).', c:'Kruševac', k:'own', t:'1h'},
+  'leskovac': {nearest:'Niš', note:'Leskovac nema svoj aerodrom — najbliži je Niš (oko 40 min vožnje).', c:'Leskovac', k:'own', t:'40 min'},
+  'vranje': {nearest:'Niš', note:'Vranje nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).', c:'Vranje', k:'own', t:'1h'},
+  'uzice': {nearest:'Beograd', note:'Užice nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje).', c:'Užice', k:'own', t:'3h'},
+  'valjevo': {nearest:'Beograd', note:'Valjevo nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Valjevo', k:'own', t:'1h30'},
+  'smederevo': {nearest:'Beograd', note:'Smederevo nema svoj aerodrom — najbliži je Beograd (oko 45 min vožnje).', c:'Smederevo', k:'own', t:'45 min'},
+  'sombor': {nearest:'Beograd', note:'Sombor nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).', c:'Sombor', k:'own', t:'2h'},
+  'zajecar': {nearest:'Niš', note:'Zaječar nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).', c:'Zaječar', k:'own', t:'1h30'},
+  'pirot': {nearest:'Niš', note:'Pirot nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).', c:'Pirot', k:'own', t:'1h'},
+  'loznica': {nearest:'Beograd', note:'Loznica nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).', c:'Loznica', k:'own', t:'2h'},
+  'pozarevac': {nearest:'Beograd', note:'Požarevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Požarevac', k:'own', t:'1h'},
+  'sremska mitrovica': {nearest:'Beograd', note:'Sremska Mitrovica nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Sremska Mitrovica', k:'own', t:'1h'},
+  'vrsac': {nearest:'Beograd', note:'Vršac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Vršac', k:'own', t:'1h30'},
+  'kikinda': {nearest:'Beograd', note:'Kikinda nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje).', c:'Kikinda', k:'own', t:'2h'},
+  'jagodina': {nearest:'Niš', note:'Jagodina nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa.', c:'Jagodina', k:'own', t:'1h', alt:'Beograd'},
+  'paracin': {nearest:'Niš', note:'Paraćin nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).', c:'Paraćin', k:'own', t:'1h'},
+  'bor': {nearest:'Niš', note:'Bor nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).', c:'Bor', k:'own', t:'1h30'},
+  'negotin': {nearest:'Niš', note:'Negotin nema svoj aerodrom — najbliži je Niš (oko 2h vožnje).', c:'Negotin', k:'own', t:'2h'},
+  'prijepolje': {nearest:'Podgorica', note:'Prijepolje nema svoj aerodrom — najbliži je Podgorica (oko 1h30 vožnje), Beograd je alternativa.', c:'Prijepolje', k:'own', t:'1h30', alt:'Beograd'},
+  'priboj': {nearest:'Podgorica', note:'Priboj nema svoj aerodrom — najbliži je Podgorica (oko 1h30 vožnje).', c:'Priboj', k:'own', t:'1h30'},
+  'sjenica': {nearest:'Beograd', note:'Sjenica nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje), Podgorica je alternativa.', c:'Sjenica', k:'own', t:'3h', alt:'Podgorica'},
+  'prokuplje': {nearest:'Niš', note:'Prokuplje nema svoj aerodrom — najbliži je Niš (oko 40 min vožnje).', c:'Prokuplje', k:'own', t:'40 min'},
+  'vrnjacka banja': {nearest:'Niš', note:'Vrnjačka Banja nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje), Beograd je alternativa.', c:'Vrnjačka Banja', k:'own', t:'1h30', alt:'Beograd'},
+  'sokobanja': {nearest:'Niš', note:'Sokobanja nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).', c:'Sokobanja', k:'own', t:'1h'},
+  'aleksinac': {nearest:'Niš', note:'Aleksinac nema svoj aerodrom — najbliži je Niš (oko 30 min vožnje).', c:'Aleksinac', k:'own', t:'30 min'},
+  'vlasotince': {nearest:'Niš', note:'Vlasotince nema svoj aerodrom — najbliži je Niš (oko 1h vožnje).', c:'Vlasotince', k:'own', t:'1h'},
+  'surdulica': {nearest:'Niš', note:'Surdulica nema svoj aerodrom — najbliži je Niš (oko 1h30 vožnje).', c:'Surdulica', k:'own', t:'1h30'},
+  'ivanjica': {nearest:'Beograd', note:'Ivanjica nema svoj aerodrom — najbliži je Beograd (oko 3h vožnje).', c:'Ivanjica', k:'own', t:'3h'},
+  'cuprija': {nearest:'Niš', note:'Ćuprija nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa.', c:'Ćuprija', k:'own', t:'1h', alt:'Beograd'},
+  'svilajnac': {nearest:'Beograd', note:'Svilajnac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Svilajnac', k:'own', t:'1h30'},
+  'senta': {nearest:'Beograd', note:'Senta nema svoj aerodrom — najbliži je Beograd (oko 2h vožnje), Budimpešta je alternativa.', c:'Senta', k:'own', t:'2h', alt:'Budimpešta'},
+  'becej': {nearest:'Beograd', note:'Bečej nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Bečej', k:'own', t:'1h30'},
+  'vrbas': {nearest:'Beograd', note:'Vrbas nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Vrbas', k:'own', t:'1h30'},
+  'backa palanka': {nearest:'Beograd', note:'Bačka Palanka nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Bačka Palanka', k:'own', t:'1h30'},
+  'ruma': {nearest:'Beograd', note:'Ruma nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Ruma', k:'own', t:'1h'},
+  'indjija': {nearest:'Beograd', note:'Inđija nema svoj aerodrom — najbliži je Beograd (oko 40 min vožnje).', c:'Inđija', k:'own', t:'40 min'},
+  'stara pazova': {nearest:'Beograd', note:'Stara Pazova nema svoj aerodrom — najbliži je Beograd (oko 30 min vožnje).', c:'Stara Pazova', k:'own', t:'30 min'},
+  'sid': {nearest:'Beograd', note:'Šid nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje), Zagreb je alternativa.', c:'Šid', k:'own', t:'1h30', alt:'Zagreb'},
   // --- Crna Gora: aerodromi ---
   'podgorica': {hasAirport:true},
   'tivat': {hasAirport:true},
   // --- Crna Gora: bez sopstvenog aerodroma ---
-  'budva': {nearest:'Tivat', note:'Budva nema svoj aerodrom — najbliži je Tivat (oko 25 min vožnje).'},
-  'danilovgrad': {nearest:'Podgorica', note:'Danilovgrad nema svoj aerodrom — najbliži je Podgorica (oko 20 min vožnje).'},
-  'pljevlja': {nearest:'Podgorica', note:'Pljevlja nema svoj aerodrom — najbliži je Podgorica (oko 2h30 vožnje), Sarajevo je alternativa.'},
-  'berane': {nearest:'Podgorica', note:'Berane nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).'},
-  'rozaje': {nearest:'Podgorica', note:'Rožaje nema svoj aerodrom — najbliži je Podgorica (oko 2h30 vožnje).'},
-  'bijelo polje': {nearest:'Podgorica', note:'Bijelo Polje nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).'},
-  'bar': {nearest:'Tivat', note:'Bar nema svoj aerodrom — najbliži je Tivat (oko 40 min vožnje), Podgorica je alternativa (oko 1h).'},
-  'herceg novi': {nearest:'Tivat', note:'Herceg Novi nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).'},
-  'igalo': {nearest:'Tivat', note:'Igalo nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).'},
-  'niksic': {nearest:'Podgorica', note:'Nikšić nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).'},
-  'cetinje': {nearest:'Podgorica', note:'Cetinje nema svoj aerodrom — najbliži je Podgorica (oko 30 min vožnje).'},
-  'ulcinj': {nearest:'Tivat', note:'Ulcinj nema svoj aerodrom — najbliži je Tivat (oko 1h vožnje), Podgorica je alternativa.'},
-  'petrovac': {nearest:'Tivat', note:'Petrovac nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).'},
-  'sutomore': {nearest:'Tivat', note:'Sutomore nema svoj aerodrom — najbliži je Tivat (oko 45 min vožnje).'},
-  'perast': {nearest:'Tivat', note:'Perast nema svoj aerodrom — najbliži je Tivat (oko 20 min vožnje).'},
-  'risan': {nearest:'Tivat', note:'Risan nema svoj aerodrom — najbliži je Tivat (oko 25 min vožnje).'},
-  'kotor': {nearest:'Tivat', note:'Kotor nema svoj aerodrom — najbliži je Tivat (oko 15 min vožnje).'},
-  'kolasin': {nearest:'Podgorica', note:'Kolašin nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).'},
-  'zabljak': {nearest:'Podgorica', note:'Žabljak nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).'},
+  'budva': {nearest:'Tivat', note:'Budva nema svoj aerodrom — najbliži je Tivat (oko 25 min vožnje).', c:'Budva', k:'own', t:'25 min'},
+  'danilovgrad': {nearest:'Podgorica', note:'Danilovgrad nema svoj aerodrom — najbliži je Podgorica (oko 20 min vožnje).', c:'Danilovgrad', k:'own', t:'20 min'},
+  'pljevlja': {nearest:'Podgorica', note:'Pljevlja nema svoj aerodrom — najbliži je Podgorica (oko 2h30 vožnje), Sarajevo je alternativa.', c:'Pljevlja', k:'own', t:'2h30', alt:'Sarajevo'},
+  'berane': {nearest:'Podgorica', note:'Berane nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).', c:'Berane', k:'own', t:'2h'},
+  'rozaje': {nearest:'Podgorica', note:'Rožaje nema svoj aerodrom — najbliži je Podgorica (oko 2h30 vožnje).', c:'Rožaje', k:'own', t:'2h30'},
+  'bijelo polje': {nearest:'Podgorica', note:'Bijelo Polje nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).', c:'Bijelo Polje', k:'own', t:'2h'},
+  'bar': {nearest:'Tivat', note:'Bar nema svoj aerodrom — najbliži je Tivat (oko 40 min vožnje), Podgorica je alternativa (oko 1h).', i18n:{en:'Bar has no airport of its own — the nearest is Tivat (about 40 min by car); Podgorica is an alternative (about 1 h).', ru:'Бар: собственного аэропорта нет, ближайший — Тиват (около 40 мин на машине); альтернатива — Подгорица (около 1 ч).'}},
+  'herceg novi': {nearest:'Tivat', note:'Herceg Novi nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).', c:'Herceg Novi', k:'own', t:'35 min'},
+  'igalo': {nearest:'Tivat', note:'Igalo nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).', c:'Igalo', k:'own', t:'35 min'},
+  'niksic': {nearest:'Podgorica', note:'Nikšić nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).', c:'Nikšić', k:'own', t:'1h'},
+  'cetinje': {nearest:'Podgorica', note:'Cetinje nema svoj aerodrom — najbliži je Podgorica (oko 30 min vožnje).', c:'Cetinje', k:'own', t:'30 min'},
+  'ulcinj': {nearest:'Tivat', note:'Ulcinj nema svoj aerodrom — najbliži je Tivat (oko 1h vožnje), Podgorica je alternativa.', c:'Ulcinj', k:'own', t:'1h', alt:'Podgorica'},
+  'petrovac': {nearest:'Tivat', note:'Petrovac nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).', c:'Petrovac', k:'own', t:'35 min'},
+  'sutomore': {nearest:'Tivat', note:'Sutomore nema svoj aerodrom — najbliži je Tivat (oko 45 min vožnje).', c:'Sutomore', k:'own', t:'45 min'},
+  'perast': {nearest:'Tivat', note:'Perast nema svoj aerodrom — najbliži je Tivat (oko 20 min vožnje).', c:'Perast', k:'own', t:'20 min'},
+  'risan': {nearest:'Tivat', note:'Risan nema svoj aerodrom — najbliži je Tivat (oko 25 min vožnje).', c:'Risan', k:'own', t:'25 min'},
+  'kotor': {nearest:'Tivat', note:'Kotor nema svoj aerodrom — najbliži je Tivat (oko 15 min vožnje).', c:'Kotor', k:'own', t:'15 min'},
+  'kolasin': {nearest:'Podgorica', note:'Kolašin nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).', c:'Kolašin', k:'own', t:'1h'},
+  'zabljak': {nearest:'Podgorica', note:'Žabljak nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).', c:'Žabljak', k:'own', t:'2h'},
   // --- Bosna i Hercegovina: aerodromi ---
   'sarajevo': {hasAirport:true},
   'banja luka': {hasAirport:true, limited:true},
   'tuzla': {hasAirport:true},
   'mostar': {hasAirport:true},
   // --- BiH: bez sopstvenog aerodroma ---
-  'zenica': {nearest:'Sarajevo', note:'Zenica nema svoj aerodrom — najbliži je Sarajevo (oko 1h vožnje).'},
-  'prijedor': {nearest:'Banja Luka', note:'Prijedor nema svoj aerodrom — najbliži je Banja Luka (oko 40 min vožnje).'},
-  'bihac': {nearest:'Banja Luka', note:'Bihać nema svoj aerodrom — najbliži je Banja Luka (oko 2h vožnje), Zagreb je alternativa.'},
-  'doboj': {nearest:'Banja Luka', note:'Doboj nema svoj aerodrom — najbliži je Banja Luka (oko 1h vožnje), Sarajevo je alternativa.'},
-  'trebinje': {nearest:'Dubrovnik', note:'Trebinje nema svoj aerodrom — najbliži je Dubrovnik u Hrvatskoj (oko 40 min vožnje).'},
-  'foca': {nearest:'Sarajevo', note:'Foča nema svoj aerodrom — najbliži je Sarajevo (oko 1h30 vožnje).'},
-  'bijeljina': {nearest:'Tuzla', note:'Bijeljina nema svoj aerodrom — najbliži je Tuzla (oko 1h vožnje), Beograd je alternativa.'},
-  'brcko': {nearest:'Tuzla', note:'Brčko nema svoj aerodrom — najbliži je Tuzla (oko 1h vožnje).'},
-  'travnik': {nearest:'Sarajevo', note:'Travnik nema svoj aerodrom — najbliži je Sarajevo (oko 1h30 vožnje).'},
-  'livno': {nearest:'Split', note:'Livno nema svoj aerodrom — najbliži je Split u Hrvatskoj (oko 1h30 vožnje), Sarajevo je alternativa.'},
-  'gorazde': {nearest:'Sarajevo', note:'Goražde nema svoj aerodrom — najbliži je Sarajevo (oko 1h vožnje).'},
+  'zenica': {nearest:'Sarajevo', note:'Zenica nema svoj aerodrom — najbliži je Sarajevo (oko 1h vožnje).', c:'Zenica', k:'own', t:'1h'},
+  'prijedor': {nearest:'Banja Luka', note:'Prijedor nema svoj aerodrom — najbliži je Banja Luka (oko 40 min vožnje).', c:'Prijedor', k:'own', t:'40 min'},
+  'bihac': {nearest:'Banja Luka', note:'Bihać nema svoj aerodrom — najbliži je Banja Luka (oko 2h vožnje), Zagreb je alternativa.', c:'Bihać', k:'own', t:'2h', alt:'Zagreb'},
+  'doboj': {nearest:'Banja Luka', note:'Doboj nema svoj aerodrom — najbliži je Banja Luka (oko 1h vožnje), Sarajevo je alternativa.', c:'Doboj', k:'own', t:'1h', alt:'Sarajevo'},
+  'trebinje': {nearest:'Dubrovnik', note:'Trebinje nema svoj aerodrom — najbliži je Dubrovnik u Hrvatskoj (oko 40 min vožnje).', c:'Trebinje', k:'own', t:'40 min', cc:'Hrvatskoj'},
+  'foca': {nearest:'Sarajevo', note:'Foča nema svoj aerodrom — najbliži je Sarajevo (oko 1h30 vožnje).', c:'Foča', k:'own', t:'1h30'},
+  'bijeljina': {nearest:'Tuzla', note:'Bijeljina nema svoj aerodrom — najbliži je Tuzla (oko 1h vožnje), Beograd je alternativa.', c:'Bijeljina', k:'own', t:'1h', alt:'Beograd'},
+  'brcko': {nearest:'Tuzla', note:'Brčko nema svoj aerodrom — najbliži je Tuzla (oko 1h vožnje).', c:'Brčko', k:'own', t:'1h'},
+  'travnik': {nearest:'Sarajevo', note:'Travnik nema svoj aerodrom — najbliži je Sarajevo (oko 1h30 vožnje).', c:'Travnik', k:'own', t:'1h30'},
+  'livno': {nearest:'Split', note:'Livno nema svoj aerodrom — najbliži je Split u Hrvatskoj (oko 1h30 vožnje), Sarajevo je alternativa.', c:'Livno', k:'own', t:'1h30', cc:'Hrvatskoj', alt:'Sarajevo'},
+  'gorazde': {nearest:'Sarajevo', note:'Goražde nema svoj aerodrom — najbliži je Sarajevo (oko 1h vožnje).', c:'Goražde', k:'own', t:'1h'},
   // --- Hrvatska: aerodromi ---
   'zagreb': {hasAirport:true}, 'split': {hasAirport:true}, 'dubrovnik': {hasAirport:true},
   'zadar': {hasAirport:true}, 'rijeka': {hasAirport:true}, 'pula': {hasAirport:true},
   'osijek': {hasAirport:true, limited:true},
   // --- Hrvatska: bez sopstvenog aerodroma ---
-  'vukovar': {nearest:'Osijek', note:'Vukovar nema svoj aerodrom — najbliži je Osijek (oko 40 min vožnje).'},
-  'slavonski brod': {nearest:'Zagreb', note:'Slavonski Brod nema svoj aerodrom — najbliži je Zagreb (oko 2h vožnje), Sarajevo je alternativa.'},
-  'varazdin': {nearest:'Zagreb', note:'Varaždin nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).'},
-  'knin': {nearest:'Split', note:'Knin nema svoj aerodrom — najbliži je Split (oko 1h vožnje), Zadar je alternativa.'},
-  'sibenik': {nearest:'Split', note:'Šibenik nema svoj aerodrom — najbliži je Split (oko 1h vožnje), Zadar je alternativa.'},
-  'makarska': {nearest:'Split', note:'Makarska nema svoj aerodrom — najbliži je Split (oko 1h vožnje).'},
-  'trogir': {nearest:'Split', note:'Trogir nema svoj aerodrom — aerodrom Split je praktično odmah pored (oko 10 min vožnje).'},
-  'hvar': {nearest:'Split', note:'Hvar nema svoj aerodrom na ostrvu — do njega se stiže trajektom iz Splita, gde je najbliži aerodrom.'},
-  'rovinj': {nearest:'Pula', note:'Rovinj nema svoj aerodrom — najbliži je Pula (oko 40 min vožnje).'},
-  'sisak': {nearest:'Zagreb', note:'Sisak nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).'},
-  'karlovac': {nearest:'Zagreb', note:'Karlovac nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).'},
+  'vukovar': {nearest:'Osijek', note:'Vukovar nema svoj aerodrom — najbliži je Osijek (oko 40 min vožnje).', c:'Vukovar', k:'own', t:'40 min'},
+  'slavonski brod': {nearest:'Zagreb', note:'Slavonski Brod nema svoj aerodrom — najbliži je Zagreb (oko 2h vožnje), Sarajevo je alternativa.', c:'Slavonski Brod', k:'own', t:'2h', alt:'Sarajevo'},
+  'varazdin': {nearest:'Zagreb', note:'Varaždin nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).', c:'Varaždin', k:'own', t:'1h'},
+  'knin': {nearest:'Split', note:'Knin nema svoj aerodrom — najbliži je Split (oko 1h vožnje), Zadar je alternativa.', c:'Knin', k:'own', t:'1h', alt:'Zadar'},
+  'sibenik': {nearest:'Split', note:'Šibenik nema svoj aerodrom — najbliži je Split (oko 1h vožnje), Zadar je alternativa.', c:'Šibenik', k:'own', t:'1h', alt:'Zadar'},
+  'makarska': {nearest:'Split', note:'Makarska nema svoj aerodrom — najbliži je Split (oko 1h vožnje).', c:'Makarska', k:'own', t:'1h'},
+  'trogir': {nearest:'Split', note:'Trogir nema svoj aerodrom — aerodrom Split je praktično odmah pored (oko 10 min vožnje).', i18n:{en:'Trogir has no airport of its own — Split airport is practically next door (about 10 min by car).', ru:'Трогир: собственного аэропорта нет, аэропорт Сплита совсем рядом (около 10 мин на машине).'}},
+  'hvar': {nearest:'Split', note:'Hvar nema svoj aerodrom na ostrvu — do njega se stiže trajektom iz Splita, gde je najbliži aerodrom.', i18n:{en:'Hvar has no airport on the island — you get there by ferry from Split, where the nearest airport is.', ru:'На острове Хвар нет собственного аэропорта — добираться нужно паромом из Сплита, где находится ближайший аэропорт.'}},
+  'rovinj': {nearest:'Pula', note:'Rovinj nema svoj aerodrom — najbliži je Pula (oko 40 min vožnje).', c:'Rovinj', k:'own', t:'40 min'},
+  'sisak': {nearest:'Zagreb', note:'Sisak nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).', c:'Sisak', k:'own', t:'1h'},
+  'karlovac': {nearest:'Zagreb', note:'Karlovac nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).', c:'Karlovac', k:'own', t:'1h'},
   // --- Severna Makedonija ---
   'skoplje': {hasAirport:true}, 'ohrid': {hasAirport:true, limited:true},
-  'bitola': {nearest:'Ohrid', note:'Bitolj nema svoj aerodrom — najbliži je Ohrid (oko 1h vožnje), Skoplje je alternativa.'},
-  'tetovo': {nearest:'Skoplje', note:'Tetovo nema svoj aerodrom — najbliži je Skoplje (oko 30 min vožnje).'},
-  'kumanovo': {nearest:'Skoplje', note:'Kumanovo nema svoj aerodrom — najbliži je Skoplje (oko 30 min vožnje).'},
-  'gostivar': {nearest:'Skoplje', note:'Gostivar nema svoj aerodrom — najbliži je Skoplje (oko 45 min vožnje).'},
-  'strumica': {nearest:'Skoplje', note:'Strumica nema svoj aerodrom — najbliži je Skoplje (oko 1h30 vožnje).'},
-  'prilep': {nearest:'Ohrid', note:'Prilep nema svoj aerodrom — najbliži je Ohrid (oko 1h vožnje), Skoplje je alternativa.'},
-  'struga': {nearest:'Ohrid', note:'Struga nema svoj aerodrom — najbliži je Ohrid (oko 20 min vožnje).'},
-  'veles': {nearest:'Skoplje', note:'Veles nema svoj aerodrom — najbliži je Skoplje (oko 40 min vožnje).'},
+  'bitola': {nearest:'Ohrid', note:'Bitolj nema svoj aerodrom — najbliži je Ohrid (oko 1h vožnje), Skoplje je alternativa.', c:'Bitolj', k:'own', t:'1h', alt:'Skoplje'},
+  'tetovo': {nearest:'Skoplje', note:'Tetovo nema svoj aerodrom — najbliži je Skoplje (oko 30 min vožnje).', c:'Tetovo', k:'own', t:'30 min'},
+  'kumanovo': {nearest:'Skoplje', note:'Kumanovo nema svoj aerodrom — najbliži je Skoplje (oko 30 min vožnje).', c:'Kumanovo', k:'own', t:'30 min'},
+  'gostivar': {nearest:'Skoplje', note:'Gostivar nema svoj aerodrom — najbliži je Skoplje (oko 45 min vožnje).', c:'Gostivar', k:'own', t:'45 min'},
+  'strumica': {nearest:'Skoplje', note:'Strumica nema svoj aerodrom — najbliži je Skoplje (oko 1h30 vožnje).', c:'Strumica', k:'own', t:'1h30'},
+  'prilep': {nearest:'Ohrid', note:'Prilep nema svoj aerodrom — najbliži je Ohrid (oko 1h vožnje), Skoplje je alternativa.', c:'Prilep', k:'own', t:'1h', alt:'Skoplje'},
+  'struga': {nearest:'Ohrid', note:'Struga nema svoj aerodrom — najbliži je Ohrid (oko 20 min vožnje).', c:'Struga', k:'own', t:'20 min'},
+  'veles': {nearest:'Skoplje', note:'Veles nema svoj aerodrom — najbliži je Skoplje (oko 40 min vožnje).', c:'Veles', k:'own', t:'40 min'},
   // --- Kosovo ---
   'pristina': {hasAirport:true},
-  'prizren': {nearest:'Priština', note:'Prizren nema svoj aerodrom — najbliži je Priština (oko 1h30 vožnje).'},
-  'pec': {nearest:'Priština', note:'Peć nema svoj aerodrom — najbliži je Priština (oko 1h30 vožnje), Podgorica je alternativa.'},
-  'djakovica': {nearest:'Priština', note:'Đakovica nema svoj aerodrom — najbliži je Priština (oko 1h vožnje).'},
-  'mitrovica': {nearest:'Priština', note:'Mitrovica nema svoj aerodrom — najbliži je Priština (oko 40 min vožnje).'},
+  'prizren': {nearest:'Priština', note:'Prizren nema svoj aerodrom — najbliži je Priština (oko 1h30 vožnje).', c:'Prizren', k:'own', t:'1h30'},
+  'pec': {nearest:'Priština', note:'Peć nema svoj aerodrom — najbliži je Priština (oko 1h30 vožnje), Podgorica je alternativa.', c:'Peć', k:'own', t:'1h30', alt:'Podgorica'},
+  'djakovica': {nearest:'Priština', note:'Đakovica nema svoj aerodrom — najbliži je Priština (oko 1h vožnje).', c:'Đakovica', k:'own', t:'1h'},
+  'mitrovica': {nearest:'Priština', note:'Mitrovica nema svoj aerodrom — najbliži je Priština (oko 40 min vožnje).', c:'Mitrovica', k:'own', t:'40 min'},
   // --- Albanija ---
   'tirana': {hasAirport:true},
-  'skadar': {nearest:'Podgorica', note:'Skadar nema svoj aerodrom — najbliži je Podgorica u Crnoj Gori (oko 1h vožnje), bliže nego Tirana.'},
-  'sarande': {nearest:'Tirana', note:'Sarandë nema svoj aerodrom — najbliži je Tirana (oko 4h vožnje), Krf u Grčkoj je bliža alternativa trajektom.'},
-  'vlore': {nearest:'Tirana', note:'Vlorë nema svoj aerodrom — najbliži je Tirana (oko 2h vožnje).'},
-  'durres': {nearest:'Tirana', note:'Durrës nema svoj aerodrom — najbliži je Tirana (oko 30 min vožnje).'},
+  'skadar': {nearest:'Podgorica', note:'Skadar nema svoj aerodrom — najbliži je Podgorica u Crnoj Gori (oko 1h vožnje), bliže nego Tirana.', i18n:{en:'Shkodër has no airport of its own — the nearest is Podgorica in Montenegro (about 1 h by car), closer than Tirana.', ru:'Шкодер: собственного аэропорта нет, ближайший — Подгорица в Черногории (около 1 ч на машине), она ближе, чем Тирана.'}},
+  'sarande': {nearest:'Tirana', note:'Sarandë nema svoj aerodrom — najbliži je Tirana (oko 4h vožnje), Krf u Grčkoj je bliža alternativa trajektom.', i18n:{en:'Sarandë has no airport of its own — the nearest is Tirana (about 4 h by car); Corfu in Greece is a closer alternative by ferry.', ru:'Саранда: собственного аэропорта нет, ближайший — Тирана (около 4 ч на машине); более близкая альтернатива — Корфу в Греции (на пароме).'}},
+  'vlore': {nearest:'Tirana', note:'Vlorë nema svoj aerodrom — najbliži je Tirana (oko 2h vožnje).', c:'Vlorë', k:'own', t:'2h'},
+  'durres': {nearest:'Tirana', note:'Durrës nema svoj aerodrom — najbliži je Tirana (oko 30 min vožnje).', c:'Durrës', k:'own', t:'30 min'},
   // --- Slovenija: aerodromi ---
   'ljubljana': {hasAirport:true},
   'maribor': {hasAirport:true, limited:true},
   // --- Slovenija: bez sopstvenog aerodroma ---
-  'bled': {nearest:'Ljubljana', note:'Bled nema svoj aerodrom — najbliži je Ljubljana (oko 40 min vožnje).'},
-  'kranjska gora': {nearest:'Ljubljana', note:'Kranjska Gora nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'kranj': {nearest:'Ljubljana', note:'Kranj nema svoj aerodrom — najbliži je Ljubljana (oko 30 min vožnje).'},
-  'bohinj': {nearest:'Ljubljana', note:'Bohinj nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'bovec': {nearest:'Ljubljana', note:'Bovec nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).'},
-  'kobarid': {nearest:'Ljubljana', note:'Kobarid nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).'},
-  'logarska dolina': {nearest:'Ljubljana', note:'Logarska Dolina nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'idrija': {nearest:'Ljubljana', note:'Idrija nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'postojna': {nearest:'Ljubljana', note:'Postojna nema svoj aerodrom — najbliži je Ljubljana (oko 45 min vožnje).'},
-  'škocjanske jame': {nearest:'Ljubljana', note:'Škocjanske jame nemaju aerodrom u blizini — najbliži je Ljubljana (oko 1h vožnje).'},
-  'predjama': {nearest:'Ljubljana', note:'Predjama nema svoj aerodrom — najbliži je Ljubljana (oko 45 min vožnje).'},
-  'vintgar': {nearest:'Ljubljana', note:'Vintgar nema svoj aerodrom — najbliži je Ljubljana (oko 45 min vožnje).'},
-  'kamnik': {nearest:'Ljubljana', note:'Kamnik nema svoj aerodrom — najbliži je Ljubljana (oko 30 min vožnje).'},
-  'celje': {nearest:'Ljubljana', note:'Celje nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'novo mesto': {nearest:'Ljubljana', note:'Novo Mesto nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'rogaška slatina': {nearest:'Ljubljana', note:'Rogaška Slatina nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).'},
-  'dolenjske toplice': {nearest:'Ljubljana', note:'Dolenjske Toplice nemaju aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'laško': {nearest:'Ljubljana', note:'Laško nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'triglav': {nearest:'Ljubljana', note:'Triglav nema aerodrom u blizini — najbliži je Ljubljana (oko 1h30 vožnje).'},
-  'vogel': {nearest:'Ljubljana', note:'Vogel nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'krvavec': {nearest:'Ljubljana', note:'Krvavec nema svoj aerodrom — najbliži je Ljubljana (oko 40 min vožnje).'},
-  'mangart': {nearest:'Ljubljana', note:'Mangart nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).'},
-  'škofja loka': {nearest:'Ljubljana', note:'Škofja Loka nema svoj aerodrom — najbliži je Ljubljana (oko 30 min vožnje).'},
-  'nova gorica': {nearest:'Ljubljana', note:'Nova Gorica nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'jesenice': {nearest:'Ljubljana', note:'Jesenice nema svoj aerodrom — najbliži je Ljubljana (oko 40 min vožnje).'},
-  'velenje': {nearest:'Ljubljana', note:'Velenje nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'čatež': {nearest:'Ljubljana', note:'Čatež nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).'},
-  'ptuj': {nearest:'Maribor', note:'Ptuj nema svoj aerodrom — najbliži je Maribor (oko 20 min vožnje).'},
-  'terme ptuj': {nearest:'Maribor', note:'Terme Ptuj nemaju aerodrom — najbliži je Maribor (oko 20 min vožnje).'},
-  'pohorje': {nearest:'Maribor', note:'Pohorje nema svoj aerodrom — najbliži je Maribor (oko 20 min vožnje).'},
-  'slovenj gradec': {nearest:'Maribor', note:'Slovenj Gradec nema svoj aerodrom — najbliži je Maribor (oko 50 min vožnje).'},
-  'murska sobota': {nearest:'Maribor', note:'Murska Sobota nema svoj aerodrom — najbliži je Maribor (oko 1h vožnje).'},
-  'moravske toplice': {nearest:'Maribor', note:'Moravske Toplice nemaju aerodrom — najbliži je Maribor (oko 1h vožnje).'},
-  'radenci': {nearest:'Maribor', note:'Radenci nemaju aerodrom — najbliži je Maribor (oko 1h vožnje).'},
-  'koper': {nearest:'Trst', note:'Koper nema svoj aerodrom — najbliži je Trst u Italiji (oko 30 min vožnje), Ljubljana je alternativa.'},
-  'piran': {nearest:'Trst', note:'Piran nema svoj aerodrom — najbliži je Trst u Italiji (oko 40 min vožnje), Ljubljana je alternativa.'},
-  'portorož': {nearest:'Trst', note:'Portorož nema svoj aerodrom — najbliži je Trst u Italiji (oko 35 min vožnje), Ljubljana je alternativa.'},
-  'izola': {nearest:'Trst', note:'Izola nema svoj aerodrom — najbliži je Trst u Italiji (oko 35 min vožnje), Ljubljana je alternativa.'},
-  'ankaran': {nearest:'Trst', note:'Ankaran nema svoj aerodrom — najbliži je Trst u Italiji (oko 25 min vožnje), Ljubljana je alternativa.'},
+  'bled': {nearest:'Ljubljana', note:'Bled nema svoj aerodrom — najbliži je Ljubljana (oko 40 min vožnje).', c:'Bled', k:'own', t:'40 min'},
+  'kranjska gora': {nearest:'Ljubljana', note:'Kranjska Gora nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Kranjska Gora', k:'own', t:'1h'},
+  'kranj': {nearest:'Ljubljana', note:'Kranj nema svoj aerodrom — najbliži je Ljubljana (oko 30 min vožnje).', c:'Kranj', k:'own', t:'30 min'},
+  'bohinj': {nearest:'Ljubljana', note:'Bohinj nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Bohinj', k:'own', t:'1h'},
+  'bovec': {nearest:'Ljubljana', note:'Bovec nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).', c:'Bovec', k:'own', t:'1h30'},
+  'kobarid': {nearest:'Ljubljana', note:'Kobarid nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).', c:'Kobarid', k:'own', t:'1h30'},
+  'logarska dolina': {nearest:'Ljubljana', note:'Logarska Dolina nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Logarska Dolina', k:'own', t:'1h'},
+  'idrija': {nearest:'Ljubljana', note:'Idrija nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Idrija', k:'own', t:'1h'},
+  'postojna': {nearest:'Ljubljana', note:'Postojna nema svoj aerodrom — najbliži je Ljubljana (oko 45 min vožnje).', c:'Postojna', k:'own', t:'45 min'},
+  'škocjanske jame': {nearest:'Ljubljana', note:'Škocjanske jame nemaju aerodrom u blizini — najbliži je Ljubljana (oko 1h vožnje).', c:'Škocjanske jame', k:'nearby', t:'1h'},
+  'predjama': {nearest:'Ljubljana', note:'Predjama nema svoj aerodrom — najbliži je Ljubljana (oko 45 min vožnje).', c:'Predjama', k:'own', t:'45 min'},
+  'vintgar': {nearest:'Ljubljana', note:'Vintgar nema svoj aerodrom — najbliži je Ljubljana (oko 45 min vožnje).', c:'Vintgar', k:'own', t:'45 min'},
+  'kamnik': {nearest:'Ljubljana', note:'Kamnik nema svoj aerodrom — najbliži je Ljubljana (oko 30 min vožnje).', c:'Kamnik', k:'own', t:'30 min'},
+  'celje': {nearest:'Ljubljana', note:'Celje nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Celje', k:'own', t:'1h'},
+  'novo mesto': {nearest:'Ljubljana', note:'Novo Mesto nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Novo Mesto', k:'own', t:'1h'},
+  'rogaška slatina': {nearest:'Ljubljana', note:'Rogaška Slatina nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).', c:'Rogaška Slatina', k:'own', t:'1h30'},
+  'dolenjske toplice': {nearest:'Ljubljana', note:'Dolenjske Toplice nemaju aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Dolenjske Toplice', k:'plain', t:'1h'},
+  'laško': {nearest:'Ljubljana', note:'Laško nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Laško', k:'own', t:'1h'},
+  'triglav': {nearest:'Ljubljana', note:'Triglav nema aerodrom u blizini — najbliži je Ljubljana (oko 1h30 vožnje).', c:'Triglav', k:'nearby', t:'1h30'},
+  'vogel': {nearest:'Ljubljana', note:'Vogel nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Vogel', k:'own', t:'1h'},
+  'krvavec': {nearest:'Ljubljana', note:'Krvavec nema svoj aerodrom — najbliži je Ljubljana (oko 40 min vožnje).', c:'Krvavec', k:'own', t:'40 min'},
+  'mangart': {nearest:'Ljubljana', note:'Mangart nema svoj aerodrom — najbliži je Ljubljana (oko 1h30 vožnje).', c:'Mangart', k:'own', t:'1h30'},
+  'škofja loka': {nearest:'Ljubljana', note:'Škofja Loka nema svoj aerodrom — najbliži je Ljubljana (oko 30 min vožnje).', c:'Škofja Loka', k:'own', t:'30 min'},
+  'nova gorica': {nearest:'Ljubljana', note:'Nova Gorica nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Nova Gorica', k:'own', t:'1h'},
+  'jesenice': {nearest:'Ljubljana', note:'Jesenice nema svoj aerodrom — najbliži je Ljubljana (oko 40 min vožnje).', c:'Jesenice', k:'own', t:'40 min'},
+  'velenje': {nearest:'Ljubljana', note:'Velenje nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Velenje', k:'own', t:'1h'},
+  'čatež': {nearest:'Ljubljana', note:'Čatež nema svoj aerodrom — najbliži je Ljubljana (oko 1h vožnje).', c:'Čatež', k:'own', t:'1h'},
+  'ptuj': {nearest:'Maribor', note:'Ptuj nema svoj aerodrom — najbliži je Maribor (oko 20 min vožnje).', c:'Ptuj', k:'own', t:'20 min'},
+  'terme ptuj': {nearest:'Maribor', note:'Terme Ptuj nemaju aerodrom — najbliži je Maribor (oko 20 min vožnje).', c:'Terme Ptuj', k:'plain', t:'20 min'},
+  'pohorje': {nearest:'Maribor', note:'Pohorje nema svoj aerodrom — najbliži je Maribor (oko 20 min vožnje).', c:'Pohorje', k:'own', t:'20 min'},
+  'slovenj gradec': {nearest:'Maribor', note:'Slovenj Gradec nema svoj aerodrom — najbliži je Maribor (oko 50 min vožnje).', c:'Slovenj Gradec', k:'own', t:'50 min'},
+  'murska sobota': {nearest:'Maribor', note:'Murska Sobota nema svoj aerodrom — najbliži je Maribor (oko 1h vožnje).', c:'Murska Sobota', k:'own', t:'1h'},
+  'moravske toplice': {nearest:'Maribor', note:'Moravske Toplice nemaju aerodrom — najbliži je Maribor (oko 1h vožnje).', c:'Moravske Toplice', k:'plain', t:'1h'},
+  'radenci': {nearest:'Maribor', note:'Radenci nemaju aerodrom — najbliži je Maribor (oko 1h vožnje).', c:'Radenci', k:'plain', t:'1h'},
+  'koper': {nearest:'Trst', note:'Koper nema svoj aerodrom — najbliži je Trst u Italiji (oko 30 min vožnje), Ljubljana je alternativa.', c:'Koper', k:'own', t:'30 min', cc:'Italiji', alt:'Ljubljana'},
+  'piran': {nearest:'Trst', note:'Piran nema svoj aerodrom — najbliži je Trst u Italiji (oko 40 min vožnje), Ljubljana je alternativa.', c:'Piran', k:'own', t:'40 min', cc:'Italiji', alt:'Ljubljana'},
+  'portorož': {nearest:'Trst', note:'Portorož nema svoj aerodrom — najbliži je Trst u Italiji (oko 35 min vožnje), Ljubljana je alternativa.', c:'Portorož', k:'own', t:'35 min', cc:'Italiji', alt:'Ljubljana'},
+  'izola': {nearest:'Trst', note:'Izola nema svoj aerodrom — najbliži je Trst u Italiji (oko 35 min vožnje), Ljubljana je alternativa.', c:'Izola', k:'own', t:'35 min', cc:'Italiji', alt:'Ljubljana'},
+  'ankaran': {nearest:'Trst', note:'Ankaran nema svoj aerodrom — najbliži je Trst u Italiji (oko 25 min vožnje), Ljubljana je alternativa.', c:'Ankaran', k:'own', t:'25 min', cc:'Italiji', alt:'Ljubljana'},
   // --- Mađarska (relevantno za sever Srbije) ---
   'budimpesta': {hasAirport:true},
-  'segedin': {nearest:'Budimpešta', note:'Segedin nema svoj aerodrom — najbliži je Budimpešta (oko 2h vožnje).'},
+  'segedin': {nearest:'Budimpešta', note:'Segedin nema svoj aerodrom — najbliži je Budimpešta (oko 2h vožnje).', c:'Segedin', k:'own', t:'2h'},
   // --- Turska: aerodromi ---
   'istanbul': {hasAirport:true},
   'ankara': {hasAirport:true},
@@ -2047,34 +2960,34 @@ const AIRPORT_DB = {
   'sivas': {hasAirport:true, limited:true},
   'gazipasa': {hasAirport:true, limited:true},
   // --- Turska: bez sopstvenog aerodroma ---
-  'mersin': {nearest:'Adana', note:'Mersin nema svoj aerodrom — najbliži je Adana (oko 1h vožnje).'},
-  'kapadokija': {nearest:'Nevsehir', note:'Kapadokija nema svoj aerodrom u samom centru — najbliži je Nevšehir (oko 30 min vožnje), Kajseri je alternativa sa više letova.'},
-  'marmaris': {nearest:'Dalaman', note:'Marmaris nema svoj aerodrom — najbliži je Dalaman (oko 1h vožnje).'},
-  'fetije': {nearest:'Dalaman', note:'Fetije nema svoj aerodrom — najbliži je Dalaman (oko 50 min vožnje).'},
-  'side': {nearest:'Antalija', note:'Side nema svoj aerodrom — najbliži je Antalija (oko 1h vožnje).'},
-  'alanja': {nearest:'Antalija', note:'Alanja nema svoj aerodrom — najbliži je Gazipaša (oko 45 min vožnje), Antalija je alternativa sa više letova (oko 1h30).'},
-  'kušadasi': {nearest:'Izmir', note:'Kušadasi nema svoj aerodrom — najbliži je Izmir (oko 1h30 vožnje).'},
-  'česme': {nearest:'Izmir', note:'Česme nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).'},
-  'pamukale': {nearest:'Denizli', note:'Pamukale nema svoj aerodrom — najbliži je Denizli (oko 30 min vožnje).'},
-  'jalova': {nearest:'Istanbul', note:'Jalova nema svoj aerodrom — najbliži je Istanbul (oko 1h30 vožnje, uz trajekt preko Mramornog mora).'},
-  'afjon karahisar': {nearest:'Ankara', note:'Afjon Karahisar nema veći aerodrom — najbliži je Ankara (oko 3h vožnje).'},
-  'haymana': {nearest:'Ankara', note:'Haymana nema svoj aerodrom — najbliži je Ankara (oko 1h vožnje).'},
-  'kizildžahamam': {nearest:'Ankara', note:'Kizildžahamam nema svoj aerodrom — najbliži je Ankara (oko 1h vožnje).'},
-  'efes': {nearest:'Izmir', note:'Efes nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).'},
-  'troja': {nearest:'Canakkale', note:'Troja nema svoj aerodrom — najbliži je Čanakale (oko 30 min vožnje).'},
-  'pergamon': {nearest:'Izmir', note:'Pergamon nema svoj aerodrom — najbliži je Izmir (oko 1h30 vožnje).'},
-  'hijerapolis': {nearest:'Denizli', note:'Hijerapolis nema svoj aerodrom — najbliži je Denizli (oko 30 min vožnje).'},
-  'sumela': {nearest:'Trabzon', note:'Sumela nema svoj aerodrom — najbliži je Trabzon (oko 1h vožnje).'},
-  'nemrut': {nearest:'Malatja', note:'Nemrut nema svoj aerodrom — najbliži je Malatja (oko 2h vožnje).'},
-  'safranbolu': {nearest:'Ankara', note:'Safranbolu nema veći aerodrom — najbliži je Ankara (oko 3h vožnje).'},
-  'gjobekli tepe': {nearest:'Sanliurfa', note:'Gjobekli Tepe nema svoj aerodrom — najbliži je Šanlıurfa (oko 1h vožnje), Gaziantep je alternativa.'},
-  'kaš': {nearest:'Dalaman', note:'Kaš nema svoj aerodrom — najbliži je Dalaman (oko 2h vožnje).'},
-  'kalkan': {nearest:'Dalaman', note:'Kalkan nema svoj aerodrom — najbliži je Dalaman (oko 1h30 vožnje).'},
-  'datča': {nearest:'Dalaman', note:'Datča nema svoj aerodrom — najbliži je Dalaman (oko 1h30 vožnje).'},
-  'didim': {nearest:'Izmir', note:'Didim nema svoj aerodrom — najbliži je Izmir (oko 2h vožnje).'},
-  'ajvalik': {nearest:'Izmir', note:'Ajvalik nema svoj aerodrom — najbliži je Izmir (oko 2h vožnje).'},
-  'silifke': {nearest:'Adana', note:'Silifke nema svoj aerodrom — najbliži je Adana (oko 2h vožnje).'},
-  'foča (turska)': {nearest:'Izmir', note:'Foča nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).'},
+  'mersin': {nearest:'Adana', note:'Mersin nema svoj aerodrom — najbliži je Adana (oko 1h vožnje).', c:'Mersin', k:'own', t:'1h'},
+  'kapadokija': {nearest:'Nevsehir', note:'Kapadokija nema svoj aerodrom u samom centru — najbliži je Nevšehir (oko 30 min vožnje), Kajseri je alternativa sa više letova.', i18n:{en:'Cappadocia has no airport right in the centre — the nearest is Nevşehir (about 30 min by car); Kayseri is an alternative with more flights.', ru:'В Каппадокии нет аэропорта в самом центре — ближайший — Невшехир (около 30 мин на машине); альтернатива с большим числом рейсов — Кайсери.'}},
+  'marmaris': {nearest:'Dalaman', note:'Marmaris nema svoj aerodrom — najbliži je Dalaman (oko 1h vožnje).', c:'Marmaris', k:'own', t:'1h'},
+  'fetije': {nearest:'Dalaman', note:'Fetije nema svoj aerodrom — najbliži je Dalaman (oko 50 min vožnje).', c:'Fetije', k:'own', t:'50 min'},
+  'side': {nearest:'Antalija', note:'Side nema svoj aerodrom — najbliži je Antalija (oko 1h vožnje).', c:'Side', k:'own', t:'1h'},
+  'alanja': {nearest:'Antalija', note:'Alanja nema svoj aerodrom — najbliži je Gazipaša (oko 45 min vožnje), Antalija je alternativa sa više letova (oko 1h30).', i18n:{en:'Alanya has no airport of its own — the nearest is Gazipaşa (about 45 min by car); Antalya is an alternative with more flights (about 1 h 30 min).', ru:'Аланья: собственного аэропорта нет, ближайший — Газипаша (около 45 мин на машине); альтернатива с большим числом рейсов — Анталья (около 1 ч 30 мин).'}},
+  'kušadasi': {nearest:'Izmir', note:'Kušadasi nema svoj aerodrom — najbliži je Izmir (oko 1h30 vožnje).', c:'Kušadasi', k:'own', t:'1h30'},
+  'česme': {nearest:'Izmir', note:'Česme nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).', c:'Česme', k:'own', t:'1h'},
+  'pamukale': {nearest:'Denizli', note:'Pamukale nema svoj aerodrom — najbliži je Denizli (oko 30 min vožnje).', c:'Pamukale', k:'own', t:'30 min'},
+  'jalova': {nearest:'Istanbul', note:'Jalova nema svoj aerodrom — najbliži je Istanbul (oko 1h30 vožnje, uz trajekt preko Mramornog mora).', i18n:{en:'Yalova has no airport of its own — the nearest is Istanbul (about 1 h 30 min by car, including a ferry across the Sea of Marmara).', ru:'Ялова: собственного аэропорта нет, ближайший — Стамбул (около 1 ч 30 мин на машине, с паромом через Мраморное море).'}},
+  'afjon karahisar': {nearest:'Ankara', note:'Afjon Karahisar nema veći aerodrom — najbliži je Ankara (oko 3h vožnje).', c:'Afjon Karahisar', k:'major', t:'3h'},
+  'haymana': {nearest:'Ankara', note:'Haymana nema svoj aerodrom — najbliži je Ankara (oko 1h vožnje).', c:'Haymana', k:'own', t:'1h'},
+  'kizildžahamam': {nearest:'Ankara', note:'Kizildžahamam nema svoj aerodrom — najbliži je Ankara (oko 1h vožnje).', c:'Kizildžahamam', k:'own', t:'1h'},
+  'efes': {nearest:'Izmir', note:'Efes nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).', c:'Efes', k:'own', t:'1h'},
+  'troja': {nearest:'Canakkale', note:'Troja nema svoj aerodrom — najbliži je Čanakale (oko 30 min vožnje).', c:'Troja', k:'own', t:'30 min', nn:'Čanakale'},
+  'pergamon': {nearest:'Izmir', note:'Pergamon nema svoj aerodrom — najbliži je Izmir (oko 1h30 vožnje).', c:'Pergamon', k:'own', t:'1h30'},
+  'hijerapolis': {nearest:'Denizli', note:'Hijerapolis nema svoj aerodrom — najbliži je Denizli (oko 30 min vožnje).', c:'Hijerapolis', k:'own', t:'30 min'},
+  'sumela': {nearest:'Trabzon', note:'Sumela nema svoj aerodrom — najbliži je Trabzon (oko 1h vožnje).', c:'Sumela', k:'own', t:'1h'},
+  'nemrut': {nearest:'Malatja', note:'Nemrut nema svoj aerodrom — najbliži je Malatja (oko 2h vožnje).', c:'Nemrut', k:'own', t:'2h'},
+  'safranbolu': {nearest:'Ankara', note:'Safranbolu nema veći aerodrom — najbliži je Ankara (oko 3h vožnje).', c:'Safranbolu', k:'major', t:'3h'},
+  'gjobekli tepe': {nearest:'Sanliurfa', note:'Gjobekli Tepe nema svoj aerodrom — najbliži je Šanlıurfa (oko 1h vožnje), Gaziantep je alternativa.', c:'Gjobekli Tepe', k:'own', t:'1h', nn:'Šanlıurfa', alt:'Gaziantep'},
+  'kaš': {nearest:'Dalaman', note:'Kaš nema svoj aerodrom — najbliži je Dalaman (oko 2h vožnje).', c:'Kaš', k:'own', t:'2h'},
+  'kalkan': {nearest:'Dalaman', note:'Kalkan nema svoj aerodrom — najbliži je Dalaman (oko 1h30 vožnje).', c:'Kalkan', k:'own', t:'1h30'},
+  'datča': {nearest:'Dalaman', note:'Datča nema svoj aerodrom — najbliži je Dalaman (oko 1h30 vožnje).', c:'Datča', k:'own', t:'1h30'},
+  'didim': {nearest:'Izmir', note:'Didim nema svoj aerodrom — najbliži je Izmir (oko 2h vožnje).', c:'Didim', k:'own', t:'2h'},
+  'ajvalik': {nearest:'Izmir', note:'Ajvalik nema svoj aerodrom — najbliži je Izmir (oko 2h vožnje).', c:'Ajvalik', k:'own', t:'2h'},
+  'silifke': {nearest:'Adana', note:'Silifke nema svoj aerodrom — najbliži je Adana (oko 2h vožnje).', c:'Silifke', k:'own', t:'2h'},
+  'foča (turska)': {nearest:'Izmir', note:'Foča nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).', c:'Foča', k:'own', t:'1h'},
   // --- Portugalija: aerodromi ---
   'lisabon': {hasAirport:true},
   'porto': {hasAirport:true},
@@ -2083,14 +2996,14 @@ const AIRPORT_DB = {
   'azori': {hasAirport:true, limited:true},
   'tersejra': {hasAirport:true, limited:true},
   // --- Portugalija: bez sopstvenog aerodroma ---
-  'koimbra': {nearest:'Porto', note:'Koimbra nema svoj aerodrom — najbliži je Porto (oko 1h vožnje), Lisabon je alternativa.'},
-  'braga': {nearest:'Porto', note:'Braga nema svoj aerodrom — najbliži je Porto (oko 50 min vožnje).'},
-  'sintra': {nearest:'Lisabon', note:'Sintra nema svoj aerodrom — najbliži je Lisabon (oko 30 min vožnje).'},
-  'albufeira': {nearest:'Faro', note:'Albufeira nema svoj aerodrom — najbliži je Faro (oko 40 min vožnje).'},
-  'evora': {nearest:'Lisabon', note:'Evora nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje).'},
-  'kaskais': {nearest:'Lisabon', note:'Kaskais nema svoj aerodrom — najbliži je Lisabon (oko 30 min vožnje).'},
-  'nazare': {nearest:'Lisabon', note:'Nazare nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje).'},
-  'fatima': {nearest:'Lisabon', note:'Fatima nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje), Porto je alternativa.'},
+  'koimbra': {nearest:'Porto', note:'Koimbra nema svoj aerodrom — najbliži je Porto (oko 1h vožnje), Lisabon je alternativa.', c:'Koimbra', k:'own', t:'1h', alt:'Lisabon'},
+  'braga': {nearest:'Porto', note:'Braga nema svoj aerodrom — najbliži je Porto (oko 50 min vožnje).', c:'Braga', k:'own', t:'50 min'},
+  'sintra': {nearest:'Lisabon', note:'Sintra nema svoj aerodrom — najbliži je Lisabon (oko 30 min vožnje).', c:'Sintra', k:'own', t:'30 min'},
+  'albufeira': {nearest:'Faro', note:'Albufeira nema svoj aerodrom — najbliži je Faro (oko 40 min vožnje).', c:'Albufeira', k:'own', t:'40 min'},
+  'evora': {nearest:'Lisabon', note:'Evora nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje).', c:'Evora', k:'own', t:'1h30'},
+  'kaskais': {nearest:'Lisabon', note:'Kaskais nema svoj aerodrom — najbliži je Lisabon (oko 30 min vožnje).', c:'Kaskais', k:'own', t:'30 min'},
+  'nazare': {nearest:'Lisabon', note:'Nazare nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje).', c:'Nazare', k:'own', t:'1h30'},
+  'fatima': {nearest:'Lisabon', note:'Fatima nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje), Porto je alternativa.', c:'Fatima', k:'own', t:'1h30', alt:'Porto'},
   // --- Francuska: aerodromi ---
   'pariz': {hasAirport:true},
   'nica': {hasAirport:true},
@@ -2127,24 +3040,24 @@ const AIRPORT_DB = {
   'bidgosc': {hasAirport:true, limited:true},
   'lublin': {hasAirport:true, limited:true},
   // --- Poljska: bez sopstvenog aerodroma ---
-  'zakopane': {nearest:'Krakov', note:'Zakopane nema svoj aerodrom — najbliži je Krakov (oko 2h vožnje).'},
-  'torunj': {nearest:'Bidgosc', note:'Torunj nema svoj aerodrom — najbliži je Bidgošć (oko 45 min vožnje), Poznanj je alternativa.'},
-  'vjelicka': {nearest:'Krakov', note:'Vjelička nema svoj aerodrom — najbliži je Krakov (oko 20 min vožnje).'},
-  'gdinja': {nearest:'Gdanjsk', note:'Gdinja nema svoj aerodrom — koristi se aerodrom Gdanjsk, deo iste aglomeracije (oko 25 min vožnje).'},
-  'censtohova': {nearest:'Katovice', note:'Čenstohova nema svoj aerodrom — najbliži je Katovice (oko 1h vožnje).'},
+  'zakopane': {nearest:'Krakov', note:'Zakopane nema svoj aerodrom — najbliži je Krakov (oko 2h vožnje).', c:'Zakopane', k:'own', t:'2h'},
+  'torunj': {nearest:'Bidgosc', note:'Torunj nema svoj aerodrom — najbliži je Bidgošć (oko 45 min vožnje), Poznanj je alternativa.', c:'Torunj', k:'own', t:'45 min', nn:'Bidgošć', alt:'Poznanj'},
+  'vjelicka': {nearest:'Krakov', note:'Vjelička nema svoj aerodrom — najbliži je Krakov (oko 20 min vožnje).', c:'Vjelička', k:'own', t:'20 min'},
+  'gdinja': {nearest:'Gdanjsk', note:'Gdinja nema svoj aerodrom — koristi se aerodrom Gdanjsk, deo iste aglomeracije (oko 25 min vožnje).', i18n:{en:'Gdynia has no airport of its own — you use Gdańsk airport, part of the same urban area (about 25 min by car).', ru:'Гдыня: собственного аэропорта нет, используется аэропорт Гданьска в той же агломерации (около 25 мин на машине).'}},
+  'censtohova': {nearest:'Katovice', note:'Čenstohova nema svoj aerodrom — najbliži je Katovice (oko 1h vožnje).', c:'Čenstohova', k:'own', t:'1h'},
   // --- Češka: aerodromi ---
   'prag': {hasAirport:true},
   'brno': {hasAirport:true, limited:true},
   'karlovi vari': {hasAirport:true, limited:true},
   'ostrava': {hasAirport:true, limited:true},
   // --- Češka: bez sopstvenog aerodroma ---
-  'plzenj': {nearest:'Prag', note:'Plzenj nema komercijalni aerodrom — najbliži je Prag (oko 1h vožnje).'},
-  'ceski krumlov': {nearest:'Linc', note:'Češki Krumlov nema svoj aerodrom — najbliži je Linc u Austriji (oko 1h vožnje), Prag je dalja alternativa (oko 2h30).'},
-  'olomouc': {nearest:'Ostrava', note:'Olomouc nema svoj aerodrom — najbliži je Ostrava (oko 40 min vožnje), Brno je alternativa.'},
-  'kutna hora': {nearest:'Prag', note:'Kutna Hora nema svoj aerodrom — najbliži je Prag (oko 1h vožnje).'},
-  'ceske budejovice': {nearest:'Prag', note:'Češke Budejovice nemaju svoj aerodrom sa redovnim letovima — najbliži je Prag (oko 2h vožnje), Linc je alternativa.'},
-  'hradec kralove': {nearest:'Prag', note:'Hradec Kralove nema svoj aerodrom — najbliži je Prag (oko 1h30 vožnje).'},
-  'liberec': {nearest:'Prag', note:'Liberec nema svoj aerodrom — najbliži je Prag (oko 1h30 vožnje).'},
+  'plzenj': {nearest:'Prag', note:'Plzenj nema komercijalni aerodrom — najbliži je Prag (oko 1h vožnje).', c:'Plzenj', k:'comm', t:'1h'},
+  'ceski krumlov': {nearest:'Linc', note:'Češki Krumlov nema svoj aerodrom — najbliži je Linc u Austriji (oko 1h vožnje), Prag je dalja alternativa (oko 2h30).', i18n:{en:'Český Krumlov has no airport of its own — the nearest is Linz in Austria (about 1 h by car); Prague is a farther alternative (about 2 h 30 min).', ru:'Чески-Крумлов: собственного аэропорта нет, ближайший — Линц в Австрии (около 1 ч на машине); Прага — более дальняя альтернатива (около 2 ч 30 мин).'}},
+  'olomouc': {nearest:'Ostrava', note:'Olomouc nema svoj aerodrom — najbliži je Ostrava (oko 40 min vožnje), Brno je alternativa.', c:'Olomouc', k:'own', t:'40 min', alt:'Brno'},
+  'kutna hora': {nearest:'Prag', note:'Kutna Hora nema svoj aerodrom — najbliži je Prag (oko 1h vožnje).', c:'Kutna Hora', k:'own', t:'1h'},
+  'ceske budejovice': {nearest:'Prag', note:'Češke Budejovice nemaju svoj aerodrom sa redovnim letovima — najbliži je Prag (oko 2h vožnje), Linc je alternativa.', c:'Češke Budejovice', k:'sched', t:'2h', alt:'Linc'},
+  'hradec kralove': {nearest:'Prag', note:'Hradec Kralove nema svoj aerodrom — najbliži je Prag (oko 1h30 vožnje).', c:'Hradec Kralove', k:'own', t:'1h30'},
+  'liberec': {nearest:'Prag', note:'Liberec nema svoj aerodrom — najbliži je Prag (oko 1h30 vožnje).', c:'Liberec', k:'own', t:'1h30'},
   // --- Švedska: aerodromi ---
   'stokholm': {hasAirport:true},
   'geteborg': {hasAirport:true},
@@ -2166,9 +3079,9 @@ const AIRPORT_DB = {
   'lijez': {hasAirport:true, limited:true},
   'ostende': {hasAirport:true, limited:true},
   // --- Belgija: bez sopstvenog aerodroma ---
-  'briz': {nearest:'Brisel', note:'Briž nema svoj aerodrom — najbliži je Brisel (oko 1h vožnje).'},
-  'gent': {nearest:'Brisel', note:'Gent nema svoj aerodrom — najbliži je Brisel (oko 45 min vožnje).'},
-  'namir': {nearest:'Šarlroa', note:'Namir nema svoj aerodrom — najbliži je Šarlroa (oko 45 min vožnje).'},
+  'briz': {nearest:'Brisel', note:'Briž nema svoj aerodrom — najbliži je Brisel (oko 1h vožnje).', c:'Briž', k:'own', t:'1h'},
+  'gent': {nearest:'Brisel', note:'Gent nema svoj aerodrom — najbliži je Brisel (oko 45 min vožnje).', c:'Gent', k:'own', t:'45 min'},
+  'namir': {nearest:'Šarlroa', note:'Namir nema svoj aerodrom — najbliži je Šarlroa (oko 45 min vožnje).', c:'Namir', k:'own', t:'45 min'},
   // --- Grčka: aerodromi ---
   'atina': {hasAirport:true},
   'solun': {hasAirport:true},
@@ -2191,71 +3104,71 @@ const AIRPORT_DB = {
   'skijatos': {hasAirport:true, limited:true},
   'milos': {hasAirport:true, limited:true},
   // --- Grčka: bez sopstvenog aerodroma ---
-  'halkidiki': {nearest:'Solun', note:'Halkidiki nema svoj aerodrom — najbliži je Solun (oko 1h vožnje).'},
-  'lefkada': {nearest:'Preveza', note:'Lefkada nema svoj aerodrom — najbliži je Preveza/Aktion (oko 30 min vožnje).'},
-  'volos': {nearest:'Solun', note:'Volos nema veći aerodrom — najbliži je Solun (oko 2h vožnje), mali regionalni aerodrom Nea Anhialos je bliži ali sa malo letova.'},
-  'patra': {nearest:'Araksos', note:'Patra nema svoj aerodrom — najbliži je Araksos (oko 45 min vožnje).'},
-  'larisa': {nearest:'Solun', note:'Larisa nema svoj aerodrom — najbliži je Solun (oko 1h30 vožnje).'},
-  'lutraki': {nearest:'Atina', note:'Lutraki nema svoj aerodrom — najbliži je Atina (oko 1h vožnje).'},
-  'edipsos': {nearest:'Atina', note:'Edipsos nema svoj aerodrom — najbliži je Atina (oko 2h vožnje, uz trajekt).'},
-  'olimp': {nearest:'Solun', note:'Olimp nema svoj aerodrom — najbliži je Solun (oko 1h vožnje).'},
-  'pilion': {nearest:'Solun', note:'Pilion nema svoj aerodrom — najbliži je Solun (oko 2h vožnje), Volos je bliža alternativa bez redovnih letova.'},
-  'meteori': {nearest:'Solun', note:'Meteori nemaju aerodrom u blizini — najbliži je Solun (oko 2h vožnje).'},
-  'delfi': {nearest:'Atina', note:'Delfi nema svoj aerodrom — najbliži je Atina (oko 2h vožnje).'},
-  'nafplion': {nearest:'Atina', note:'Nafplion nema svoj aerodrom — najbliži je Atina (oko 2h vožnje).'},
-  'tasos': {nearest:'Kavala', note:'Tasos nema svoj aerodrom — najbliži je Kavala (oko 1h vožnje, uz trajekt).'},
-  'skopelos': {nearest:'Skijatos', note:'Skopelos nema veći aerodrom — najbliži je Skijatos (trajektom oko 1h).'},
-  'evija': {nearest:'Atina', note:'Evija nema svoj aerodrom — najbliži je Atina (oko 1h30 vožnje).'},
-  'idra': {nearest:'Atina', note:'Idra nema svoj aerodrom — najbliži je Atina (trajektom oko 1h30).'},
-  'spece': {nearest:'Atina', note:'Spece nema svoj aerodrom — najbliži je Atina (trajektom oko 2h).'},
-  'ios': {nearest:'Santorini', note:'Ios nema svoj aerodrom — najbliži je Santorini (trajektom oko 1h), Naksos je alternativa.'},
-  'egina': {nearest:'Atina', note:'Egina nema svoj aerodrom — najbliži je Atina (trajektom oko 1h).'},
-  'poros': {nearest:'Atina', note:'Poros nema svoj aerodrom — najbliži je Atina (trajektom oko 2h).'},
+  'halkidiki': {nearest:'Solun', note:'Halkidiki nema svoj aerodrom — najbliži je Solun (oko 1h vožnje).', c:'Halkidiki', k:'own', t:'1h'},
+  'lefkada': {nearest:'Preveza', note:'Lefkada nema svoj aerodrom — najbliži je Preveza/Aktion (oko 30 min vožnje).', c:'Lefkada', k:'own', t:'30 min', nn:'Preveza/Aktion'},
+  'volos': {nearest:'Solun', note:'Volos nema veći aerodrom — najbliži je Solun (oko 2h vožnje), mali regionalni aerodrom Nea Anhialos je bliži ali sa malo letova.', i18n:{en:'Volos has no major airport — the nearest is Thessaloniki (about 2 h by car); the small regional airport of Nea Anchialos is closer but has few flights.', ru:'В Волосе нет крупного аэропорта — ближайший — Салоники (около 2 ч на машине); небольшой региональный аэропорт Неа-Анхиалос ближе, но рейсов там мало.'}},
+  'patra': {nearest:'Araksos', note:'Patra nema svoj aerodrom — najbliži je Araksos (oko 45 min vožnje).', c:'Patra', k:'own', t:'45 min'},
+  'larisa': {nearest:'Solun', note:'Larisa nema svoj aerodrom — najbliži je Solun (oko 1h30 vožnje).', c:'Larisa', k:'own', t:'1h30'},
+  'lutraki': {nearest:'Atina', note:'Lutraki nema svoj aerodrom — najbliži je Atina (oko 1h vožnje).', c:'Lutraki', k:'own', t:'1h'},
+  'edipsos': {nearest:'Atina', note:'Edipsos nema svoj aerodrom — najbliži je Atina (oko 2h vožnje, uz trajekt).', i18n:{en:'Edipsos has no airport of its own — the nearest is Athens (about 2 h by car, including a ferry).', ru:'Эдипсос: собственного аэропорта нет, ближайший — Афины (около 2 ч на машине, с паромом).'}},
+  'olimp': {nearest:'Solun', note:'Olimp nema svoj aerodrom — najbliži je Solun (oko 1h vožnje).', c:'Olimp', k:'own', t:'1h'},
+  'pilion': {nearest:'Solun', note:'Pilion nema svoj aerodrom — najbliži je Solun (oko 2h vožnje), Volos je bliža alternativa bez redovnih letova.', i18n:{en:'Pelion has no airport of its own — the nearest is Thessaloniki (about 2 h by car); Volos is a closer alternative without scheduled flights.', ru:'Пелион: собственного аэропорта нет, ближайший — Салоники (около 2 ч на машине); Волос ближе, но регулярных рейсов там нет.'}},
+  'meteori': {nearest:'Solun', note:'Meteori nemaju aerodrom u blizini — najbliži je Solun (oko 2h vožnje).', c:'Meteori', k:'nearby', t:'2h'},
+  'delfi': {nearest:'Atina', note:'Delfi nema svoj aerodrom — najbliži je Atina (oko 2h vožnje).', c:'Delfi', k:'own', t:'2h'},
+  'nafplion': {nearest:'Atina', note:'Nafplion nema svoj aerodrom — najbliži je Atina (oko 2h vožnje).', c:'Nafplion', k:'own', t:'2h'},
+  'tasos': {nearest:'Kavala', note:'Tasos nema svoj aerodrom — najbliži je Kavala (oko 1h vožnje, uz trajekt).', i18n:{en:'Thasos has no airport of its own — the nearest is Kavala (about 1 h by car, including a ferry).', ru:'Тасос: собственного аэропорта нет, ближайший — Кавала (около 1 ч на машине, с паромом).'}},
+  'skopelos': {nearest:'Skijatos', note:'Skopelos nema veći aerodrom — najbliži je Skijatos (trajektom oko 1h).', i18n:{en:'Skopelos has no major airport — the nearest is Skiathos (about 1 h by ferry).', ru:'На Скопелосе нет крупного аэропорта — ближайший — Скиатос (около 1 ч на пароме).'}},
+  'evija': {nearest:'Atina', note:'Evija nema svoj aerodrom — najbliži je Atina (oko 1h30 vožnje).', c:'Evija', k:'own', t:'1h30'},
+  'idra': {nearest:'Atina', note:'Idra nema svoj aerodrom — najbliži je Atina (trajektom oko 1h30).', i18n:{en:'Hydra has no airport of its own — the nearest is Athens (about 1 h 30 min by ferry).', ru:'На Идре нет собственного аэропорта — ближайший — Афины (около 1 ч 30 мин на пароме).'}},
+  'spece': {nearest:'Atina', note:'Spece nema svoj aerodrom — najbliži je Atina (trajektom oko 2h).', i18n:{en:'Spetses has no airport of its own — the nearest is Athens (about 2 h by ferry).', ru:'На Спеце нет собственного аэропорта — ближайший — Афины (около 2 ч на пароме).'}},
+  'ios': {nearest:'Santorini', note:'Ios nema svoj aerodrom — najbliži je Santorini (trajektom oko 1h), Naksos je alternativa.', i18n:{en:'Ios has no airport of its own — the nearest is Santorini (about 1 h by ferry); Naxos is an alternative.', ru:'На Иосе нет собственного аэропорта — ближайший — Санторини (около 1 ч на пароме); альтернатива — Наксос.'}},
+  'egina': {nearest:'Atina', note:'Egina nema svoj aerodrom — najbliži je Atina (trajektom oko 1h).', i18n:{en:'Aegina has no airport of its own — the nearest is Athens (about 1 h by ferry).', ru:'На Эгине нет собственного аэропорта — ближайший — Афины (около 1 ч на пароме).'}},
+  'poros': {nearest:'Atina', note:'Poros nema svoj aerodrom — najbliži je Atina (trajektom oko 2h).', i18n:{en:'Poros has no airport of its own — the nearest is Athens (about 2 h by ferry).', ru:'На Поросе нет собственного аэропорта — ближайший — Афины (около 2 ч на пароме).'}},
   // --- Bugarska: aerodromi ---
   'sofija': {hasAirport:true},
   'varna': {hasAirport:true},
   'burgas': {hasAirport:true},
   'plovdiv': {hasAirport:true, limited:true},
   // --- Bugarska: bez sopstvenog aerodroma ---
-  'nesebar': {nearest:'Burgas', note:'Nesebar nema svoj aerodrom — najbliži je Burgas (oko 40 min vožnje).'},
-  'bansko': {nearest:'Sofija', note:'Bansko nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).'},
-  'ruse': {nearest:'Sofija', note:'Ruse nema svoj aerodrom — najbliži je Sofija (oko 4h vožnje), Bukurešt u Rumuniji je bliža alternativa preko granice (oko 1h30).'},
-  'stara zagora': {nearest:'Plovdiv', note:'Stara Zagora nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).'},
-  'pleven': {nearest:'Sofija', note:'Pleven nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).'},
-  'veliko trnovo': {nearest:'Sofija', note:'Veliko Trnovo nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje), Varna je alternativa.'},
-  'blagoevgrad': {nearest:'Sofija', note:'Blagoevgrad nema svoj aerodrom — najbliži je Sofija (oko 1h vožnje).'},
-  'sumen': {nearest:'Varna', note:'Šumen nema svoj aerodrom — najbliži je Varna (oko 1h30 vožnje).'},
-  'sliven': {nearest:'Burgas', note:'Sliven nema svoj aerodrom — najbliži je Burgas (oko 1h30 vožnje).'},
-  'vidin': {nearest:'Sofija', note:'Vidin nema svoj aerodrom — najbliži je Sofija (oko 3h vožnje).'},
-  'dobric': {nearest:'Varna', note:'Dobrič nema svoj aerodrom — najbliži je Varna (oko 45 min vožnje).'},
-  'kjustendil': {nearest:'Sofija', note:'Kjustendil nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje).'},
-  'gabrovo': {nearest:'Sofija', note:'Gabrovo nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje), Plovdiv je alternativa.'},
-  'haskovo': {nearest:'Plovdiv', note:'Haskovo nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).'},
-  'sandanski': {nearest:'Sofija', note:'Sandanski nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).'},
-  'velingrad': {nearest:'Sofija', note:'Velingrad nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje), Plovdiv je alternativa.'},
-  'hisarja': {nearest:'Plovdiv', note:'Hisarja nema svoj aerodrom — najbliži je Plovdiv (oko 40 min vožnje).'},
-  'devin': {nearest:'Plovdiv', note:'Devin nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).'},
-  'pavel banja': {nearest:'Plovdiv', note:'Pavel Banja nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).'},
-  'bankja': {nearest:'Sofija', note:'Bankja nema svoj aerodrom — najbliži je Sofija (oko 30 min vožnje).'},
-  'borovec': {nearest:'Sofija', note:'Borovec nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje).'},
-  'pamporovo': {nearest:'Plovdiv', note:'Pamporovo nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).'},
-  'vitosa': {nearest:'Sofija', note:'Vitoša nema svoj aerodrom — najbliži je Sofija (oko 30 min vožnje).'},
-  'cepelare': {nearest:'Plovdiv', note:'Čepelare nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).'},
-  'rila': {nearest:'Sofija', note:'Rila nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).'},
-  'koprivstica': {nearest:'Sofija', note:'Koprivštica nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje), Plovdiv je alternativa.'},
-  'melnik': {nearest:'Sofija', note:'Melnik nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje).'},
-  'rilski manastir': {nearest:'Sofija', note:'Rilski manastir nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).'},
-  'trjavna': {nearest:'Sofija', note:'Trjavna nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje), Varna je alternativa.'},
-  'arbanasi': {nearest:'Varna', note:'Arbanasi nema svoj aerodrom — najbliži je Varna (oko 1h30 vožnje), Sofija je alternativa.'},
-  'sozopol': {nearest:'Burgas', note:'Sozopol nema svoj aerodrom — najbliži je Burgas (oko 35 min vožnje).'},
-  'suncev breg': {nearest:'Burgas', note:'Sunčev Breg nema svoj aerodrom — najbliži je Burgas (oko 30 min vožnje).'},
-  'zlatni pjasci': {nearest:'Varna', note:'Zlatni Pjasci nemaju aerodrom — najbliži je Varna (oko 20 min vožnje).'},
-  'primorsko': {nearest:'Burgas', note:'Primorsko nema svoj aerodrom — najbliži je Burgas (oko 1h vožnje).'},
-  'balcik': {nearest:'Varna', note:'Balčik nema svoj aerodrom — najbliži je Varna (oko 40 min vožnje).'},
-  'kavarna': {nearest:'Varna', note:'Kavarna nema svoj aerodrom — najbliži je Varna (oko 1h vožnje).'},
-  'carevo': {nearest:'Burgas', note:'Carevo nema svoj aerodrom — najbliži je Burgas (oko 1h vožnje).'},
-  'pomorije': {nearest:'Burgas', note:'Pomorije nema svoj aerodrom — najbliži je Burgas (oko 20 min vožnje).'},
-  'ahtopol': {nearest:'Burgas', note:'Ahtopol nema svoj aerodrom — najbliži je Burgas (oko 1h30 vožnje).'},
+  'nesebar': {nearest:'Burgas', note:'Nesebar nema svoj aerodrom — najbliži je Burgas (oko 40 min vožnje).', c:'Nesebar', k:'own', t:'40 min'},
+  'bansko': {nearest:'Sofija', note:'Bansko nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Bansko', k:'own', t:'2h'},
+  'ruse': {nearest:'Sofija', note:'Ruse nema svoj aerodrom — najbliži je Sofija (oko 4h vožnje), Bukurešt u Rumuniji je bliža alternativa preko granice (oko 1h30).', i18n:{en:'Ruse has no airport of its own — the nearest is Sofia (about 4 h by car); Bucharest in Romania is a closer alternative across the border (about 1 h 30 min).', ru:'Русе: собственного аэропорта нет, ближайший — София (около 4 ч на машине); ближе через границу — Бухарест в Румынии (около 1 ч 30 мин).'}},
+  'stara zagora': {nearest:'Plovdiv', note:'Stara Zagora nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).', c:'Stara Zagora', k:'own', t:'1h'},
+  'pleven': {nearest:'Sofija', note:'Pleven nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Pleven', k:'own', t:'2h'},
+  'veliko trnovo': {nearest:'Sofija', note:'Veliko Trnovo nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje), Varna je alternativa.', c:'Veliko Trnovo', k:'own', t:'2h30', alt:'Varna'},
+  'blagoevgrad': {nearest:'Sofija', note:'Blagoevgrad nema svoj aerodrom — najbliži je Sofija (oko 1h vožnje).', c:'Blagoevgrad', k:'own', t:'1h'},
+  'sumen': {nearest:'Varna', note:'Šumen nema svoj aerodrom — najbliži je Varna (oko 1h30 vožnje).', c:'Šumen', k:'own', t:'1h30'},
+  'sliven': {nearest:'Burgas', note:'Sliven nema svoj aerodrom — najbliži je Burgas (oko 1h30 vožnje).', c:'Sliven', k:'own', t:'1h30'},
+  'vidin': {nearest:'Sofija', note:'Vidin nema svoj aerodrom — najbliži je Sofija (oko 3h vožnje).', c:'Vidin', k:'own', t:'3h'},
+  'dobric': {nearest:'Varna', note:'Dobrič nema svoj aerodrom — najbliži je Varna (oko 45 min vožnje).', c:'Dobrič', k:'own', t:'45 min'},
+  'kjustendil': {nearest:'Sofija', note:'Kjustendil nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje).', c:'Kjustendil', k:'own', t:'1h30'},
+  'gabrovo': {nearest:'Sofija', note:'Gabrovo nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje), Plovdiv je alternativa.', c:'Gabrovo', k:'own', t:'2h30', alt:'Plovdiv'},
+  'haskovo': {nearest:'Plovdiv', note:'Haskovo nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).', c:'Haskovo', k:'own', t:'1h'},
+  'sandanski': {nearest:'Sofija', note:'Sandanski nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Sandanski', k:'own', t:'2h'},
+  'velingrad': {nearest:'Sofija', note:'Velingrad nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje), Plovdiv je alternativa.', c:'Velingrad', k:'own', t:'1h30', alt:'Plovdiv'},
+  'hisarja': {nearest:'Plovdiv', note:'Hisarja nema svoj aerodrom — najbliži je Plovdiv (oko 40 min vožnje).', c:'Hisarja', k:'own', t:'40 min'},
+  'devin': {nearest:'Plovdiv', note:'Devin nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).', c:'Devin', k:'own', t:'1h30'},
+  'pavel banja': {nearest:'Plovdiv', note:'Pavel Banja nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).', c:'Pavel Banja', k:'own', t:'1h'},
+  'bankja': {nearest:'Sofija', note:'Bankja nema svoj aerodrom — najbliži je Sofija (oko 30 min vožnje).', c:'Bankja', k:'own', t:'30 min'},
+  'borovec': {nearest:'Sofija', note:'Borovec nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje).', c:'Borovec', k:'own', t:'1h30'},
+  'pamporovo': {nearest:'Plovdiv', note:'Pamporovo nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).', c:'Pamporovo', k:'own', t:'1h30'},
+  'vitosa': {nearest:'Sofija', note:'Vitoša nema svoj aerodrom — najbliži je Sofija (oko 30 min vožnje).', c:'Vitoša', k:'own', t:'30 min'},
+  'cepelare': {nearest:'Plovdiv', note:'Čepelare nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).', c:'Čepelare', k:'own', t:'1h30'},
+  'rila': {nearest:'Sofija', note:'Rila nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Rila', k:'own', t:'2h'},
+  'koprivstica': {nearest:'Sofija', note:'Koprivštica nema svoj aerodrom — najbliži je Sofija (oko 1h30 vožnje), Plovdiv je alternativa.', c:'Koprivštica', k:'own', t:'1h30', alt:'Plovdiv'},
+  'melnik': {nearest:'Sofija', note:'Melnik nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje).', c:'Melnik', k:'own', t:'2h30'},
+  'rilski manastir': {nearest:'Sofija', note:'Rilski manastir nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Rilski manastir', k:'own', t:'2h'},
+  'trjavna': {nearest:'Sofija', note:'Trjavna nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje), Varna je alternativa.', c:'Trjavna', k:'own', t:'2h30', alt:'Varna'},
+  'arbanasi': {nearest:'Varna', note:'Arbanasi nema svoj aerodrom — najbliži je Varna (oko 1h30 vožnje), Sofija je alternativa.', c:'Arbanasi', k:'own', t:'1h30', alt:'Sofija'},
+  'sozopol': {nearest:'Burgas', note:'Sozopol nema svoj aerodrom — najbliži je Burgas (oko 35 min vožnje).', c:'Sozopol', k:'own', t:'35 min'},
+  'suncev breg': {nearest:'Burgas', note:'Sunčev Breg nema svoj aerodrom — najbliži je Burgas (oko 30 min vožnje).', c:'Sunčev Breg', k:'own', t:'30 min'},
+  'zlatni pjasci': {nearest:'Varna', note:'Zlatni Pjasci nemaju aerodrom — najbliži je Varna (oko 20 min vožnje).', c:'Zlatni Pjasci', k:'plain', t:'20 min'},
+  'primorsko': {nearest:'Burgas', note:'Primorsko nema svoj aerodrom — najbliži je Burgas (oko 1h vožnje).', c:'Primorsko', k:'own', t:'1h'},
+  'balcik': {nearest:'Varna', note:'Balčik nema svoj aerodrom — najbliži je Varna (oko 40 min vožnje).', c:'Balčik', k:'own', t:'40 min'},
+  'kavarna': {nearest:'Varna', note:'Kavarna nema svoj aerodrom — najbliži je Varna (oko 1h vožnje).', c:'Kavarna', k:'own', t:'1h'},
+  'carevo': {nearest:'Burgas', note:'Carevo nema svoj aerodrom — najbliži je Burgas (oko 1h vožnje).', c:'Carevo', k:'own', t:'1h'},
+  'pomorije': {nearest:'Burgas', note:'Pomorije nema svoj aerodrom — najbliži je Burgas (oko 20 min vožnje).', c:'Pomorije', k:'own', t:'20 min'},
+  'ahtopol': {nearest:'Burgas', note:'Ahtopol nema svoj aerodrom — najbliži je Burgas (oko 1h30 vožnje).', c:'Ahtopol', k:'own', t:'1h30'},
   // --- Rumunija: aerodromi ---
   'bukurest': {hasAirport:true},
   'kluz': {hasAirport:true, limited:true},
@@ -2265,9 +3178,9 @@ const AIRPORT_DB = {
   'jasi': {hasAirport:true, limited:true},
   'brasov': {hasAirport:true, limited:true},
   // --- Rumunija: bez sopstvenog aerodroma ---
-  'sinaja': {nearest:'Bukurešt', note:'Sinaja nema svoj aerodrom — najbliži je Bukurešt (oko 2h vožnje), Brašov je alternativa (oko 45 min).'},
-  'bran': {nearest:'Brašov', note:'Bran nema svoj aerodrom — najbliži je Brašov (oko 30 min vožnje).'},
-  'mamaja': {nearest:'Konstanca', note:'Mamaja nema svoj aerodrom — aerodrom Konstanca je praktično odmah pored (oko 10 min vožnje).'},
+  'sinaja': {nearest:'Bukurešt', note:'Sinaja nema svoj aerodrom — najbliži je Bukurešt (oko 2h vožnje), Brašov je alternativa (oko 45 min).', i18n:{en:'Sinaia has no airport of its own — the nearest is Bucharest (about 2 h by car); Brașov is an alternative (about 45 min).', ru:'Синая: собственного аэропорта нет, ближайший — Бухарест (около 2 ч на машине); альтернатива — Брашов (около 45 мин).'}},
+  'bran': {nearest:'Brašov', note:'Bran nema svoj aerodrom — najbliži je Brašov (oko 30 min vožnje).', c:'Bran', k:'own', t:'30 min'},
+  'mamaja': {nearest:'Konstanca', note:'Mamaja nema svoj aerodrom — aerodrom Konstanca je praktično odmah pored (oko 10 min vožnje).', i18n:{en:'Mamaia has no airport of its own — Constanța airport is practically next door (about 10 min by car).', ru:'Мамая: собственного аэропорта нет, аэропорт Констанцы совсем рядом (около 10 мин на машине).'}},
   // --- Italija: aerodromi ---
   'rim': {hasAirport:true},
   'milano': {hasAirport:true},
@@ -2300,44 +3213,44 @@ const AIRPORT_DB = {
   'redjokalabrija': {hasAirport:true, limited:true},
   'lamecijaterme': {hasAirport:true, limited:true},
   // --- Italija: bez sopstvenog aerodroma ---
-  'lece': {nearest:'Brindizi', note:'Leče nema svoj aerodrom — najbliži je Brindizi (oko 40 min vožnje).'},
-  'padova': {nearest:'Venecija', note:'Padova nema svoj aerodrom — najbliži je Venecija (oko 40 min vožnje).'},
-  'modena': {nearest:'Bolonja', note:'Modena nema svoj aerodrom — najbliži je Bolonja (oko 40 min vožnje).'},
-  'bresija': {nearest:'Milano', note:'Brešija nema svoj aerodrom — najbliži je Milano (oko 1h vožnje), Verona je alternativa.'},
-  'salerno': {nearest:'Napulj', note:'Salerno nema svoj aerodrom — najbliži je Napulj (oko 50 min vožnje).'},
-  'abano terme': {nearest:'Venecija', note:'Abano Terme nema svoj aerodrom — najbliži je Venecija (oko 50 min vožnje), Padova je alternativa.'},
-  'montekatini terme': {nearest:'Firenca', note:'Montekatini Terme nema svoj aerodrom — najbliži je Firenca (oko 50 min vožnje), Pisa je alternativa.'},
-  'fjudji': {nearest:'Rim', note:'Fjuđi nema svoj aerodrom — najbliži je Rim (oko 1h vožnje).'},
-  'salsomadjore terme': {nearest:'Parma', note:'Salsomađore Terme nema svoj aerodrom — najbliži je Parma (oko 40 min vožnje).'},
-  'dolomiti': {nearest:'Verona', note:'Dolomiti nemaju aerodrom u blizini — najbliži je Verona (oko 2h vožnje), Venecija je alternativa.'},
-  'kortina d\'ampeco': {nearest:'Verona', note:'Kortina d\'Ampeco nema svoj aerodrom — najbliži je Verona (oko 2h vožnje).'},
-  'val gardena': {nearest:'Bolcano', note:'Val Gardena nema svoj aerodrom — najbliži je Bolcano (oko 1h vožnje), Verona je dalja alternativa (oko 2h30).'},
-  'livinjo': {nearest:'Milano', note:'Livinjo nema svoj aerodrom — najbliži je Milano (oko 3h vožnje), švajcarski Sankt Moric je bliža alternativa preko granice.'},
-  'etna': {nearest:'Katanija', note:'Etna nema svoj aerodrom — najbliži je Katanija (oko 30 min vožnje).'},
-  'pompeji': {nearest:'Napulj', note:'Pompeji nema svoj aerodrom — najbliži je Napulj (oko 40 min vožnje).'},
-  'asizi': {nearest:'Perudja', note:'Asizi nema svoj aerodrom — najbliži je Perudja (oko 30 min vožnje).'},
-  'sijena': {nearest:'Firenca', note:'Sijena nema svoj aerodrom — najbliži je Firenca (oko 1h vožnje).'},
-  'san djimonjano': {nearest:'Firenca', note:'San Đimonjano nema svoj aerodrom — najbliži je Firenca (oko 1h vožnje).'},
-  'orvieto': {nearest:'Rim', note:'Orvieto nema svoj aerodrom — najbliži je Rim (oko 1h30 vožnje), Perudja je alternativa.'},
-  'ravena': {nearest:'Bolonja', note:'Ravena nema svoj aerodrom — najbliži je Bolonja (oko 1h vožnje).'},
-  'amalfi': {nearest:'Napulj', note:'Amalfi nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).'},
-  'pozitano': {nearest:'Napulj', note:'Pozitano nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).'},
-  'sorento': {nearest:'Napulj', note:'Sorento nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).'},
-  'kapri': {nearest:'Napulj', note:'Kapri nema svoj aerodrom — do ostrva se stiže trajektom iz Napulja, gde je najbliži aerodrom.'},
-  'portofino': {nearest:'Đenova', note:'Portofino nema svoj aerodrom — najbliži je Đenova (oko 40 min vožnje).'},
-  'elba': {nearest:'Pisa', note:'Elba nema svoj aerodrom sa redovnim letovima — najbliži je Pisa (oko 1h30 vožnje plus trajekt iz Pjombina).'},
-  'taormina': {nearest:'Katanija', note:'Taormina nema svoj aerodrom — najbliži je Katanija (oko 45 min vožnje).'},
-  'luka': {nearest:'Pisa', note:'Luka nema svoj aerodrom — najbliži je Pisa (oko 25 min vožnje).'},
-  'cinkve tere': {nearest:'Đenova', note:'Činkve Tere nema svoj aerodrom — najbliži je Đenova (oko 1h vožnje), Pisa je alternativa.'},
-  'san marino': {nearest:'Rimini', note:'San Marino nema svoj aerodrom — najbliži je Rimini (oko 30 min vožnje).'},
-  'vatikan': {nearest:'Rim', note:'Vatikan nema svoj aerodrom — koristi se aerodrom Rim, praktično u samom gradu.'},
-  'mantova': {nearest:'Verona', note:'Mantova nema svoj aerodrom — najbliži je Verona (oko 45 min vožnje).'},
-  'ferara': {nearest:'Bolonja', note:'Ferara nema svoj aerodrom — najbliži je Bolonja (oko 40 min vožnje).'},
-  'urbino': {nearest:'Ankona', note:'Urbino nema svoj aerodrom — najbliži je Ankona (oko 1h vožnje).'},
-  'matera': {nearest:'Bari', note:'Matera nema svoj aerodrom — najbliži je Bari (oko 1h vožnje).'},
-  'alberobelo': {nearest:'Bari', note:'Alberobelo nema svoj aerodrom — najbliži je Bari (oko 1h vožnje), Brindizi je alternativa.'},
-  'ostuni': {nearest:'Brindizi', note:'Ostuni nema svoj aerodrom — najbliži je Brindizi (oko 40 min vožnje).'},
-  'poljinjano a mare': {nearest:'Bari', note:'Poljinjano a Mare nema svoj aerodrom — najbliži je Bari (oko 30 min vožnje).'},
+  'lece': {nearest:'Brindizi', note:'Leče nema svoj aerodrom — najbliži je Brindizi (oko 40 min vožnje).', c:'Leče', k:'own', t:'40 min'},
+  'padova': {nearest:'Venecija', note:'Padova nema svoj aerodrom — najbliži je Venecija (oko 40 min vožnje).', c:'Padova', k:'own', t:'40 min'},
+  'modena': {nearest:'Bolonja', note:'Modena nema svoj aerodrom — najbliži je Bolonja (oko 40 min vožnje).', c:'Modena', k:'own', t:'40 min'},
+  'bresija': {nearest:'Milano', note:'Brešija nema svoj aerodrom — najbliži je Milano (oko 1h vožnje), Verona je alternativa.', c:'Brešija', k:'own', t:'1h', alt:'Verona'},
+  'salerno': {nearest:'Napulj', note:'Salerno nema svoj aerodrom — najbliži je Napulj (oko 50 min vožnje).', c:'Salerno', k:'own', t:'50 min'},
+  'abano terme': {nearest:'Venecija', note:'Abano Terme nema svoj aerodrom — najbliži je Venecija (oko 50 min vožnje), Padova je alternativa.', c:'Abano Terme', k:'own', t:'50 min', alt:'Padova'},
+  'montekatini terme': {nearest:'Firenca', note:'Montekatini Terme nema svoj aerodrom — najbliži je Firenca (oko 50 min vožnje), Pisa je alternativa.', c:'Montekatini Terme', k:'own', t:'50 min', alt:'Pisa'},
+  'fjudji': {nearest:'Rim', note:'Fjuđi nema svoj aerodrom — najbliži je Rim (oko 1h vožnje).', c:'Fjuđi', k:'own', t:'1h'},
+  'salsomadjore terme': {nearest:'Parma', note:'Salsomađore Terme nema svoj aerodrom — najbliži je Parma (oko 40 min vožnje).', c:'Salsomađore Terme', k:'own', t:'40 min'},
+  'dolomiti': {nearest:'Verona', note:'Dolomiti nemaju aerodrom u blizini — najbliži je Verona (oko 2h vožnje), Venecija je alternativa.', c:'Dolomiti', k:'nearby', t:'2h', alt:'Venecija'},
+  'kortina d\'ampeco': {nearest:'Verona', note:'Kortina d\'Ampeco nema svoj aerodrom — najbliži je Verona (oko 2h vožnje).', c:'Kortina d\'Ampeco', k:'own', t:'2h'},
+  'val gardena': {nearest:'Bolcano', note:'Val Gardena nema svoj aerodrom — najbliži je Bolcano (oko 1h vožnje), Verona je dalja alternativa (oko 2h30).', i18n:{en:'Val Gardena has no airport of its own — the nearest is Bolzano (about 1 h by car); Verona is a farther alternative (about 2 h 30 min).', ru:'Валь-Гардена: собственного аэропорта нет, ближайший — Больцано (около 1 ч на машине); Верона — более дальняя альтернатива (около 2 ч 30 мин).'}},
+  'livinjo': {nearest:'Milano', note:'Livinjo nema svoj aerodrom — najbliži je Milano (oko 3h vožnje), švajcarski Sankt Moric je bliža alternativa preko granice.', i18n:{en:'Livigno has no airport of its own — the nearest is Milan (about 3 h by car); Swiss St. Moritz is a closer alternative across the border.', ru:'Ливиньо: собственного аэропорта нет, ближайший — Милан (около 3 ч на машине); ближе через границу — швейцарский Санкт-Мориц.'}},
+  'etna': {nearest:'Katanija', note:'Etna nema svoj aerodrom — najbliži je Katanija (oko 30 min vožnje).', c:'Etna', k:'own', t:'30 min'},
+  'pompeji': {nearest:'Napulj', note:'Pompeji nema svoj aerodrom — najbliži je Napulj (oko 40 min vožnje).', c:'Pompeji', k:'own', t:'40 min'},
+  'asizi': {nearest:'Perudja', note:'Asizi nema svoj aerodrom — najbliži je Perudja (oko 30 min vožnje).', c:'Asizi', k:'own', t:'30 min'},
+  'sijena': {nearest:'Firenca', note:'Sijena nema svoj aerodrom — najbliži je Firenca (oko 1h vožnje).', c:'Sijena', k:'own', t:'1h'},
+  'san djimonjano': {nearest:'Firenca', note:'San Đimonjano nema svoj aerodrom — najbliži je Firenca (oko 1h vožnje).', c:'San Đimonjano', k:'own', t:'1h'},
+  'orvieto': {nearest:'Rim', note:'Orvieto nema svoj aerodrom — najbliži je Rim (oko 1h30 vožnje), Perudja je alternativa.', c:'Orvieto', k:'own', t:'1h30', alt:'Perudja'},
+  'ravena': {nearest:'Bolonja', note:'Ravena nema svoj aerodrom — najbliži je Bolonja (oko 1h vožnje).', c:'Ravena', k:'own', t:'1h'},
+  'amalfi': {nearest:'Napulj', note:'Amalfi nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).', c:'Amalfi', k:'own', t:'1h'},
+  'pozitano': {nearest:'Napulj', note:'Pozitano nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).', c:'Pozitano', k:'own', t:'1h'},
+  'sorento': {nearest:'Napulj', note:'Sorento nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).', c:'Sorento', k:'own', t:'1h'},
+  'kapri': {nearest:'Napulj', note:'Kapri nema svoj aerodrom — do ostrva se stiže trajektom iz Napulja, gde je najbliži aerodrom.', i18n:{en:'Capri has no airport of its own — you reach the island by ferry from Naples, where the nearest airport is.', ru:'На Капри нет собственного аэропорта — на остров добираются паромом из Неаполя, где находится ближайший аэропорт.'}},
+  'portofino': {nearest:'Đenova', note:'Portofino nema svoj aerodrom — najbliži je Đenova (oko 40 min vožnje).', c:'Portofino', k:'own', t:'40 min'},
+  'elba': {nearest:'Pisa', note:'Elba nema svoj aerodrom sa redovnim letovima — najbliži je Pisa (oko 1h30 vožnje plus trajekt iz Pjombina).', i18n:{en:'Elba has no airport with scheduled flights — the nearest is Pisa (about 1 h 30 min by car plus a ferry from Piombino).', ru:'На Эльбе нет аэропорта с регулярными рейсами — ближайший — Пиза (около 1 ч 30 мин на машине плюс паром из Пьомбино).'}},
+  'taormina': {nearest:'Katanija', note:'Taormina nema svoj aerodrom — najbliži je Katanija (oko 45 min vožnje).', c:'Taormina', k:'own', t:'45 min'},
+  'luka': {nearest:'Pisa', note:'Luka nema svoj aerodrom — najbliži je Pisa (oko 25 min vožnje).', c:'Luka', k:'own', t:'25 min'},
+  'cinkve tere': {nearest:'Đenova', note:'Činkve Tere nema svoj aerodrom — najbliži je Đenova (oko 1h vožnje), Pisa je alternativa.', c:'Činkve Tere', k:'own', t:'1h', alt:'Pisa'},
+  'san marino': {nearest:'Rimini', note:'San Marino nema svoj aerodrom — najbliži je Rimini (oko 30 min vožnje).', c:'San Marino', k:'own', t:'30 min'},
+  'vatikan': {nearest:'Rim', note:'Vatikan nema svoj aerodrom — koristi se aerodrom Rim, praktično u samom gradu.', i18n:{en:'Vatican City has no airport of its own — you use Rome’s airport, which is practically in the city itself.', ru:'В Ватикане нет собственного аэропорта — используется аэропорт Рима, практически в самом городе.'}},
+  'mantova': {nearest:'Verona', note:'Mantova nema svoj aerodrom — najbliži je Verona (oko 45 min vožnje).', c:'Mantova', k:'own', t:'45 min'},
+  'ferara': {nearest:'Bolonja', note:'Ferara nema svoj aerodrom — najbliži je Bolonja (oko 40 min vožnje).', c:'Ferara', k:'own', t:'40 min'},
+  'urbino': {nearest:'Ankona', note:'Urbino nema svoj aerodrom — najbliži je Ankona (oko 1h vožnje).', c:'Urbino', k:'own', t:'1h'},
+  'matera': {nearest:'Bari', note:'Matera nema svoj aerodrom — najbliži je Bari (oko 1h vožnje).', c:'Matera', k:'own', t:'1h'},
+  'alberobelo': {nearest:'Bari', note:'Alberobelo nema svoj aerodrom — najbliži je Bari (oko 1h vožnje), Brindizi je alternativa.', c:'Alberobelo', k:'own', t:'1h', alt:'Brindizi'},
+  'ostuni': {nearest:'Brindizi', note:'Ostuni nema svoj aerodrom — najbliži je Brindizi (oko 40 min vožnje).', c:'Ostuni', k:'own', t:'40 min'},
+  'poljinjano a mare': {nearest:'Bari', note:'Poljinjano a Mare nema svoj aerodrom — najbliži je Bari (oko 30 min vožnje).', c:'Poljinjano a Mare', k:'own', t:'30 min'},
   // --- Španija: aerodromi ---
   'barselona': {hasAirport:true},
   'madrid': {hasAirport:true},
@@ -2370,15 +3283,15 @@ const AIRPORT_DB = {
   'pamplona': {hasAirport:true, limited:true},
   'melilja': {hasAirport:true, limited:true},
   // --- Španija: bez sopstvenog aerodroma ---
-  'salamanka': {nearest:'Madrid', note:'Salamanka nema svoj aerodrom sa redovnim letovima — najbliži je Madrid (oko 2h30 vožnje).'},
-  'toledo': {nearest:'Madrid', note:'Toledo nema svoj aerodrom — najbliži je Madrid (oko 1h vožnje).'},
-  'kordoba': {nearest:'Sevilja', note:'Kordoba nema svoj aerodrom — najbliži je Sevilja (oko 1h30 vožnje), Malaga je alternativa.'},
-  'segovija': {nearest:'Madrid', note:'Segovija nema svoj aerodrom — najbliži je Madrid (oko 1h vožnje).'},
-  'ronda': {nearest:'Malaga', note:'Ronda nema svoj aerodrom — najbliži je Malaga (oko 2h vožnje).'},
-  'kadiz': {nearest:'Herez', note:'Kadiz nema svoj aerodrom — najbliži je Herez de la Frontera (oko 45 min vožnje), Sevilja je alternativa.'},
-  'marbelja': {nearest:'Malaga', note:'Marbelja nema svoj aerodrom — najbliži je Malaga (oko 45 min vožnje).'},
-  'kuenka': {nearest:'Madrid', note:'Kuenka nema svoj aerodrom — najbliži je Madrid (oko 1h30 vožnje).'},
-  'avila': {nearest:'Madrid', note:'Avila nema svoj aerodrom — najbliži je Madrid (oko 1h vožnje).'},
+  'salamanka': {nearest:'Madrid', note:'Salamanka nema svoj aerodrom sa redovnim letovima — najbliži je Madrid (oko 2h30 vožnje).', c:'Salamanka', k:'sched', t:'2h30'},
+  'toledo': {nearest:'Madrid', note:'Toledo nema svoj aerodrom — najbliži je Madrid (oko 1h vožnje).', c:'Toledo', k:'own', t:'1h'},
+  'kordoba': {nearest:'Sevilja', note:'Kordoba nema svoj aerodrom — najbliži je Sevilja (oko 1h30 vožnje), Malaga je alternativa.', c:'Kordoba', k:'own', t:'1h30', alt:'Malaga'},
+  'segovija': {nearest:'Madrid', note:'Segovija nema svoj aerodrom — najbliži je Madrid (oko 1h vožnje).', c:'Segovija', k:'own', t:'1h'},
+  'ronda': {nearest:'Malaga', note:'Ronda nema svoj aerodrom — najbliži je Malaga (oko 2h vožnje).', c:'Ronda', k:'own', t:'2h'},
+  'kadiz': {nearest:'Herez', note:'Kadiz nema svoj aerodrom — najbliži je Herez de la Frontera (oko 45 min vožnje), Sevilja je alternativa.', c:'Kadiz', k:'own', t:'45 min', nn:'Herez de la Frontera', alt:'Sevilja'},
+  'marbelja': {nearest:'Malaga', note:'Marbelja nema svoj aerodrom — najbliži je Malaga (oko 45 min vožnje).', c:'Marbelja', k:'own', t:'45 min'},
+  'kuenka': {nearest:'Madrid', note:'Kuenka nema svoj aerodrom — najbliži je Madrid (oko 1h30 vožnje).', c:'Kuenka', k:'own', t:'1h30'},
+  'avila': {nearest:'Madrid', note:'Avila nema svoj aerodrom — najbliži je Madrid (oko 1h vožnje).', c:'Avila', k:'own', t:'1h'},
   // --- Austrija: aerodromi ---
   'bec': {hasAirport:true},
   'salcburg': {hasAirport:true, limited:true},
@@ -2387,20 +3300,20 @@ const AIRPORT_DB = {
   'linc': {hasAirport:true, limited:true},
   'klagenfurt': {hasAirport:true, limited:true},
   // --- Austrija: bez sopstvenog aerodroma ---
-  'halstat': {nearest:'Salcburg', note:'Halštat nema svoj aerodrom — najbliži je Salcburg (oko 1h vožnje).'},
-  'zeloamze': {nearest:'Salcburg', note:'Cel am Ze nema svoj aerodrom — najbliži je Salcburg (oko 1h15 vožnje).'},
-  'kicbuel': {nearest:'Insbruk', note:'Kicbuel nema svoj aerodrom — najbliži je Insbruk (oko 1h vožnje), Salcburg je alternativa.'},
-  'sanktanton': {nearest:'Insbruk', note:'Sankt Anton am Arlberg nema svoj aerodrom — najbliži je Insbruk (oko 1h15 vožnje), Cirih je alternativa preko granice.'},
-  'baden kod beca': {nearest:'Beč', note:'Baden kod Beča nema svoj aerodrom — najbliži je Beč (oko 30 min vožnje).'},
-  'melk': {nearest:'Beč', note:'Melk nema svoj aerodrom — najbliži je Beč (oko 1h15 vožnje).'},
-  'verfen': {nearest:'Salcburg', note:'Verfen nema svoj aerodrom — najbliži je Salcburg (oko 45 min vožnje).'},
+  'halstat': {nearest:'Salcburg', note:'Halštat nema svoj aerodrom — najbliži je Salcburg (oko 1h vožnje).', c:'Halštat', k:'own', t:'1h'},
+  'zeloamze': {nearest:'Salcburg', note:'Cel am Ze nema svoj aerodrom — najbliži je Salcburg (oko 1h15 vožnje).', c:'Cel am Ze', k:'own', t:'1h15'},
+  'kicbuel': {nearest:'Insbruk', note:'Kicbuel nema svoj aerodrom — najbliži je Insbruk (oko 1h vožnje), Salcburg je alternativa.', c:'Kicbuel', k:'own', t:'1h', alt:'Salcburg'},
+  'sanktanton': {nearest:'Insbruk', note:'Sankt Anton am Arlberg nema svoj aerodrom — najbliži je Insbruk (oko 1h15 vožnje), Cirih je alternativa preko granice.', i18n:{en:'St. Anton am Arlberg has no airport of its own — the nearest is Innsbruck (about 1 h 15 min by car); Zurich is an alternative across the border.', ru:'Санкт-Антон-ам-Арльберг: собственного аэропорта нет, ближайший — Инсбрук (около 1 ч 15 мин на машине); альтернатива через границу — Цюрих.'}},
+  'baden kod beca': {nearest:'Beč', note:'Baden kod Beča nema svoj aerodrom — najbliži je Beč (oko 30 min vožnje).', c:'Baden kod Beča', k:'own', t:'30 min'},
+  'melk': {nearest:'Beč', note:'Melk nema svoj aerodrom — najbliži je Beč (oko 1h15 vožnje).', c:'Melk', k:'own', t:'1h15'},
+  'verfen': {nearest:'Salcburg', note:'Verfen nema svoj aerodrom — najbliži je Salcburg (oko 45 min vožnje).', c:'Verfen', k:'own', t:'45 min'},
   // --- Slovačka: aerodromi ---
   'bratislava': {hasAirport:true},
   'kosice': {hasAirport:true, limited:true},
   'poprad': {hasAirport:true, limited:true},
   // --- Slovačka: bez sopstvenog aerodroma ---
-  'banska bistrica': {nearest:'Bratislava', note:'Banska Bistrica nema aerodrom sa redovnim letovima — najbliži je Bratislava (oko 2h30 vožnje).'},
-  'vysoke tatre': {nearest:'Poprad', note:'Visoke Tatre nemaju sopstveni aerodrom — najbliži je Poprad (oko 30 min vožnje).'},
+  'banska bistrica': {nearest:'Bratislava', note:'Banska Bistrica nema aerodrom sa redovnim letovima — najbliži je Bratislava (oko 2h30 vožnje).', c:'Banska Bistrica', k:'sched', t:'2h30'},
+  'vysoke tatre': {nearest:'Poprad', note:'Visoke Tatre nemaju sopstveni aerodrom — najbliži je Poprad (oko 30 min vožnje).', c:'Visoke Tatre', k:'own', t:'30 min'},
   // --- Baltik: aerodromi ---
   'talin': {hasAirport:true},
   'riga': {hasAirport:true},
@@ -2425,8 +3338,8 @@ const AIRPORT_DB = {
   'lids': {hasAirport:true, limited:true},
   'njukasl': {hasAirport:true, limited:true},
   // --- Velika Britanija: bez sopstvenog aerodroma ---
-  'kembridz': {nearest:'London', note:'Kembridž nema svoj aerodrom — najbliži je London (oko 1h vožnje).'},
-  'oksford': {nearest:'London', note:'Oksford nema svoj aerodrom — najbliži je London (oko 1h30 vožnje).'},
+  'kembridz': {nearest:'London', note:'Kembridž nema svoj aerodrom — najbliži je London (oko 1h vožnje).', c:'Kembridž', k:'own', t:'1h'},
+  'oksford': {nearest:'London', note:'Oksford nema svoj aerodrom — najbliži je London (oko 1h30 vožnje).', c:'Oksford', k:'own', t:'1h30'},
   // --- Francuska: dodatni aerodromi ---
   'tuluz': {hasAirport:true},
   'nant': {hasAirport:true, limited:true},
@@ -2448,14 +3361,14 @@ const AIRPORT_DB = {
   'larosel': {hasAirport:true, limited:true},
   'tur': {hasAirport:true, limited:true},
   // --- Francuska: bez sopstvenog aerodroma ---
-  'versaj': {nearest:'Pariz', note:'Versaj nema svoj aerodrom — najbliži je Pariz (oko 30 min vožnje).'},
-  'kan': {nearest:'Nica', note:'Kan nema svoj aerodrom — najbliži je Nica (oko 30 min vožnje).'},
-  'dizon': {nearest:'Lion', note:'Dižon nema svoj aerodrom — najbliži je Lion (oko 1h30 vožnje).'},
-  'anze': {nearest:'Nant', note:'Anže nema svoj aerodrom — najbliži je Nant (oko 1h vožnje).'},
-  'lemans': {nearest:'Pariz', note:'Le Mans nema svoj aerodrom sa redovnim letovima — najbliži je Pariz (oko 2h vožnje), Tur je alternativa.'},
-  'amjen': {nearest:'Pariz', note:'Amjen nema svoj aerodrom — najbliži je Pariz (oko 1h30 vožnje).'},
-  'orlean': {nearest:'Pariz', note:'Orlean nema svoj aerodrom — najbliži je Pariz (oko 1h30 vožnje).'},
-  'mec': {nearest:'Nansi', note:'Mec deli aerodrom sa Nansijem (Metz-Nancy-Loren), udaljen oko 40 min vožnje.'},
+  'versaj': {nearest:'Pariz', note:'Versaj nema svoj aerodrom — najbliži je Pariz (oko 30 min vožnje).', c:'Versaj', k:'own', t:'30 min'},
+  'kan': {nearest:'Nica', note:'Kan nema svoj aerodrom — najbliži je Nica (oko 30 min vožnje).', c:'Kan', k:'own', t:'30 min'},
+  'dizon': {nearest:'Lion', note:'Dižon nema svoj aerodrom — najbliži je Lion (oko 1h30 vožnje).', c:'Dižon', k:'own', t:'1h30'},
+  'anze': {nearest:'Nant', note:'Anže nema svoj aerodrom — najbliži je Nant (oko 1h vožnje).', c:'Anže', k:'own', t:'1h'},
+  'lemans': {nearest:'Pariz', note:'Le Mans nema svoj aerodrom sa redovnim letovima — najbliži je Pariz (oko 2h vožnje), Tur je alternativa.', c:'Le Mans', k:'sched', t:'2h', alt:'Tur'},
+  'amjen': {nearest:'Pariz', note:'Amjen nema svoj aerodrom — najbliži je Pariz (oko 1h30 vožnje).', c:'Amjen', k:'own', t:'1h30'},
+  'orlean': {nearest:'Pariz', note:'Orlean nema svoj aerodrom — najbliži je Pariz (oko 1h30 vožnje).', c:'Orlean', k:'own', t:'1h30'},
+  'mec': {nearest:'Nansi', note:'Mec deli aerodrom sa Nansijem (Metz-Nancy-Loren), udaljen oko 40 min vožnje.', i18n:{en:'Metz shares an airport with Nancy (Metz-Nancy-Lorraine), about 40 min by car.', ru:'Мец делит аэропорт с Нанси (Мец — Нанси — Лотарингия), около 40 мин на машине.'}},
   // --- Nemačka: dodatni aerodromi ---
   'nirnberg': {hasAirport:true, limited:true},
   'hanover': {hasAirport:true, limited:true},
@@ -2473,28 +3386,28 @@ const AIRPORT_DB = {
   'memingen': {hasAirport:true, limited:true},
   'kasel': {hasAirport:true, limited:true},
   // --- Nemačka: bez sopstvenog aerodroma ---
-  'hajdelberg': {nearest:'Frankfurt', note:'Hajdelberg nema svoj aerodrom — najbliži je Frankfurt (oko 1h vožnje).'},
-  'bon': {nearest:'Keln', note:'Bon nema svoj aerodrom — aerodrom Keln praktično nosi i njegovo ime (Keln/Bon), udaljen oko 30 min vožnje.'},
-  'visbaden': {nearest:'Frankfurt', note:'Visbaden nema svoj aerodrom — najbliži je Frankfurt (oko 40 min vožnje).'},
-  'majnc': {nearest:'Frankfurt', note:'Majnc nema svoj aerodrom — najbliži je Frankfurt (oko 45 min vožnje).'},
-  'ahen': {nearest:'Keln', note:'Ahen nema svoj aerodrom — najbliži je Keln/Bon (oko 1h vožnje).'},
-  'regensburg': {nearest:'Nirnberg', note:'Regensburg nema svoj aerodrom — najbliži je Nirnberg (oko 1h20 vožnje).'},
-  'vurcburg': {nearest:'Frankfurt', note:'Vurcburg nema svoj aerodrom — najbliži je Frankfurt (oko 1h30 vožnje).'},
-  'trir': {nearest:'Luksemburg', note:'Trir nema svoj aerodrom — najbliži je Luksemburg (oko 1h vožnje).'},
-  'potsdam': {nearest:'Berlin', note:'Potsdam nema svoj aerodrom — najbliži je Berlin (oko 30 min vožnje).'},
-  'kil': {nearest:'Hamburg', note:'Kil nema svoj aerodrom sa redovnim letovima — najbliži je Hamburg (oko 1h30 vožnje).'},
-  'magdeburg': {nearest:'Berlin', note:'Magdeburg nema svoj aerodrom — najbliži je Berlin (oko 2h vožnje).'},
-  'kemnic': {nearest:'Lajpcig', note:'Kemnic nema svoj aerodrom sa redovnim letovima — najbliži je Lajpcig (oko 1h vožnje).'},
-  'ulm': {nearest:'Stutgart', note:'Ulm nema svoj aerodrom — najbliži je Štutgart (oko 1h vožnje).'},
-  'frajburg': {nearest:'Bazel', note:'Frajburg nema svoj aerodrom — najbliži je Bazel (oko 1h vožnje).'},
-  'konstanc': {nearest:'Fridrihshafen', note:'Konstanc nema svoj aerodrom — najbliži je Fridrihshafen (oko 40 min vožnje), Cirih je alternativa preko granice.'},
+  'hajdelberg': {nearest:'Frankfurt', note:'Hajdelberg nema svoj aerodrom — najbliži je Frankfurt (oko 1h vožnje).', c:'Hajdelberg', k:'own', t:'1h'},
+  'bon': {nearest:'Keln', note:'Bon nema svoj aerodrom — aerodrom Keln praktično nosi i njegovo ime (Keln/Bon), udaljen oko 30 min vožnje.', i18n:{en:'Bonn has no airport of its own — Cologne airport practically carries its name too (Cologne/Bonn), about 30 min by car.', ru:'В Бонне нет собственного аэропорта — аэропорт Кёльна фактически носит и его имя (Кёльн/Бонн), около 30 мин на машине.'}},
+  'visbaden': {nearest:'Frankfurt', note:'Visbaden nema svoj aerodrom — najbliži je Frankfurt (oko 40 min vožnje).', c:'Visbaden', k:'own', t:'40 min'},
+  'majnc': {nearest:'Frankfurt', note:'Majnc nema svoj aerodrom — najbliži je Frankfurt (oko 45 min vožnje).', c:'Majnc', k:'own', t:'45 min'},
+  'ahen': {nearest:'Keln', note:'Ahen nema svoj aerodrom — najbliži je Keln/Bon (oko 1h vožnje).', c:'Ahen', k:'own', t:'1h', nn:'Keln/Bon'},
+  'regensburg': {nearest:'Nirnberg', note:'Regensburg nema svoj aerodrom — najbliži je Nirnberg (oko 1h20 vožnje).', c:'Regensburg', k:'own', t:'1h20'},
+  'vurcburg': {nearest:'Frankfurt', note:'Vurcburg nema svoj aerodrom — najbliži je Frankfurt (oko 1h30 vožnje).', c:'Vurcburg', k:'own', t:'1h30'},
+  'trir': {nearest:'Luksemburg', note:'Trir nema svoj aerodrom — najbliži je Luksemburg (oko 1h vožnje).', c:'Trir', k:'own', t:'1h'},
+  'potsdam': {nearest:'Berlin', note:'Potsdam nema svoj aerodrom — najbliži je Berlin (oko 30 min vožnje).', c:'Potsdam', k:'own', t:'30 min'},
+  'kil': {nearest:'Hamburg', note:'Kil nema svoj aerodrom sa redovnim letovima — najbliži je Hamburg (oko 1h30 vožnje).', c:'Kil', k:'sched', t:'1h30'},
+  'magdeburg': {nearest:'Berlin', note:'Magdeburg nema svoj aerodrom — najbliži je Berlin (oko 2h vožnje).', c:'Magdeburg', k:'own', t:'2h'},
+  'kemnic': {nearest:'Lajpcig', note:'Kemnic nema svoj aerodrom sa redovnim letovima — najbliži je Lajpcig (oko 1h vožnje).', c:'Kemnic', k:'sched', t:'1h'},
+  'ulm': {nearest:'Stutgart', note:'Ulm nema svoj aerodrom — najbliži je Štutgart (oko 1h vožnje).', c:'Ulm', k:'own', t:'1h', nn:'Štutgart'},
+  'frajburg': {nearest:'Bazel', note:'Frajburg nema svoj aerodrom — najbliži je Bazel (oko 1h vožnje).', c:'Frajburg', k:'own', t:'1h'},
+  'konstanc': {nearest:'Fridrihshafen', note:'Konstanc nema svoj aerodrom — najbliži je Fridrihshafen (oko 40 min vožnje), Cirih je alternativa preko granice.', i18n:{en:'Konstanz has no airport of its own — the nearest is Friedrichshafen (about 40 min by car); Zurich is an alternative across the border.', ru:'Констанц: собственного аэропорта нет, ближайший — Фридрихсхафен (около 40 мин на машине); альтернатива через границу — Цюрих.'}},
   // --- Holandija: dodatni aerodromi ---
   'ajndhoven': {hasAirport:true, limited:true},
   'mastriht': {hasAirport:true, limited:true},
   'groningen': {hasAirport:true, limited:true},
   // --- Holandija: bez sopstvenog aerodroma ---
-  'hag': {nearest:'Roterdam', note:'Hag deli aerodrom sa Roterdamom (Rotterdam-Hag), udaljen oko 25 min vožnje.'},
-  'utreht': {nearest:'Amsterdam', note:'Utreht nema svoj aerodrom — najbliži je Amsterdam (oko 30 min vožnje).'},
+  'hag': {nearest:'Roterdam', note:'Hag deli aerodrom sa Roterdamom (Rotterdam-Hag), udaljen oko 25 min vožnje.', i18n:{en:'The Hague shares an airport with Rotterdam (Rotterdam The Hague), about 25 min by car.', ru:'Гаага делит аэропорт с Роттердамом (Роттердам — Гаага), около 25 мин на машине.'}},
+  'utreht': {nearest:'Amsterdam', note:'Utreht nema svoj aerodrom — najbliži je Amsterdam (oko 30 min vožnje).', c:'Utreht', k:'own', t:'30 min'},
   // --- Norveška: dodatni aerodromi ---
   'bergen': {hasAirport:true, limited:true},
   'trondhajm': {hasAirport:true, limited:true},
@@ -2508,8 +3421,8 @@ const AIRPORT_DB = {
   'kirkenes': {hasAirport:true, limited:true},
   'svalbard': {hasAirport:true, limited:true},
   // --- Norveška: bez sopstvenog aerodroma ---
-  'lilehamer': {nearest:'Oslo', note:'Lilehamer nema svoj aerodrom — najbliži je Oslo (oko 2h vožnje).'},
-  'gejrangerfjord': {nearest:'Olesund', note:'Gejrangerfjord nema svoj aerodrom — najbliži je Olesund (oko 2h vožnje, uz trajekt).'},
+  'lilehamer': {nearest:'Oslo', note:'Lilehamer nema svoj aerodrom — najbliži je Oslo (oko 2h vožnje).', c:'Lilehamer', k:'own', t:'2h'},
+  'gejrangerfjord': {nearest:'Olesund', note:'Gejrangerfjord nema svoj aerodrom — najbliži je Olesund (oko 2h vožnje, uz trajekt).', i18n:{en:'Geirangerfjord has no airport of its own — the nearest is Ålesund (about 2 h by car, including a ferry).', ru:'Гейрангер-фьорд: собственного аэропорта нет, ближайший — Олесунн (около 2 ч на машине, с паромом).'}},
   // --- Švedska: dodatni aerodromi ---
   'malme': {hasAirport:true, limited:true},
   'umeo': {hasAirport:true, limited:true},
@@ -2518,8 +3431,8 @@ const AIRPORT_DB = {
   'sundsval': {hasAirport:true, limited:true},
   'kalmar': {hasAirport:true, limited:true},
   // --- Švedska: bez sopstvenog aerodroma ---
-  'upsala': {nearest:'Stokholm', note:'Upsala nema svoj aerodrom — najbliži je Stokholm (oko 45 min vožnje).'},
-  'lund': {nearest:'Malme', note:'Lund nema svoj aerodrom — najbliži je Malme (oko 20 min vožnje).'},
+  'upsala': {nearest:'Stokholm', note:'Upsala nema svoj aerodrom — najbliži je Stokholm (oko 45 min vožnje).', c:'Upsala', k:'own', t:'45 min'},
+  'lund': {nearest:'Malme', note:'Lund nema svoj aerodrom — najbliži je Malme (oko 20 min vožnje).', c:'Lund', k:'own', t:'20 min'},
   // --- Danska: dodatni aerodromi ---
   'olborg': {hasAirport:true, limited:true},
   'bilund': {hasAirport:true, limited:true},
@@ -2527,9 +3440,9 @@ const AIRPORT_DB = {
   'bornholm': {hasAirport:true, limited:true},
   'esbjerg': {hasAirport:true, limited:true},
   // --- Danska: bez sopstvenog aerodroma ---
-  'odense': {nearest:'Bilund', note:'Odense nema svoj aerodrom sa redovnim letovima — najbliži je Bilund (oko 1h vožnje).'},
-  'roskilde': {nearest:'Kopenhagen', note:'Roskilde nema svoj aerodrom sa redovnim letovima — najbliži je Kopenhagen (oko 30 min vožnje).'},
-  'helsingor': {nearest:'Kopenhagen', note:'Helsingor nema svoj aerodrom — najbliži je Kopenhagen (oko 45 min vožnje).'},
+  'odense': {nearest:'Bilund', note:'Odense nema svoj aerodrom sa redovnim letovima — najbliži je Bilund (oko 1h vožnje).', c:'Odense', k:'sched', t:'1h'},
+  'roskilde': {nearest:'Kopenhagen', note:'Roskilde nema svoj aerodrom sa redovnim letovima — najbliži je Kopenhagen (oko 30 min vožnje).', c:'Roskilde', k:'sched', t:'30 min'},
+  'helsingor': {nearest:'Kopenhagen', note:'Helsingor nema svoj aerodrom — najbliži je Kopenhagen (oko 45 min vožnje).', c:'Helsingor', k:'own', t:'45 min'},
   // --- Finska: dodatni aerodromi ---
   'tampere': {hasAirport:true, limited:true},
   'turku': {hasAirport:true, limited:true},
@@ -2539,17 +3452,17 @@ const AIRPORT_DB = {
   'kuopio': {hasAirport:true, limited:true},
   'ivalo': {hasAirport:true, limited:true},
   // --- Finska: bez sopstvenog aerodroma ---
-  'lahti': {nearest:'Helsinki', note:'Lahti nema svoj aerodrom — najbliži je Helsinki (oko 1h vožnje).'},
+  'lahti': {nearest:'Helsinki', note:'Lahti nema svoj aerodrom — najbliži je Helsinki (oko 1h vožnje).', c:'Lahti', k:'own', t:'1h'},
   // --- Švajcarska: dodatni aerodromi ---
   'bazel': {hasAirport:true, limited:true},
   'bern': {hasAirport:true, limited:true},
   'lugano': {hasAirport:true, limited:true},
   // --- Švajcarska: bez sopstvenog aerodroma ---
-  'sankt moric': {nearest:'Cirih', note:'Sankt Moric nema komercijalni aerodrom — najbliži je Cirih (oko 3h vožnje).'},
-  'lucern': {nearest:'Cirih', note:'Lucern nema svoj aerodrom — najbliži je Cirih (oko 50 min vožnje).'},
-  'interlaken': {nearest:'Bern', note:'Interlaken nema svoj aerodrom — najbliži je Bern (oko 1h vožnje), Cirih je alternativa.'},
-  'cermat': {nearest:'Ženeva', note:'Cermat nema svoj aerodrom — najbliži je Ženeva (oko 3h vožnje).'},
-  'davos': {nearest:'Cirih', note:'Davos nema svoj aerodrom — najbliži je Cirih (oko 2h vožnje).'},
+  'sankt moric': {nearest:'Cirih', note:'Sankt Moric nema komercijalni aerodrom — najbliži je Cirih (oko 3h vožnje).', c:'Sankt Moric', k:'comm', t:'3h'},
+  'lucern': {nearest:'Cirih', note:'Lucern nema svoj aerodrom — najbliži je Cirih (oko 50 min vožnje).', c:'Lucern', k:'own', t:'50 min'},
+  'interlaken': {nearest:'Bern', note:'Interlaken nema svoj aerodrom — najbliži je Bern (oko 1h vožnje), Cirih je alternativa.', c:'Interlaken', k:'own', t:'1h', alt:'Cirih'},
+  'cermat': {nearest:'Ženeva', note:'Cermat nema svoj aerodrom — najbliži je Ženeva (oko 3h vožnje).', c:'Cermat', k:'own', t:'3h'},
+  'davos': {nearest:'Cirih', note:'Davos nema svoj aerodrom — najbliži je Cirih (oko 2h vožnje).', c:'Davos', k:'own', t:'2h'},
   // --- Mađarska: dodatni aerodromi ---
   'debrecin': {hasAirport:true, limited:true},
   // --- Rusija (evropski deo): aerodromi ---
@@ -2563,11 +3476,37 @@ const AIRPORT_DB = {
   //     nema redovnih putničkih letova ni sa jednog ukrajinskog aerodroma dok
   //     traje rat — zato se ovde ne tretiraju kao hasAirport:true, već se
   //     korisniku predlaže najbliži aerodrom u susednoj zemlji. ---
-  'kijev': {nearest:'Varsava', note:'Kijev nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Varšava (oko 8h vožnje), realnije je razmotriti voz/autobus preko Poljske.'},
-  'lavov': {nearest:'Zesuv', note:'Lavov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Žešuv u Poljskoj (oko 2h vožnje).'},
-  'odesa': {nearest:'Kisinjev', note:'Odesa nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Kišinjev u Moldaviji (oko 3h vožnje).'},
-  'harkov': {nearest:'Varsava', note:'Harkov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022, a grad je blizu ratne zone.'}
+  'kijev': {nearest:'Varsava', note:'Kijev nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Varšava (oko 8h vožnje), realnije je razmotriti voz/autobus preko Poljske.', i18n:{en:'Kyiv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Warsaw (about 8 h by car); it is more realistic to consider a train or bus via Poland.', ru:'В Киеве нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года. Ближайший действующий аэропорт — Варшава (около 8 ч на машине); реалистичнее рассмотреть поезд или автобус через Польшу.'}},
+  'lavov': {nearest:'Zesuv', note:'Lavov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Žešuv u Poljskoj (oko 2h vožnje).', i18n:{en:'Lviv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Rzeszów in Poland (about 2 h by car).', ru:'Во Львове нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года. Ближайший действующий аэропорт — Жешув в Польше (около 2 ч на машине).'}},
+  'odesa': {nearest:'Kisinjev', note:'Odesa nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Kišinjev u Moldaviji (oko 3h vožnje).', i18n:{en:'Odesa has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Chișinău in Moldova (about 3 h by car).', ru:'В Одессе нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года. Ближайший действующий аэропорт — Кишинёв в Молдове (около 3 ч на машине).'}},
+  'harkov': {nearest:'Varsava', note:'Harkov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022, a grad je blizu ratne zone.', i18n:{en:'Kharkiv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022, and the city is close to the war zone.', ru:'В Харькове нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года, а город находится вблизи зоны боевых действий.'}}
 };
+/* Tekst napomene za grad bez aerodroma, na trenutnom jeziku. Srpski koristi
+   originalni info.note; en/ru se sklapaju iz strukturiranih polja (c = grad,
+   k = vrsta "nema ...", t = vreme vožnje, nn = ime aerodroma ako se razlikuje
+   od `nearest`, cc = država, alt = alternativa) ili iz ručno prevedenog
+   info.i18n za napomene sa posebnom formulacijom. */
+function airportNoteText(info){
+  if (!info) return '';
+  const lang = getLang();
+  if (lang === 'sr') return info.note || '';
+  if (info.i18n && info.i18n[lang]) return info.i18n[lang];
+  if (info.c && info.k && info.t){
+    let near = cityLabel(info.nn || info.nearest);
+    if (info.cc){
+      const cc = COUNTRY_LOC_L10N[info.cc];
+      near += ' ' + t('airport_in') + ' ' + (cc ? cc[lang === 'ru' ? 1 : 0] : info.cc);
+    }
+    return tf('airport_note_tpl', {
+      city: cityLabel(info.c),
+      lack: t('airport_lack_' + info.k),
+      near: near,
+      time: driveTimeLabel(info.t),
+      alt: info.alt ? tf('airport_note_alt', {alt: cityLabel(info.alt)}) : ''
+    });
+  }
+  return info.note || '';
+}
 /* Nalazi unos u AIRPORT_DB za dati grad (poredi normalizovano ime, dozvoljava
    da grad bude uneto kao deo dužeg stringa, npr. "Bar, Crna Gora"). Vraća null
    za nepoznat/prazan grad — tada se ne nagađa ni na jednu ni na drugu stranu.
@@ -2700,14 +3639,14 @@ function pickCarrierName(rng, opts){
 // putnika, iako let na builder kartici isto tako zavisi od broja putnika.
 function flightSubText(opts){
   opts = opts || {};
-  let sub = opts.flightPref === 'cheapest' ? 'jedno presedanje' : 'direktan let';
-  if (opts.limitedNetwork && sub.includes('direktan let')){
-    sub = sub.replace('direktan let', 'let (proveri sezonske/direktne linije)');
-  }
-  if (opts.arrival !== (opts.destRaw || '').trim() && sub.includes('direktan let')){
-    sub = sub.replace('direktan let', 'let do ' + opts.arrival + ', najbližeg aerodroma');
-  }
-  if (opts.adults > 1) sub += ' · cena za svih ' + opts.adults + ' putnika';
+  // Redosled odlučuje (isti kao ranije): presedanje → ograničena mreža →
+  // najbliži aerodrom → direktan let. Tekstovi idu kroz t() (sr/en/ru).
+  let sub;
+  if (opts.flightPref === 'cheapest') sub = t('flight_sub_stopover');
+  else if (opts.limitedNetwork) sub = t('flight_sub_limited');
+  else if (opts.arrival !== (opts.destRaw || '').trim()) sub = tf('flight_sub_nearest', {arrival: cityLabel(opts.arrival)});
+  else sub = t('flight_sub_direct');
+  if (opts.adults > 1) sub += ' · ' + tf('flight_sub_pax', {n: opts.adults});
   return sub;
 }
 
@@ -2792,11 +3731,14 @@ function fetchFlights(rng, dest, adults, tier, originCode, prefs, seeds){
   // tier-a kartice — ko traži najjeftiniji let realno dobija let sa
   // presedanjem (to je i razlog niže cene), a ko traži direktan, dobija ga
   // na sve tri kartice, ne samo na "Comfort".
-  const sub = flightSubText({flightPref, arrival, destRaw: dest, adults, limitedNetwork});
+  // name/sub su getteri: tekst se sklapa u trenutku čitanja, pa prati
+  // trenutni jezik (i posle prebacivanja SR/EN/RU) — bez ponovnog računanja
+  // cene/rng-a. JSON.stringify i spread ih evaluiraju kao obična polja.
   return {
     provider:p.provider, providerLabel:p.name, type:'flight',
-    name: carrier + (departure ? ' ' + departure : '') + ' → ' + arrival,
-    sub, price, currency:'EUR',
+    get name(){ return carrier + (departure ? ' ' + cityLabel(departure) : '') + ' → ' + cityLabel(arrival); },
+    get sub(){ return flightSubText({flightPref, arrival, destRaw: dest, adults, limitedNetwork}); },
+    price, currency:'EUR',
     perks: tierPerks('flight', tier)
   };
 }
@@ -2821,18 +3763,23 @@ function fetchHotel(rng, dest, nights, adults, tier, prefs, seeds){
   let rating = HOTEL_STAR_RATING_BASE[stars] + rng()*0.25;
   if (prefs.prioritizeRating) rating += 0.25;
   rating = Math.min(9.9, rating);
+  // Imena sa nazivom grada su funkcije, da grad ide kroz cityLabel() u
+  // trenutnom jeziku; broj rng() poziva ostaje isti (jedan izbor iz niza).
   const names = {
-    3:[dest+' Hostel','City Rooms','Studio Plaza'],
-    4:[dest+' Hotel', 'Aegean Suites', 'Old Town Residence'],
-    5:['Grand '+dest, 'Royal Palace Hotel', dest+' Luxury Collection']
+    3:[d => d+' Hostel','City Rooms','Studio Plaza'],
+    4:[d => d+' Hotel', 'Aegean Suites', 'Old Town Residence'],
+    5:[d => 'Grand '+d, 'Royal Palace Hotel', d => d+' Luxury Collection']
   };
   const arr = names[stars];
   const rooms = Math.ceil(adults/2);
+  const hotelPick = arr[Math.floor(rng()*arr.length)];
   return {
     provider:p.provider, providerLabel:p.name, type:'hotel',
-    name: arr[Math.floor(rng()*arr.length)],
-    sub: nights+' noć' + (nights===1?'':'i') + ' · ' + stars + '★ · ocena ' + rating.toFixed(1)
-      + (rooms > 1 ? ' · cena za ' + rooms + ' sobe' : ''),
+    get name(){ return typeof hotelPick === 'function' ? hotelPick(cityLabel(dest)) : hotelPick; },
+    get sub(){
+      return nightsLabel(nights) + ' · ' + stars + '★ · ' + tf('hotel_sub_rating', {r: rating.toFixed(1)})
+        + (rooms > 1 ? ' · ' + tf('hotel_sub_rooms', {rooms: roomsLabel(rooms)}) : '');
+    },
     price, currency:'EUR',
     // "Centar grada" (prioritizeLocation) sad dolazi kroz perks (i18n).
     perks: tierPerks('hotel', tier, {prioritizeLocation: prefs.prioritizeLocation})
@@ -2859,7 +3806,7 @@ function fetchCar(rng, days, tier, prefs, seeds){
   return {
     provider:p.provider, providerLabel:p.name, type:'car',
     name: arr[Math.floor(rng()*arr.length)],
-    sub: days+' dana · automatski/ručni menjač' + (carType==='suv' ? ' · SUV' : ''),
+    get sub(){ return daysLabel(days) + ' · ' + t('car_sub_gearbox') + (carType==='suv' ? ' · SUV' : ''); },
     price, currency:'EUR',
     perks: tierPerks('car', tier)
   };
@@ -2875,17 +3822,22 @@ function fetchActivity(rng, dest, tier, prefs, seeds){
   const perActivity = Math.round((18 + jitter) * tierMult);
   const price = perActivity * count;
   const p = PARTNERS.activity;
+  // Ključevi (a ne gotov tekst) — naziv se prevodi pri čitanju; niz i izbor
+  // preko rng() ostaju identični kao pre.
   const opts = {
-    budget:['Obilazak starog grada peške'],
-    best:['Poludnevna tura s vodičem','Ulaznica za glavne znamenitosti'],
-    comfort:['Privatna tura s vodičem','Gastronomska tura uz degustaciju']
+    budget:['act_walk_old_town'],
+    best:['act_halfday_tour','act_main_tickets'],
+    comfort:['act_private_tour','act_food_tour']
   };
   const arr = opts[tier];
-  const label = arr[Math.floor(rng()*arr.length)];
+  const labelKey = arr[Math.floor(rng()*arr.length)];
   return {
     provider:p.provider, providerLabel:p.name, type:'activity',
-    name: (count > 1 ? count + ' aktivnosti (npr. ' + label + ')' : label) + ' — ' + dest,
-    sub: 'po osobi' + (count > 1 ? ' · ' + count + ' aktivnosti' : ''),
+    get name(){
+      const label = t(labelKey);
+      return (count > 1 ? activitiesLabel(count) + ' (' + t('act_eg') + ' ' + label + ')' : label) + ' — ' + cityLabel(dest);
+    },
+    get sub(){ return t('act_per_person') + (count > 1 ? ' · ' + activitiesLabel(count) : ''); },
     price, currency:'EUR'
   };
 }
@@ -2938,7 +3890,7 @@ const DEV_MODE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /(^|[?&
 
 function assertFlightSubConsistency(flightPref, sub, sourceLabel){
   if (!DEV_MODE || !sub) return;
-  const saysPresedanje = sub.includes('presedanje');
+  const saysPresedanje = sub.includes(t('flight_sub_stopover')); // jezički neutralno (sr/en/ru)
   const shouldSayPresedanje = flightPref === 'cheapest';
   if (saysPresedanje !== shouldSayPresedanje){
     console.error(
@@ -3155,17 +4107,28 @@ function pkgDescText(pkg){
   return text;
 }
 
-// Kartice se iscrtavaju jednom (pkgHtml), pa bez ovoga opis ostaje na starom
-// jeziku posle prebacivanja SR/EN/RU. Osveži samo .pkg-desc, ne ceo rezultat.
+// Kartice se iscrtavaju jednom (pkgHtml), pa bez ovoga opis i nazivi/podnaslovi
+// stavki ostaju na starom jeziku posle prebacivanja SR/EN/RU. Osvežava samo
+// tekst (ne ceo rezultat) — statični delovi kartice idu preko data-i18n.
 const _prevOnLangChangePkgDesc = window.onLangChange;
 window.onLangChange = function(lang){
   if (typeof _prevOnLangChangePkgDesc === 'function') _prevOnLangChangePkgDesc(lang);
   const pkgs = window._lastSearchPkgs;
   if (!Array.isArray(pkgs)) return;
-  document.querySelectorAll('.pkg .pkg-desc').forEach(el => {
-    const card = el.closest('.pkg');
+  document.querySelectorAll('.pkg:not(.match-pkg)').forEach(card => {
     const pkg = pkgs.find(p => card.classList.contains(p.tier));
-    if (pkg) el.textContent = pkgDescText(pkg);
+    if (!pkg) return;
+    const desc = card.querySelector('.pkg-desc');
+    if (desc) desc.textContent = pkgDescText(pkg);
+    ['flight', 'hotel', 'car'].forEach(kind => {
+      const item = pkg[kind], el = card.querySelector('.item-card.' + kind);
+      if (!item || !el) return;
+      const nameEl = el.querySelector('.item-name'), subEl = el.querySelector('.item-sub');
+      if (nameEl) nameEl.textContent = item.name;
+      if (subEl) subEl.textContent = item.sub;
+    });
+    const actLab = card.querySelector('.activity-extra .lab');
+    if (actLab && pkg.activity) actLab.textContent = pkg.activity.name.split(' — ')[0];
   });
 };
 
@@ -4150,8 +5113,18 @@ const MATCH_DESTINATIONS = [
   {name:'Kejptaun', extra:'Južnoafrička Republika', vibes:['nature','sea'], months:[10,11,12,1,2,3], distance:'far', family:true, nightlife:false},
 ];
 
-const MATCH_VIBE_LABELS = {sea:'more i plažu', city:'grad i kulturu', nature:'prirodu i planinu', nightlife:'dobar provod', mix:'kombinaciju svega'};
-const MATCH_MONTH_NAMES = ['januar','februar','mart','april','maj','jun','jul','avgust','septembar','oktobar','novembar','decembar'];
+// Getteri, pa oznake prate trenutni jezik (koristi ih matchReasonSentence i naslov rezultata).
+const MATCH_VIBE_LABELS = {
+  get sea(){ return t('mvibe_sea'); }, get city(){ return t('mvibe_city'); }, get nature(){ return t('mvibe_nature'); },
+  get nightlife(){ return t('mvibe_nightlife'); }, get mix(){ return t('mvibe_mix'); }
+};
+// sr: nominativ ("sezona za maj"), en: naziv meseca, ru: predloški padež ("ехать в мае").
+const MATCH_MONTH_NAMES_L10N = {
+  sr:['januar','februar','mart','april','maj','jun','jul','avgust','septembar','oktobar','novembar','decembar'],
+  en:['January','February','March','April','May','June','July','August','September','October','November','December'],
+  ru:['январе','феврале','марте','апреле','мае','июне','июле','августе','сентябре','октябре','ноябре','декабре']
+};
+function matchMonthName(month){ return (MATCH_MONTH_NAMES_L10N[getLang()] || MATCH_MONTH_NAMES_L10N.sr)[month - 1]; }
 
 // Deo bodovanja koji NE zavisi od cene (poklapanje sa odgovorima,
 // sezonom i dužinom puta) — cena/budžet se dodaje posebno u
@@ -4257,16 +5230,16 @@ function pickMatchDestinations(answers, budget, candidates, nights, month, count
 function matchReasonSentence(pick, answers, month){
   const bits = [];
   const r = pick.reasons;
-  if (r.some(x => x.startsWith('vibe_'))) bits.push('nudi ' + (MATCH_VIBE_LABELS[answers.vibe] || 'tvoj stil odmora'));
-  if (r.includes('season')) bits.push('baš je sezona za ' + MATCH_MONTH_NAMES[month - 1]);
-  if (r.includes('near_fit') || r.includes('length_fit')) bits.push('dužina puta se dobro uklapa');
-  if (r.includes('family')) bits.push('pogodna je za porodice');
-  if (r.includes('nightlife')) bits.push('odlična je za izlazak s društvom');
-  if (r.includes('romantic')) bits.push('ima romantičnu atmosferu za parove');
-  if (r.includes('budget')) bits.push('uklapa se u budžet');
+  if (r.some(x => x.startsWith('vibe_'))) bits.push(tf('mreason_vibe', {vibe: MATCH_VIBE_LABELS[answers.vibe] || t('mvibe_default')}));
+  if (r.includes('season')) bits.push(tf('mreason_season', {month: matchMonthName(month)}));
+  if (r.includes('near_fit') || r.includes('length_fit')) bits.push(t('mreason_length'));
+  if (r.includes('family')) bits.push(t('mreason_family'));
+  if (r.includes('nightlife')) bits.push(t('mreason_nightlife'));
+  if (r.includes('romantic')) bits.push(t('mreason_romantic'));
+  if (r.includes('budget')) bits.push(t('mreason_budget'));
   const top = bits.slice(0, 2);
-  if (!top.length) return 'Solidna opcija u okviru tvog budžeta.';
-  return 'Zato što ' + top.join(' i ') + '.';
+  if (!top.length) return t('mreason_fallback');
+  return tf('mreason_intro', {reasons: top.join(' ' + t('pkg_desc_and') + ' ')});
 }
 
 /* ==========================================================
@@ -4575,23 +5548,23 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
 /* ---- Vidljiva oznaka "affiliate/sponzorisan link" pored svake CTA
    rezervacije — potrošačka zaštita/transparentnost, ne samo FTC. ---- */
 function affBadgeHtml(){
-  return `<span class="aff-badge" title="${escapeHtml(t('aff_badge_title'))}" tabindex="0">🔗 ${escapeHtml(t('aff_badge'))}</span>`;
+  return `<span class="aff-badge" title="${escapeHtml(t('aff_badge_title'))}" data-i18n-title="aff_badge_title" tabindex="0">🔗 <span data-i18n="aff_badge">${escapeHtml(t('aff_badge'))}</span></span>`;
 }
 
 function itemCardHtml(item, kind, pkg){
   if (!item) return '';
-  const labels = {flight:'Let', hotel:'Hotel', car:'Auto'};
-  const btnLabel = {flight:t('btn_search_kayak'), hotel:t('btn_book_booking'), car:t('btn_book_booking')};
+  const labels = {flight:t('item_label_flight'), hotel:t('item_label_hotel'), car:t('item_label_car')};
+  const btnKey = {flight:'btn_search_kayak', hotel:'btn_book_booking', car:'btn_book_booking'};
   return `
   <div class="item-card ${kind}">
     <div class="item-photo ${kind}">${iconSvg(kind)}</div>
     <div class="item-body">
-      <div class="item-label">${labels[kind]}${item.providerLabel!=='SKLOPI' ? `<span class="item-provider">${escapeHtml(item.providerLabel)}</span>` : ''}</div>
+      <div class="item-label"><span data-i18n="item_label_${kind}">${labels[kind]}</span>${item.providerLabel!=='SKLOPI' ? `<span class="item-provider">${escapeHtml(item.providerLabel)}</span>` : ''}</div>
       <div class="item-name">${escapeHtml(item.name)}</div>
       <div class="item-sub">${escapeHtml(item.sub)}</div>
       ${item.perks && item.perks.length ? `<ul class="item-perks">${item.perks.map(pk => `<li class="perk ${pk.pos === true ? 'pos' : pk.pos === false ? 'neg' : 'neu'}" data-i18n="${pk.k}">${escapeHtml(t(pk.k))}</li>`).join('')}</ul>` : ''}
       <div class="item-price tabular">${fmtEUR(item.price)}</div>
-      <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" data-dest="${escapeHtml(pkg&&pkg.dest||'')}" data-tier="${escapeHtml(pkg&&pkg.tier||'')}" onclick="bookItem(this)">${btnLabel[kind]}</a>
+      <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" data-dest="${escapeHtml(pkg&&pkg.dest||'')}" data-tier="${escapeHtml(pkg&&pkg.tier||'')}" onclick="bookItem(this)" data-i18n="${btnKey[kind]}">${escapeHtml(t(btnKey[kind]))}</a>
       ${affBadgeHtml()}
     </div>
   </div>`;
@@ -4608,24 +5581,24 @@ function pkgHtml(pkg){
 
   return `
   <div class="pkg ${pkg.tier} ${featured?'featured':''}" data-base-total="${pkg.total}">
-    <button type="button" class="pkg-close" onclick="closePkgCard(this)" aria-label="Zatvori ovu ponudu" title="Zatvori ovu ponudu">
+    <button type="button" class="pkg-close" onclick="closePkgCard(this)" aria-label="${escapeHtml(t('pkg_close'))}" title="${escapeHtml(t('pkg_close'))}" data-i18n-aria-label="pkg_close" data-i18n-title="pkg_close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
     <div class="pkg-head">
       <div class="pkg-head-main">
-        ${featured ? `<span class="pkg-badge">★ Preporučeno</span>` : ''}
+        ${featured ? `<span class="pkg-badge" data-i18n="pkg_recommended">${escapeHtml(t('pkg_recommended'))}</span>` : ''}
         <h3>${meta.label}</h3>
         <div class="pkg-desc">${pkgDescText(pkg)}</div>
         <div class="pkg-total">
           <div class="num tabular">${fmtEUR(pkg.total)}</div>
-          <div class="cur">ukupno</div>
-          <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
+          <div class="cur" data-i18n="builder_total_sub">${escapeHtml(t('builder_total_sub'))}</div>
+          <div class="hint" data-i18n="pkg_total_hint">${escapeHtml(t('pkg_total_hint'))}</div>
         </div>
       </div>
       <div class="pkg-score-box score-${pkg.score>=80?'good':pkg.score>=60?'mid':'low'}">
         <div class="score-num tabular">${pkg.score}</div>
         <div class="score-max">/100</div>
-        <div class="score-label">odnos cene i&nbsp;kvaliteta</div>
+        <div class="score-label" data-i18n-html="pkg_score_label">${t('pkg_score_label')}</div>
       </div>
     </div>
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
@@ -4644,15 +5617,15 @@ function pkgHtml(pkg){
     })()}
     <div class="confirm-banner">
       <span>${iconSvg('check')} ${t('base_package_note')}</span>
-      <span><span class="amt-lab">Ukupno:</span><span class="amt tabular">${fmtEUR(pkg.total)}</span></span>
+      <span><span class="amt-lab" data-i18n="pkg_total_line">${escapeHtml(t('pkg_total_line'))}</span><span class="amt tabular">${fmtEUR(pkg.total)}</span></span>
     </div>
     <button type="button" class="pkg-save-btn" onclick="saveSearchPackage('${pkg.tier}')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-      Sačuvaj ovu ponudu
+      <span data-i18n="pkg_save_offer">${escapeHtml(t('pkg_save_offer'))}</span>
     </button>
     <button type="button" class="pkg-alert-btn" onclick="openAlertModal('search', '${pkg.tier}', ${pkg.total})">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.75-.98 2.4L4.6 15h14.8l-1.42-1.4a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 19a2.6 2.6 0 005 0"/></svg>
-      Javi mi kad padne cena
+      <span data-i18n="btn_price_alert">${escapeHtml(t('btn_price_alert'))}</span>
     </button>
   </div>`;
 }
@@ -4675,7 +5648,7 @@ function closePkgCard(btn){
     card.remove();
     const sliderWrap = wrap && wrap.classList.contains('packages') ? wrap.closest('.packages-slider-wrap') : null;
     if (wrap && wrap.classList.contains('packages') && !wrap.querySelector('.pkg')){
-      wrap.innerHTML = '<p class="disclaimer" style="text-align:center;">Sklonio si sve ponude sa liste. <button type="button" class="pkg-alert-btn" style="margin-left:6px;" onclick="runSearch(false)">Pretraži ponovo</button></p>';
+      wrap.innerHTML = '<p class="disclaimer" style="text-align:center;">' + escapeHtml(t('pkg_all_closed')) + ' <button type="button" class="pkg-alert-btn" style="margin-left:6px;" onclick="runSearch(false)">' + escapeHtml(t('pkg_search_again')) + '</button></p>';
       const dotsWrap = sliderWrap && sliderWrap.querySelector('.packages-dots');
       if (dotsWrap) dotsWrap.remove();
     } else if (sliderWrap) {
@@ -4705,44 +5678,46 @@ function matchPkgHtml(pick, idx, budget, answers, month){
   <div class="pkg match-pkg ${featured?'featured':''}" data-base-total="${pkg.total}">
     <div class="pkg-head">
       <div class="pkg-head-main">
-        <span class="pkg-badge match-badge">${featured ? '★ Preporučeno' : '🧭 Predlog za tebe'}</span>
-        <h3>${escapeHtml(dest)}</h3>
-        <div class="pkg-desc">${escapeHtml(country)} · Best Value</div>
+        <span class="pkg-badge match-badge">${escapeHtml(featured ? t('pkg_recommended') : t('match_badge_suggestion'))}</span>
+        <h3>${escapeHtml(cityLabel(dest))}</h3>
+        <div class="pkg-desc">${escapeHtml(countryLabel(country))} · Best Value</div>
         <div class="pkg-total">
           <div class="num tabular">${fmtEUR(pkg.total)}</div>
-          <div class="cur">ukupno</div>
-          <div class="hint">zbir odvojenih rezervacija, ne jedno plaćanje</div>
+          <div class="cur" data-i18n="builder_total_sub">${escapeHtml(t('builder_total_sub'))}</div>
+          <div class="hint" data-i18n="pkg_total_hint">${escapeHtml(t('pkg_total_hint'))}</div>
         </div>
       </div>
       <div class="pkg-score-box">
         <div class="score-num tabular">${matchPct}%</div>
-        <div class="score-max">poklapanje</div>
-        <div class="score-label">sa tvojim odgovorima</div>
+        <div class="score-max">${escapeHtml(t('match_score_label'))}</div>
+        <div class="score-label">${escapeHtml(t('match_score_sub'))}</div>
       </div>
     </div>
     <div class="match-reason">💡 ${escapeHtml(reasonText)}</div>
-    ${busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;">🚌 <b>Razmisli i o autobusu</b><br>${escapeHtml(busNote)}</div>` : ''}
+    ${busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;">🚌 <b>${escapeHtml(t('match_bus_title'))}</b><br>${escapeHtml(busNote)}</div>` : ''}
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     <div class="confirm-banner">
-      <span>${iconSvg('check')} ${budget ? (fitsBudget ? t('fits_budget') + fmtEUR(budget) + '.' : t('over_budget')) : 'Bez zadatog budžeta — rangirano samo po poklapanju.'}</span>
-      <span><span class="amt-lab">Ukupno:</span><span class="amt tabular">${fmtEUR(pkg.total)}</span></span>
+      <span>${iconSvg('check')} ${budget ? (fitsBudget ? t('fits_budget') + fmtEUR(budget) + '.' : t('over_budget')) : t('match_no_budget')}</span>
+      <span><span class="amt-lab" data-i18n="pkg_total_line">${escapeHtml(t('pkg_total_line'))}</span><span class="amt tabular">${fmtEUR(pkg.total)}</span></span>
     </div>
     <button type="button" class="pkg-save-btn" onclick="exploreMatchDestination(${idx})">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M9 18l6-6-6-6"/></svg>
-      Napravi aranžman za ${escapeHtml(dest)}
+      ${escapeHtml(tf('match_build_for', {dest: cityLabel(dest)}))}
     </button>
     <button type="button" class="pkg-save-btn" onclick="saveMatchPackage(${idx})">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-      Sačuvaj ovu ponudu
+      <span data-i18n="pkg_save_offer">${escapeHtml(t('pkg_save_offer'))}</span>
     </button>
     <button type="button" class="pkg-alert-btn" onclick="openAlertModal('search', 'best', ${pkg.total}, '${escapeHtml(dest).replace(/'/g,"\\'")}')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 3a5 5 0 00-5 5v3.2c0 .9-.35 1.75-.98 2.4L4.6 15h14.8l-1.42-1.4a3.4 3.4 0 01-.98-2.4V8a5 5 0 00-5-5z"/><path d="M9.5 19a2.6 2.6 0 005 0"/></svg>
-      Javi mi kad padne cena
+      <span data-i18n="btn_price_alert">${escapeHtml(t('btn_price_alert'))}</span>
     </button>
   </div>`;
 }
 
 function renderMatchResults(picks, ctxBase, budget, answers, usedFallback){
+  // Argumenti se pamte da bi se rezultati mogli ponovo iscrtati kad se promeni jezik.
+  window._lastMatchRender = {picks, ctxBase, budget, answers, usedFallback};
   window._lastMatchPicks = picks;
   window._lastMatchCtx = ctxBase;
   window._lastMatchAnswers = answers;
@@ -4754,7 +5729,7 @@ function renderMatchResults(picks, ctxBase, budget, answers, usedFallback){
     <div class="status-banner match-status-banner">
       <div class="status-left">
         <div class="status-check">🧭</div>
-        <div><h3>3 destinacije koje ti najbolje odgovaraju.</h3><p>${usedFallback ? 'Nijedna se u potpunosti nije uklopila u budžet — evo 3 najbliže opcije po poklapanju i ceni.' : ('Rangirano po tvojim odgovorima' + (vibeLab ? ' (' + vibeLab + ')' : '') + ', sezoni i dužini puta — ne nasumično.')}</p></div>
+        <div><h3>${escapeHtml(t('match_results_title'))}</h3><p>${escapeHtml(usedFallback ? t('match_results_sub_fallback') : tf('match_results_sub', {vibe: vibeLab ? ' (' + vibeLab + ')' : ''}))}</p></div>
       </div>
       <div class="status-pills">
         <div class="pill">${iconSvg('calendar')} ${fmtDate(ctxBase.from)} – ${fmtDate(ctxBase.to)}</div>
@@ -4770,17 +5745,27 @@ function renderMatchResults(picks, ctxBase, budget, answers, usedFallback){
     body.innerHTML = `
       ${packagesSliderHtml(picks.map((p,i)=>matchPkgHtml(p, i, budget, answers, month)))}
       <div class="match-refine-row">
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('sea')">🌊 Više plaže</button>
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nightlife')">🎉 Više provoda</button>
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nature')">🌲 Više prirode</button>
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('cheaper')">💶 Manji budžet</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('sea')">${escapeHtml(t('match_refine_sea'))}</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nightlife')">${escapeHtml(t('match_refine_nightlife'))}</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nature')">${escapeHtml(t('match_refine_nature'))}</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('cheaper')">${escapeHtml(t('match_refine_cheaper'))}</button>
       </div>
-      <button type="button" class="btn-alert match-reroll-btn" onclick="runMatchSearch(true)">🔁 Probaj drugih 3 predloga</button>
+      <button type="button" class="btn-alert match-reroll-btn" onclick="runMatchSearch(true)">${escapeHtml(t('match_reroll'))}</button>
     `;
     initPackagesSlider(body.querySelector('.packages-slider-wrap'));
     body.classList.remove('rb-swap-out');
   }, hadSkeleton ? 180 : 0);
 }
+
+// Ako su trenutno prikazani rezultati upitnika, iscrtaj ih ponovo u novom jeziku.
+const _prevOnLangChangeMatch = window.onLangChange;
+window.onLangChange = function(lang){
+  if (typeof _prevOnLangChangeMatch === 'function') _prevOnLangChangeMatch(lang);
+  const r = window._lastMatchRender;
+  if (r && document.querySelector('#resultsBody .match-pkg')){
+    renderMatchResults(r.picks, r.ctxBase, r.budget, r.answers, r.usedFallback);
+  }
+};
 
 // Trenutno stanje upitnika (popunjava se klikom na chip-ove u modalu)
 const matchQuizState = { companion:null, vibe:null };
@@ -6157,8 +7142,8 @@ function renderAirportWarning(cityRaw, boxId, inputId){
   const info = airportInfoFor(cityRaw);
   if (!info || info.hasAirport || !info.nearest){ box.innerHTML = ''; return; }
   const btnId = boxId + 'UseNearestBtn';
-  box.innerHTML = '<div class="origin-airport-warning">✈️ ' + escapeHtml(info.note)
-    + '<br><button type="button" id="' + btnId + '">Koristi ' + escapeHtml(info.nearest) + ' umesto</button></div>';
+  box.innerHTML = '<div class="origin-airport-warning">✈️ ' + escapeHtml(airportNoteText(info))
+    + '<br><button type="button" id="' + btnId + '">' + escapeHtml(tf('airport_use_instead', {near: cityLabel(info.nearest)})) + '</button></div>';
   const btn = document.getElementById(btnId);
   if (btn) btn.addEventListener('click', () => {
     const inputEl = document.getElementById(inputId);
@@ -6173,6 +7158,15 @@ function renderOriginAirportWarning(originRaw){
 function renderDestAirportWarning(destRaw){
   renderAirportWarning(destRaw, 'destAirportWarning', 'dest');
 }
+// Upozorenje se iscrtava jednom (kad korisnik kuca) — posle promene jezika
+// ostalo bi na starom, pa ga osveži.
+const _prevOnLangChangeAirport = window.onLangChange;
+window.onLangChange = function(lang){
+  if (typeof _prevOnLangChangeAirport === 'function') _prevOnLangChangeAirport(lang);
+  const o = document.getElementById('origin'), d = document.getElementById('dest');
+  if (o && o.value) renderOriginAirportWarning(o.value);
+  if (d && d.value) renderDestAirportWarning(d.value);
+};
 
 /* ==========================================================
    "ISPLATI LI SE LET PREKO DRUGOG AERODROMA?" — savet u rezultatima
