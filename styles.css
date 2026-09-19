@@ -829,6 +829,11 @@ a{color:inherit;}
     background:transparent;border:1.5px solid var(--gold);color:var(--deep);
 }
 .attractions-see-all:hover{background:var(--gold-soft);border-color:var(--gold);}
+/* .btn-alert (definisan kasnije u fajlu, ista specifičnost) je gazio
+   color: var(--deep) iz gornjeg pravila i tekst je ispadao svetao na
+   svetloj pozadini. Dvoklasni selektor pobeđuje bez obzira na redosled. */
+.btn-alert.attractions-see-all,
+.btn-alert.attractions-see-all:hover{color:var(--deep);}
 @media (min-width:600px){.attraction-card{flex:0 0 260px;}}
 /* ---------- "Vidi sve atrakcije" — fullscreen sheet sa filterima ---------- */
 #attractionsSheet{display:none;padding-top:34px;padding-bottom:100px;}
