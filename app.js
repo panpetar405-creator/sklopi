@@ -2465,6 +2465,52 @@ window.showAirportDbMisses = function(){
   console.table(rows);
   return rows;
 };
+/* ==========================================================
+   DELJENA LOGIKA CENA/OPISA — koriste je i 3 gotove kartice
+   (fetchFlights/fetchHotel/fetchCar) i "Sastavi svoj paket" builder
+   (computeCustomPackage). Pre ovoga su ta dva puta imala SVOJE odvojene
+   kopije istih tabela/tekstova — tačno ta vrsta duplikacije je razlog
+   zašto je opis kartice (pkgDescText) ranije zaostajao za stvarnim
+   ponašanjem fetchFlights-a. Deljenjem ovih tabela/funkcija, izmena na
+   jednom mestu se automatski odražava i na drugom, umesto da se dve
+   kopije vremenom razminu.
+========================================================== */
+const FLIGHT_CARRIERS = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
+const FLIGHT_PREF_PRICE_MULT = {direct:1.05, cheapest:0.72, airline:1.15};
+const HOTEL_STAR_BASE_PRICE = {3:36, 4:66, 5:122};
+const HOTEL_STAR_RATING_BASE = {3:7.7, 4:8.6, 5:9.2};
+const CAR_TYPE_BASE_PRICE = {none:0, small:31, suv:57};
+
+// Bira ime avio-kompanije. Zove rng() TAČNO jednom, i to SAMO kad nije
+// tražena konkretna kompanija niti prosleđen forceCarrier (npr. Comfort
+// tier na kartičnom putu uvek prikazuje istu, "premium" kompaniju umesto
+// nasumične) — bilo koja promena broja rng() poziva ovde bi pomerila sve
+// naredne random vrednosti (hotel/auto/aktivnost) za jedno mesto, zato
+// ovaj obrazac mora ostati identičan na oba mesta koja ga zovu.
+function pickCarrierName(rng, opts){
+  opts = opts || {};
+  if (opts.flightPref === 'airline' && opts.airlineName) return opts.airlineName;
+  if (opts.forceCarrier) return opts.forceCarrier;
+  return FLIGHT_CARRIERS[Math.floor(rng() * FLIGHT_CARRIERS.length)];
+}
+
+// Podnaslov leta (npr. "direktan let · cena za svih 3 putnika"). Pre nego
+// što je ovo bilo deljeno, builder kartica NIJE imala ni upozorenje za
+// ograničenu avio-mrežu (limitedNetwork) ni napomenu o ceni za više
+// putnika, iako let na builder kartici isto tako zavisi od broja putnika.
+function flightSubText(opts){
+  opts = opts || {};
+  let sub = opts.flightPref === 'cheapest' ? 'jedno presedanje' : 'direktan let';
+  if (opts.limitedNetwork && sub.includes('direktan let')){
+    sub = sub.replace('direktan let', 'let (proveri sezonske/direktne linije)');
+  }
+  if (opts.arrival !== (opts.destRaw || '').trim() && sub.includes('direktan let')){
+    sub = sub.replace('direktan let', 'let do ' + opts.arrival + ', najbližeg aerodroma');
+  }
+  if (opts.adults > 1) sub += ' · cena za svih ' + opts.adults + ' putnika';
+  return sub;
+}
+
 function fetchFlights(rng, dest, adults, tier, originCode, prefs){
   prefs = prefs || {};
   const flightPref = prefs.flightPref || 'direct';
@@ -2473,15 +2519,15 @@ function fetchFlights(rng, dest, adults, tier, originCode, prefs){
   // Ista logika kao u "Sastavi svoj paket" builderu (computeCustomPackage)
   // — cena stvarno zavisi od TRAŽENOG tipa leta, ne samo od tier-a kartice,
   // tako da "najjeftiniji" izbor u upitniku zaista donese nižu cenu ovde.
-  const prefMult = {direct:1.05, cheapest:0.72, airline:1.15}[flightPref] || 1;
+  const prefMult = FLIGHT_PREF_PRICE_MULT[flightPref] || 1;
   const price = Math.round(base * tierMult * prefMult * adults);
   const p = PARTNERS.flight;
-  const carriers = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
   // Ako je tražena određena avio-kompanija, kartica STVARNO prikazuje tu
   // kompaniju — ne nasumičnu iz liste.
-  const carrier = (flightPref === 'airline' && prefs.airlineName)
-    ? prefs.airlineName
-    : (tier==='comfort' ? carriers[carriers.length-1] : carriers[Math.floor(rng()*carriers.length)]);
+  const carrier = pickCarrierName(rng, {
+    flightPref, airlineName: prefs.airlineName,
+    forceCarrier: tier === 'comfort' ? FLIGHT_CARRIERS[FLIGHT_CARRIERS.length-1] : null
+  });
   const departure = realDepartureAirportFor(originCode);
   const arrival = realArrivalAirportFor(dest);
   const limitedNetwork = isLimitedNetworkOrigin(originCode);
@@ -2489,17 +2535,7 @@ function fetchFlights(rng, dest, adults, tier, originCode, prefs){
   // tier-a kartice — ko traži najjeftiniji let realno dobija let sa
   // presedanjem (to je i razlog niže cene), a ko traži direktan, dobija ga
   // na sve tri kartice, ne samo na "Comfort".
-  let sub = flightPref === 'cheapest' ? 'jedno presedanje' : 'direktan let';
-  if (limitedNetwork && sub.includes('direktan let')){
-    sub = sub.replace('direktan let', 'let (proveri sezonske/direktne linije)');
-  }
-  // Destinacija bez sopstvenog aerodroma (npr. Bar) -> sleće se na najbliži
-  // pravi aerodrom (npr. Tivat), ne na sam grad. Napomena ide u sub, ne u
-  // naziv linije, da kartica ostane čitljiva.
-  if (arrival !== dest.trim() && sub.includes('direktan let')){
-    sub = sub.replace('direktan let', 'let do ' + arrival + ', najbližeg aerodroma');
-  }
-  sub += (adults > 1 ? ' · cena za svih ' + adults + ' putnika' : '');
+  const sub = flightSubText({flightPref, arrival, destRaw: dest, adults, limitedNetwork});
   return {
     provider:p.provider, providerLabel:p.name, type:'flight',
     name: carrier + (departure ? ' ' + departure : '') + ' → ' + arrival,
@@ -2514,14 +2550,14 @@ function fetchHotel(rng, dest, nights, adults, tier, prefs){
   // (zvezdice), ne fiksni nivo po tier-u — 3★ izbor se više ne pretvara u
   // 5★ hotel na "Comfort" kartici i obrnuto.
   const tierMult = {budget:0.85, best:1, comfort:1.2}[tier];
-  const starBase = {3:36, 4:66, 5:122}[stars];
+  const starBase = HOTEL_STAR_BASE_PRICE[stars];
   let mult = tierMult;
   if (prefs.prioritizeRating) mult += 0.08;
   if (prefs.prioritizeLocation) mult += 0.06;
   const perNight = Math.round(starBase * mult + rng()*14);
   const price = Math.round(perNight * nights * Math.ceil(adults/2));
   const p = PARTNERS.hotel;
-  let rating = {3:7.7, 4:8.6, 5:9.2}[stars] + rng()*0.25;
+  let rating = HOTEL_STAR_RATING_BASE[stars] + rng()*0.25;
   if (prefs.prioritizeRating) rating += 0.25;
   rating = Math.min(9.9, rating);
   const names = {
@@ -2547,7 +2583,7 @@ function fetchCar(rng, days, tier, prefs){
   // najjeftiniji), ali ne i kategoriju vozila.
   const carType = prefs.carPref === 'suv' ? 'suv' : 'small';
   const tierMult = {budget:0.85, best:1, comfort:1.25}[tier];
-  const typeBase = {small:31, suv:57}[carType];
+  const typeBase = CAR_TYPE_BASE_PRICE[carType];
   const perDay = Math.round(typeBase * tierMult + rng()*10);
   const price = Math.round(perDay * days);
   const p = PARTNERS.car;
@@ -2623,8 +2659,14 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
   const total = (flight?flight.price:0) + (hotel?hotel.price:0) + (car?car.price:0)
               + (activity?activity.price:0) + fuel + tolls;
 
-  // Quality is a fixed, structural property of each tier (hotel rating,
-  // flight directness, car size) — it doesn't depend on this run's prices.
+  // Quality score je fiksna vrednost po tier-u (marketinški nivo paketa —
+  // Comfort > Best Value > Budget), NE izvedena iz stvarnog sadržaja: tip
+  // leta, tip auta i tražena kategorija hotela su isti izbor na sve tri
+  // kartice (vidi flags.flightPref/carPref/hotelStars gore), pa razlika
+  // između kartica nije u TOME šta je uključeno, već samo u ceni i sitnim
+  // razlikama unutar iste kategorije (npr. koji tačno hotel od nekoliko u
+  // istoj zvezdičnoj klasi, ili koja avio-kompanija kad korisnik nije
+  // tražio konkretnu).
   const qualityScore = {best:84, budget:58, comfort:97}[tier];
 
   return {tier, flight, hotel, car, activity, fuel, tolls, insuranceCost, esimCost, total, qualityScore,
@@ -4676,11 +4718,12 @@ document.getElementById('builderCloseBtn').addEventListener('click', ()=>{
 
 function builderCtx(){
   const dest = document.getElementById('dest').value.trim() || 'Atina';
+  const originCode = document.getElementById('origin').value.trim();
   const from = document.getElementById('dateFrom').value;
   const to = document.getElementById('dateTo').value;
   const adults = Number(document.getElementById('adults').value) || 2;
   const nights = nightsBetween(from, to);
-  return {dest, from, to, nights, days:nights, adults};
+  return {dest, originCode, from, to, nights, days:nights, adults};
 }
 
 function computeCustomPackage(sel, ctx){
@@ -4706,35 +4749,42 @@ function computeCustomPackage(sel, ctx){
 
   // --- Flight ---
   const flightBase = 55 + rng()*130;
-  const flightMult = {direct:1.05, cheapest:0.72, airline:1.15}[sel.flightPref];
+  const flightMult = FLIGHT_PREF_PRICE_MULT[sel.flightPref];
   const flightPrice = Math.round(flightBase * flightMult * ctx.adults);
-  const carriers = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
-  // NAPOMENA: ako je flightPref==='airline' i ime je uneto, grana ispod
-  // NE zove rng() (carriers[...] se preskače) — to je namerno, jer inače
-  // bi svaki prelaz prazno/popunjeno polje pomerio redosled sledećih
-  // rng() poziva (hotel, auto...) za jedno mesto. Pošto je ova grana
-  // stabilna za SVAKI neprazan unos (bilo koje slovo znači "preskoči"),
-  // cene se ne pomeraju dok korisnik kuca — samo pri prvom i poslednjem
-  // karakteru (prazno ↔ nije prazno), što je prihvatljivo i retko.
+  // pickCarrierName zove rng() u IDENTIČNOM obrascu kao na kartičnom putu
+  // (fetchFlights) — tačno jednom, i samo kad nije tražena konkretna
+  // kompanija. Ne prosleđujemo forceCarrier ovde (builder nema tier-ove).
   const builderArrival = realArrivalAirportFor(ctx.dest);
-  const flightName = sel.flightPref === 'airline' && sel.airlineName
-    ? sel.airlineName + ' → ' + builderArrival
-    : carriers[Math.floor(rng()*carriers.length)] + ' → ' + builderArrival;
-  const flightSub = (sel.flightPref === 'cheapest' ? 'jedno presedanje' : 'direktan let')
-    + (builderArrival !== ctx.dest.trim() ? ' do ' + builderArrival + ', najbližeg aerodroma' : '');
+  // NAPOMENA: ako je flightPref==='airline' i ime je uneto, pickCarrierName
+  // NE zove rng() (isto kao pre) — to je namerno, jer inače bi svaki prelaz
+  // prazno/popunjeno polje pomerio redosled sledećih rng() poziva (hotel,
+  // auto...) za jedno mesto. Pošto je ova grana stabilna za SVAKI neprazan
+  // unos (bilo koje slovo znači "preskoči"), cene se ne pomeraju dok
+  // korisnik kuca — samo pri prvom i poslednjem karakteru (prazno ↔ nije
+  // prazno), što je prihvatljivo i retko.
+  const carrierName = pickCarrierName(rng, {flightPref: sel.flightPref, airlineName: sel.airlineName});
+  const builderDeparture = realDepartureAirportFor(ctx.originCode);
+  const flightName = carrierName + (builderDeparture ? ' ' + builderDeparture : '') + ' → ' + builderArrival;
+  // Ista funkcija kao na kartičnom putu — pre deljenja, ovde NIJE bilo ni
+  // upozorenja za ograničenu avio-mrežu ni napomene o ceni za više putnika,
+  // iako let ovde isto zavisi od broja putnika (vidi flightPrice gore).
+  const flightSub = flightSubText({
+    flightPref: sel.flightPref, arrival: builderArrival, destRaw: ctx.dest,
+    adults: ctx.adults, limitedNetwork: isLimitedNetworkOrigin(ctx.originCode)
+  });
 
   // --- Hotel ---
-  const hotelBasePerNight = {3:36, 4:66, 5:122}[sel.hotelStars] + rng()*22;
+  const hotelBasePerNight = HOTEL_STAR_BASE_PRICE[sel.hotelStars] + rng()*22;
   let hotelMult = 1;
   if (sel.prioritizeRating) hotelMult += 0.10;
   if (sel.prioritizeLocation) hotelMult += 0.07;
   const hotelPrice = Math.round(hotelBasePerNight * hotelMult * ctx.nights * Math.ceil(ctx.adults/2));
-  let hotelRating = {3:7.7, 4:8.6, 5:9.2}[sel.hotelStars] + rng()*0.25;
+  let hotelRating = HOTEL_STAR_RATING_BASE[sel.hotelStars] + rng()*0.25;
   if (sel.prioritizeRating) hotelRating += 0.25;
   hotelRating = Math.min(9.9, hotelRating);
 
   // --- Car ---
-  const carPerDay = {none:0, small:31, suv:57}[sel.carPref] + (sel.carPref==='none'?0:rng()*11);
+  const carPerDay = CAR_TYPE_BASE_PRICE[sel.carPref] + (sel.carPref==='none'?0:rng()*11);
   const carPrice = Math.round(carPerDay * ctx.days);
 
   // --- Activities ---
