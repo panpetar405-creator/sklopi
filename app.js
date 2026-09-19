@@ -178,7 +178,7 @@ const I18N = {
     f_esim_sub:'Internet od sletanja',
     f_transfer_name:'Transferi', f_transfer_sub:'Od aerodroma do smeštaja',
     postcard_caption:'Uvek postoji sledeći izlet.',
-    eyebrow_attractions:'U partnerstvu sa Viator', h2_attractions:'Sklopi svoju atrakciju.',
+    eyebrow_attractions:'U partnerstvu sa Viator', h2_attractions:'Sklopi svoje atrakcije.',
     attractions_sub:'Koncerti, gondole, arene, podvodni svetovi i još hiljade doživljaja širom sveta — pronađi svoj i dodaj ga u plan.',
     btn_see_all_attractions:'🧭 Vidi sve atrakcije',
     eyebrow_ideas:'Ideje za sledeći izlet', h2_popular_dest:'Gde bi sledeće?',

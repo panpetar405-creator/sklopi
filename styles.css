@@ -823,7 +823,7 @@ a{color:inherit;}
    sopstvenu, čitljivu varijantu (isti obrazac kao .passport-check-btn). */
 .attractions-see-all{
     display:flex;width:auto;margin:22px auto 0;
-    background:transparent;border:1.5px solid var(--gold);color:var(--gold-text);
+    background:transparent;border:1.5px solid var(--gold);color:var(--royal-plum);
 }
 .attractions-see-all:hover{background:var(--gold-soft);border-color:var(--gold);}
 @media (min-width:600px){.attraction-card{flex:0 0 260px;}}
