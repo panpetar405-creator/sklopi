@@ -13,8 +13,9 @@
    2) transportCardHtml(dest, adults, origin, flags) — velika kartica ispod
       ponuda na običnoj pretrazi. Prikazuje se SAMO kad let nije izabran.
       Sadrži: AUTO (razdaljina, vožnja, gorivo — automatski za bilo koja dva
-      mesta, vidi TRANSPORT_ROUTING_URL niže) i AUTOBUS/VOZ (ručna baza, samo
-      polazak iz Beograda).
+      mesta, vidi TRANSPORT_ROUTING_URL niže, plus mala mapa sa ucrtanom
+      rutom preko Leaflet-a/OSM tajlova — vidi _tcDrawMap) i AUTOBUS/VOZ
+      (ručna baza, samo polazak iz Beograda).
    3) transportCompactHtml(dest, adults) — kratak blok za kartice
       predloga u "Pronađi svoj izlet".
 
@@ -326,16 +327,24 @@ function _tcRoute(fromRaw, toRaw){
     const air = haversineKm([a.lat, a.lon], [b.lat, b.lon]);
     if (air < 3) return null;
     try {
-      const data = await _tcFetchJson(TRANSPORT_ROUTING_URL + a.lon + ',' + a.lat + ';' + b.lon + ',' + b.lat + '?overview=false&alternatives=false&steps=false', 8000);
+      // overview=full&geometries=geojson — ista OSRM ruta kao pre, samo tražimo
+      // i geometriju (niz [lon,lat] tačaka celog puta) da bismo je iscrtali na
+      // mapi (vidi _tcMapHtml/_tcDrawMap niže). Bez ovoga imali bismo samo
+      // brojeve (km/min), što je dovoljno za cenu, ali ne i za prikaz linije.
+      const data = await _tcFetchJson(TRANSPORT_ROUTING_URL + a.lon + ',' + a.lat + ';' + b.lon + ',' + b.lat + '?overview=full&geometries=geojson&alternatives=false&steps=false', 8000);
       if (data && data.code === 'Ok' && data.routes && data.routes[0]){
         const km = data.routes[0].distance / 1000, min = data.routes[0].duration / 60;
-        return km > TRANSPORT_CAR_MAX_KM ? null : {km, min, approx:false};
+        if (km > TRANSPORT_CAR_MAX_KM) return null;
+        const coords = (data.routes[0].geometry && data.routes[0].geometry.coordinates) || [];
+        // OSRM vraća [lon,lat] — Leaflet očekuje [lat,lon], okrećemo ovde jednom.
+        const path = coords.map(c => [c[1], c[0]]);
+        return {km, min, approx:false, path, from:[a.lat, a.lon], to:[b.lat, b.lon]};
       }
       if (data && data.code === 'NoRoute') return null; // npr. ostrvo — nema kopnene veze
     } catch (e){ /* mreža/CORS/ograničenje servisa → procena ispod */ }
     const km = air * TRANSPORT_AIR_TO_ROAD;
     if (km > TRANSPORT_CAR_MAX_KM) return null;
-    return {km, min: km / TRANSPORT_AVG_KMH * 60, approx:true};
+    return {km, min: km / TRANSPORT_AVG_KMH * 60, approx:true, path:[[a.lat, a.lon], [b.lat, b.lon]], from:[a.lat, a.lon], to:[b.lat, b.lon]};
   })();
   _tcRouteCache.set(key, job);
   return job;
@@ -379,9 +388,40 @@ async function _tcHydrate(el){
   if (n > 1) extra += '<div class="tc-group">' + escapeHtml(_tt('transport_car_pp', 'Po osobi, povratno: oko {amount}', {amount: _tcMoney(Math.round(rtLo / n), Math.round(rtHi / n))})) + '</div>';
   const notes = [_tt('transport_car_note', 'Vreme vožnje je bez zadržavanja na granicama i pauza. Putarine nisu uračunate — zavise od zemalja na ruti.')];
   if (r.approx) notes.unshift(_tt('transport_car_approx', 'Procena po vazdušnoj liniji (ruta trenutno nije dostupna).'));
+  const mapId = 'tcMap' + Math.random().toString(36).slice(2, 9);
   el.innerHTML = '<div class="tc-mode">🚗 ' + escapeHtml(_tt('transport_car', 'Auto')) + '</div>' +
+    '<div id="' + mapId + '" class="tc-map" aria-hidden="true"></div>' +
     '<div class="tc-figs">' + figs + '</div>' +
     '<div class="tc-meta">' + notes.map(escapeHtml).join('<br>') + '</div>' + extra;
+  _tcDrawMap(mapId, r);
+}
+// Iscrtava rutu preko Leaflet-a (OSM tajlovi, bez ključa). Ako Leaflet nije
+// učitan (CDN blokiran, offline...) samo uklonimo prazan kontejner — brojevi
+// (km/vreme/gorivo) i dalje rade nezavisno od ovoga.
+function _tcDrawMap(mapId, r){
+  try {
+    if (typeof L === 'undefined' || !r.path || r.path.length < 2) {
+      const box = document.getElementById(mapId);
+      if (box) box.remove();
+      return;
+    }
+    requestAnimationFrame(() => {
+      const box = document.getElementById(mapId);
+      if (!box) return;
+      const map = L.map(mapId, {zoomControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, boxZoom:false, keyboard:false, tap:false});
+      // OSM tajlovi zahtevaju vidljivu atribuciju — ostaje uključena (samo je stilizujemo sitnije, vidi styles.css .tc-map).
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom:18, attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+      }).addTo(map);
+      const lineStyle = r.approx ? {color:'#C9A45C', weight:3, dashArray:'6,7'} : {color:'#C9A45C', weight:4};
+      const line = L.polyline(r.path, lineStyle).addTo(map);
+      const dot = (latlng) => L.circleMarker(latlng, {radius:6, color:'#fff', weight:2, fillColor:'#3A2E5C', fillOpacity:1});
+      dot(r.from).addTo(map);
+      dot(r.to).addTo(map);
+      map.invalidateSize();
+      map.fitBounds(line.getBounds(), {padding:[18, 18]});
+    });
+  } catch (e){ /* mapa je samo ilustracija — greška ovde ne sme da obori figure/cenu iznad */ }
 }
 function tfLocal(key, fallback, vars){ return _tt(key, fallback, vars); }
 function _tcHydrateAll(){

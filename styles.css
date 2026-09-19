@@ -2562,6 +2562,13 @@ footer{padding:28px 20px;}
     padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:var(--gold-text);
 }
 .transport-card .tc-status.is-planned{background:var(--coral-soft);color:var(--coral-text);}
+.transport-card .tc-map{
+    height:150px;width:100%;border-radius:12px;margin-bottom:12px;overflow:hidden;
+    background:var(--deep-soft);
+}
+.transport-card .tc-map .leaflet-control-attribution{
+    font-size:10px;background:rgba(255,255,255,0.75);padding:0 4px;
+}
 .transport-card .tc-figs{display:flex;flex-wrap:wrap;gap:8px 26px;}
 .transport-card .tc-lab{display:block;font-size:13.5px;color:var(--ink-soft);}
 .transport-card .tc-fig b{
