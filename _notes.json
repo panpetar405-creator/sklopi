@@ -1,0 +1,9 @@
+{
+  "meta_title": "Browser tab title / SEO title. Keep it under about 60 characters.",
+  "meta_description": "SEO meta description shown in search results. Keep it under about 160 characters.",
+  "match_month.": "Month name that is inserted into the sentence of key mreason_season (Serbian: \"baš je sezona za {month}\"). Use the grammatical form (case) that this sentence requires in the target language.",
+  "airport_note.": "Explains why a city has no airport of its own and which airport to use instead. Use the target-language names of the cities.",
+  "city.": "City or place name as travellers know it in the target language.",
+  "cta_title": "Headline on a call-to-action; {dest} is a destination city.",
+  "plural.": "Plural set of the noun that follows a number (e.g. '3 nights')."
+}

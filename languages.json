@@ -1,0 +1,24 @@
+{
+  "source": "sr",
+  "languages": [
+    {
+      "code": "sr",
+      "short": "SR",
+      "name": "Srpski",
+      "locale": "sr-Latn"
+    },
+    {
+      "code": "en",
+      "short": "EN",
+      "name": "English",
+      "locale": "en-GB",
+      "dateMonth": "short"
+    },
+    {
+      "code": "ru",
+      "short": "RU",
+      "name": "Русский",
+      "locale": "ru-RU"
+    }
+  ]
+}
