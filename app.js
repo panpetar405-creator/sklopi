@@ -2465,17 +2465,31 @@ window.showAirportDbMisses = function(){
   console.table(rows);
   return rows;
 };
-function fetchFlights(rng, dest, adults, tier, originCode){
+function fetchFlights(rng, dest, adults, tier, originCode, prefs){
+  prefs = prefs || {};
+  const flightPref = prefs.flightPref || 'direct';
   const base = 60 + Math.floor(rng()*140);
   const tierMult = {budget:0.72, best:1, comfort:1.55}[tier];
-  const price = Math.round(base * tierMult * adults);
+  // Ista logika kao u "Sastavi svoj paket" builderu (computeCustomPackage)
+  // — cena stvarno zavisi od TRAŽENOG tipa leta, ne samo od tier-a kartice,
+  // tako da "najjeftiniji" izbor u upitniku zaista donese nižu cenu ovde.
+  const prefMult = {direct:1.05, cheapest:0.72, airline:1.15}[flightPref] || 1;
+  const price = Math.round(base * tierMult * prefMult * adults);
   const p = PARTNERS.flight;
   const carriers = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
-  const carrier = (tier==='comfort' ? carriers[carriers.length-1] : carriers[Math.floor(rng()*carriers.length)]);
+  // Ako je tražena određena avio-kompanija, kartica STVARNO prikazuje tu
+  // kompaniju — ne nasumičnu iz liste.
+  const carrier = (flightPref === 'airline' && prefs.airlineName)
+    ? prefs.airlineName
+    : (tier==='comfort' ? carriers[carriers.length-1] : carriers[Math.floor(rng()*carriers.length)]);
   const departure = realDepartureAirportFor(originCode);
   const arrival = realArrivalAirportFor(dest);
   const limitedNetwork = isLimitedNetworkOrigin(originCode);
-  let sub = (tier==='comfort' ? 'direktan let, prtljag uključen' : (tier==='budget' ? 'jedan presedanje' : 'direktan let'));
+  // "Direktan" ili "sa presedanjem" sad zavisi od TRAŽENOG tipa leta, ne od
+  // tier-a kartice — ko traži najjeftiniji let realno dobija let sa
+  // presedanjem (to je i razlog niže cene), a ko traži direktan, dobija ga
+  // na sve tri kartice, ne samo na "Comfort".
+  let sub = flightPref === 'cheapest' ? 'jedno presedanje' : 'direktan let';
   if (limitedNetwork && sub.includes('direktan let')){
     sub = sub.replace('direktan let', 'let (proveri sezonske/direktne linije)');
   }
@@ -2492,46 +2506,71 @@ function fetchFlights(rng, dest, adults, tier, originCode){
     sub, price, currency:'EUR'
   };
 }
-function fetchHotel(rng, dest, nights, adults, tier){
-  const perNight = {budget:32, best:71, comfort:138}[tier] + Math.floor(rng()*24);
+function fetchHotel(rng, dest, nights, adults, tier, prefs){
+  prefs = prefs || {};
+  const stars = [3,4,5].includes(prefs.hotelStars) ? prefs.hotelStars : 4;
+  // Bazna cena i dalje zavisi od tier-a kartice (zato se tri ponude i dalje
+  // razlikuju po ceni), ali polazna tačka je sad TRAŽENA kategorija hotela
+  // (zvezdice), ne fiksni nivo po tier-u — 3★ izbor se više ne pretvara u
+  // 5★ hotel na "Comfort" kartici i obrnuto.
+  const tierMult = {budget:0.85, best:1, comfort:1.2}[tier];
+  const starBase = {3:36, 4:66, 5:122}[stars];
+  let mult = tierMult;
+  if (prefs.prioritizeRating) mult += 0.08;
+  if (prefs.prioritizeLocation) mult += 0.06;
+  const perNight = Math.round(starBase * mult + rng()*14);
   const price = Math.round(perNight * nights * Math.ceil(adults/2));
   const p = PARTNERS.hotel;
-  const ratings = {budget:7.6, best:8.7, comfort:9.3};
+  let rating = {3:7.7, 4:8.6, 5:9.2}[stars] + rng()*0.25;
+  if (prefs.prioritizeRating) rating += 0.25;
+  rating = Math.min(9.9, rating);
   const names = {
-    budget:['Hostel Centar','City Rooms','Studio Plaza'],
-    best:[dest+' Hotel', 'Aegean Suites', 'Old Town Residence'],
-    comfort:['Grand '+dest, 'Royal Palace Hotel', dest+' Luxury Collection']
+    3:[dest+' Hostel','City Rooms','Studio Plaza'],
+    4:[dest+' Hotel', 'Aegean Suites', 'Old Town Residence'],
+    5:['Grand '+dest, 'Royal Palace Hotel', dest+' Luxury Collection']
   };
-  const arr = names[tier];
+  const arr = names[stars];
   const rooms = Math.ceil(adults/2);
   return {
     provider:p.provider, providerLabel:p.name, type:'hotel',
     name: arr[Math.floor(rng()*arr.length)],
-    sub: nights+' noć' + (nights===1?'':'i') + ' · ocena ' + (ratings[tier]+rng()*0.3).toFixed(1)
+    sub: nights+' noć' + (nights===1?'':'i') + ' · ' + stars + '★ · ocena ' + rating.toFixed(1)
+      + (prefs.prioritizeLocation ? ' · centar grada' : '')
       + (rooms > 1 ? ' · cena za ' + rooms + ' sobe' : ''),
     price, currency:'EUR'
   };
 }
-function fetchCar(rng, days, tier){
-  // Ranije je Budget tier UVEK preskakao auto ("per the brief"), bez obzira
-  // da li je korisnik uključio Auto toggle u pretrazi — to je pravilo
-  // ignorisalo stvarni izbor korisnika (kartica bi tiho izbacila auto iz
-  // Budget ponude iako je tražen). Sad svaki tier dobija auto ako je
-  // flags.car uključen, samo je budget varijanta najjeftinija/najmanja.
-  const perDay = {budget:19, best:34, comfort:58}[tier] + Math.floor(rng()*12);
+function fetchCar(rng, days, tier, prefs){
+  prefs = prefs || {};
+  // Tip auta (mali/SUV) je sad STVARNO ono što je korisnik izabrao, ne
+  // nasumičan model iz tier-liste — tier i dalje menja cenu (Budget je
+  // najjeftiniji), ali ne i kategoriju vozila.
+  const carType = prefs.carPref === 'suv' ? 'suv' : 'small';
+  const tierMult = {budget:0.85, best:1, comfort:1.25}[tier];
+  const typeBase = {small:31, suv:57}[carType];
+  const perDay = Math.round(typeBase * tierMult + rng()*10);
   const price = Math.round(perDay * days);
   const p = PARTNERS.car;
-  const models = {budget:['Fiat Panda','Hyundai i10','Kia Picanto'], best:['Fiat 500','VW Polo','Opel Corsa'], comfort:['VW Tiguan','Audi A4','Volvo XC40']};
-  const arr = models[tier];
+  const models = {
+    small: ['Fiat Panda','Hyundai i10','Kia Picanto','VW Polo'],
+    suv:   ['VW Tiguan','Audi Q3','Dacia Duster','Volvo XC40']
+  };
+  const arr = models[carType];
   return {
     provider:p.provider, providerLabel:p.name, type:'car',
     name: arr[Math.floor(rng()*arr.length)],
-    sub: days+' dana · automatski/ručni menjač',
+    sub: days+' dana · automatski/ručni menjač' + (carType==='suv' ? ' · SUV' : ''),
     price, currency:'EUR'
   };
 }
-function fetchActivity(rng, dest, tier){
-  const price = {budget:18, best:41, comfort:79}[tier] + Math.floor(rng()*20);
+function fetchActivity(rng, dest, tier, prefs){
+  prefs = prefs || {};
+  // Broj aktivnosti je sad STVARNO onaj iz upitnika (podrazumevano 1 ako
+  // nije poznat), cena se sabira po broju, ne fiksno za jednu aktivnost.
+  const count = Math.max(1, Math.round(prefs.activityCount) || 1);
+  const tierMult = {budget:0.85, best:1, comfort:1.3}[tier];
+  const perActivity = Math.round((18 + rng()*20) * tierMult);
+  const price = perActivity * count;
   const p = PARTNERS.activity;
   const opts = {
     budget:['Obilazak starog grada peške'],
@@ -2539,10 +2578,11 @@ function fetchActivity(rng, dest, tier){
     comfort:['Privatna tura s vodičem','Gastronomska tura uz degustaciju']
   };
   const arr = opts[tier];
+  const label = arr[Math.floor(rng()*arr.length)];
   return {
     provider:p.provider, providerLabel:p.name, type:'activity',
-    name: arr[Math.floor(rng()*arr.length)] + ' — ' + dest,
-    sub: 'po osobi',
+    name: (count > 1 ? count + ' aktivnosti (npr. ' + label + ')' : label) + ' — ' + dest,
+    sub: 'po osobi' + (count > 1 ? ' · ' + count + ' aktivnosti' : ''),
     price, currency:'EUR'
   };
 }
@@ -2558,10 +2598,10 @@ const EXTRA_COSTS = {
 ========================================================== */
 function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, originCode){
   factor = factor || 1;
-  const flight = flags.flight ? fetchFlights(rng, dest, adults, tier, originCode) : null;
-  const hotel  = flags.hotel  ? fetchHotel(rng, dest, nights, adults, tier) : null;
-  const car    = flags.car    ? fetchCar(rng, days, tier) : null;
-  const activity = flags.activity ? fetchActivity(rng, dest, tier) : null;
+  const flight = flags.flight ? fetchFlights(rng, dest, adults, tier, originCode, flags) : null;
+  const hotel  = flags.hotel  ? fetchHotel(rng, dest, nights, adults, tier, flags) : null;
+  const car    = flags.car    ? fetchCar(rng, days, tier, flags) : null;
+  const activity = flags.activity ? fetchActivity(rng, dest, tier, flags) : null;
   const extras = EXTRA_COSTS[tier];
 
   // Tržišni faktor menja samo cenu, ne i ime/opis stavke (ti se biraju
@@ -4187,8 +4227,18 @@ async function runMatchSearch(isReroll){
     hotel:     document.querySelector('.toggle[data-t="hotel"]').classList.contains('on'),
     car:       document.querySelector('.toggle[data-t="car"]').classList.contains('on'),
     activity:  document.querySelector('.toggle[data-t="activity"]').classList.contains('on'),
+    // Iste stvarne preference iz upitnika kao i kod runSearch() — vidi
+    // komentar tamo. "Pronađi svoj izlet" predlaže DESTINACIJE, ali
+    // paketi koje pravi za njih treba da poštuju isti tip leta/hotela/
+    // auta/broj aktivnosti, ne nasumičan sadržaj.
+    flightPref: builderState.flightPref,
+    airlineName: builderState.airlineName,
+    hotelStars: builderState.hotelStars,
+    prioritizeRating: builderState.prioritizeRating,
+    prioritizeLocation: builderState.prioritizeLocation,
+    carPref: builderState.carPref !== 'none' ? builderState.carPref : 'small',
+    activityCount: builderState.activityCount > 0 ? builderState.activityCount : 1,
   };
-  const answers = isReroll && window._lastMatchAnswers ? window._lastMatchAnswers : Object.assign({}, matchQuizState);
   if (!answers.companion || !answers.vibe){ showToast('Odgovori na oba pitanja pre pretrage.'); return; }
 
   // Direktan prelazak na rezultate — vidi komentar uz guardOverlayReplace
@@ -4506,9 +4556,20 @@ async function runSearch(shouldScroll, autoReveal){
     hotel:     document.querySelector('.toggle[data-t="hotel"]').classList.contains('on'),
     car:       document.querySelector('.toggle[data-t="car"]').classList.contains('on'),
     activity:  document.querySelector('.toggle[data-t="activity"]').classList.contains('on'),
+    // Detaljne preference iz upitnika (builderState) — da tri ponuđene
+    // kartice (Best/Comfort/Budget) STVARNO traže ono što je korisnik
+    // izabrao (tip leta, zvezdice hotela, tip auta, broj aktivnosti), a
+    // ne generišu nasumičan sadržaj po tier-u nezavisno od tih izbora.
+    // Tier i dalje menja cenu/kvalitet detalja (npr. koji je hotel u istoj
+    // kategoriji zvezdica), ali ne i samu kategoriju koju je korisnik tražio.
+    flightPref: builderState.flightPref,
+    airlineName: builderState.airlineName,
+    hotelStars: builderState.hotelStars,
+    prioritizeRating: builderState.prioritizeRating,
+    prioritizeLocation: builderState.prioritizeLocation,
+    carPref: builderState.carPref !== 'none' ? builderState.carPref : 'small',
+    activityCount: builderState.activityCount > 0 ? builderState.activityCount : 1,
   };
-  const nights = nightsBetween(from, to);
-  const days = nights;
 
   const results = document.getElementById('results');
   openResultsSheet();
