@@ -2591,3 +2591,162 @@ footer{padding:28px 20px;}
 .transport-card.tc-empty .tc-head{margin-bottom:0;}
 .tc-compact .tc-line{margin-top:4px;line-height:1.5;}
 .tc-compact .tc-compact-foot{font-size:13px;opacity:0.85;margin-top:6px;}
+
+/* ==========================================================
+   STRANICA DESTINACIJE (destinacija.html) — pregled ponude
+   po sekcijama: avio / smeštaj / aktivnosti / rent-a-car /
+   ukupna cena / saveti. Prefiks "dp-" (destination page) da
+   se klase ne sudaraju sa ostatkom sajta. Koristi iste
+   --tokene (boje/fontovi) kao i ostatak sajta.
+========================================================== */
+.dp-wrap{max-width:640px;margin:0 auto;padding:0 20px 40px;}
+
+/* ---- hero ---- */
+.dp-hero{
+    position:relative;padding:34px 20px 26px;color:var(--on-dark-strong);
+    background:
+        radial-gradient(120% 140% at 15% -10%, rgba(201,164,92,0.35) 0%, transparent 55%),
+        linear-gradient(160deg, var(--deep) 0%, var(--deep2) 100%);
+    overflow:hidden;
+}
+.dp-hero-inner{position:relative;max-width:640px;margin:0 auto;}
+.dp-hero .hero-kicker{color:var(--gold-soft);margin-bottom:8px;}
+.dp-hero h1{font-size:32px;line-height:1.1;color:var(--on-dark-strong);}
+.dp-hero .dp-flag{font-size:26px;margin-right:6px;}
+.dp-hero-facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;}
+.dp-hero-fact{font-size:13.5px;color:var(--on-dark-soft);display:flex;align-items:center;gap:6px;}
+.dp-hero-fact b{color:var(--on-dark-strong);font-weight:600;}
+.dp-hero-edit{
+    margin-top:16px;display:inline-flex;align-items:center;gap:6px;
+    font-size:13px;font-weight:600;color:var(--gold-soft);background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.25);padding:8px 14px;border-radius:999px;cursor:pointer;
+    font-family:'Work Sans',sans-serif;
+}
+
+/* ---- back dugme ispod topbar-a (koristi isti izgled kao .results-back-btn) ---- */
+.dp-back-row{padding:14px 20px 0;max-width:640px;margin:0 auto;}
+
+/* ---- sticky total bar ---- */
+.dp-total-bar{
+    position:sticky;top:var(--topbar-h,68px);z-index:20;background:var(--paper);
+    border-bottom:1px solid var(--line);padding:10px 20px;
+    display:flex;align-items:center;justify-content:space-between;
+    box-shadow:0 8px 16px -12px rgba(17,24,39,0.2);
+}
+.dp-total-bar .dp-tb-label{font-size:11.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);}
+.dp-total-bar .dp-tb-price{font-family:'Manrope',sans-serif;font-size:19px;font-weight:700;color:var(--deep);}
+.dp-total-bar .dp-tb-price small{font-family:'Work Sans',sans-serif;font-size:12px;font-weight:500;color:var(--ink-soft);}
+
+/* ---- sekcije ---- */
+.dp-section{margin-top:30px;}
+.dp-section-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.dp-section-ic{
+    width:34px;height:34px;border-radius:10px;background:var(--deep-soft);color:var(--deep);
+    display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;
+}
+.dp-section-head h2{font-family:'Manrope',sans-serif;font-weight:600;font-size:18px;margin:0;}
+.dp-section-head .dp-sh-count{font-size:12.5px;color:var(--ink-soft);margin-left:auto;}
+
+/* ---- generička kartica (isti obrazac kao .transport-card / .item-card) ---- */
+.dp-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;
+    margin-bottom:10px;
+}
+.dp-badge{
+    display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;
+    padding:3px 9px;border-radius:999px;background:var(--gold-soft);color:var(--gold-text);
+}
+.dp-badge.dp-partner{background:var(--aqua-soft);color:var(--deep);}
+
+/* ---- avio kartica ---- */
+.dp-flight-row{display:flex;align-items:center;gap:10px;}
+.dp-fl-logo{
+    width:38px;height:38px;border-radius:10px;background:var(--deep);color:var(--gold-soft);
+    display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex:none;
+    font-family:'Manrope',sans-serif;
+}
+.dp-fl-mid{flex:1;min-width:0;}
+.dp-fl-airline{font-size:14.5px;font-weight:600;}
+.dp-fl-route{display:flex;align-items:center;gap:8px;margin-top:6px;font-family:'Manrope',sans-serif;font-weight:700;font-size:16px;}
+.dp-fl-route .dp-fl-line{flex:1;height:1px;background:var(--line);position:relative;}
+.dp-fl-route .dp-fl-line::after{content:"✈";position:absolute;left:50%;top:-9px;transform:translateX(-50%);font-size:12px;color:var(--ink-soft);}
+.dp-fl-times{display:flex;justify-content:space-between;margin-top:4px;font-size:12px;color:var(--ink-soft);}
+.dp-fl-price{text-align:right;flex:none;}
+.dp-fl-price b{font-family:'Manrope',sans-serif;font-size:18px;color:var(--deep);}
+.dp-fl-price small{display:block;font-size:11px;color:var(--ink-soft);}
+
+/* ---- hotel kartica ---- */
+.dp-hotel-card{display:flex;gap:12px;}
+.dp-hotel-thumb{
+    width:78px;height:78px;border-radius:12px;flex:none;
+    background:linear-gradient(135deg, var(--aqua) 0%, var(--deep) 100%);
+}
+.dp-hotel-body{flex:1;min-width:0;}
+.dp-hotel-name{font-size:15px;font-weight:600;}
+.dp-hotel-stars{color:var(--gold);font-size:12px;margin-top:2px;}
+.dp-hotel-meta{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+.dp-hotel-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px;flex-wrap:wrap;}
+.dp-hotel-price{text-align:right;}
+.dp-hotel-price b{font-family:'Manrope',sans-serif;font-size:16px;color:var(--deep);}
+.dp-hotel-price small{display:block;font-size:11px;color:var(--ink-soft);}
+
+/* ---- aktivnosti: horizontalni scroll ---- */
+.dp-act-scroll{
+    display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin:0 -20px;padding-left:20px;padding-right:20px;
+    scroll-snap-type:x proximity;
+}
+.dp-act-card{
+    flex:0 0 156px;scroll-snap-align:start;background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;
+}
+.dp-act-thumb{height:92px;background:linear-gradient(135deg, var(--gold) 0%, var(--coral) 100%);}
+.dp-act-thumb.dp-alt2{background:linear-gradient(135deg, var(--emerald) 0%, var(--deep) 100%);}
+.dp-act-thumb.dp-alt3{background:linear-gradient(135deg, var(--aqua) 0%, var(--gold-text) 100%);}
+.dp-act-body{padding:10px;}
+.dp-act-name{font-size:13.5px;font-weight:600;line-height:1.25;}
+.dp-act-price{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+.dp-act-price b{color:var(--deep);}
+
+/* ---- rent a car ---- */
+.dp-car-card{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.dp-car-ic{
+    width:52px;height:52px;border-radius:12px;background:var(--gold-soft);color:var(--gold-text);
+    display:flex;align-items:center;justify-content:center;font-size:24px;flex:none;
+}
+.dp-car-body{flex:1;min-width:140px;}
+.dp-car-name{font-size:14.5px;font-weight:600;}
+.dp-car-meta{font-size:12.5px;color:var(--ink-soft);margin-top:3px;}
+.dp-car-price{text-align:right;flex:none;margin-left:auto;}
+.dp-car-price b{font-family:'Manrope',sans-serif;font-size:16px;color:var(--deep);}
+.dp-car-price small{display:block;font-size:11px;color:var(--ink-soft);}
+
+/* ---- ukupna cena ---- */
+.dp-price-card{background:var(--deep);color:var(--on-dark-strong);border-radius:16px;padding:20px;}
+.dp-price-row{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;color:var(--on-dark-soft);border-bottom:1px solid rgba(255,255,255,0.12);}
+.dp-price-row span:last-child{color:var(--on-dark-strong);font-weight:600;}
+.dp-price-row.dp-total{border-bottom:none;padding-top:14px;align-items:baseline;}
+.dp-price-row.dp-total span:first-child{font-size:14px;color:var(--gold-soft);}
+.dp-price-row.dp-total span:last-child{font-family:'Manrope',sans-serif;font-size:26px;font-weight:700;}
+.dp-price-note{font-size:11.5px;color:var(--on-dark-soft);margin-top:10px;line-height:1.5;}
+
+/* ---- saveti ---- */
+.dp-tip{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
+.dp-tip:last-child{border-bottom:none;}
+.dp-tip-ic{
+    width:32px;height:32px;border-radius:9px;background:var(--emerald-soft);color:var(--emerald);
+    display:flex;align-items:center;justify-content:center;font-size:15px;flex:none;
+}
+.dp-tip-title{font-size:14px;font-weight:600;}
+.dp-tip-text{font-size:13px;color:var(--ink-soft);margin-top:2px;line-height:1.45;}
+
+@media (max-width:760px){
+    .dp-hero{padding:26px 20px 22px;}
+    .dp-hero h1{font-size:27px;}
+    .dp-wrap,.dp-back-row{padding-left:16px;padding-right:16px;}
+    .dp-act-scroll{margin:0 -16px;padding-left:16px;padding-right:16px;}
+    .dp-total-bar{padding:10px 16px;}
+}
+
+@media (hover:hover) and (pointer:fine){
+    .dp-hero-edit:hover{background:rgba(255,255,255,0.14);}
+}
