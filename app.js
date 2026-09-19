@@ -1559,6 +1559,33 @@ function airaloCountrySlug(destName){
 }
 
 /* ==========================================================
+   IATA KODOVI za deep link ka KAYAK-u. Ključ = normalizeSr(grad).
+   Uredničko znanje, namerno samo za aerodrome u kojima smo sigurni;
+   za sve ostalo iataFor() vraća null i link pada na stari
+   "anywhere-<grad>" oblik (ne nagađamo kod). Gradovi bez sopstvenog
+   aerodroma se ovde NE mapiraju — pre pretrage prolaze kroz
+   realDepartureAirportFor/realArrivalAirportFor (Bar → Tivat, itd.),
+   isto kao i tekst na kartici, pa link i kartica pominju isti aerodrom.
+========================================================== */
+const AIRPORT_IATA = {
+  'beograd':'BEG','nis':'INI','podgorica':'TGD','tivat':'TIV','zagreb':'ZAG','split':'SPU','dubrovnik':'DBV',
+  'zadar':'ZAD','pula':'PUY','sarajevo':'SJJ','mostar':'OMO','skoplje':'SKP','ohrid':'OHD','pristina':'PRN',
+  'ljubljana':'LJU','tirana':'TIA','budimpesta':'BUD','temisvar':'TSR','bukurest':'OTP',
+  'sofija':'SOF','varna':'VAR','solun':'SKG','atina':'ATH','krf':'CFU','santorini':'JTR','mikonos':'JMK',
+  'rodos':'RHO','krit':'HER','iraklion':'HER','rim':'FCO','milano':'MXP','venecija':'VCE','napulj':'NAP',
+  'barselona':'BCN','madrid':'MAD','malaga':'AGP','ibica':'IBZ','lisabon':'LIS','porto':'OPO','pariz':'CDG',
+  'nica':'NCE','london':'LON','amsterdam':'AMS','berlin':'BER','minhen':'MUC','frankfurt':'FRA','cirih':'ZRH',
+  'bec':'VIE','prag':'PRG','bratislava':'BTS','varsava':'WAW','krakov':'KRK','istanbul':'IST','antalija':'AYT',
+  'bodrum':'BJV','tel aviv':'TLV','dubai':'DXB','kairo':'CAI','marakes':'RAK','larnaka':'LCA','valeta':'MLA',
+  'majorka':'PMI','kopenhagen':'CPH','stokholm':'ARN','oslo':'OSL','helsinki':'HEL','dablin':'DUB',
+  'brisel':'BRU','bazel':'BSL','zeneva':'GVA','njujork':'NYC','bangkok':'BKK','tokio':'TYO'
+};
+function iataFor(airportNameRaw){
+  const norm = normalizeSr(String(airportNameRaw || '').split(',')[0].trim());
+  return AIRPORT_IATA[norm] || null;
+}
+
+/* ==========================================================
    AFFILIATE DEEP LINKS — STATUS PRE PRODUKCIJE
    Jedino mesto gde treba gledati šta je spremno, umesto komentara
    rasutih kroz fajl. Pravi ID-jevi idu u config.js
@@ -1602,6 +1629,14 @@ function airaloCountrySlug(destName){
         parametar 'ref=' za Airalo takođe nije potvrđen (nije nađena
         zvanična dokumentacija affiliate linka, samo da program postoji)
 
+   ⚠️ NOVI PARAMETRI DEEP LINKA (pretpostavka, proveri ručno jednom
+      pre produkcije — otvori po jedan link i vidi da filteri stvarno
+      uhvate): KAYAK ruta BEG-ATH/…, `fs=stops%3D0` (samo direktni),
+      `sort=price_a`; Booking `nflt=class%3D<3|4|5>`,
+      `order=review_score_and_price` / `distance_from_search`,
+      `no_rooms=ceil(adults/2)`. Tip auta i konkretna avio-kompanija se
+      i dalje NE prosleđuju (nema potvrđenog parametra / mape kodova).
+
    ❌ NIJE SPREMNO — ne puštati u produkciju dok se ne reši:
       - World Nomads: rezidentska strana je ✅ rešena (vidi gore), ali
         AFFILIATE LINK i dalje nije. Program je od nov. 2022 EXKLUZIVNO
@@ -1626,13 +1661,33 @@ function buildAffiliateLink(kind, ctx){
   const enc = encodeURIComponent;
   const dest = enc(ctx.dest);
   switch(kind){
-    case 'flight':
-      // Kayak supports "anywhere-<city>" as an origin placeholder when no origin airport is known.
+    case 'flight': {
       // Parametar je 'a' (affiliate ID), NE 'ref' — potvrđeno na
       // help.affiliates.kayak.com. Vidi STATUS PRE PRODUKCIJE iznad.
-      return `https://www.kayak.com/flights/anywhere-${dest}/${ctx.from}/${ctx.to}?adults=${ctx.adults}&sort=bestflight_a&a=${affId('flight')}`;
-    case 'hotel':
-      return `https://www.booking.com/searchresults.html?ss=${dest}&checkin=${ctx.from}&checkout=${ctx.to}&group_adults=${ctx.adults}&no_rooms=1&aid=${affId('hotel')}`;
+      // Ruta: kad znamo IATA i polazišta i odredišta (posle preslikavanja
+      // grada bez aerodroma na najbliži pravi — isto kao na kartici),
+      // link nosi TAČNU rutu; inače pada na stari "anywhere-<grad>".
+      const oIata = iataFor(realDepartureAirportFor(ctx.originCode));
+      const dIata = iataFor(realArrivalAirportFor(ctx.dest));
+      const route = (oIata && dIata) ? `${oIata}-${dIata}` : `anywhere-${dest}`;
+      const pref = ctx.flightPref || 'direct';
+      // direktan → samo direktni letovi; najjeftiniji → sortirano po ceni;
+      // konkretna kompanija se NE prosleđuje (KAYAK traži kod kompanije,
+      // a nemamo mapu naziv → kod, pa ne nagađamo).
+      const sort = pref === 'cheapest' ? 'price_a' : 'bestflight_a';
+      const stops = pref === 'direct' ? '&fs=stops%3D0' : '';
+      return `https://www.kayak.com/flights/${route}/${ctx.from}/${ctx.to}?adults=${ctx.adults}&sort=${sort}${stops}&a=${affId('flight')}`;
+    }
+    case 'hotel': {
+      // Broj soba isti kao na kartici (ceil(adults/2)), zvezdice kao
+      // filter kategorije (class=3/4/5), a prioritet ocene/lokacije kao
+      // redosled rezultata — da link otvara ono što kartica opisuje.
+      const rooms = Math.max(1, Math.ceil((Number(ctx.adults) || 2) / 2));
+      const stars = [3,4,5].includes(ctx.hotelStars) ? `&nflt=class%3D${ctx.hotelStars}` : '';
+      const order = ctx.prioritizeRating ? '&order=review_score_and_price'
+                  : ctx.prioritizeLocation ? '&order=distance_from_search' : '';
+      return `https://www.booking.com/searchresults.html?ss=${dest}&checkin=${ctx.from}&checkout=${ctx.to}&group_adults=${ctx.adults}&no_rooms=${rooms}${stars}${order}&aid=${affId('hotel')}`;
+    }
     case 'car':
       return `https://www.booking.com/cars/results.html?ss=${dest}&pickupDate=${ctx.from}&dropoffDate=${ctx.to}&aid=${affId('car')}`;
     case 'activity':
@@ -2891,8 +2946,18 @@ function setCurrency(cur){
   refreshDisplayedPrices();
 }
 
-function attachAffiliateLinks(pkg, dest, from, to, adults){
-  const ctx = {dest, from, to, adults};
+function attachAffiliateLinks(pkg, dest, from, to, adults, extra){
+  // extra = {originCode, flags} — polazište i izbori iz upitnika, da link
+  // vodi na ono što kartica opisuje (ruta, tip leta, zvezdice, sobe).
+  extra = extra || {};
+  const f = extra.flags || {};
+  const ctx = {
+    dest, from, to, adults,
+    originCode: extra.originCode || '',
+    flightPref: f.flightPref, hotelStars: f.hotelStars,
+    prioritizeRating: f.prioritizeRating, prioritizeLocation: f.prioritizeLocation,
+    carPref: f.carPref
+  };
   pkg.dest = dest; // sačuvano na pkg da bi analitika (GA4 affiliate_click) znala destinaciju/tier klika
   if (pkg.flight)   pkg.flight.bookUrl   = buildAffiliateLink('flight', ctx);
   if (pkg.hotel)    pkg.hotel.bookUrl    = buildAffiliateLink('hotel', ctx);
@@ -3643,7 +3708,7 @@ function computePackagesLocally(dest, from, to, nights, days, adults, flags, ori
   const factor = marketFactor(dest, todayStr());
 
   const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor, originCode));
-  pkgs.forEach(p => attachAffiliateLinks(p, dest, from, to, adults));
+  pkgs.forEach(p => attachAffiliateLinks(p, dest, from, to, adults, {originCode, flags}));
 
   // Price score is relative to the cheapest of THIS run's three packages —
   // the cheapest always scores highest on price, others drop off the more
@@ -3820,7 +3885,7 @@ function computeMatchCandidates(from, to, adults, flags){
     const rng = seededRandom(seed);
     const factor = marketFactor(d.name, todayStr());
     const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags, factor);
-    attachAffiliateLinks(pkg, d.name, from, to, adults);
+    attachAffiliateLinks(pkg, d.name, from, to, adults, {originCode: (document.getElementById('origin') || {}).value || '', flags});
     return {dest:d.name, country:d.extra||'', pkg, tags:d};
   });
 }
@@ -4955,7 +5020,12 @@ function renderBuilder(){
   // --- Rezervacija po stavci (isti affiliate linkovi kao u gotovim ponudama) ---
   const linkCtx = Object.assign({}, ctx, {
     from: document.getElementById('dateFrom').value,
-    to: document.getElementById('dateTo').value
+    to: document.getElementById('dateTo').value,
+    flightPref: builderState.flightPref,
+    hotelStars: builderState.hotelStars,
+    prioritizeRating: builderState.prioritizeRating,
+    prioritizeLocation: builderState.prioritizeLocation,
+    carPref: builderState.carPref
   });
   const bookBtns = [];
   if (builderState.includeFlight){
