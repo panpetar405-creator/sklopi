@@ -630,6 +630,43 @@ function marketFactor(dest, dateStr){
   const f = seededRandom(hashSeed('mkt|' + dest.toLowerCase() + '|' + dateStr));
   return 0.88 + f() * 0.24;
 }
+
+/* Sezonski množilac po DATUMU POLASKA (ne po današnjem datumu, kao
+   marketFactor koji je dnevna fluktuacija). Za destinacije iz
+   MATCH_DESTINATIONS koristi njihove već označene najbolje mesece
+   (months) i tip (vibes): u sezoni 1.0, morske destinacije u julu/avgustu
+   1.22 i u junu/septembru 1.08, mesec do sezone 0.92, van sezone 0.82
+   (ne-morske se mešaju 50/50 sa opštom krivom, vidi dole).
+   Ostale destinacije dobijaju opštu evropsku krivu. Novogodišnji period
+   (20. dec – 3. jan) dodaje 15%. Primenjuje se na let, smeštaj i auto —
+   ne na gorivo/putarine/dodatke. NE zove rng(). Prazan/neispravan
+   datum → 1 (staro ponašanje). */
+const GENERIC_SEASON_BY_MONTH = [0.88,0.86,0.90,0.97,1.00,1.08,1.20,1.22,1.05,0.97,0.88,0.95];
+function seasonFactor(destRaw, fromStr){
+  const m = Number(String(fromStr || '').slice(5, 7));
+  const d = Number(String(fromStr || '').slice(8, 10)) || 1;
+  if (!(m >= 1 && m <= 12)) return 1;
+  const key = normalizeSr(String(destRaw || '').split(',')[0].trim());
+  const tag = (typeof MATCH_DESTINATIONS !== 'undefined')
+    ? MATCH_DESTINATIONS.find(x => normalizeSr(x.name) === key) : null;
+  let f;
+  if (tag){
+    const prev = m === 1 ? 12 : m - 1, next = m === 12 ? 1 : m + 1;
+    const sea = tag.vibes.includes('sea');
+    if (tag.months.includes(m)) f = sea && (m === 7 || m === 8) ? 1.22 : sea && (m === 6 || m === 9) ? 1.08 : 1.0;
+    else if (tag.months.includes(prev) || tag.months.includes(next)) f = 0.92;
+    else f = 0.82;
+    // "months" je najbolja sezona po vremenu/doživljaju, a ne po potražnji:
+    // gradovi (i sve što nije morsko) imaju cene leta koje ipak rastu leti
+    // i oko praznika. Zato za ne-morske destinacije mešamo tag sa opštom
+    // krivom (50/50), a čisto tagovanje važi samo za morske.
+    if (!sea) f = 0.5 * f + 0.5 * GENERIC_SEASON_BY_MONTH[m - 1];
+  } else {
+    f = GENERIC_SEASON_BY_MONTH[m - 1];
+  }
+  if ((m === 12 && d >= 20) || (m === 1 && d <= 3)) f *= 1.15;
+  return Math.round(f * 100) / 100;
+}
 function todayStr(){
   return new Date().toISOString().slice(0, 10); // UTC YYYY-MM-DD
 }
@@ -2780,8 +2817,9 @@ function assertFlightSubConsistency(flightPref, sub, sourceLabel){
 /* ==========================================================
    PRICING + SCORE ENGINE
 ========================================================== */
-function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, originCode){
+function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, originCode, seasonMult){
   factor = factor || 1;
+  seasonMult = seasonMult || 1; // sezona (seasonFactor) — samo let/smeštaj/auto
   const flight = flags.flight ? fetchFlights(rng, dest, adults, tier, originCode, flags) : null;
   const hotel  = flags.hotel  ? fetchHotel(rng, dest, nights, adults, tier, flags) : null;
   const car    = flags.car    ? fetchCar(rng, days, tier, flags) : null;
@@ -2792,9 +2830,9 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
 
   // Tržišni faktor menja samo cenu, ne i ime/opis stavke (ti se biraju
   // gore, iz rng niza, pre ove linije — pa ostaju stabilni iz dana u dan).
-  if (flight) flight.price = Math.round(flight.price * factor);
-  if (hotel) hotel.price = Math.round(hotel.price * factor);
-  if (car) car.price = Math.round(car.price * factor);
+  if (flight) flight.price = Math.round(flight.price * factor * seasonMult);
+  if (hotel) hotel.price = Math.round(hotel.price * factor * seasonMult);
+  if (car) car.price = Math.round(car.price * factor * seasonMult);
   if (activity) activity.price = Math.round(activity.price * factor);
 
   const fuel = Math.round(((car && extras.fuel) ? extras.fuel : 0) * factor);
@@ -3748,7 +3786,7 @@ function computePackagesLocally(dest, from, to, nights, days, adults, flags, ori
   const rng = seededRandom(seed);
   const factor = marketFactor(dest, todayStr());
 
-  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor, originCode));
+  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor, originCode, seasonFactor(dest, from)));
   pkgs.forEach(p => attachAffiliateLinks(p, dest, from, to, adults, {originCode, flags}));
 
   // Price score is relative to the cheapest of THIS run's three packages —
@@ -3927,7 +3965,7 @@ function computeMatchCandidates(from, to, adults, flags){
     const seed = hashSeed(d.name.toLowerCase()+d.name.length+nights+adults);
     const rng = seededRandom(seed);
     const factor = marketFactor(d.name, todayStr());
-    const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags, factor, matchOrigin);
+    const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags, factor, matchOrigin, seasonFactor(d.name, from));
     attachAffiliateLinks(pkg, d.name, from, to, adults, {originCode: matchOrigin, flags});
     return {dest:d.name, country:d.extra||'', pkg, tags:d};
   });
@@ -4996,9 +5034,10 @@ function computeCustomPackage(sel, ctx){
   // primenjen na sve stavke osim osiguranja/eSIM-a, koji su fiksni dodaci
   // po osobi, ne tržišna cena koja fluktuira.
   const factor = marketFactor(ctx.dest, todayStr());
-  const flightPriceF = sel.includeFlight ? Math.round(flightPrice * factor) : 0;
-  const hotelPriceF = sel.includeHotel ? Math.round(hotelPrice * factor) : 0;
-  const carPriceF = Math.round(carPrice * factor);
+  const season = seasonFactor(ctx.dest, ctx.from); // po datumu polaska (vidi seasonFactor)
+  const flightPriceF = sel.includeFlight ? Math.round(flightPrice * factor * season) : 0;
+  const hotelPriceF = sel.includeHotel ? Math.round(hotelPrice * factor * season) : 0;
+  const carPriceF = Math.round(carPrice * factor * season);
   const activityPriceF = Math.round(activityPrice * factor);
   const carExtrasF = Math.round(carExtras * factor);
 
