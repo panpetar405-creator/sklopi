@@ -4809,6 +4809,7 @@ async function runMatchSearch(isReroll){
     carPref: builderState.carPref !== 'none' ? builderState.carPref : 'small',
     activityCount: builderState.activityCount > 0 ? builderState.activityCount : 1,
   };
+  const answers = Object.assign({}, (isReroll && window._lastMatchAnswers) || matchQuizState);
   if (!answers.companion || !answers.vibe){ showToast('Odgovori na oba pitanja pre pretrage.'); return; }
 
   // Direktan prelazak na rezultate — vidi komentar uz guardOverlayReplace
