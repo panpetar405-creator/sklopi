@@ -139,10 +139,8 @@ a{color:inherit;}
 }
 
 .lang-switch .ls-sep{opacity:0.4;margin:0 3px;}
-.lang-switch .ls-sr,.lang-switch .ls-en,.lang-switch .ls-ru{opacity:0.4;}
-.lang-switch[data-lang="sr"] .ls-sr{opacity:1;}
-.lang-switch[data-lang="en"] .ls-en{opacity:1;}
-.lang-switch[data-lang="ru"] .ls-ru{opacity:1;}
+.lang-switch .ls-item{opacity:0.4;}
+.lang-switch .ls-item.is-active{opacity:1;}
 
 .currency-switch .cs-eur,.currency-switch .cs-rsd{opacity:0.4;}
 .currency-switch[data-currency="EUR"] .cs-eur{opacity:1;}

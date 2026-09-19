@@ -103,886 +103,45 @@ function guardOverlayReplace(oldId, newId, closeFn){
 }
 
 /* ==========================================================
-   I18N — srpski (podrazumevano) i engleski
+   I18N — jezici i prevodi
    ==========================================================
+   Izvor istine je SAMO locales/sr.json (srpski). Ostali jezici
+   (locales/en.json, ru.json, ...) nastaju skriptom:
+       node scripts/translate.mjs        (vidi PREVODI.md)
+   koja i generiše i18n-data.js — taj fajl definiše I18N i I18N_LANGS
+   i mora biti učitan PRE app.js. Ovde se ne piše nijedan prevod.
+
    Princip: statički tekst u HTML-u se prevodi preko data-i18n /
    data-i18n-html / data-i18n-placeholder / data-i18n-aria-label
    atributa i primenjuje se applyStaticI18n() funkcijom ispod.
    Za tekst koji JS generiše (rezultati, builder, poruke), koristi
-   se t('kljuc') helper.
-   NAPOMENA (obim ovog prolaza): pravne stranice (privatnost/uslovi/
-   kolačići) i stranica za deljenje (zajedno.html) NISU prevedene —
-   ostaju na srpskom dok se ne uradi poseban prolaz za njih.
+   se t('kljuc') / tf('kljuc', {ime: vrednost}).
+   NAPOMENA: pravne stranice (privatnost/uslovi/kolačići) i stranica
+   za deljenje (zajedno.html) NISU obuhvaćene — ostaju na srpskom.
 ========================================================== */
-const I18N = {
-  sr: {
-    nav_how:'Kako radi', nav_dest:'Destinacije', nav_about:'O nama',
-    aria_account:'Nalog', aria_menu:'Meni',
-    hero_kicker:'Pažljivo osmišljena putovanja',
-    hero_title:'SKLOPI',
-    hero_lede:'Sve u jednu cenu.',
-    promo_banner_kicker:'Trenutak za sebe',
-    promo_banner_quote:'Neka mesta jednostavno nemaju cenu.',
-    partners_label:'Rezervacija ide direktno preko partnera',
-    label_origin:'Polazak', placeholder_origin:'npr. Beograd, Niš, Podgorica',
-    label_dest:'Destinacija', placeholder_dest:'npr. Atina, Rim, Barselona',
-    label_dates:'Od — Do',
-    aria_prev_month:'Prethodni mesec', aria_next_month:'Sledeći mesec',
-    aria_today:'danas', aria_cal_dialog:'Izbor datuma putovanja',
-    chip_weekend:'Vikend', chip_week:'Nedelja dana', chip_twoweeks:'Dve nedelje',
-    cal_wx_legend:'<span class="lg-exact">☀️</span>prognoza (do 16 dana unapred) &nbsp;·&nbsp; <span class="lg-est">☀️</span>procena za dalje datume, po podacima za isti period prošle godine &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
-    btn_done:'Gotovo',
-    label_passengers:'Putnika', placeholder_passengers:'Putnika', aria_pax_dialog:'Izbor broja putnika',
-    opt_1adult:'1 odrasla osoba', opt_2adults:'2 odrasla', opt_3adults:'3 odrasla', opt_4adults:'4 odrasla',
-    btn_search:'Start',
-    btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start',
-    toggle_flight:'Letovi', toggle_hotel:'Smeštaj', toggle_car:'R a C', toggle_activity:'Aktivnost',
-    eyebrow_no_idea:'Nemaš plan', h2_no_idea:'Ne znaš gde bi išao?', sub_no_idea:'Reci nam koliko želiš da potrošiš, a mi ćemo pronaći destinacije koje se uklapaju.',
-    btn_no_idea_cta:'🎲 Iznenadi me',
-    eyebrow_more_control:'Više kontrole', h2_build_own:'Želiš više kontrole?',
-    sub_build_own:'Biraš let, smeštaj, auto i aktivnosti — mi računamo koliko sve zajedno košta.',
-    eyebrow_content_control:'Kontrola sadržaja', h2_content_control:'Sam odredi šta ti odgovara',
-    control_teaser_sub:'Sam biraš let, hotel, prevoz, aktivnosti, osiguranje i eSIM — cena se sabira uživo.',
-    ct_cta:'Otvori builder',
-    btn_choose:'Odaberi',
-    builder_addons_label:'Dodaci',
-    eyebrow_features:'Sve uključeno',
-    builder_flight_label:'Letovi', chip_direct:'Direktan', chip_cheapest:'Najjeftiniji', chip_airline:'Određena kompanija',
-    placeholder_airline:'npr. Lufthansa',
-    chip_priority_rating:'Prioritet: ocena', chip_priority_location:'Prioritet: lokacija',
-    builder_transport_label:'Rent a car', chip_no_car:'Bez auta', chip_small_car:'Mali auto', chip_suv:'SUV',
-    builder_activities_label:'Aktivnosti',
-    aria_fewer_activities:'Manje aktivnosti', aria_more_activities:'Više aktivnosti',
-    q_flight_desc:'Avionska karta do destinacije i nazad', q_flight_type:'Tip leta',
-    q_hotel_desc:'Hotel ili apartman za ceo boravak', q_hotel_category:'Kategorija', q_priority:'Prioritet',
-    q_car_desc:'Vozilo za ceo period boravka', q_car_type:'Vozilo',
-    q_activities_desc:'Izleti, ulaznice i vođene ture', q_activities_count:'Broj aktivnosti',
-    q_budget_desc:'Reci nam okvirni budžet da uporedimo',
-    builder_budget_label_html:'Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span>',
-    placeholder_budget:'npr. 700',
-    btn_make_arrangement:'Napravi izlet', btn_show_price:'Prikaži cenu', btn_continue:'Nastavi',
-    builder_summary_head:'Tvoj izlet', builder_total_sub:'ukupno',
-    builder_total_hint:'Zbir procena za let, hotel, auto i aktivnosti — svaka stavka se plaća zasebno kod partnera, ne u jednom plaćanju.',
-    disclaimer_illustrative:'⚠️ Ilustrativna procena, ne stvarna ponuda — sajt je u razvoju.',
-    btn_optimize:'Optimizuj cenu', btn_save_trip:'Sačuvaj', btn_price_alert:'Javi mi kad padne cena',
-    builder_placeholder_text:'Ovde ćeš videti procenjenu cenu čim počneš da biraš — promeni bilo koju opciju levo.',
-    eyebrow_for_later:'Za kasnije', h2_saved_trips:'Vrati se kad budeš spreman',
-    sub_saved_trips:'Sačuvaj opcije koje ti se dopadaju i nastavi kasnije.',
-    h2_features:'Sve što ti treba za put', sub_features:'Od leta i smeštaja do auta, transfera, aktivnosti, osiguranja i interneta.',
-    f_flight_sub:'Direktni i sa presedanjem', f_hotel_sub:'Hoteli, apartmani, hosteli',
-    f_car_name:'Auto', f_car_sub:'Preuzimanje na aerodromu',
-    f_tolls_name:'Putarine', f_tolls_sub:'Procena po ruti i državi',
-    f_tax_name:'Boravišna taksa', f_tax_sub:'Po osobi, po noći — plaća se u hotelu',
-    f_activity_name:'Aktivnosti', f_activity_sub:'Karte i ture unapred',
-    f_insurance_name:'Osiguranje', f_insurance_sub:'Zdravstveno i za otkazivanje',
-    f_esim_sub:'Internet od sletanja',
-    f_transfer_name:'Transferi', f_transfer_sub:'Od aerodroma do smeštaja',
-    postcard_caption:'Uvek postoji sledeći izlet.',
-    eyebrow_attractions:'U partnerstvu sa Viator', h2_attractions:'Sklopi svoje atrakcije.',
-    attractions_sub:'Koncerti, gondole, arene, podvodni svetovi i još hiljade doživljaja širom sveta — pronađi svoj i dodaj ga u plan.',
-    btn_see_all_attractions:'🧭 Vidi sve atrakcije',
-    eyebrow_ideas:'Ideje za sledeći izlet', h2_popular_dest:'Gde bi sledeće?',
-    sub_popular_dest:'Pogledaj destinacije koje putnici iz Srbije i regiona najčešće biraju.',
-    pd_athens_name:'Atina, Grčka', pd_athens_desc:'Antika, ostrvski trajekti i vrhunska kuhinja — popularna letnja destinacija sa čestim direktnim letovima.',
-    pd_rome_name:'Rim, Italija', pd_rome_desc:'Koloseum, Vatikan i ulična kuhinja — grad koji se obilazi peške, uz kratak let iz Beograda.',
-    pd_barcelona_name:'Barselona, Španija', pd_barcelona_desc:'Gaudijeva arhitektura, plaža i tapas bary — omiljena kombinacija grada i mora.',
-    pd_budva_name:'Budva, Crna Gora', pd_budva_desc:'Najbliže more autom ili autobusom iz Srbije — stara varoš i duge plaže.',
-    pd_istanbul_name:'Istanbul, Turska', pd_istanbul_desc:'Spoj Evrope i Azije, bazari i Bosfor — pristupačan izlet van sezone.',
-    pd_vienna_name:'Beč, Austrija', pd_vienna_desc:'Muzeji, kafei i božićne pijace zimi — praktičan gradski izlet za vikend.',
-    pd_thessaloniki_name:'Solun, Grčka', pd_thessaloniki_desc:'More bez potrebe za letom — praktičan izlet autom ili autobusom.',
-    pd_prague_name:'Prag, Češka', pd_prague_desc:'Arhitektura, pivnice i šetnja starim gradom — popularan gradski izlet.',
-    pd_budapest_name:'Budimpešta, Mađarska', pd_budapest_desc:'Kupatila, arhitektura i kratak let ili vožnja — praktičan gradski izlet.',
-    cta_right:'Ceo izlet.<br>Jedna cena.',
-    eyebrow_faq:'Pitanja', h2_faq:'Pre nego što rezervišeš',
-    sub_faq:'Odgovori na najčešća pitanja o cenama, rezervaciji i promenama.',
-    faq_q1:'Da li su prikazane cene stvarne?',
-    faq_a1:'SKLOPI je trenutno u razvoju. Cene koje vidiš u pretrazi i builderu su ilustrativna procena, generisana radi demonstracije, ne dolaze uživo sa sajtova partnera. Pre rezervacije uvek proveri tačnu cenu i dostupnost direktno kod partnera (KAYAK, Booking.com, Viator).',
-    faq_q2:'Kako radi builder izleta?',
-    faq_a2:'Sam biraš tip leta, kategoriju hotela, auto i broj aktivnosti, a SKLOPI sabira procenjenu cenu za ceo paket. Dugme „Optimizuj moj izlet" predlaže izmenu koja može da smanji cenu uz sličan kvalitet.',
-    faq_q3:'Kako se čuvaju moji sačuvani izleti?',
-    faq_a3:'Napraviš nalog emailom i lozinkom u sekciji sačuvanih izleta. Tvoji podaci se čuvaju vezano za tvoj nalog, ne za ovaj uređaj, tako da im možeš pristupiti i sa drugog telefona ili računara — samo se prijavi istim emailom i lozinkom.',
-    faq_q4:'Da li SKLOPI naplaćuje rezervaciju?',
-    faq_a4:'Ne. SKLOPI ne naplaćuje ništa direktno — klikom na „Rezerviši" ili „Pretraži" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.',
-    faq_q5:'Imaš pitanje koje nije ovde?',
-    faq_a5:'Piši na <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — rado odgovaramo.',
-    whatsapp_aria:'Piši nam na WhatsApp',
-    stat_searches:'pretraga', stat_clicks:'klikova na ponude', stat_last:'poslednja destinacija',
-    footer_contact:'Kontakt', footer_privacy:'Privatnost', footer_terms:'Uslovi', footer_cookies:'Kolačići', footer_guides:'Vodiči',
-    foot_note:'SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a>',
-    cookie_text:'<b>Koristimo kolačiće za analitiku</b> (Google Analytics) da bismo razumeli kako se sajt koristi i unapredili ga. Ne koristimo ih za marketing niti ih delimo van Google-a. Detalji u <a href="kolacici.html">Politici kolačića</a>.',
-    cookie_decline:'Odbijam', cookie_accept:'Prihvatam',
-    aria_close:'Zatvori', label_email:'Email',
-    label_alert_threshold:'Javi mi kad ukupna procenjena cena padne ispod', btn_set_alert:'Postavi alert',
-    alert_modal_disclaimer:'⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Poslaćemo ti mejl da potvrdiš — alert se aktivira tek nakon klika na link u njemu. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.',
-    match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">Nemaš ideju kuda?</span><span class="ac-sub">Kratak upitnik od 3 pitanja — pronađi 3 destinacije koje ti stvarno odgovaraju, ne nasumične.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 More</span><span class="match-preview-chip">🏙️ Grad</span><span class="match-preview-chip">🌲 Priroda</span><span class="match-preview-chip">🎉 Provod</span></span><span class="ac-cta"><span class="ac-cta-label">Pronađi mi destinaciju</span><span class="ac-arrow">→</span></span>',
-    match_modal_title:'Pronađi svoj izlet',
-    match_modal_sub:'Tri kratka pitanja — mi bodujemo preko 60 destinacija po poklapanju sa tobom, sezonom i dužinom puta, ne nasumično. Datumi i broj putnika ostaju kao u formi iznad.',
-    match_step1_title:'Sa kim putuješ?',
-    match_step2_title:'Šta ti znači odmor?',
-    match_step3_title:'Koliki je ukupan budžet?',
-    match_label_budget:'Ukupan budžet (za sve putnike, opciono)', placeholder_match_budget:'npr. 400',
-    match_modal_btn:'🎯 Pronađi mi 3 destinacije',
-    match_modal_disclaimer:'⚠️ Ilustrativna procena cene, kombinovana sa tvojim odgovorima — ne stvarna ponuda partnera.',
-    share_modal_title:'Podeli sa prijateljima', share_modal_label_link:'Link za deljenje',
-    share_modal_copy:'📋 Kopiraj link', share_modal_native:'📤 Podeli preko aplikacija',
-    share_modal_disclaimer:'Svako ko otvori link vidi predlog i može da ostavi odgovor (Idem/Možda/Ne mogu) — bez pravljenja naloga.',
-    documents_check_link:'🧳 Proveri dokumenta za put',
-    documents_modal_title:'Dokumenta za put',
-    documents_modal_sub:'Pasoš i zelena karta — sve na jednom mestu, u par klikova.',
-    docs_tab_passport:'🛂 Pasoš',
-    docs_tab_greencard:'🪪 Zelena karta',
-    passport_check_link:'🛂 Proveri da li ti pasoš važi za ovaj put',
-    passport_modal_sub:'Mnoge zemlje traže da pasoš važi još neko vreme nakon povratka — u suprotnom te mogu vratiti sa granice ili na čekiranju, iako sam datum putovanja nije problem.',
-    passport_modal_title:'Da li ti pasoš važi za ovaj put?',
-    passport_modal_label_expiry:'Do kog datuma važi tvoj pasoš?',
-    passport_modal_btn:'Proveri',
-    passport_modal_disclaimer:'⚠️ Opšta pravila po zemlji, radi orijentacije — pred put uvek dodatno proveri na sajtu ambasade/konzulata ili sa aviokompanijom.',
-    green_card_check_link:'🪪 Proveri da li ti treba zelena karta za ovu rutu',
-    green_card_modal_title:'Treba li ti zelena karta za auto?',
-    green_card_modal_sub:'Zelena karta je međunarodna potvrda auto-osiguranja. Srbija ima sporazume sa većinom evropskih zemalja pa karton nije potreban, ali za neke destinacije i dalje jeste — i plaća se posebno kod osiguravača, van cene rentakara.',
-    green_card_modal_disclaimer:'⚠️ Opšte pravilo za vozila registrovana u Srbiji, radi orijentacije — pred put uvek potvrdi kod svog osiguravača ili AMSS-a, jer se sporazumi povremeno menjaju.',
-    green_card_dest_missing:'Prvo upiši kuda putuješ u polje „Destinacija“ iznad, pa se vrati ovde — pravilo zavisi od zemlje.',
-    green_card_scope_note:'Odnosi se na vožnju sopstvenim ili u Srbiji iznajmljenim automobilom do granice — ne na rentakar koji preuzimaš tek na destinaciji (fly & drive).',
-    // ---- dinamički stringovi (koristi ih JS preko t()) ----
-    ac_searching:'Tražim…', ac_no_results:'Nema predloga za taj naziv.',
-    results_back:'Nazad', results_back_aria:'Nazad na sajt',
-    night:'noć', nights:'noći', passenger:'putnik', passengers:'putnika',
-    // ---- statistička traka, raspodela cene, atrakcije, modal 'Prilagodi svoj plan', čipovi upitnika ----
-    stat_items:'stavki sabranih u jednu cenu',
-    stat_partners:'partnera za rezervaciju',
-    stat_cities:'gradova u ponudi',
-    pc_title:'Od čega se sastoji cena paketa',
-    pc_sub:'Ilustrativna raspodela troškova po % — koliko koja stavka opterećuje budžet.',
-    pc_aria:'Raspodela cene paketa: letovi 32% oko 384 evra, smeštaj 24% oko 288 evra, auto 12% oko 144 evra, aktivnosti 10% oko 120 evra, osiguranje 8% oko 96 evra, putarine 6% oko 72 evra, eSIM 5% oko 60 evra, transferi 3% oko 36 evra',
-    pc_flights:'Letovi',
-    pc_hotel:'Smeštaj',
-    pc_car:'Auto',
-    pc_activities:'Aktivnosti',
-    pc_insurance:'Osiguranje',
-    pc_tolls:'Putarine',
-    pc_esim:'eSIM',
-    pc_transfers:'Transferi',
-    pc_foot:'⚠️ Ilustrativna procena na primeru tipičnog paketa — stvarna raspodela zavisi od destinacije, sezone i tvojih izbora u builderu.',
-    attr_prev_aria:'Prethodne atrakcije',
-    attr_next_aria:'Sledeće atrakcije',
-    attr_all_title:'Sve atrakcije',
-    attr_country:'Zemlja',
-    attr_all_countries:'Sve zemlje',
-    attr_empty:'Nema atrakcija za izabrani filter — probaj drugu kombinaciju.',
-    attr_disclaimer:'⚠️ Cene su ilustrativna procena. Tačna cena i dostupnost proveravaju se kod partnera (Viator) pre rezervacije.',
-    attr_from:'od',
-    attr_dot_aria:'Atrakcija {n}',
-    attr_cat_kultura:'Kultura i znamenitosti',
-    attr_cat_muzika:'Muzika i koncerti',
-    attr_cat_gondole:'Gondole i panorame',
-    attr_cat_arene:'Arene i sport',
-    attr_cat_avantura:'Avantura',
-    attr_cat_voda:'Vodene aktivnosti',
-    attr_cat_gastro:'Gastro ture',
-    attr_cat_noc:'Noćni život',
-    attr_a1:'Vožnja gondolom kroz kanale',
-    attr_a2:'Koncert u Bečkoj filharmoniji',
-    attr_a3:'Ulaznica za Koloseum sa vodičem',
-    attr_a4:'Utakmica na Santiago Bernabeu',
-    attr_a5:'Ronjenje na Velikom koralnom grebenu',
-    attr_a6:'Noćna tura po Montmartru',
-    attr_a7:'Paragliding iznad Interlakena',
-    attr_a8:'Degustacija tapasa u Trijani',
-    attr_a9:'Panoramski točak London Eye',
-    attr_a10:'DJ set na krovnom baru',
-    attr_a11:'Muzej Akropolja — brza ulaznica',
-    attr_a12:'Rafting na reci Soči',
-    attr_a13:'Jazz klub u podrumu',
-    attr_a14:'Vinska tura kroz Toskanu',
-    sp_eyebrow:'Želiš više kontrole?',
-    sp_title:'Prilagodi svoj plan',
-    sp_sub:'Par brzih izbora pre nego što ti pripremimo ponudu — ostalo prepusti nama.',
-    mc_solo:'Sam/a',
-    mc_couple:'Par',
-    mc_friends:'Društvo',
-    mc_family:'Porodica',
-    mc_sea:'More i plaža',
-    mc_city:'Grad i kultura',
-    mc_nature:'Priroda i planina',
-    mc_nightlife:'Noćni život',
-    mc_mix:'Malo od svega',
-    match_back:'← Nazad',
-    placeholder_email:'tvoj@email.com',
-    alt_banner_lake:'Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor',
-    alt_banner_europe:'Popularna evropska destinacija u sumrak',
-    // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
-    flight_sub_direct:'direktan let',
-    flight_sub_stopover:'jedno presedanje',
-    flight_sub_limited:'let (proveri sezonske/direktne linije)',
-    flight_sub_nearest:'let do {arrival}, najbližeg aerodroma',
-    flight_sub_pax:'cena za svih {n} putnika',
-    hotel_sub_rating:'ocena {r}',
-    hotel_sub_rooms:'cena za {rooms}',
-    car_sub_gearbox:'automatski/ručni menjač',
-    act_walk_old_town:'Obilazak starog grada peške',
-    act_halfday_tour:'Poludnevna tura s vodičem',
-    act_main_tickets:'Ulaznica za glavne znamenitosti',
-    act_private_tour:'Privatna tura s vodičem',
-    act_food_tour:'Gastronomska tura uz degustaciju',
-    act_eg:'npr.',
-    act_per_person:'po osobi',
-    item_label_flight:'Let',
-    item_label_hotel:'Hotel',
-    item_label_car:'Auto',
-    pkg_close:'Zatvori ovu ponudu',
-    pkg_recommended:'★ Preporučeno',
-    pkg_total_hint:'zbir odvojenih rezervacija, ne jedno plaćanje',
-    pkg_score_label:'odnos cene i&nbsp;kvaliteta',
-    pkg_total_line:'Ukupno:',
-    pkg_save_offer:'Sačuvaj ovu ponudu',
-    pkg_all_closed:'Sklonio si sve ponude sa liste.',
-    pkg_search_again:'Pretraži ponovo',
-    match_badge_suggestion:'🧭 Predlog za tebe',
-    match_score_label:'poklapanje',
-    match_score_sub:'sa tvojim odgovorima',
-    match_bus_title:'Razmisli i o autobusu',
-    match_no_budget:'Bez zadatog budžeta — rangirano samo po poklapanju.',
-    match_build_for:'Napravi aranžman za {dest}',
-    match_results_title:'3 destinacije koje ti najbolje odgovaraju.',
-    match_results_sub:'Rangirano po tvojim odgovorima{vibe}, sezoni i dužini puta — ne nasumično.',
-    match_results_sub_fallback:'Nijedna se u potpunosti nije uklopila u budžet — evo 3 najbliže opcije po poklapanju i ceni.',
-    match_refine_sea:'🌊 Više plaže',
-    match_refine_nightlife:'🎉 Više provoda',
-    match_refine_nature:'🌲 Više prirode',
-    match_refine_cheaper:'💶 Manji budžet',
-    match_reroll:'🔁 Probaj drugih 3 predloga',
-    mvibe_sea:'more i plažu',
-    mvibe_city:'grad i kulturu',
-    mvibe_nature:'prirodu i planinu',
-    mvibe_nightlife:'dobar provod',
-    mvibe_mix:'kombinaciju svega',
-    mvibe_default:'tvoj stil odmora',
-    mreason_intro:'Zato što {reasons}.',
-    mreason_vibe:'nudi {vibe}',
-    mreason_season:'baš je sezona za {month}',
-    mreason_length:'dužina puta se dobro uklapa',
-    mreason_family:'pogodna je za porodice',
-    mreason_nightlife:'odlična je za izlazak s društvom',
-    mreason_romantic:'ima romantičnu atmosferu za parove',
-    mreason_budget:'uklapa se u budžet',
-    mreason_fallback:'Solidna opcija u okviru tvog budžeta.',
-    airport_use_instead:'Koristi {near} umesto',
-    airport_note_tpl:'{city} nema {lack} — najbliži je {near} (oko {time} vožnje){alt}.',
-    airport_note_alt:', {alt} je alternativa',
-    airport_in:'u',
-    airport_lack_own:'svoj aerodrom',
-    airport_lack_plain:'aerodrom',
-    airport_lack_major:'veći aerodrom',
-    airport_lack_comm:'komercijalni aerodrom',
-    airport_lack_sched:'aerodrom sa redovnim letovima',
-    airport_lack_nearby:'aerodrom u blizini',
-    unit_h:'h',
-    unit_min:'min',
-    fuel_estimate:'Gorivo (procena)', tolls_estimate:'Putarine (procena)', insurance:'Osiguranje', esim_internet:'eSIM / internet',
-    btn_search_kayak:'Pretraži na KAYAK-u', btn_book_booking:'Rezerviši na Booking.com',
-    aff_badge:'Afilijacija', aff_badge_title:'Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.',
-    base_package_note:'Cena osnovnog paketa — dodaj osiguranje ili eSIM po želji.',
-    fits_budget:'Uklapa se u tvoj budžet od ', over_budget:'Malo iznad budžeta, ali najbliža opcija koju imamo.',
-    // --- Opisi paketa (pkgDescText / TIER_META.*.desc) ---
-    pkg_desc_hotel_better:'bolji hotel', pkg_desc_hotel_cheapest:'najjeftiniji hotel', pkg_desc_hotel_verified:'provereni hotel',
-    pkg_desc_flight_stopover:'let sa presedanjem', pkg_desc_flight_airline:'let odabranom kompanijom', pkg_desc_flight_direct:'direktan let',
-    pkg_desc_car_spacious:'prostraniji auto', pkg_desc_car:'auto', pkg_desc_activities:'aktivnosti', pkg_desc_and:'i',
-    tier_best_desc:'Najbolji odnos cene i kvaliteta',
-    tier_comfort_desc:'Bolji hotel i ostale stavke u istoj kategoriji koju si tražio/la',
-    tier_budget_desc:'Najniža cena u istoj kategoriji koju si tražio/la',
-    // --- Šta je uključeno u ponudu (perks po tier-u) ---
-    perk_flight_bag_cabin:'samo ručni prtljag', perk_flight_bag_checked:'prtljag od 23 kg uključen',
-    perk_flight_flex:'izmena datuma bez kazne', perk_flight_fixed:'bez izmene datuma',
-    perk_hotel_breakfast:'doručak uključen', perk_hotel_no_breakfast:'bez doručka',
-    perk_hotel_central:'u centru grada', perk_hotel_dist_mid:'oko 1,5 km od centra', perk_hotel_dist_far:'oko 3 km od centra',
-    perk_hotel_free_cancel:'besplatno otkazivanje', perk_hotel_no_cancel:'nepovratna rezervacija',
-    perk_car_km_unlimited:'neograničena kilometraža', perk_car_km_limited:'ograničena kilometraža',
-    perk_car_cover_full:'puno osiguranje bez participacije', perk_car_cover_basic:'osnovno osiguranje uz depozit',
-  },
-  en: {
-    nav_how:'How it works', nav_dest:'Destinations', nav_about:'About',
-    aria_account:'Account', aria_menu:'Menu',
-    hero_kicker:'Thoughtfully designed trips',
-    hero_title:'SKLOPI',
-    hero_lede:'One price for the whole trip.',
-    promo_banner_kicker:'A moment for yourself',
-    promo_banner_quote:'Some places simply have no price.',
-    partners_label:'Booking goes directly through our partners',
-    label_origin:'From', placeholder_origin:'e.g. Belgrade, Niš, Podgorica',
-    label_dest:'Destination', placeholder_dest:'e.g. Athens, Rome, Barcelona',
-    label_dates:'From — To',
-    aria_prev_month:'Previous month', aria_next_month:'Next month',
-    aria_today:'today', aria_cal_dialog:'Choose travel dates',
-    chip_weekend:'Weekend', chip_week:'One week', chip_twoweeks:'Two weeks',
-    cal_wx_legend:'<span class="lg-exact">☀️</span>forecast (up to 16 days ahead) &nbsp;·&nbsp; <span class="lg-est">☀️</span>estimate for later dates, based on the same period last year &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
-    btn_done:'Done',
-    label_passengers:'Travelers', placeholder_passengers:'Travelers', aria_pax_dialog:'Select number of travelers',
-    opt_1adult:'1 adult', opt_2adults:'2 adults', opt_3adults:'3 adults', opt_4adults:'4 adults',
-    btn_search:'Start',
-    btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start',
-    toggle_flight:'Flights', toggle_hotel:'Stay', toggle_car:'Rent a car', toggle_activity:'Activity',
-    eyebrow_no_idea:'No plan yet', h2_no_idea:'Not sure where to go?', sub_no_idea:'Tell us how much you want to spend, and we’ll find destinations that fit.',
-    btn_no_idea_cta:'🎲 Surprise me',
-    eyebrow_more_control:'More control', h2_build_own:'Want more control?',
-    eyebrow_content_control:'Content control', h2_content_control:'Decide what works for you',
-    control_teaser_sub:'Choose the flight, hotel, transport, activities, insurance and eSIM — the price adds up live.',
-    ct_cta:'Open builder',
-    btn_choose:'Choose',
-    builder_addons_label:'Add-ons',
-    eyebrow_features:'All included',
-    sub_build_own:'You choose the flight, stay, car and activities — we add up how much it all costs together.',
-    builder_flight_label:'Flights', chip_direct:'Direct', chip_cheapest:'Cheapest', chip_airline:'Specific airline',
-    placeholder_airline:'e.g. Lufthansa',
-    chip_priority_rating:'Priority: rating', chip_priority_location:'Priority: location',
-    builder_transport_label:'Car rental', chip_no_car:'No car', chip_small_car:'Small car', chip_suv:'SUV',
-    builder_activities_label:'Activities',
-    aria_fewer_activities:'Fewer activities', aria_more_activities:'More activities',
-    q_flight_desc:'Flight to your destination and back', q_flight_type:'Flight type',
-    q_hotel_desc:'Hotel or apartment for the whole stay', q_hotel_category:'Category', q_priority:'Priority',
-    q_car_desc:'Vehicle for the whole stay', q_car_type:'Vehicle',
-    q_activities_desc:'Excursions, tickets and guided tours', q_activities_count:'Number of activities',
-    q_budget_desc:'Tell us your rough budget so we can compare',
-    builder_budget_label_html:'Budget <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(optional)</span>',
-    placeholder_budget:'e.g. 700',
-    btn_make_arrangement:'Build my trip', btn_show_price:'Show price', btn_continue:'Continue',
-    builder_summary_head:'Your trip', builder_total_sub:'total',
-    builder_total_hint:'Sum of estimates for flight, hotel, car and activities — each item is paid separately at the partner, not in one payment.',
-    disclaimer_illustrative:'⚠️ Illustrative estimate, not a real offer — the site is in development.',
-    btn_optimize:'Optimize price', btn_save_trip:'Save', btn_price_alert:'Notify me when the price drops',
-    builder_placeholder_text:'You’ll see an estimated price here as soon as you start choosing — change any option on the left.',
-    eyebrow_for_later:'For later', h2_saved_trips:'Come back when you’re ready',
-    sub_saved_trips:'Save the options you like and pick up later.',
-    h2_features:'Everything you need for the trip', sub_features:'From flights and stays to cars, transfers, activities, insurance and internet.',
-    f_flight_sub:'Direct and with stopovers', f_hotel_sub:'Hotels, apartments, hostels',
-    f_car_name:'Car', f_car_sub:'Airport pickup',
-    f_tolls_name:'Tolls', f_tolls_sub:'Estimated by route and country',
-    f_tax_name:'Tourist tax', f_tax_sub:'Per person, per night — paid at the hotel',
-    f_activity_name:'Activities', f_activity_sub:'Tickets and tours in advance',
-    f_insurance_name:'Insurance', f_insurance_sub:'Medical and cancellation cover',
-    f_esim_sub:'Internet from landing',
-    f_transfer_name:'Transfers', f_transfer_sub:'From the airport to your stay',
-    postcard_caption:'There’s always a next trip.',
-    eyebrow_attractions:'In partnership with Viator', h2_attractions:'Build your own attraction.',
-    attractions_sub:'Concerts, gondolas, arenas, underwater worlds and thousands more experiences worldwide — find yours and add it to your plan.',
-    btn_see_all_attractions:'🧭 See all attractions',
-    eyebrow_ideas:'Ideas for your next trip', h2_popular_dest:'Where to next?',
-    sub_popular_dest:'Take a look at the destinations travelers from Serbia and the region pick most often.',
-    pd_athens_name:'Athens, Greece', pd_athens_desc:'Antiquity, island ferries and top-notch food — a popular summer destination with frequent direct flights.',
-    pd_rome_name:'Rome, Italy', pd_rome_desc:'The Colosseum, the Vatican and street food — a walkable city, a short flight from Belgrade.',
-    pd_barcelona_name:'Barcelona, Spain', pd_barcelona_desc:'Gaudí’s architecture, the beach and tapas bars — a favorite city-and-sea combination.',
-    pd_budva_name:'Budva, Montenegro', pd_budva_desc:'The closest sea by car or bus from Serbia — an old town and long beaches.',
-    pd_istanbul_name:'Istanbul, Turkey', pd_istanbul_desc:'Where Europe meets Asia, bazaars and the Bosphorus — an affordable off-season trip.',
-    pd_vienna_name:'Vienna, Austria', pd_vienna_desc:'Museums, cafés and Christmas markets in winter — a practical city break.',
-    pd_thessaloniki_name:'Thessaloniki, Greece', pd_thessaloniki_desc:'The sea without needing a flight — an easy trip by car or bus.',
-    pd_prague_name:'Prague, Czechia', pd_prague_desc:'Architecture, beer halls and a walk through the old town — a popular city break.',
-    pd_budapest_name:'Budapest, Hungary', pd_budapest_desc:'Baths, architecture and a short flight or drive — a practical city break.',
-    cta_right:'One trip.<br>One price.',
-    eyebrow_faq:'Questions', h2_faq:'Before you book',
-    sub_faq:'Answers to the most common questions about prices, booking and changes.',
-    faq_q1:'Are the prices shown real?',
-    faq_a1:'SKLOPI is currently in development. Prices you see in search and the builder are an illustrative estimate, generated for demonstration, and don’t come live from partner sites. Always check the exact price and availability directly with the partner (KAYAK, Booking.com, Viator) before booking.',
-    faq_q2:'How does the trip builder work?',
-    faq_a2:'You choose the flight type, hotel category, car and number of activities yourself, and SKLOPI adds up an estimated price for the whole package. The “Optimize my trip” button suggests a change that can lower the price with similar quality.',
-    faq_q3:'How are my saved trips stored?',
-    faq_a3:'You create an account with an email and password in the “Saved trips” section. Your data is tied to your account, not this device, so you can access it from another phone or computer too — just log in with the same email and password.',
-    faq_q4:'Does SKLOPI charge for booking?',
-    faq_a4:'No. SKLOPI doesn’t charge anything directly — clicking “Book” or “Search” takes you to the partner’s site (KAYAK, Booking.com or Viator) where the booking and payment happen.',
-    faq_q5:'Have a question that’s not here?',
-    faq_a5:'Write to <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — we’re happy to help.',
-    whatsapp_aria:'Message us on WhatsApp',
-    stat_searches:'searches', stat_clicks:'clicks on offers', stat_last:'last destination',
-    footer_contact:'Contact', footer_privacy:'Privacy', footer_terms:'Terms', footer_cookies:'Cookies', footer_guides:'Guides',
-    foot_note:'SKLOPI — a product prototype in development. Prices shown are illustrative (simulated for demonstration), don’t come live from partners, and don’t represent a real offer or price commitment. · <a href="#" id="cookieSettingsLink">Cookie settings</a>',
-    cookie_text:'<b>We use cookies for analytics</b> (Google Analytics) to understand how the site is used and improve it. We don’t use them for marketing or share them beyond Google. Details in the <a href="kolacici.html">Cookie Policy</a>.',
-    cookie_decline:'Decline', cookie_accept:'Accept',
-    aria_close:'Close', label_email:'Email',
-    label_alert_threshold:'Notify me when the total estimated price drops below', btn_set_alert:'Set alert',
-    alert_modal_disclaimer:'⚠️ Still an illustrative estimate, not a real partner offer. We\u2019ll send you a confirmation email — the alert only becomes active once you click the link in it. You can unsubscribe anytime via the link in the email you receive.',
-    match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">No idea where to go?</span><span class="ac-sub">A short 3-question quiz — find 3 destinations that actually fit you, not random picks.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 Beach</span><span class="match-preview-chip">🏙️ City</span><span class="match-preview-chip">🌲 Nature</span><span class="match-preview-chip">🎉 Nightlife</span></span><span class="ac-cta"><span class="ac-cta-label">Find my destination</span><span class="ac-arrow">→</span></span>',
-    match_modal_title:'Find your trip',
-    match_modal_sub:'Three quick questions — we score 60+ destinations by fit with you, the season and trip length, not at random. Dates and traveler count stay as set in the form above.',
-    match_step1_title:'Who are you traveling with?',
-    match_step2_title:'What does a vacation mean to you?',
-    match_step3_title:'What\'s your total budget?',
-    match_label_budget:'Total budget (for all travelers, optional)', placeholder_match_budget:'e.g. 400',
-    match_modal_btn:'🎯 Find my 3 destinations',
-    match_modal_disclaimer:'⚠️ Illustrative price estimate, combined with your answers — not a real partner offer.',
-    share_modal_title:'Share with friends', share_modal_label_link:'Share link',
-    share_modal_copy:'📋 Copy link', share_modal_native:'📤 Share via apps',
-    share_modal_disclaimer:'Anyone who opens the link can see the plan and RSVP (Going/Maybe/Can’t make it) — no account needed.',
-    documents_check_link:'🧳 Check your travel documents',
-    documents_modal_title:'Travel documents',
-    documents_modal_sub:'Passport and Green Card — all in one place, a couple of clicks away.',
-    docs_tab_passport:'🛂 Passport',
-    docs_tab_greencard:'🪪 Green Card',
-    passport_check_link:'🛂 Check if your passport is valid for this trip',
-    passport_modal_sub:'Many countries require your passport to stay valid for a while after your return — otherwise you can be turned away at the border or check-in, even if your travel dates themselves are fine.',
-    passport_modal_title:'Is your passport valid for this trip?',
-    passport_modal_label_expiry:'When does your passport expire?',
-    passport_modal_btn:'Check',
-    passport_modal_disclaimer:'⚠️ General rules per country, for guidance only — always double-check with the embassy/consulate or your airline before you travel.',
-    green_card_check_link:'🪪 Check if you need a Green Card for this route',
-    green_card_modal_title:'Do you need a Green Card for the car?',
-    green_card_modal_sub:'The Green Card is an international proof of car insurance. Serbia has agreements with most European countries so it isn\'t needed, but some destinations still require it — and it\'s paid separately from the rental price, through your insurer.',
-    green_card_modal_disclaimer:'⚠️ General rule for Serbian-registered vehicles, for guidance only — always confirm with your insurer or AMSS before traveling, as agreements change from time to time.',
-    green_card_dest_missing:'First enter where you\'re going in the "Destination" field above, then come back here — the rule depends on the country.',
-    green_card_scope_note:'Applies to driving your own or a Serbia-rented car across the border — not to a rental car picked up at your destination (fly & drive).',
-    ac_searching:'Searching…', ac_no_results:'No suggestions for that name.',
-    results_back:'Back', results_back_aria:'Back to site',
-    night:'night', nights:'nights', passenger:'traveler', passengers:'travelers',
-    // ---- statistička traka, raspodela cene, atrakcije, modal 'Prilagodi svoj plan', čipovi upitnika ----
-    stat_items:'items combined into one price',
-    stat_partners:'booking partners',
-    stat_cities:'cities on offer',
-    pc_title:'What a package price is made of',
-    pc_sub:'Illustrative cost breakdown in % — how much each item weighs on your budget.',
-    pc_aria:'Package price breakdown: flights 32% about 384 euros, accommodation 24% about 288 euros, car 12% about 144 euros, activities 10% about 120 euros, insurance 8% about 96 euros, tolls 6% about 72 euros, eSIM 5% about 60 euros, transfers 3% about 36 euros',
-    pc_flights:'Flights',
-    pc_hotel:'Accommodation',
-    pc_car:'Car',
-    pc_activities:'Activities',
-    pc_insurance:'Insurance',
-    pc_tolls:'Tolls',
-    pc_esim:'eSIM',
-    pc_transfers:'Transfers',
-    pc_foot:'⚠️ Illustrative estimate based on a typical package — the actual breakdown depends on the destination, the season and your choices in the builder.',
-    attr_prev_aria:'Previous attractions',
-    attr_next_aria:'Next attractions',
-    attr_all_title:'All attractions',
-    attr_country:'Country',
-    attr_all_countries:'All countries',
-    attr_empty:'No attractions match this filter — try a different combination.',
-    attr_disclaimer:'⚠️ Prices are an illustrative estimate. The exact price and availability are checked with the partner (Viator) before booking.',
-    attr_from:'from',
-    attr_dot_aria:'Attraction {n}',
-    attr_cat_kultura:'Culture & landmarks',
-    attr_cat_muzika:'Music & concerts',
-    attr_cat_gondole:'Gondolas & views',
-    attr_cat_arene:'Arenas & sports',
-    attr_cat_avantura:'Adventure',
-    attr_cat_voda:'Water activities',
-    attr_cat_gastro:'Food tours',
-    attr_cat_noc:'Nightlife',
-    attr_a1:'Gondola ride through the canals',
-    attr_a2:'Concert at the Vienna Philharmonic',
-    attr_a3:'Colosseum ticket with a guide',
-    attr_a4:'Match at Santiago Bernabéu',
-    attr_a5:'Diving on the Great Barrier Reef',
-    attr_a6:'Montmartre night tour',
-    attr_a7:'Paragliding over Interlaken',
-    attr_a8:'Tapas tasting in Triana',
-    attr_a9:'London Eye observation wheel',
-    attr_a10:'DJ set at a rooftop bar',
-    attr_a11:'Acropolis Museum — fast-track ticket',
-    attr_a12:'Rafting on the Soča River',
-    attr_a13:'Basement jazz club',
-    attr_a14:'Wine tour through Tuscany',
-    sp_eyebrow:'Want more control?',
-    sp_title:'Customize your plan',
-    sp_sub:'A few quick choices before we prepare your offer — leave the rest to us.',
-    mc_solo:'Solo',
-    mc_couple:'Couple',
-    mc_friends:'Friends',
-    mc_family:'Family',
-    mc_sea:'Sea & beach',
-    mc_city:'City & culture',
-    mc_nature:'Nature & mountains',
-    mc_nightlife:'Nightlife',
-    mc_mix:'A bit of everything',
-    match_back:'← Back',
-    placeholder_email:'your@email.com',
-    alt_banner_lake:'A wooden house by a mountain lake at dusk — an idyllic holiday destination',
-    alt_banner_europe:'A popular European destination at dusk',
-    // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
-    flight_sub_direct:'direct flight',
-    flight_sub_stopover:'one stopover',
-    flight_sub_limited:'flight (check seasonal/direct routes)',
-    flight_sub_nearest:'flight to {arrival}, the nearest airport',
-    flight_sub_pax:'price for all {n} travelers',
-    hotel_sub_rating:'rating {r}',
-    hotel_sub_rooms:'price for {rooms}',
-    car_sub_gearbox:'automatic/manual transmission',
-    act_walk_old_town:'Old town walking tour',
-    act_halfday_tour:'Half-day guided tour',
-    act_main_tickets:'Tickets to the main sights',
-    act_private_tour:'Private guided tour',
-    act_food_tour:'Food tour with tastings',
-    act_eg:'e.g.',
-    act_per_person:'per person',
-    item_label_flight:'Flight',
-    item_label_hotel:'Hotel',
-    item_label_car:'Car',
-    pkg_close:'Close this offer',
-    pkg_recommended:'★ Recommended',
-    pkg_total_hint:'sum of separate bookings, not a single payment',
-    pkg_score_label:'price-to-quality ratio',
-    pkg_total_line:'Total:',
-    pkg_save_offer:'Save this offer',
-    pkg_all_closed:'You’ve removed all the offers from the list.',
-    pkg_search_again:'Search again',
-    match_badge_suggestion:'🧭 Suggested for you',
-    match_score_label:'match',
-    match_score_sub:'with your answers',
-    match_bus_title:'Consider the bus, too',
-    match_no_budget:'No budget set — ranked by match only.',
-    match_build_for:'Build a package for {dest}',
-    match_results_title:'The 3 destinations that suit you best.',
-    match_results_sub:'Ranked by your answers{vibe}, the season and trip length — not at random.',
-    match_results_sub_fallback:'None fully fit your budget — here are the 3 closest options by match and price.',
-    match_refine_sea:'🌊 More beach',
-    match_refine_nightlife:'🎉 More nightlife',
-    match_refine_nature:'🌲 More nature',
-    match_refine_cheaper:'💶 Lower budget',
-    match_reroll:'🔁 Try 3 other suggestions',
-    mvibe_sea:'sea and beaches',
-    mvibe_city:'city life and culture',
-    mvibe_nature:'nature and mountains',
-    mvibe_nightlife:'great nightlife',
-    mvibe_mix:'a bit of everything',
-    mvibe_default:'your kind of getaway',
-    mreason_intro:'Because {reasons}.',
-    mreason_vibe:'it offers {vibe}',
-    mreason_season:'it’s a great time to go in {month}',
-    mreason_length:'the trip length is a good fit',
-    mreason_family:'it suits families',
-    mreason_nightlife:'it’s great for a night out with friends',
-    mreason_romantic:'it has a romantic vibe for couples',
-    mreason_budget:'it fits your budget',
-    mreason_fallback:'A solid option within your budget.',
-    airport_use_instead:'Use {near} instead',
-    airport_note_tpl:'{city} {lack} — the nearest is {near} (about {time} by car){alt}.',
-    airport_note_alt:'; {alt} is an alternative',
-    airport_in:'in',
-    airport_lack_own:'has no airport of its own',
-    airport_lack_plain:'has no airport',
-    airport_lack_major:'has no major airport',
-    airport_lack_comm:'has no commercial airport',
-    airport_lack_sched:'has no airport with scheduled flights',
-    airport_lack_nearby:'has no airport nearby',
-    unit_h:'h',
-    unit_min:'min',
-    fuel_estimate:'Fuel (estimate)', tolls_estimate:'Tolls (estimate)', insurance:'Insurance', esim_internet:'eSIM / internet',
-    btn_search_kayak:'Search on KAYAK', btn_book_booking:'Book on Booking.com',
-    aff_badge:'Affiliate', aff_badge_title:'This is an affiliate (sponsored) link — if you book through it, SKLOPI may earn a commission from the partner. Your price stays the same.',
-    base_package_note:'Base package price — add insurance or eSIM if you like.',
-    fits_budget:'Fits your budget of ', over_budget:'Slightly over budget, but the closest option we have.',
-    // --- Package descriptions (pkgDescText / TIER_META.*.desc) ---
-    pkg_desc_hotel_better:'a better hotel', pkg_desc_hotel_cheapest:'the cheapest hotel', pkg_desc_hotel_verified:'a vetted hotel',
-    pkg_desc_flight_stopover:'a flight with a layover', pkg_desc_flight_airline:'a flight with your chosen airline', pkg_desc_flight_direct:'a direct flight',
-    pkg_desc_car_spacious:'a roomier car', pkg_desc_car:'a car', pkg_desc_activities:'activities', pkg_desc_and:'and',
-    tier_best_desc:'Best balance of price and quality',
-    tier_comfort_desc:'A better hotel and other items, in the same category you asked for',
-    tier_budget_desc:'Lowest price in the same category you asked for',
-    // --- What's included (perks per tier) ---
-    perk_flight_bag_cabin:'cabin bag only', perk_flight_bag_checked:'23 kg checked bag included',
-    perk_flight_flex:'free date changes', perk_flight_fixed:'no date changes',
-    perk_hotel_breakfast:'breakfast included', perk_hotel_no_breakfast:'no breakfast',
-    perk_hotel_central:'in the city centre', perk_hotel_dist_mid:'about 1.5 km from the centre', perk_hotel_dist_far:'about 3 km from the centre',
-    perk_hotel_free_cancel:'free cancellation', perk_hotel_no_cancel:'non-refundable',
-    perk_car_km_unlimited:'unlimited mileage', perk_car_km_limited:'limited mileage',
-    perk_car_cover_full:'full coverage, no excess', perk_car_cover_basic:'basic cover with a deposit',
-  },
-  ru: {
-    nav_how:'Как это работает', nav_dest:'Направления', nav_about:'О нас',
-    aria_account:'Аккаунт', aria_menu:'Меню',
-    hero_kicker:'Продуманные путешествия',
-    hero_title:'SKLOPI',
-    hero_lede:'Всё включено в одну цену.',
-    promo_banner_kicker:'Момент для себя',
-    promo_banner_quote:'Некоторые места просто бесценны.',
-    partners_label:'Бронирование проходит напрямую через партнёров',
-    label_origin:'Откуда', placeholder_origin:'напр. Белград, Ниш, Подгорица',
-    label_dest:'Направление', placeholder_dest:'напр. Афины, Рим, Барселона',
-    label_dates:'С — По',
-    aria_prev_month:'Предыдущий месяц', aria_next_month:'Следующий месяц',
-    aria_today:'сегодня', aria_cal_dialog:'Выбор дат поездки',
-    chip_weekend:'Выходные', chip_week:'Неделя', chip_twoweeks:'Две недели',
-    cal_wx_legend:'<span class="lg-exact">☀️</span>прогноз (до 16 дней вперёд) &nbsp;·&nbsp; <span class="lg-est">☀️</span>оценка для более поздних дат, по данным за тот же период прошлого года &nbsp;·&nbsp; <span style="opacity:0.35">build wx-5</span>',
-    btn_done:'Готово',
-    label_passengers:'Путешественников', placeholder_passengers:'Путешественников', aria_pax_dialog:'Выбор числа путешественников',
-    opt_1adult:'1 взрослый', opt_2adults:'2 взрослых', opt_3adults:'3 взрослых', opt_4adults:'4 взрослых',
-    btn_search:'Старт',
-    btn_search_html:'<svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Старт',
-    toggle_flight:'Перелёты', toggle_hotel:'Проживание', toggle_car:'Прокат авто', toggle_activity:'Активность',
-    eyebrow_no_idea:'Нет плана', h2_no_idea:'Не знаешь куда поехать?', sub_no_idea:'Скажи нам, сколько хочешь потратить, и мы найдём направления, которые подойдут.',
-    btn_no_idea_cta:'🎲 Удиви меня',
-    eyebrow_more_control:'Больше контроля', h2_build_own:'Хочешь больше контроля?',
-    eyebrow_content_control:'Контроль содержания', h2_content_control:'Сам реши, что тебе подходит',
-    control_teaser_sub:'Сам выбираешь перелёт, отель, транспорт, активности, страховку и eSIM — цена суммируется в реальном времени.',
-    ct_cta:'Открыть конструктор',
-    btn_choose:'Выбрать',
-    builder_addons_label:'Дополнения',
-    eyebrow_features:'Всё включено',
-    sub_build_own:'Сам выбираешь перелёт, проживание, авто и активности — мы считаем, сколько всё это будет стоить вместе.',
-    builder_flight_label:'Перелёты', chip_direct:'Прямой', chip_cheapest:'Самый дешёвый', chip_airline:'Определённая авиакомпания',
-    placeholder_airline:'напр. Lufthansa',
-    chip_priority_rating:'Приоритет: рейтинг', chip_priority_location:'Приоритет: расположение',
-    builder_transport_label:'Аренда авто', chip_no_car:'Без авто', chip_small_car:'Маленькое авто', chip_suv:'Внедорожник',
-    builder_activities_label:'Активности',
-    aria_fewer_activities:'Меньше активностей', aria_more_activities:'Больше активностей',
-    q_flight_desc:'Авиабилет до места назначения и обратно', q_flight_type:'Тип перелёта',
-    q_hotel_desc:'Отель или апартаменты на весь период', q_hotel_category:'Категория', q_priority:'Приоритет',
-    q_car_desc:'Автомобиль на весь период пребывания', q_car_type:'Автомобиль',
-    q_activities_desc:'Экскурсии, билеты и туры с гидом', q_activities_count:'Количество активностей',
-    q_budget_desc:'Скажи нам примерный бюджет, чтобы сравнить',
-    builder_budget_label_html:'Бюджет <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(необязательно)</span>',
-    placeholder_budget:'напр. 700',
-    btn_make_arrangement:'Составить поездку', btn_show_price:'Показать цену', btn_continue:'Продолжить',
-    builder_summary_head:'Твоя поездка', builder_total_sub:'итого',
-    builder_total_hint:'Сумма оценок за перелёт, отель, авто и активности — каждая позиция оплачивается отдельно у партнёра, а не одним платежом.',
-    disclaimer_illustrative:'⚠️ Иллюстративная оценка, не реальное предложение — сайт находится в разработке.',
-    btn_optimize:'Оптимизировать цену', btn_save_trip:'Сохранить', btn_price_alert:'Сообщить, когда цена упадёт',
-    builder_placeholder_text:'Здесь появится примерная цена, как только начнёшь выбирать — измени любую опцию слева.',
-    eyebrow_for_later:'На потом', h2_saved_trips:'Вернись, когда будешь готов',
-    sub_saved_trips:'Сохрани понравившиеся варианты и продолжи позже.',
-    h2_features:'Всё необходимое для поездки', sub_features:'От перелёта и проживания до авто, трансферов, активностей, страховки и интернета.',
-    f_flight_sub:'Прямые и с пересадками', f_hotel_sub:'Отели, апартаменты, хостелы',
-    f_car_name:'Авто', f_car_sub:'Получение в аэропорту',
-    f_tolls_name:'Дорожные сборы', f_tolls_sub:'Оценка по маршруту и стране',
-    f_tax_name:'Туристический сбор', f_tax_sub:'На человека, за ночь — оплачивается в отеле',
-    f_activity_name:'Активности', f_activity_sub:'Билеты и туры заранее',
-    f_insurance_name:'Страховка', f_insurance_sub:'Медицинская и на случай отмены',
-    f_esim_sub:'Интернет сразу по прилёту',
-    f_transfer_name:'Трансферы', f_transfer_sub:'От аэропорта до места проживания',
-    postcard_caption:'Следующая поездка всегда впереди.',
-    eyebrow_attractions:'В партнёрстве с Viator', h2_attractions:'Собери свою атракцию.',
-    attractions_sub:'Концерты, гондолы, арены, подводные миры и ещё тысячи впечатлений по всему миру — найди своё и добавь в план.',
-    btn_see_all_attractions:'🧭 Смотреть все атракции',
-    eyebrow_ideas:'Идеи для следующей поездки', h2_popular_dest:'Куда дальше?',
-    sub_popular_dest:'Посмотри направления, которые путешественники из Сербии и региона выбирают чаще всего.',
-    pd_athens_name:'Афины, Греция', pd_athens_desc:'Античность, паромы на острова и первоклассная кухня — популярное летнее направление с частыми прямыми рейсами.',
-    pd_rome_name:'Рим, Италия', pd_rome_desc:'Колизей, Ватикан и уличная еда — город, который стоит обойти пешком, всего в паре часов лёта от Белграда.',
-    pd_barcelona_name:'Барселона, Испания', pd_barcelona_desc:'Архитектура Гауди, пляж и тапас-бары — любимое сочетание города и моря.',
-    pd_budva_name:'Будва, Черногория', pd_budva_desc:'Ближайшее море на машине или автобусе из Сербии — старый город и длинные пляжи.',
-    pd_istanbul_name:'Стамбул, Турция', pd_istanbul_desc:'Встреча Европы и Азии, базары и Босфор — доступная поездка в межсезонье.',
-    pd_vienna_name:'Вена, Австрия', pd_vienna_desc:'Музеи, кафе и рождественские ярмарки зимой — удобная городская поездка на выходные.',
-    pd_thessaloniki_name:'Салоники, Греция', pd_thessaloniki_desc:'Море без необходимости лететь — удобная поездка на машине или автобусе.',
-    pd_prague_name:'Прага, Чехия', pd_prague_desc:'Архитектура, пивные и прогулки по старому городу — популярная городская поездка.',
-    pd_budapest_name:'Будапешт, Венгрия', pd_budapest_desc:'Купальни, архитектура и короткий перелёт или поездка на машине — удобная городская поездка.',
-    cta_right:'Вся поездка.<br>Одна цена.',
-    eyebrow_faq:'Вопросы', h2_faq:'Перед бронированием',
-    sub_faq:'Ответы на самые частые вопросы о ценах, бронировании и изменениях.',
-    faq_q1:'Реальны ли показанные цены?',
-    faq_a1:'SKLOPI сейчас находится в разработке. Цены, которые ты видишь в поиске и конструкторе, — иллюстративная оценка, созданная для демонстрации, и не поступают напрямую с сайтов партнёров. Перед бронированием всегда уточняй точную цену и наличие прямо у партнёра (KAYAK, Booking.com, Viator).',
-    faq_q2:'Как работает конструктор поездки?',
-    faq_a2:'Ты сам выбираешь тип перелёта, категорию отеля, авто и количество активностей, а SKLOPI суммирует примерную цену за весь пакет. Кнопка «Оптимизировать поездку» предлагает изменение, которое может снизить цену при похожем качестве.',
-    faq_q3:'Как хранятся мои сохранённые поездки?',
-    faq_a3:'Ты создаёшь аккаунт с email и паролем в разделе сохранённых поездок. Твои данные привязаны к аккаунту, а не к этому устройству, поэтому ты можешь получить к ним доступ и с другого телефона или компьютера — просто войди с тем же email и паролем.',
-    faq_q4:'Взимает ли SKLOPI плату за бронирование?',
-    faq_a4:'Нет. SKLOPI не берёт плату напрямую — нажатие «Забронировать» или «Искать» переносит тебя на сайт партнёра (KAYAK, Booking.com или Viator), где происходит бронирование и оплата.',
-    faq_q5:'Есть вопрос, которого здесь нет?',
-    faq_a5:'Напиши на <a href="mailto:panpetar405@gmail.com">panpetar405@gmail.com</a> — мы с радостью поможем.',
-    whatsapp_aria:'Напиши нам в WhatsApp',
-    stat_searches:'поисков', stat_clicks:'кликов по предложениям', stat_last:'последнее направление',
-    footer_contact:'Контакты', footer_privacy:'Конфиденциальность', footer_terms:'Условия', footer_cookies:'Cookie', footer_guides:'Гайды',
-    foot_note:'SKLOPI — прототип продукта в разработке. Показанные цены иллюстративны (смоделированы для демонстрации), не поступают напрямую от партнёров и не являются реальным предложением или обязательством по цене. · <a href="#" id="cookieSettingsLink">Настройки cookie</a>',
-    cookie_text:'<b>Мы используем cookie для аналитики</b> (Google Analytics), чтобы понять, как используется сайт, и улучшить его. Мы не используем их для маркетинга и не передаём за пределы Google. Подробности в <a href="kolacici.html">Политике использования cookie</a>.',
-    cookie_decline:'Отклонить', cookie_accept:'Принять',
-    aria_close:'Закрыть', label_email:'Email',
-    label_alert_threshold:'Сообщить мне, когда общая примерная цена упадёт ниже', btn_set_alert:'Установить оповещение',
-    alert_modal_disclaimer:'⚠️ Всё ещё иллюстративная оценка, не реальное предложение партнёра. Мы пришлём письмо с подтверждением — оповещение включится только после клика по ссылке в нём. Отписаться можно в любой момент по ссылке в письме, которое ты получишь.',
-    match_trigger:'<span class="ac-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z"/></svg></span><span class="ac-title">Не знаешь куда?</span><span class="ac-sub">Короткий опрос из 3 вопросов — найди 3 направления, которые действительно тебе подходят, а не случайные.</span><span class="match-preview-row"><span class="match-preview-chip">🌊 Море</span><span class="match-preview-chip">🏙️ Город</span><span class="match-preview-chip">🌲 Природа</span><span class="match-preview-chip">🎉 Тусовка</span></span><span class="ac-cta"><span class="ac-cta-label">Найти мне направление</span><span class="ac-arrow">→</span></span>',
-    match_modal_title:'Найди свою поездку',
-    match_modal_sub:'Три коротких вопроса — мы оцениваем более 60 направлений по совпадению с тобой, сезоном и длительностью поездки, не наугад. Даты и число путешественников останутся как в форме выше.',
-    match_step1_title:'С кем ты путешествуешь?',
-    match_step2_title:'Что для тебя значит отдых?',
-    match_step3_title:'Какой у тебя общий бюджет?',
-    match_label_budget:'Общий бюджет (на всех путешественников, необязательно)', placeholder_match_budget:'напр. 400',
-    match_modal_btn:'🎯 Найти мне 3 направления',
-    match_modal_disclaimer:'⚠️ Иллюстративная оценка цены, объединённая с твоими ответами, — не реальное предложение партнёра.',
-    share_modal_title:'Поделиться с друзьями', share_modal_label_link:'Ссылка для отправки',
-    share_modal_copy:'📋 Копировать ссылку', share_modal_native:'📤 Поделиться через приложения',
-    share_modal_disclaimer:'Любой, кто откроет ссылку, увидит план и сможет ответить (Еду/Возможно/Не смогу) — без создания аккаунта.',
-    documents_check_link:'🧳 Проверь документы для поездки',
-    documents_modal_title:'Документы для поездки',
-    documents_modal_sub:'Паспорт и зелёная карта — всё в одном месте, в пару кликов.',
-    docs_tab_passport:'🛂 Паспорт',
-    docs_tab_greencard:'🪪 Зелёная карта',
-    passport_check_link:'🛂 Проверь, действителен ли твой паспорт для этой поездки',
-    passport_modal_sub:'Многие страны требуют, чтобы паспорт оставался действительным ещё некоторое время после возвращения — иначе тебя могут развернуть на границе или при регистрации, даже если сами даты поездки в порядке.',
-    passport_modal_title:'Действителен ли твой паспорт для этой поездки?',
-    passport_modal_label_expiry:'До какой даты действителен твой паспорт?',
-    passport_modal_btn:'Проверить',
-    passport_modal_disclaimer:'⚠️ Общие правила по странам, только для ориентира — перед поездкой всегда дополнительно уточняй в посольстве/консульстве или у авиакомпании.',
-    green_card_check_link:'🪪 Проверь, нужна ли зелёная карта для этого маршрута',
-    green_card_modal_title:'Нужна ли зелёная карта для авто?',
-    green_card_modal_sub:'Зелёная карта — это международное подтверждение автостраховки. У Сербии есть соглашения с большинством европейских стран, поэтому карта не нужна, но для некоторых направлений она всё же требуется — и оплачивается отдельно у страховщика, помимо стоимости аренды.',
-    green_card_modal_disclaimer:'⚠️ Общее правило для автомобилей, зарегистрированных в Сербии, только для ориентира — перед поездкой всегда уточняй у своего страховщика или АМСС, так как соглашения время от времени меняются.',
-    green_card_dest_missing:'Сначала укажи, куда едешь, в поле «Направление» выше, а затем вернись сюда — правило зависит от страны.',
-    green_card_scope_note:'Относится к поездке на собственном или арендованном в Сербии автомобиле через границу — не к прокатному авто, полученному на месте назначения (fly & drive).',
-    ac_searching:'Ищем…', ac_no_results:'Нет предложений для такого названия.',
-    results_back:'Назад', results_back_aria:'Назад на сайт',
-    night:'ночь', nights:'ночей', passenger:'путешественник', passengers:'путешественников',
-    // ---- statistička traka, raspodela cene, atrakcije, modal 'Prilagodi svoj plan', čipovi upitnika ----
-    stat_items:'позиций в одной цене',
-    stat_partners:'партнёров для бронирования',
-    stat_cities:'городов в предложении',
-    pc_title:'Из чего состоит цена пакета',
-    pc_sub:'Иллюстративное распределение расходов в % — какую долю бюджета занимает каждая статья.',
-    pc_aria:'Распределение цены пакета: перелёты 32% около 384 евро, проживание 24% около 288 евро, авто 12% около 144 евро, активности 10% около 120 евро, страховка 8% около 96 евро, дорожные сборы 6% около 72 евро, eSIM 5% около 60 евро, трансферы 3% около 36 евро',
-    pc_flights:'Перелёты',
-    pc_hotel:'Проживание',
-    pc_car:'Авто',
-    pc_activities:'Активности',
-    pc_insurance:'Страховка',
-    pc_tolls:'Дорожные сборы',
-    pc_esim:'eSIM',
-    pc_transfers:'Трансферы',
-    pc_foot:'⚠️ Иллюстративная оценка на примере типичного пакета — реальное распределение зависит от направления, сезона и твоего выбора в конструкторе.',
-    attr_prev_aria:'Предыдущие атракции',
-    attr_next_aria:'Следующие атракции',
-    attr_all_title:'Все атракции',
-    attr_country:'Страна',
-    attr_all_countries:'Все страны',
-    attr_empty:'Нет атракций по выбранному фильтру — попробуй другую комбинацию.',
-    attr_disclaimer:'⚠️ Цены — иллюстративная оценка. Точную цену и наличие мест нужно проверить у партнёра (Viator) перед бронированием.',
-    attr_from:'от',
-    attr_dot_aria:'Атракция {n}',
-    attr_cat_kultura:'Культура и достопримечательности',
-    attr_cat_muzika:'Музыка и концерты',
-    attr_cat_gondole:'Гондолы и панорамы',
-    attr_cat_arene:'Арены и спорт',
-    attr_cat_avantura:'Приключения',
-    attr_cat_voda:'Водные активности',
-    attr_cat_gastro:'Гастротуры',
-    attr_cat_noc:'Ночная жизнь',
-    attr_a1:'Прогулка на гондоле по каналам',
-    attr_a2:'Концерт в Венской филармонии',
-    attr_a3:'Билет в Колизей с гидом',
-    attr_a4:'Матч на «Сантьяго Бернабеу»',
-    attr_a5:'Дайвинг на Большом Барьерном рифе',
-    attr_a6:'Ночная экскурсия по Монмартру',
-    attr_a7:'Полёт на параплане над Интерлакеном',
-    attr_a8:'Дегустация тапас в Триане',
-    attr_a9:'Колесо обозрения London Eye',
-    attr_a10:'DJ-сет в баре на крыше',
-    attr_a11:'Музей Акрополя — билет без очереди',
-    attr_a12:'Рафтинг на реке Соча',
-    attr_a13:'Джаз-клуб в подвале',
-    attr_a14:'Винный тур по Тоскане',
-    sp_eyebrow:'Хочешь больше контроля?',
-    sp_title:'Настрой свой план',
-    sp_sub:'Несколько быстрых выборов, прежде чем мы подготовим предложение, — остальное оставь нам.',
-    mc_solo:'Один/одна',
-    mc_couple:'Пара',
-    mc_friends:'Компания',
-    mc_family:'Семья',
-    mc_sea:'Море и пляж',
-    mc_city:'Город и культура',
-    mc_nature:'Природа и горы',
-    mc_nightlife:'Ночная жизнь',
-    mc_mix:'Всего понемногу',
-    match_back:'← Назад',
-    placeholder_email:'твой@email.com',
-    alt_banner_lake:'Деревянный дом у горного озера в сумерках — идиллическое место для отдыха',
-    alt_banner_europe:'Популярное европейское направление в сумерках',
-    // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
-    flight_sub_direct:'прямой рейс',
-    flight_sub_stopover:'одна пересадка',
-    flight_sub_limited:'перелёт (уточни сезонные и прямые рейсы)',
-    flight_sub_nearest:'перелёт (ближайший аэропорт: {arrival})',
-    flight_sub_pax:'цена за всех {n} путешественников',
-    hotel_sub_rating:'рейтинг {r}',
-    hotel_sub_rooms:'цена за {rooms}',
-    car_sub_gearbox:'автомат/механика',
-    act_walk_old_town:'Пешая экскурсия по старому городу',
-    act_halfday_tour:'Экскурсия с гидом на полдня',
-    act_main_tickets:'Билеты в главные достопримечательности',
-    act_private_tour:'Частная экскурсия с гидом',
-    act_food_tour:'Гастрономический тур с дегустацией',
-    act_eg:'напр.',
-    act_per_person:'на человека',
-    item_label_flight:'Перелёт',
-    item_label_hotel:'Отель',
-    item_label_car:'Авто',
-    pkg_close:'Закрыть это предложение',
-    pkg_recommended:'★ Рекомендуем',
-    pkg_total_hint:'сумма отдельных бронирований, а не один платёж',
-    pkg_score_label:'соотношение цены и&nbsp;качества',
-    pkg_total_line:'Итого:',
-    pkg_save_offer:'Сохранить это предложение',
-    pkg_all_closed:'Ты убрал(а) все предложения из списка.',
-    pkg_search_again:'Искать снова',
-    match_badge_suggestion:'🧭 Предложение для тебя',
-    match_score_label:'совпадение',
-    match_score_sub:'с твоими ответами',
-    match_bus_title:'Подумай и об автобусе',
-    match_no_budget:'Бюджет не задан — рейтинг только по совпадению.',
-    match_build_for:'Собрать поездку: {dest}',
-    match_results_title:'3 направления, которые подходят тебе лучше всего.',
-    match_results_sub:'Ранжировано по твоим ответам{vibe}, сезону и длительности поездки — не наугад.',
-    match_results_sub_fallback:'Ни одно не уложилось в бюджет полностью — вот 3 ближайших варианта по совпадению и цене.',
-    match_refine_sea:'🌊 Больше пляжей',
-    match_refine_nightlife:'🎉 Больше развлечений',
-    match_refine_nature:'🌲 Больше природы',
-    match_refine_cheaper:'💶 Бюджет поменьше',
-    match_reroll:'🔁 Показать ещё 3 варианта',
-    mvibe_sea:'море и пляжи',
-    mvibe_city:'городская жизнь и культура',
-    mvibe_nature:'природа и горы',
-    mvibe_nightlife:'хорошие развлечения',
-    mvibe_mix:'всего понемногу',
-    mvibe_default:'твой стиль отдыха',
-    mreason_intro:'Потому что {reasons}.',
-    mreason_vibe:'здесь есть {vibe}',
-    mreason_season:'самое время ехать в {month}',
-    mreason_length:'длительность поездки подходит',
-    mreason_family:'подходит для семей',
-    mreason_nightlife:'отлично подходит для вечеров с друзьями',
-    mreason_romantic:'здесь романтичная атмосфера для пар',
-    mreason_budget:'укладывается в бюджет',
-    mreason_fallback:'Хороший вариант в рамках твоего бюджета.',
-    airport_use_instead:'Вместо этого — {near}',
-    airport_note_tpl:'{city}: {lack}, ближайший — {near} (около {time} на машине){alt}.',
-    airport_note_alt:'; альтернатива — {alt}',
-    airport_in:'в',
-    airport_lack_own:'собственного аэропорта нет',
-    airport_lack_plain:'аэропорта нет',
-    airport_lack_major:'крупного аэропорта нет',
-    airport_lack_comm:'коммерческого аэропорта нет',
-    airport_lack_sched:'аэропорта с регулярными рейсами нет',
-    airport_lack_nearby:'аэропорта поблизости нет',
-    unit_h:'ч',
-    unit_min:'мин',
-    fuel_estimate:'Топливо (оценка)', tolls_estimate:'Дорожные сборы (оценка)', insurance:'Страховка', esim_internet:'eSIM / интернет',
-    btn_search_kayak:'Искать на KAYAK', btn_book_booking:'Забронировать на Booking.com',
-    aff_badge:'Партнёрская ссылка', aff_badge_title:'Это партнёрская (спонсируемая) ссылка — если вы забронируете через неё, SKLOPI может получить комиссию от партнёра. Цена для вас не меняется.',
-    base_package_note:'Цена базового пакета — добавь страховку или eSIM по желанию.',
-    fits_budget:'Вписывается в твой бюджет ', over_budget:'Немного выше бюджета, но самый близкий вариант, который у нас есть.',
-    // --- Описания пакетов (pkgDescText / TIER_META.*.desc) ---
-    pkg_desc_hotel_better:'отель классом выше', pkg_desc_hotel_cheapest:'самый дешёвый отель', pkg_desc_hotel_verified:'проверенный отель',
-    pkg_desc_flight_stopover:'перелёт с пересадкой', pkg_desc_flight_airline:'перелёт выбранной авиакомпанией', pkg_desc_flight_direct:'прямой перелёт',
-    pkg_desc_car_spacious:'более просторный авто', pkg_desc_car:'авто', pkg_desc_activities:'активности', pkg_desc_and:'и',
-    tier_best_desc:'Лучшее соотношение цены и качества',
-    tier_comfort_desc:'Отель получше и остальное — в той же категории, которую ты выбрал(а)',
-    tier_budget_desc:'Самая низкая цена в той же категории, которую ты выбрал(а)',
-    // --- Что включено (перки по тарифу) ---
-    perk_flight_bag_cabin:'только ручная кладь', perk_flight_bag_checked:'багаж 23 кг включён',
-    perk_flight_flex:'бесплатное изменение даты', perk_flight_fixed:'без изменения даты',
-    perk_hotel_breakfast:'завтрак включён', perk_hotel_no_breakfast:'без завтрака',
-    perk_hotel_central:'в центре города', perk_hotel_dist_mid:'около 1,5 км от центра', perk_hotel_dist_far:'около 3 км от центра',
-    perk_hotel_free_cancel:'бесплатная отмена', perk_hotel_no_cancel:'невозвратное бронирование',
-    perk_car_km_unlimited:'неограниченный пробег', perk_car_km_limited:'ограниченный пробег',
-    perk_car_cover_full:'полная страховка без франшизы', perk_car_cover_basic:'базовая страховка с депозитом',
-  }
-};
+function hasLang(code){ return Object.prototype.hasOwnProperty.call(I18N, code); }
 function getLang(){
   try {
     const saved = localStorage.getItem('sklopi_lang');
-    if (saved === 'en' || saved === 'sr' || saved === 'ru') return saved;
+    if (saved && hasLang(saved)) return saved;
   } catch(e){}
   return 'sr';
+}
+// Metapodaci jezika iz locales/languages.json (code, short, name, locale, dateMonth).
+function langMeta(code){
+  code = code || getLang();
+  return I18N_LANGS.find(l => l.code === code) || I18N_LANGS[0];
 }
 /* ==========================================================
    DEV-ONLY PROVERA PREVODA (isti duh kao assertFlightSubConsistency):
    u dev okruženju (localhost ili ?debug) konzola odmah prijavi
-     1) ključ koji postoji u jednom jeziku a fali u drugom (sr/en/ru),
+     1) ključ koji postoji u jednom jeziku a fali u drugom (svi jezici iz languages.json),
      2) prazan prevod,
      3) različit skup {placeholder}-a između jezika (npr. {n} fali u ru),
      4) t('kljuc') sa ključem koji uopšte ne postoji u I18N.sr,
      5) t('kljuc') koji u en/ru pada nazad na srpski (nedostaje prevod).
    Ne menja ponašanje — t() vraća isto što i ranije. U produkciji je
-   isključena. Ne hvata stringove pisane direktno u kodu (van t/tf/L3) —
+   isključena. Ne hvata stringove pisane direktno u kodu (van t/tf) —
    to i dalje ostaje na pravilu pri pisanju koda.
 ========================================================== */
 const _I18N_DEV = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /(^|[?&])debug(=1)?(&|$)/.test(location.search);
@@ -1003,7 +162,7 @@ function t(key){
 }
 function checkI18nCompleteness(){
   if (!_I18N_DEV) return;
-  const langs = ['sr', 'en', 'ru'];
+  const langs = I18N_LANGS.map(l => l.code);
   const all = new Set();
   langs.forEach(l => Object.keys(I18N[l] || {}).forEach(k => all.add(k)));
   const ph = v => (String(v).match(/\{\w+\}/g) || []).sort().join(',');
@@ -1022,18 +181,10 @@ function checkI18nCompleteness(){
       }
     });
   });
-  if (!problems) console.log('[sklopi][i18n] svi ključevi (' + all.size + ') postoje u sr/en/ru, bez praznih prevoda i neusklađenih placeholdera.');
+  if (!problems) console.log('[sklopi][i18n] svi ključevi (' + all.size + ') postoje u ' + langs.join('/') + ', bez praznih prevoda i neusklađenih placeholdera.');
   else console.warn('[sklopi][i18n] ukupno ' + problems + ' problema u prevodima (vidi gore).');
 }
 checkI18nCompleteness();
-// Mali helper za tekst koji nije u I18N objektu (retki hardkodovani stringovi
-// van data-i18n / t() sistema) — bira sr/en/ru granu prema trenutnom jeziku.
-function L3(sr, en, ru){
-  const lang = getLang();
-  if (lang === 'ru') return ru;
-  if (lang === 'en') return en;
-  return sr;
-}
 /* ==========================================================
    PREVOD DINAMIČKIH STRINGOVA — pomoćnici
    ==========================================================
@@ -1051,636 +202,58 @@ function L3(sr, en, ru){
 function tf(key, vars){
   return t(key).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] !== undefined) ? vars[k] : m);
 }
-// forms: {sr:[1, 2-4, 5+], en:[1, ostalo], ru:[1, 2-4, 5+]}
-function pluralForm(n, forms){
-  n = Math.abs(Math.round(Number(n)) || 0);
-  const lang = getLang();
-  if (lang === 'en') return (forms.en || forms.sr)[n === 1 ? 0 : 1];
-  const f = forms[lang] || forms.sr;
-  const mod10 = n % 10, mod100 = n % 100;
-  if (mod100 >= 11 && mod100 <= 14) return f[2];
-  if (mod10 === 1) return f[0];
-  if (mod10 >= 2 && mod10 <= 4) return f[1];
-  return f[2];
+// Množina: 'plural.<ime>' u locales/*.json je niz oblika odvojenih sa '|', redosledom
+// CLDR kategorija tog jezika (Intl.PluralRules): sr: one|few|other, en: one|other,
+// ru: one|few|many|other. Novi jezik dobija tačan broj oblika od skripte za prevod.
+const _PLURAL_ORDER = ['zero','one','two','few','many','other'];
+const _pluralCache = {};
+function _pluralInfo(lang){
+  if (!_pluralCache[lang]){
+    let pr;
+    try { pr = new Intl.PluralRules(lang); } catch(e){ pr = new Intl.PluralRules('en'); }
+    const cats = pr.resolvedOptions().pluralCategories.slice()
+      .sort((a, b) => _PLURAL_ORDER.indexOf(a) - _PLURAL_ORDER.indexOf(b));
+    _pluralCache[lang] = {pr, cats};
+  }
+  return _pluralCache[lang];
 }
-function nightsLabel(n){ return n + ' ' + pluralForm(n, {sr:['noć','noći','noći'], en:['night','nights'], ru:['ночь','ночи','ночей']}); }
-function daysLabel(n){ return n + ' ' + pluralForm(n, {sr:['dan','dana','dana'], en:['day','days'], ru:['день','дня','дней']}); }
-function roomsLabel(n){ return n + ' ' + pluralForm(n, {sr:['sobu','sobe','soba'], en:['room','rooms'], ru:['номер','номера','номеров']}); }
-function activitiesLabel(n){ return n + ' ' + pluralForm(n, {sr:['aktivnost','aktivnosti','aktivnosti'], en:['activity','activities'], ru:['активность','активности','активностей']}); }
+function pluralWord(name, n){
+  n = Math.abs(Math.round(Number(n)) || 0);
+  const forms = t('plural.' + name).split('|');
+  const info = _pluralInfo(getLang());
+  let i = info.cats.indexOf(info.pr.select(n));
+  if (i < 0 || i >= forms.length) i = forms.length - 1;
+  return forms[i];
+}
+function nightsLabel(n){ return n + ' ' + pluralWord('night', n); }
+function daysLabel(n){ return n + ' ' + pluralWord('day', n); }
+function roomsLabel(n){ return n + ' ' + pluralWord('room', n); }
+function activitiesLabel(n){ return n + ' ' + pluralWord('activity', n); }
 
-// [en, ru] po srpskom nazivu (ključ se poredi preko normalizeSr — bez dijakritika).
-const CITY_L10N = {
-  'Kerns':['Cairns','Кэрнс'],
-  'Adana':['Adana','Адана'],
-  'Amsterdam':['Amsterdam','Амстердам'],
-  'Ankara':['Ankara','Анкара'],
-  'Ankona':['Ancona','Анкона'],
-  'Antalija':['Antalya','Анталья'],
-  'Araksos':['Araxos','Аракс'],
-  'Atina':['Athens','Афины'],
-  'Banja Luka':['Banja Luka','Баня-Лука'],
-  'Bari':['Bari','Бари'],
-  'Bazel':['Basel','Базель'],
-  'Beograd':['Belgrade','Белград'],
-  'Berlin':['Berlin','Берлин'],
-  'Bern':['Bern','Берн'],
-  'Beč':['Vienna','Вена'],
-  'Bidgosc':['Bydgoszcz','Быдгощ'],
-  'Bidgošć':['Bydgoszcz','Быдгощ'],
-  'Bilund':['Billund','Биллунн'],
-  'Bolcano':['Bolzano','Больцано'],
-  'Bolonja':['Bologna','Болонья'],
-  'Bratislava':['Bratislava','Братислава'],
-  'Brašov':['Brașov','Брашов'],
-  'Brindizi':['Brindisi','Бриндизи'],
-  'Brisel':['Brussels','Брюссель'],
-  'Budimpešta':['Budapest','Будапешт'],
-  'Bukurešt':['Bucharest','Бухарест'],
-  'Burgas':['Burgas','Бургас'],
-  'Canakkale':['Çanakkale','Чанаккале'],
-  'Čanakale':['Çanakkale','Чанаккале'],
-  'Cirih':['Zurich','Цюрих'],
-  'Dalaman':['Dalaman','Даламан'],
-  'Denizli':['Denizli','Денизли'],
-  'Dubrovnik':['Dubrovnik','Дубровник'],
-  'Faro':['Faro','Фару'],
-  'Firenca':['Florence','Флоренция'],
-  'Frankfurt':['Frankfurt','Франкфурт'],
-  'Fridrihshafen':['Friedrichshafen','Фридрихсхафен'],
-  'Gdanjsk':['Gdańsk','Гданьск'],
-  'Hamburg':['Hamburg','Гамбург'],
-  'Helsinki':['Helsinki','Хельсинки'],
-  'Herez':['Jerez','Херес'],
-  'Herez de la Frontera':['Jerez de la Frontera','Херес-де-ла-Фронтера'],
-  'Insbruk':['Innsbruck','Инсбрук'],
-  'Istanbul':['Istanbul','Стамбул'],
-  'Izmir':['Izmir','Измир'],
-  'Katanija':['Catania','Катания'],
-  'Katovice':['Katowice','Катовице'],
-  'Kavala':['Kavala','Кавала'],
-  'Keln':['Cologne','Кёльн'],
-  'Keln/Bon':['Cologne/Bonn','Кёльн/Бонн'],
-  'Kisinjev':['Chișinău','Кишинёв'],
-  'Kišinjev':['Chișinău','Кишинёв'],
-  'Konstanca':['Constanța','Констанца'],
-  'Kopenhagen':['Copenhagen','Копенгаген'],
-  'Krakov':['Kraków','Краков'],
-  'Lajpcig':['Leipzig','Лейпциг'],
-  'Linc':['Linz','Линц'],
-  'Lion':['Lyon','Лион'],
-  'Lisabon':['Lisbon','Лиссабон'],
-  'Ljubljana':['Ljubljana','Любляна'],
-  'London':['London','Лондон'],
-  'Luksemburg':['Luxembourg','Люксембург'],
-  'Madrid':['Madrid','Мадрид'],
-  'Malaga':['Málaga','Малага'],
-  'Malatja':['Malatya','Малатья'],
-  'Malme':['Malmö','Мальмё'],
-  'Maribor':['Maribor','Марибор'],
-  'Milano':['Milan','Милан'],
-  'Nansi':['Nancy','Нанси'],
-  'Nant':['Nantes','Нант'],
-  'Napulj':['Naples','Неаполь'],
-  'Nevsehir':['Nevşehir','Невшехир'],
-  'Nevšehir':['Nevşehir','Невшехир'],
-  'Nica':['Nice','Ницца'],
-  'Nirnberg':['Nuremberg','Нюрнберг'],
-  'Niš':['Niš','Ниш'],
-  'Ohrid':['Ohrid','Охрид'],
-  'Olesund':['Ålesund','Олесунн'],
-  'Osijek':['Osijek','Осиек'],
-  'Oslo':['Oslo','Осло'],
-  'Ostrava':['Ostrava','Острава'],
-  'Pariz':['Paris','Париж'],
-  'Parma':['Parma','Парма'],
-  'Perudja':['Perugia','Перуджа'],
-  'Pisa':['Pisa','Пиза'],
-  'Plovdiv':['Plovdiv','Пловдив'],
-  'Podgorica':['Podgorica','Подгорица'],
-  'Poprad':['Poprad','Попрад'],
-  'Porto':['Porto','Порту'],
-  'Prag':['Prague','Прага'],
-  'Preveza':['Preveza','Превеза'],
-  'Preveza/Aktion':['Preveza/Actium','Превеза/Актион'],
-  'Priština':['Pristina','Приштина'],
-  'Pula':['Pula','Пула'],
-  'Rim':['Rome','Рим'],
-  'Rimini':['Rimini','Римини'],
-  'Roterdam':['Rotterdam','Роттердам'],
-  'Salcburg':['Salzburg','Зальцбург'],
-  'Sanliurfa':['Şanlıurfa','Шанлыурфа'],
-  'Šanlıurfa':['Şanlıurfa','Шанлыурфа'],
-  'Santorini':['Santorini','Санторини'],
-  'Sarajevo':['Sarajevo','Сараево'],
-  'Sevilja':['Seville','Севилья'],
-  'Skijatos':['Skiathos','Скиатос'],
-  'Skoplje':['Skopje','Скопье'],
-  'Sofija':['Sofia','София'],
-  'Solun':['Thessaloniki','Салоники'],
-  'Split':['Split','Сплит'],
-  'Stokholm':['Stockholm','Стокгольм'],
-  'Stutgart':['Stuttgart','Штутгарт'],
-  'Štutgart':['Stuttgart','Штутгарт'],
-  'Tirana':['Tirana','Тирана'],
-  'Tivat':['Tivat','Тиват'],
-  'Trabzon':['Trabzon','Трабзон'],
-  'Trst':['Trieste','Триест'],
-  'Tuzla':['Tuzla','Тузла'],
-  'Varna':['Varna','Варна'],
-  'Varsava':['Warsaw','Варшава'],
-  'Varšava':['Warsaw','Варшава'],
-  'Venecija':['Venice','Венеция'],
-  'Verona':['Verona','Верона'],
-  'Zagreb':['Zagreb','Загреб'],
-  'Zesuv':['Rzeszów','Жешув'],
-  'Žešuv':['Rzeszów','Жешув'],
-  'Đenova':['Genoa','Генуя'],
-  'Šarlroa':['Charleroi','Шарлеруа'],
-  'Ženeva':['Geneva','Женева'],
-  'Brno':['Brno','Брно'],
-  'Poznanj':['Poznań','Познань'],
-  'Gaziantep':['Gaziantep','Газиантеп'],
-  'Tur':['Tours','Тур'],
-  'Krf':['Corfu','Корфу'],
-  'Naksos':['Naxos','Наксос'],
-  'Kajseri':['Kayseri','Кайсери'],
-  'Gazipaša':['Gazipaşa','Газипаша'],
-  'Padova':['Padua','Падуя'],
-  'Zadar':['Zadar','Задар'],
-  'Segedin':['Szeged','Сегед'],
-  'Mersin':['Mersin','Мерсин'],
-  'Kapadokija':['Cappadocia','Каппадокия'],
-  'Marmaris':['Marmaris','Мармарис'],
-  'Fetije':['Fethiye','Фетхие'],
-  'Side':['Side','Сиде'],
-  'Alanja':['Alanya','Аланья'],
-  'Kušadasi':['Kuşadası','Кушадасы'],
-  'Česme':['Çeşme','Чешме'],
-  'Pamukale':['Pamukkale','Памуккале'],
-  'Jalova':['Yalova','Ялова'],
-  'Afjon Karahisar':['Afyonkarahisar','Афьонкарахисар'],
-  'Haymana':['Haymana','Хаймана'],
-  'Kizildžahamam':['Kızılcahamam','Кызылджахамам'],
-  'Efes':['Ephesus','Эфес'],
-  'Troja':['Troy','Троя'],
-  'Pergamon':['Pergamon','Пергам'],
-  'Hijerapolis':['Hierapolis','Иераполис'],
-  'Sumela':['Sumela','Сумела'],
-  'Nemrut':['Nemrut','Немрут'],
-  'Safranbolu':['Safranbolu','Сафранболу'],
-  'Gjobekli Tepe':['Göbekli Tepe','Гёбекли-Тепе'],
-  'Kaš':['Kaş','Каш'],
-  'Kalkan':['Kalkan','Калкан'],
-  'Datča':['Datça','Датча'],
-  'Didim':['Didim','Дидим'],
-  'Ajvalik':['Ayvalık','Айвалык'],
-  'Silifke':['Silifke','Силифке'],
-  'Koimbra':['Coimbra','Коимбра'],
-  'Braga':['Braga','Брага'],
-  'Sintra':['Sintra','Синтра'],
-  'Albufeira':['Albufeira','Албуфейра'],
-  'Evora':['Évora','Эвора'],
-  'Kaskais':['Cascais','Кашкайш'],
-  'Nazare':['Nazaré','Назаре'],
-  'Fatima':['Fátima','Фатима'],
-  'Zakopane':['Zakopane','Закопане'],
-  'Torunj':['Toruń','Торунь'],
-  'Vjelička':['Wieliczka','Величка'],
-  'Gdinja':['Gdynia','Гдыня'],
-  'Čenstohova':['Częstochowa','Ченстохова'],
-  'Plzenj':['Plzeň','Пльзень'],
-  'Češki Krumlov':['Český Krumlov','Чески-Крумлов'],
-  'Olomouc':['Olomouc','Оломоуц'],
-  'Kutna Hora':['Kutná Hora','Кутна-Гора'],
-  'Češke Budejovice':['České Budějovice','Ческе-Будеёвице'],
-  'Hradec Kralove':['Hradec Králové','Градец-Кралове'],
-  'Liberec':['Liberec','Либерец'],
-  'Briž':['Bruges','Брюгге'],
-  'Gent':['Ghent','Гент'],
-  'Namir':['Namur','Намюр'],
-  'Halkidiki':['Halkidiki','Халкидики'],
-  'Lefkada':['Lefkada','Лефкада'],
-  'Volos':['Volos','Волос'],
-  'Patra':['Patras','Патры'],
-  'Larisa':['Larissa','Лариса'],
-  'Lutraki':['Loutraki','Лутраки'],
-  'Edipsos':['Edipsos','Эдипсос'],
-  'Olimp':['Mount Olympus','Олимп'],
-  'Pilion':['Pelion','Пелион'],
-  'Meteori':['Meteora','Метеоры'],
-  'Delfi':['Delphi','Дельфы'],
-  'Nafplion':['Nafplio','Нафплион'],
-  'Tasos':['Thasos','Тасос'],
-  'Skopelos':['Skopelos','Скопелос'],
-  'Evija':['Evia','Эвия'],
-  'Idra':['Hydra','Идра'],
-  'Spece':['Spetses','Спеце'],
-  'Ios':['Ios','Иос'],
-  'Egina':['Aegina','Эгина'],
-  'Poros':['Poros','Порос'],
-  'Nesebar':['Nessebar','Несебр'],
-  'Bansko':['Bansko','Банско'],
-  'Ruse':['Ruse','Русе'],
-  'Stara Zagora':['Stara Zagora','Стара-Загора'],
-  'Pleven':['Pleven','Плевен'],
-  'Veliko Trnovo':['Veliko Tarnovo','Велико-Тырново'],
-  'Blagoevgrad':['Blagoevgrad','Благоевград'],
-  'Šumen':['Shumen','Шумен'],
-  'Sliven':['Sliven','Сливен'],
-  'Vidin':['Vidin','Видин'],
-  'Dobrič':['Dobrich','Добрич'],
-  'Kjustendil':['Kyustendil','Кюстендил'],
-  'Gabrovo':['Gabrovo','Габрово'],
-  'Haskovo':['Haskovo','Хасково'],
-  'Sandanski':['Sandanski','Сандански'],
-  'Velingrad':['Velingrad','Велинград'],
-  'Hisarja':['Hisarya','Хисаря'],
-  'Devin':['Devin','Девин'],
-  'Pavel Banja':['Pavel Banya','Павел-Баня'],
-  'Bankja':['Bankya','Банкя'],
-  'Borovec':['Borovets','Боровец'],
-  'Pamporovo':['Pamporovo','Пампорово'],
-  'Vitoša':['Vitosha','Витоша'],
-  'Čepelare':['Chepelare','Чепеларе'],
-  'Rila':['Rila','Рила'],
-  'Koprivštica':['Koprivshtitsa','Копривштица'],
-  'Melnik':['Melnik','Мелник'],
-  'Rilski manastir':['Rila Monastery','Рильский монастырь'],
-  'Trjavna':['Tryavna','Трявна'],
-  'Arbanasi':['Arbanasi','Арбанаси'],
-  'Sozopol':['Sozopol','Созополь'],
-  'Sunčev Breg':['Sunny Beach','Солнечный берег'],
-  'Zlatni Pjasci':['Golden Sands','Золотые Пески'],
-  'Primorsko':['Primorsko','Приморско'],
-  'Balčik':['Balchik','Балчик'],
-  'Kavarna':['Kavarna','Каварна'],
-  'Carevo':['Tsarevo','Царево'],
-  'Pomorije':['Pomorie','Поморие'],
-  'Ahtopol':['Ahtopol','Ахтополь'],
-  'Sinaja':['Sinaia','Синая'],
-  'Bran':['Bran','Бран'],
-  'Mamaja':['Mamaia','Мамая'],
-  'Leče':['Lecce','Лечче'],
-  'Modena':['Modena','Модена'],
-  'Brešija':['Brescia','Брешиа'],
-  'Salerno':['Salerno','Салерно'],
-  'Abano Terme':['Abano Terme','Абано-Терме'],
-  'Montekatini Terme':['Montecatini Terme','Монтекатини-Терме'],
-  'Fjuđi':['Fiuggi','Фьюджи'],
-  'Salsomađore Terme':['Salsomaggiore Terme','Сальсомаджоре-Терме'],
-  'Dolomiti':['The Dolomites','Доломиты'],
-  'Val Gardena':['Val Gardena','Валь-Гардена'],
-  'Livinjo':['Livigno','Ливиньо'],
-  'Etna':['Mount Etna','Этна'],
-  'Pompeji':['Pompeii','Помпеи'],
-  'Asizi':['Assisi','Ассизи'],
-  'Sijena':['Siena','Сиена'],
-  'San Đimonjano':['San Gimignano','Сан-Джиминьяно'],
-  'Orvieto':['Orvieto','Орвието'],
-  'Ravena':['Ravenna','Равенна'],
-  'Amalfi':['Amalfi','Амальфи'],
-  'Pozitano':['Positano','Позитано'],
-  'Sorento':['Sorrento','Сорренто'],
-  'Kapri':['Capri','Капри'],
-  'Portofino':['Portofino','Портофино'],
-  'Elba':['Elba','Эльба'],
-  'Taormina':['Taormina','Таормина'],
-  'Luka':['Lucca','Лукка'],
-  'Činkve Tere':['Cinque Terre','Чинкве-Терре'],
-  'San Marino':['San Marino','Сан-Марино'],
-  'Vatikan':['Vatican City','Ватикан'],
-  'Mantova':['Mantua','Мантуя'],
-  'Ferara':['Ferrara','Феррара'],
-  'Urbino':['Urbino','Урбино'],
-  'Matera':['Matera','Матера'],
-  'Alberobelo':['Alberobello','Альберобелло'],
-  'Ostuni':['Ostuni','Остуни'],
-  'Poljinjano a Mare':['Polignano a Mare','Полиньяно-а-Маре'],
-  'Salamanka':['Salamanca','Саламанка'],
-  'Toledo':['Toledo','Толедо'],
-  'Kordoba':['Córdoba','Кордова'],
-  'Segovija':['Segovia','Сеговия'],
-  'Ronda':['Ronda','Ронда'],
-  'Kadiz':['Cádiz','Кадис'],
-  'Marbelja':['Marbella','Марбелья'],
-  'Kuenka':['Cuenca','Куэнка'],
-  'Avila':['Ávila','Авила'],
-  'Halštat':['Hallstatt','Гальштат'],
-  'Cel am Ze':['Zell am See','Целль-ам-Зее'],
-  'Kicbuel':['Kitzbühel','Кицбюэль'],
-  'Sankt Anton am Arlberg':['St. Anton am Arlberg','Санкт-Антон-ам-Арльберг'],
-  'Baden kod Beča':['Baden bei Wien','Баден под Веной'],
-  'Melk':['Melk','Мельк'],
-  'Verfen':['Werfen','Верфен'],
-  'Banska Bistrica':['Banská Bystrica','Банска-Бистрица'],
-  'Visoke Tatre':['High Tatras','Высокие Татры'],
-  'Kembridž':['Cambridge','Кембридж'],
-  'Oksford':['Oxford','Оксфорд'],
-  'Versaj':['Versailles','Версаль'],
-  'Kan':['Caen','Кан'],
-  'Dižon':['Dijon','Дижон'],
-  'Anže':['Angers','Анже'],
-  'Le Mans':['Le Mans','Ле-Ман'],
-  'Amjen':['Amiens','Амьен'],
-  'Orlean':['Orléans','Орлеан'],
-  'Mec':['Metz','Мец'],
-  'Hajdelberg':['Heidelberg','Гейдельберг'],
-  'Bon':['Bonn','Бонн'],
-  'Visbaden':['Wiesbaden','Висбаден'],
-  'Majnc':['Mainz','Майнц'],
-  'Ahen':['Aachen','Ахен'],
-  'Regensburg':['Regensburg','Регенсбург'],
-  'Vurcburg':['Würzburg','Вюрцбург'],
-  'Trir':['Trier','Трир'],
-  'Potsdam':['Potsdam','Потсдам'],
-  'Kil':['Kiel','Киль'],
-  'Magdeburg':['Magdeburg','Магдебург'],
-  'Kemnic':['Chemnitz','Хемниц'],
-  'Ulm':['Ulm','Ульм'],
-  'Frajburg':['Freiburg','Фрайбург'],
-  'Konstanc':['Konstanz','Констанц'],
-  'Hag':['The Hague','Гаага'],
-  'Utreht':['Utrecht','Утрехт'],
-  'Lilehamer':['Lillehammer','Лиллехаммер'],
-  'Gejrangerfjord':['Geirangerfjord','Гейрангер-фьорд'],
-  'Upsala':['Uppsala','Уппсала'],
-  'Lund':['Lund','Лунд'],
-  'Odense':['Odense','Оденсе'],
-  'Roskilde':['Roskilde','Роскилле'],
-  'Helsingor':['Helsingør','Хельсингёр'],
-  'Lahti':['Lahti','Лахти'],
-  'Sankt Moric':['St. Moritz','Санкт-Мориц'],
-  'Lucern':['Lucerne','Люцерн'],
-  'Interlaken':['Interlaken','Интерлакен'],
-  'Cermat':['Zermatt','Церматт'],
-  'Davos':['Davos','Давос'],
-  'Kijev':['Kyiv','Киев'],
-  'Lavov':['Lviv','Львов'],
-  'Odesa':['Odesa','Одесса'],
-  'Harkov':['Kharkiv','Харьков'],
-  'Mostar':['Mostar','Мостар'],
-  'Mikonos':['Mykonos','Миконос'],
-  'Rodos':['Rhodes','Родос'],
-  'Krit':['Crete','Крит'],
-  'Barselona':['Barcelona','Барселона'],
-  'Ibica':['Ibiza','Ибица'],
-  'Minhen':['Munich','Мюнхен'],
-  'Tel Aviv':['Tel Aviv','Тель-Авив'],
-  'Dubai':['Dubai','Дубай'],
-  'Kairo':['Cairo','Каир'],
-  'Šarm El Šeik':['Sharm El Sheikh','Шарм-эш-Шейх'],
-  'Marakeš':['Marrakech','Марракеш'],
-  'Njujork':['New York','Нью-Йорк'],
-  'Majami':['Miami','Майами'],
-  'Los Anđeles':['Los Angeles','Лос-Анджелес'],
-  'Bangkok':['Bangkok','Бангкок'],
-  'Puket':['Phuket','Пхукет'],
-  'Tokio':['Tokyo','Токио'],
-  'Bali':['Bali','Бали'],
-  'Singapur':['Singapore','Сингапур'],
-  'Sidnej':['Sydney','Сидней'],
-  'Kejptaun':['Cape Town','Кейптаун'],
-  'Bodrum':['Bodrum','Бодрум'],
-  'Kortina d\'Ampeco':['Cortina d\'Ampezzo','Кортина-д\'Ампеццо'],
-  'Novi Sad':['Novi Sad','Нови-Сад'],
-  'Subotica':['Subotica','Суботица'],
-  'Kragujevac':['Kragujevac','Крагуевац'],
-  'Kraljevo':['Kraljevo','Кралево'],
-  'Novi Pazar':['Novi Pazar','Нови-Пазар'],
-  'Šabac':['Šabac','Шабац'],
-  'Zrenjanin':['Zrenjanin','Зренянин'],
-  'Pančevo':['Pančevo','Панчево'],
-  'Čačak':['Čačak','Чачак'],
-  'Kruševac':['Kruševac','Крушевац'],
-  'Leskovac':['Leskovac','Лесковац'],
-  'Vranje':['Vranje','Вранье'],
-  'Užice':['Užice','Ужице'],
-  'Valjevo':['Valjevo','Валево'],
-  'Smederevo':['Smederevo','Смедерево'],
-  'Sombor':['Sombor','Сомбор'],
-  'Zaječar':['Zaječar','Заечар'],
-  'Pirot':['Pirot','Пирот'],
-  'Loznica':['Loznica','Лозница'],
-  'Požarevac':['Požarevac','Пожаревац'],
-  'Sremska Mitrovica':['Sremska Mitrovica','Сремска-Митровица'],
-  'Vršac':['Vršac','Вршац'],
-  'Kikinda':['Kikinda','Кикинда'],
-  'Jagodina':['Jagodina','Ягодина'],
-  'Paraćin':['Paraćin','Параджин'],
-  'Bor':['Bor','Бор'],
-  'Negotin':['Negotin','Неготин'],
-  'Prijepolje':['Prijepolje','Приеполье'],
-  'Priboj':['Priboj','Прибой'],
-  'Sjenica':['Sjenica','Сеница'],
-  'Prokuplje':['Prokuplje','Прокупле'],
-  'Vrnjačka Banja':['Vrnjačka Banja','Врнячка-Баня'],
-  'Sokobanja':['Sokobanja','Сокобаня'],
-  'Aleksinac':['Aleksinac','Алексинац'],
-  'Vlasotince':['Vlasotince','Власотинце'],
-  'Surdulica':['Surdulica','Сурдулица'],
-  'Ivanjica':['Ivanjica','Иваньица'],
-  'Ćuprija':['Ćuprija','Чуприя'],
-  'Svilajnac':['Svilajnac','Свилайнац'],
-  'Senta':['Senta','Сента'],
-  'Bečej':['Bečej','Бечей'],
-  'Vrbas':['Vrbas','Врбас'],
-  'Bačka Palanka':['Bačka Palanka','Бачка-Паланка'],
-  'Ruma':['Ruma','Рума'],
-  'Inđija':['Inđija','Инджия'],
-  'Stara Pazova':['Stara Pazova','Стара-Пазова'],
-  'Šid':['Šid','Шид'],
-  'Budva':['Budva','Будва'],
-  'Danilovgrad':['Danilovgrad','Даниловград'],
-  'Pljevlja':['Pljevlja','Плевля'],
-  'Berane':['Berane','Беране'],
-  'Rožaje':['Rožaje','Рожае'],
-  'Bijelo Polje':['Bijelo Polje','Биело-Поле'],
-  'Bar':['Bar','Бар'],
-  'Herceg Novi':['Herceg Novi','Херцег-Нови'],
-  'Igalo':['Igalo','Игало'],
-  'Nikšić':['Nikšić','Никшич'],
-  'Cetinje':['Cetinje','Цетине'],
-  'Ulcinj':['Ulcinj','Ульцинь'],
-  'Petrovac':['Petrovac','Петровац'],
-  'Sutomore':['Sutomore','Сутоморе'],
-  'Perast':['Perast','Пераст'],
-  'Risan':['Risan','Рисан'],
-  'Kotor':['Kotor','Котор'],
-  'Kolašin':['Kolašin','Колашин'],
-  'Žabljak':['Žabljak','Жабляк'],
-  'Zenica':['Zenica','Зеница'],
-  'Prijedor':['Prijedor','Приедор'],
-  'Bihać':['Bihać','Бихач'],
-  'Doboj':['Doboj','Добой'],
-  'Trebinje':['Trebinje','Требинье'],
-  'Foča':['Foča','Фоча'],
-  'Bijeljina':['Bijeljina','Биелина'],
-  'Brčko':['Brčko','Брчко'],
-  'Travnik':['Travnik','Травник'],
-  'Livno':['Livno','Ливно'],
-  'Goražde':['Goražde','Горажде'],
-  'Vukovar':['Vukovar','Вуковар'],
-  'Slavonski Brod':['Slavonski Brod','Славонски-Брод'],
-  'Varaždin':['Varaždin','Вараждин'],
-  'Knin':['Knin','Книн'],
-  'Šibenik':['Šibenik','Шибеник'],
-  'Makarska':['Makarska','Макарска'],
-  'Trogir':['Trogir','Трогир'],
-  'Hvar':['Hvar','Хвар'],
-  'Rovinj':['Rovinj','Ровинь'],
-  'Sisak':['Sisak','Сисак'],
-  'Karlovac':['Karlovac','Карловац'],
-  'Bitolj':['Bitola','Битоль'],
-  'Tetovo':['Tetovo','Тетово'],
-  'Kumanovo':['Kumanovo','Куманово'],
-  'Gostivar':['Gostivar','Гостивар'],
-  'Strumica':['Strumica','Струмица'],
-  'Prilep':['Prilep','Прилеп'],
-  'Struga':['Struga','Струга'],
-  'Veles':['Veles','Велес'],
-  'Prizren':['Prizren','Призрен'],
-  'Peć':['Peć','Печ'],
-  'Đakovica':['Đakovica','Джяковица'],
-  'Mitrovica':['Mitrovica','Митровица'],
-  'Skadar':['Shkodër','Шкодер'],
-  'Sarandë':['Sarandë','Саранда'],
-  'Sarande':['Sarandë','Саранда'],
-  'Vlorë':['Vlorë','Влёра'],
-  'Durrës':['Durrës','Дуррес'],
-  'Bled':['Bled','Блед'],
-  'Kranjska Gora':['Kranjska Gora','Краньска-Гора'],
-  'Kranj':['Kranj','Крань'],
-  'Bohinj':['Bohinj','Бохинь'],
-  'Bovec':['Bovec','Бовец'],
-  'Kobarid':['Kobarid','Кобарид'],
-  'Logarska Dolina':['Logarska Dolina','Логарская долина'],
-  'Idrija':['Idrija','Идрия'],
-  'Postojna':['Postojna','Постойна'],
-  'Škocjanske jame':['Škocjan Caves','Шкоцянские пещеры'],
-  'Predjama':['Predjama','Предъяма'],
-  'Vintgar':['Vintgar','Винтгар'],
-  'Kamnik':['Kamnik','Камник'],
-  'Celje':['Celje','Целье'],
-  'Novo Mesto':['Novo Mesto','Ново-Место'],
-  'Rogaška Slatina':['Rogaška Slatina','Рогашка-Слатина'],
-  'Dolenjske Toplice':['Dolenjske Toplice','Доленьске-Топлице'],
-  'Laško':['Laško','Лашко'],
-  'Triglav':['Triglav','Триглав'],
-  'Vogel':['Vogel','Вогел'],
-  'Krvavec':['Krvavec','Крвавец'],
-  'Mangart':['Mangart','Мангарт'],
-  'Škofja Loka':['Škofja Loka','Шкофья-Лока'],
-  'Nova Gorica':['Nova Gorica','Нова-Горица'],
-  'Jesenice':['Jesenice','Есенице'],
-  'Velenje':['Velenje','Веленье'],
-  'Čatež':['Čatež','Чатеж'],
-  'Ptuj':['Ptuj','Птуй'],
-  'Terme Ptuj':['Terme Ptuj','Терме-Птуй'],
-  'Pohorje':['Pohorje','Похорье'],
-  'Slovenj Gradec':['Slovenj Gradec','Словень-Градец'],
-  'Murska Sobota':['Murska Sobota','Мурска-Собота'],
-  'Moravske Toplice':['Moravske Toplice','Моравске-Топлице'],
-  'Radenci':['Radenci','Раденци'],
-  'Koper':['Koper','Копер'],
-  'Piran':['Piran','Пиран'],
-  'Portorož':['Portorož','Порторож'],
-  'Izola':['Izola','Изола'],
-  'Ankaran':['Ankaran','Анкаран'],
-};
-const COUNTRY_L10N = {
-  'Albanija':['Albania','Албания'],
-  'Argentina':['Argentina','Аргентина'],
-  'Australija':['Australia','Австралия'],
-  'Austrija':['Austria','Австрия'],
-  'Azerbejdžan':['Azerbaijan','Азербайджан'],
-  'Belgija':['Belgium','Бельгия'],
-  'Bosna i Hercegovina':['Bosnia and Herzegovina','Босния и Герцеговина'],
-  'Brazil':['Brazil','Бразилия'],
-  'Bugarska':['Bulgaria','Болгария'],
-  'Crna Gora':['Montenegro','Черногория'],
-  'Danska':['Denmark','Дания'],
-  'Egipat':['Egypt','Египет'],
-  'Estonija':['Estonia','Эстония'],
-  'Filipini':['Philippines','Филиппины'],
-  'Finska':['Finland','Финляндия'],
-  'Francuska':['France','Франция'],
-  'Gruzija':['Georgia','Грузия'],
-  'Grčka':['Greece','Греция'],
-  'Holandija':['Netherlands','Нидерланды'],
-  'Hrvatska':['Croatia','Хорватия'],
-  'Indija':['India','Индия'],
-  'Indonezija':['Indonesia','Индонезия'],
-  'Irska':['Ireland','Ирландия'],
-  'Island':['Iceland','Исландия'],
-  'Italija':['Italy','Италия'],
-  'Izrael':['Israel','Израиль'],
-  'Japan':['Japan','Япония'],
-  'Južna Koreja':['South Korea','Южная Корея'],
-  'Južnoafrička Republika':['South Africa','Южно-Африканская Республика'],
-  'Kanada':['Canada','Канада'],
-  'Katar':['Qatar','Катар'],
-  'Kenija':['Kenya','Кения'],
-  'Kina':['China','Китай'],
-  'Kipar':['Cyprus','Кипр'],
-  'Kolumbija':['Colombia','Колумбия'],
-  'Kosovo':['Kosovo','Косово'],
-  'Letonija':['Latvia','Латвия'],
-  'Litvanija':['Lithuania','Литва'],
-  'Luksemburg':['Luxembourg','Люксембург'],
-  'Maldivi':['Maldives','Мальдивы'],
-  'Malezija':['Malaysia','Малайзия'],
-  'Malta':['Malta','Мальта'],
-  'Maroko':['Morocco','Марокко'],
-  'Mađarska':['Hungary','Венгрия'],
-  'Meksiko':['Mexico','Мексика'],
-  'Monako':['Monaco','Монако'],
-  'Nemačka':['Germany','Германия'],
-  'Norveška':['Norway','Норвегия'],
-  'Novi Zeland':['New Zealand','Новая Зеландия'],
-  'Peru':['Peru','Перу'],
-  'Poljska':['Poland','Польша'],
-  'Portugalija':['Portugal','Португалия'],
-  'Rumunija':['Romania','Румыния'],
-  'SAD':['USA','США'],
-  'Saudijska Arabija':['Saudi Arabia','Саудовская Аравия'],
-  'Severna Makedonija':['North Macedonia','Северная Македония'],
-  'Singapur':['Singapore','Сингапур'],
-  'Slovačka':['Slovakia','Словакия'],
-  'Slovenija':['Slovenia','Словения'],
-  'Srbija':['Serbia','Сербия'],
-  'Tajland':['Thailand','Таиланд'],
-  'Turska':['Turkey','Турция'],
-  'UAE':['UAE','ОАЭ'],
-  'Velika Britanija':['United Kingdom','Великобритания'],
-  'Vijetnam':['Vietnam','Вьетнам'],
-  'Češka':['Czechia','Чехия'],
-  'Španija':['Spain','Испания'],
-  'Švajcarska':['Switzerland','Швейцария'],
-  'Švedska':['Sweden','Швеция'],
-};
-// Padež "u + država" (samo za napomene o aerodromima): [en, ru].
-const COUNTRY_LOC_L10N = {'Hrvatskoj':['Croatia','Хорватии'], 'Italiji':['Italy','Италии']};
-let _cityNorm = null, _countryNorm = null;
-function _normTable(srcTable){
-  const o = {};
-  Object.keys(srcTable).forEach(k => { o[normalizeSr(k)] = srcTable[k]; });
-  return o;
+/* Nazivi gradova i država: u locales/*.json pod ključevima 'city.<srpski naziv>' i
+   'country.<srpski naziv>'. Poređenje ide preko normalizeSr (bez dijakritika).
+   Nepoznat naziv (npr. ono što je korisnik sam ukucao) ostaje nepromenjen. */
+const _placeCache = {};
+function _placeTable(prefix){
+  const lang = getLang(), ck = prefix + lang;
+  if (!_placeCache[ck]){
+    const o = {}, dict = I18N[lang] || {};
+    Object.keys(dict).forEach(k => {
+      if (k.indexOf(prefix) === 0) o[normalizeSr(k.slice(prefix.length))] = dict[k];
+    });
+    _placeCache[ck] = o;
+  }
+  return _placeCache[ck];
 }
 function cityLabel(name){
-  const lang = getLang();
-  if (lang === 'sr' || name == null) return name;
+  if (getLang() === 'sr' || name == null) return name;
   const raw = String(name).trim();
   if (!raw) return name;
-  if (!_cityNorm) _cityNorm = _normTable(CITY_L10N);
-  const e = _cityNorm[normalizeSr(raw)];
-  return e ? (lang === 'ru' ? e[1] : e[0]) : name;
+  return _placeTable('city.')[normalizeSr(raw)] || name;
 }
 function countryLabel(name){
-  const lang = getLang();
-  if (lang === 'sr' || name == null) return name;
-  if (!_countryNorm) _countryNorm = _normTable(COUNTRY_L10N);
-  const e = _countryNorm[normalizeSr(String(name).trim())];
-  return e ? (lang === 'ru' ? e[1] : e[0]) : name;
+  if (getLang() === 'sr' || name == null) return name;
+  return _placeTable('country.')[normalizeSr(String(name).trim())] || name;
 }
 // "🧭 Prag" (statistika "poslednja destinacija" čuva i emoji prefiks) — prevodi samo naziv grada.
 function cityLabelWithPrefix(s){
@@ -1697,6 +270,19 @@ function driveTimeLabel(tStr){
   return [hh ? hh + ' ' + t('unit_h') : '', mm ? mm + ' ' + t('unit_min') : ''].filter(Boolean).join(' ');
 }
 
+// Prekidač jezika se gradi iz I18N_LANGS (nema ručnog spiska SR/EN/RU u HTML-u).
+function renderLangSwitch(lang){
+  const btn = document.getElementById('langSwitchBtn');
+  if (!btn) return;
+  if (!btn.dataset.built){
+    btn.innerHTML = I18N_LANGS.map(l => '<span class="ls-item" data-l="' + l.code + '">' + l.short + '</span>')
+      .join('<span class="ls-sep">/</span>');
+    btn.dataset.built = '1';
+  }
+  btn.setAttribute('data-lang', lang);
+  btn.setAttribute('aria-pressed', lang !== 'sr' ? 'true' : 'false');
+  btn.querySelectorAll('.ls-item').forEach(el => el.classList.toggle('is-active', el.getAttribute('data-l') === lang));
+}
 function applyStaticI18n(){
   const lang = getLang();
   document.documentElement.lang = lang;
@@ -1706,23 +292,14 @@ function applyStaticI18n(){
   document.querySelectorAll('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label'))); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.setAttribute('title', t(el.getAttribute('data-i18n-title'))); });
   document.querySelectorAll('[data-i18n-alt]').forEach(el => { el.setAttribute('alt', t(el.getAttribute('data-i18n-alt'))); });
-  const btn = document.getElementById('langSwitchBtn');
-  if (btn){
-    btn.classList.toggle('is-en', lang === 'en');
-    btn.setAttribute('data-lang', lang);
-    btn.setAttribute('aria-pressed', lang !== 'sr' ? 'true' : 'false');
-  }
+  renderLangSwitch(lang);
   const titleEl = document.querySelector('title');
-  if (titleEl) titleEl.textContent = L3('SKLOPI — ceo izlet, jedna cena', 'SKLOPI — one whole trip, one price', 'SKLOPI — вся поездка, одна цена');
+  if (titleEl) titleEl.textContent = t('meta_title');
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute('content', L3(
-    'SKLOPI pronalazi let, hotel, auto i aktivnosti za tvoj sledeći izlet i sabira ih u jednu cenu. Napravi sopstveni izlet ili poređaj gotove pakete po budžetu.',
-    'SKLOPI finds flights, hotels, cars and activities for your next trip and adds them into one price. Build your own trip or browse ready packages by budget.',
-    'SKLOPI находит перелёт, отель, авто и активности для твоей следующей поездки и суммирует их в одну цену. Составь собственную поездку или выбери готовый пакет по бюджету.'
-  ));
+  if (metaDesc) metaDesc.setAttribute('content', t('meta_description'));
 }
 function setLang(lang){
-  localStorage.setItem('sklopi_lang', (lang === 'en' || lang === 'ru') ? lang : 'sr');
+  localStorage.setItem('sklopi_lang', hasLang(lang) ? lang : 'sr');
   applyStaticI18n();
   // Ponovo iscrtaj dinamički generisan sadržaj (rezultati/builder/auth/saved)
   // u novom jeziku, ako trenutno postoji na strani.
@@ -1819,9 +396,10 @@ function nightsBetween(a,b){
 }
 function fmtDate(iso){
   const d = new Date(iso);
-  if (getLang() === 'en') return d.toLocaleString('en-GB', {day:'numeric', month:'short'});
-  if (getLang() === 'ru') return d.toLocaleString('ru-RU', {day:'numeric', month:'long'});
-  return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'long'});
+  const lang = getLang();
+  if (lang === 'sr') return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'long'});
+  const m = langMeta(lang);
+  return d.toLocaleString(m.locale, {day:'numeric', month: m.dateMonth || 'long'});
 }
 function passengerLabel(adults){
   const n = String(adults);
@@ -2023,7 +601,7 @@ function pickBestLocationMatch(results, query){
     const mySeq = ++wxRequestSeq;
     // odmah skini stare ikonice (mogu biti od prethodne destinacije) da ne ostane pogrešan utisak
     cells.forEach(cell => cell.querySelectorAll('.cal-wx').forEach(n => n.remove()));
-    setStatus(L3('Tražim vreme za „' + city + '“…', 'Looking up weather for “' + city + '”…', 'Ищем погоду для «' + city + '»…'));
+    setStatus(tf('weather_looking', {city: city}));
 
     const {geo, networkError: geoErr} = await wx.geocode(city);
     if (mySeq !== wxRequestSeq) return; // korisnik je u međuvremenu promenio destinaciju — ovaj odgovor je zastareo
@@ -2491,20 +1069,9 @@ function pickBestLocationMatch(results, query){
 
   const MAX_ADULTS = 30;
 
-  // Gramatički ispravna množina za "odrasla osoba/odrasla/odraslih" —
-  // pravilo isto kao za sve brojeve u srpskom (1, 2-4, 5+, sa izuzetkom
-  // 11-14 koji uvek idu na "odraslih" bez obzira na poslednju cifru).
-  function paxOptionLabel(n){
-    if (getLang() === 'en') return n + ' ' + (n === 1 ? 'adult' : 'adults');
-    if (getLang() === 'ru') return n + ' ' + (n === 1 ? 'взрослый' : 'взрослых');
-    const mod10 = n % 10, mod100 = n % 100;
-    let word;
-    if (mod100 >= 11 && mod100 <= 14) word = 'odraslih';
-    else if (mod10 === 1) word = 'odrasla osoba';
-    else if (mod10 >= 2 && mod10 <= 4) word = 'odrasla';
-    else word = 'odraslih';
-    return n + ' ' + word;
-  }
+  // Gramatički ispravna množina za "odrasla osoba/odrasla/odraslih" — oblici
+  // su u locales (plural.adult), izbor oblika radi pluralWord() preko Intl.PluralRules.
+  function paxOptionLabel(n){ return n + ' ' + pluralWord('adult', n); }
 
   function buildOptions(){
     const keepVal = hiddenField.value;
@@ -2703,19 +1270,7 @@ const COASTAL_DESTINATIONS = [
 ];
 function ctaCopy(dest){
   const isCoastal = COASTAL_DESTINATIONS.includes(dest.trim().toLowerCase());
-  if (getLang() === 'en'){
-    return isCoastal
-      ? 'History, great food, the sea and unforgettable experiences — now easier than ever to plan it all.'
-      : 'History, great food and unforgettable experiences — now easier than ever to plan it all.';
-  }
-  if (getLang() === 'ru'){
-    return isCoastal
-      ? 'История, отличная еда, море и незабываемые впечатления — теперь спланировать всё это проще, чем когда-либо.'
-      : 'История, отличная еда и незабываемые впечатления — теперь спланировать всё это проще, чем когда-либо.';
-  }
-  return isCoastal
-    ? 'Istorija, dobra hrana, more i nezaboravni doživljaji — a sad je lakše nego ikad da sve to isplaniraš.'
-    : 'Istorija, dobra hrana i nezaboravni doživljaji — a sad je lakše nego ikad da sve to isplaniraš.';
+  return t(isCoastal ? 'cta_copy_coastal' : 'cta_copy_inland');
 }
 
 const PARTNERS = {
@@ -2961,10 +1516,10 @@ const AIRPORT_DB = {
   'nis': {hasAirport:true, limited:true},
   // --- Srbija: bez sopstvenog aerodroma ---
   'novi sad': {nearest:'Beograd', note:'Novi Sad nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Novi Sad', k:'own', t:'1h'},
-  'subotica': {nearest:'Budimpešta', note:'Subotica nema svoj aerodrom — najbliži je Budimpešta (oko 2h30 vožnje), bliže nego Beograd.', i18n:{en:'Subotica has no airport of its own — the nearest is Budapest (about 2 h 30 min by car), closer than Belgrade.', ru:'Суботица: собственного аэропорта нет, ближайший — Будапешт (около 2 ч 30 мин на машине), он ближе, чем Белград.'}},
+  'subotica': {nearest:'Budimpešta'},
   'kragujevac': {nearest:'Beograd', note:'Kragujevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Kragujevac', k:'own', t:'1h'},
-  'kraljevo': {nearest:'Niš', note:'Kraljevo nema svoj aerodrom — najbliži je Niš (oko 1h vožnje), Beograd je alternativa za neke pravce.', i18n:{en:'Kraljevo has no airport of its own — the nearest is Niš (about 1 h by car); Belgrade is an alternative for some routes.', ru:'Кралево: собственного аэропорта нет, ближайший — Ниш (около 1 ч на машине); для некоторых направлений альтернатива — Белград.'}},
-  'novi pazar': {nearest:'Beograd', note:'Novi Pazar nema svoj aerodrom — najbliži veći izbor letova je Beograd, a Podgorica je bliža za neke pravce.', i18n:{en:'Novi Pazar has no airport of its own — the widest choice of flights nearby is from Belgrade, while Podgorica is closer for some routes.', ru:'Нови-Пазар: собственного аэропорта нет, ближайший большой выбор рейсов — в Белграде, а для некоторых направлений ближе Подгорица.'}},
+  'kraljevo': {nearest:'Niš'},
+  'novi pazar': {nearest:'Beograd'},
   'sabac': {nearest:'Beograd', note:'Šabac nema svoj aerodrom — najbliži je Beograd (oko 1h30 vožnje).', c:'Šabac', k:'own', t:'1h30'},
   'zrenjanin': {nearest:'Beograd', note:'Zrenjanin nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Zrenjanin', k:'own', t:'1h'},
   'pancevo': {nearest:'Beograd', note:'Pančevo nema svoj aerodrom — najbliži je Beograd (oko 30 min vožnje).', c:'Pančevo', k:'own', t:'30 min'},
@@ -3017,7 +1572,7 @@ const AIRPORT_DB = {
   'berane': {nearest:'Podgorica', note:'Berane nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).', c:'Berane', k:'own', t:'2h'},
   'rozaje': {nearest:'Podgorica', note:'Rožaje nema svoj aerodrom — najbliži je Podgorica (oko 2h30 vožnje).', c:'Rožaje', k:'own', t:'2h30'},
   'bijelo polje': {nearest:'Podgorica', note:'Bijelo Polje nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).', c:'Bijelo Polje', k:'own', t:'2h'},
-  'bar': {nearest:'Tivat', note:'Bar nema svoj aerodrom — najbliži je Tivat (oko 40 min vožnje), Podgorica je alternativa (oko 1h).', i18n:{en:'Bar has no airport of its own — the nearest is Tivat (about 40 min by car); Podgorica is an alternative (about 1 h).', ru:'Бар: собственного аэропорта нет, ближайший — Тиват (около 40 мин на машине); альтернатива — Подгорица (около 1 ч).'}},
+  'bar': {nearest:'Tivat'},
   'herceg novi': {nearest:'Tivat', note:'Herceg Novi nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).', c:'Herceg Novi', k:'own', t:'35 min'},
   'igalo': {nearest:'Tivat', note:'Igalo nema svoj aerodrom — najbliži je Tivat (oko 35 min vožnje).', c:'Igalo', k:'own', t:'35 min'},
   'niksic': {nearest:'Podgorica', note:'Nikšić nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).', c:'Nikšić', k:'own', t:'1h'},
@@ -3058,8 +1613,8 @@ const AIRPORT_DB = {
   'knin': {nearest:'Split', note:'Knin nema svoj aerodrom — najbliži je Split (oko 1h vožnje), Zadar je alternativa.', c:'Knin', k:'own', t:'1h', alt:'Zadar'},
   'sibenik': {nearest:'Split', note:'Šibenik nema svoj aerodrom — najbliži je Split (oko 1h vožnje), Zadar je alternativa.', c:'Šibenik', k:'own', t:'1h', alt:'Zadar'},
   'makarska': {nearest:'Split', note:'Makarska nema svoj aerodrom — najbliži je Split (oko 1h vožnje).', c:'Makarska', k:'own', t:'1h'},
-  'trogir': {nearest:'Split', note:'Trogir nema svoj aerodrom — aerodrom Split je praktično odmah pored (oko 10 min vožnje).', i18n:{en:'Trogir has no airport of its own — Split airport is practically next door (about 10 min by car).', ru:'Трогир: собственного аэропорта нет, аэропорт Сплита совсем рядом (около 10 мин на машине).'}},
-  'hvar': {nearest:'Split', note:'Hvar nema svoj aerodrom na ostrvu — do njega se stiže trajektom iz Splita, gde je najbliži aerodrom.', i18n:{en:'Hvar has no airport on the island — you get there by ferry from Split, where the nearest airport is.', ru:'На острове Хвар нет собственного аэропорта — добираться нужно паромом из Сплита, где находится ближайший аэропорт.'}},
+  'trogir': {nearest:'Split'},
+  'hvar': {nearest:'Split'},
   'rovinj': {nearest:'Pula', note:'Rovinj nema svoj aerodrom — najbliži je Pula (oko 40 min vožnje).', c:'Rovinj', k:'own', t:'40 min'},
   'sisak': {nearest:'Zagreb', note:'Sisak nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).', c:'Sisak', k:'own', t:'1h'},
   'karlovac': {nearest:'Zagreb', note:'Karlovac nema svoj aerodrom — najbliži je Zagreb (oko 1h vožnje).', c:'Karlovac', k:'own', t:'1h'},
@@ -3081,8 +1636,8 @@ const AIRPORT_DB = {
   'mitrovica': {nearest:'Priština', note:'Mitrovica nema svoj aerodrom — najbliži je Priština (oko 40 min vožnje).', c:'Mitrovica', k:'own', t:'40 min'},
   // --- Albanija ---
   'tirana': {hasAirport:true},
-  'skadar': {nearest:'Podgorica', note:'Skadar nema svoj aerodrom — najbliži je Podgorica u Crnoj Gori (oko 1h vožnje), bliže nego Tirana.', i18n:{en:'Shkodër has no airport of its own — the nearest is Podgorica in Montenegro (about 1 h by car), closer than Tirana.', ru:'Шкодер: собственного аэропорта нет, ближайший — Подгорица в Черногории (около 1 ч на машине), она ближе, чем Тирана.'}},
-  'sarande': {nearest:'Tirana', note:'Sarandë nema svoj aerodrom — najbliži je Tirana (oko 4h vožnje), Krf u Grčkoj je bliža alternativa trajektom.', i18n:{en:'Sarandë has no airport of its own — the nearest is Tirana (about 4 h by car); Corfu in Greece is a closer alternative by ferry.', ru:'Саранда: собственного аэропорта нет, ближайший — Тирана (около 4 ч на машине); более близкая альтернатива — Корфу в Греции (на пароме).'}},
+  'skadar': {nearest:'Podgorica'},
+  'sarande': {nearest:'Tirana'},
   'vlore': {nearest:'Tirana', note:'Vlorë nema svoj aerodrom — najbliži je Tirana (oko 2h vožnje).', c:'Vlorë', k:'own', t:'2h'},
   'durres': {nearest:'Tirana', note:'Durrës nema svoj aerodrom — najbliži je Tirana (oko 30 min vožnje).', c:'Durrës', k:'own', t:'30 min'},
   // --- Slovenija: aerodromi ---
@@ -3158,15 +1713,15 @@ const AIRPORT_DB = {
   'gazipasa': {hasAirport:true, limited:true},
   // --- Turska: bez sopstvenog aerodroma ---
   'mersin': {nearest:'Adana', note:'Mersin nema svoj aerodrom — najbliži je Adana (oko 1h vožnje).', c:'Mersin', k:'own', t:'1h'},
-  'kapadokija': {nearest:'Nevsehir', note:'Kapadokija nema svoj aerodrom u samom centru — najbliži je Nevšehir (oko 30 min vožnje), Kajseri je alternativa sa više letova.', i18n:{en:'Cappadocia has no airport right in the centre — the nearest is Nevşehir (about 30 min by car); Kayseri is an alternative with more flights.', ru:'В Каппадокии нет аэропорта в самом центре — ближайший — Невшехир (около 30 мин на машине); альтернатива с большим числом рейсов — Кайсери.'}},
+  'kapadokija': {nearest:'Nevsehir'},
   'marmaris': {nearest:'Dalaman', note:'Marmaris nema svoj aerodrom — najbliži je Dalaman (oko 1h vožnje).', c:'Marmaris', k:'own', t:'1h'},
   'fetije': {nearest:'Dalaman', note:'Fetije nema svoj aerodrom — najbliži je Dalaman (oko 50 min vožnje).', c:'Fetije', k:'own', t:'50 min'},
   'side': {nearest:'Antalija', note:'Side nema svoj aerodrom — najbliži je Antalija (oko 1h vožnje).', c:'Side', k:'own', t:'1h'},
-  'alanja': {nearest:'Antalija', note:'Alanja nema svoj aerodrom — najbliži je Gazipaša (oko 45 min vožnje), Antalija je alternativa sa više letova (oko 1h30).', i18n:{en:'Alanya has no airport of its own — the nearest is Gazipaşa (about 45 min by car); Antalya is an alternative with more flights (about 1 h 30 min).', ru:'Аланья: собственного аэропорта нет, ближайший — Газипаша (около 45 мин на машине); альтернатива с большим числом рейсов — Анталья (около 1 ч 30 мин).'}},
+  'alanja': {nearest:'Antalija'},
   'kušadasi': {nearest:'Izmir', note:'Kušadasi nema svoj aerodrom — najbliži je Izmir (oko 1h30 vožnje).', c:'Kušadasi', k:'own', t:'1h30'},
   'česme': {nearest:'Izmir', note:'Česme nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).', c:'Česme', k:'own', t:'1h'},
   'pamukale': {nearest:'Denizli', note:'Pamukale nema svoj aerodrom — najbliži je Denizli (oko 30 min vožnje).', c:'Pamukale', k:'own', t:'30 min'},
-  'jalova': {nearest:'Istanbul', note:'Jalova nema svoj aerodrom — najbliži je Istanbul (oko 1h30 vožnje, uz trajekt preko Mramornog mora).', i18n:{en:'Yalova has no airport of its own — the nearest is Istanbul (about 1 h 30 min by car, including a ferry across the Sea of Marmara).', ru:'Ялова: собственного аэропорта нет, ближайший — Стамбул (около 1 ч 30 мин на машине, с паромом через Мраморное море).'}},
+  'jalova': {nearest:'Istanbul'},
   'afjon karahisar': {nearest:'Ankara', note:'Afjon Karahisar nema veći aerodrom — najbliži je Ankara (oko 3h vožnje).', c:'Afjon Karahisar', k:'major', t:'3h'},
   'haymana': {nearest:'Ankara', note:'Haymana nema svoj aerodrom — najbliži je Ankara (oko 1h vožnje).', c:'Haymana', k:'own', t:'1h'},
   'kizildžahamam': {nearest:'Ankara', note:'Kizildžahamam nema svoj aerodrom — najbliži je Ankara (oko 1h vožnje).', c:'Kizildžahamam', k:'own', t:'1h'},
@@ -3240,7 +1795,7 @@ const AIRPORT_DB = {
   'zakopane': {nearest:'Krakov', note:'Zakopane nema svoj aerodrom — najbliži je Krakov (oko 2h vožnje).', c:'Zakopane', k:'own', t:'2h'},
   'torunj': {nearest:'Bidgosc', note:'Torunj nema svoj aerodrom — najbliži je Bidgošć (oko 45 min vožnje), Poznanj je alternativa.', c:'Torunj', k:'own', t:'45 min', nn:'Bidgošć', alt:'Poznanj'},
   'vjelicka': {nearest:'Krakov', note:'Vjelička nema svoj aerodrom — najbliži je Krakov (oko 20 min vožnje).', c:'Vjelička', k:'own', t:'20 min'},
-  'gdinja': {nearest:'Gdanjsk', note:'Gdinja nema svoj aerodrom — koristi se aerodrom Gdanjsk, deo iste aglomeracije (oko 25 min vožnje).', i18n:{en:'Gdynia has no airport of its own — you use Gdańsk airport, part of the same urban area (about 25 min by car).', ru:'Гдыня: собственного аэропорта нет, используется аэропорт Гданьска в той же агломерации (около 25 мин на машине).'}},
+  'gdinja': {nearest:'Gdanjsk'},
   'censtohova': {nearest:'Katovice', note:'Čenstohova nema svoj aerodrom — najbliži je Katovice (oko 1h vožnje).', c:'Čenstohova', k:'own', t:'1h'},
   // --- Češka: aerodromi ---
   'prag': {hasAirport:true},
@@ -3249,7 +1804,7 @@ const AIRPORT_DB = {
   'ostrava': {hasAirport:true, limited:true},
   // --- Češka: bez sopstvenog aerodroma ---
   'plzenj': {nearest:'Prag', note:'Plzenj nema komercijalni aerodrom — najbliži je Prag (oko 1h vožnje).', c:'Plzenj', k:'comm', t:'1h'},
-  'ceski krumlov': {nearest:'Linc', note:'Češki Krumlov nema svoj aerodrom — najbliži je Linc u Austriji (oko 1h vožnje), Prag je dalja alternativa (oko 2h30).', i18n:{en:'Český Krumlov has no airport of its own — the nearest is Linz in Austria (about 1 h by car); Prague is a farther alternative (about 2 h 30 min).', ru:'Чески-Крумлов: собственного аэропорта нет, ближайший — Линц в Австрии (около 1 ч на машине); Прага — более дальняя альтернатива (около 2 ч 30 мин).'}},
+  'ceski krumlov': {nearest:'Linc'},
   'olomouc': {nearest:'Ostrava', note:'Olomouc nema svoj aerodrom — najbliži je Ostrava (oko 40 min vožnje), Brno je alternativa.', c:'Olomouc', k:'own', t:'40 min', alt:'Brno'},
   'kutna hora': {nearest:'Prag', note:'Kutna Hora nema svoj aerodrom — najbliži je Prag (oko 1h vožnje).', c:'Kutna Hora', k:'own', t:'1h'},
   'ceske budejovice': {nearest:'Prag', note:'Češke Budejovice nemaju svoj aerodrom sa redovnim letovima — najbliži je Prag (oko 2h vožnje), Linc je alternativa.', c:'Češke Budejovice', k:'sched', t:'2h', alt:'Linc'},
@@ -3303,24 +1858,24 @@ const AIRPORT_DB = {
   // --- Grčka: bez sopstvenog aerodroma ---
   'halkidiki': {nearest:'Solun', note:'Halkidiki nema svoj aerodrom — najbliži je Solun (oko 1h vožnje).', c:'Halkidiki', k:'own', t:'1h'},
   'lefkada': {nearest:'Preveza', note:'Lefkada nema svoj aerodrom — najbliži je Preveza/Aktion (oko 30 min vožnje).', c:'Lefkada', k:'own', t:'30 min', nn:'Preveza/Aktion'},
-  'volos': {nearest:'Solun', note:'Volos nema veći aerodrom — najbliži je Solun (oko 2h vožnje), mali regionalni aerodrom Nea Anhialos je bliži ali sa malo letova.', i18n:{en:'Volos has no major airport — the nearest is Thessaloniki (about 2 h by car); the small regional airport of Nea Anchialos is closer but has few flights.', ru:'В Волосе нет крупного аэропорта — ближайший — Салоники (около 2 ч на машине); небольшой региональный аэропорт Неа-Анхиалос ближе, но рейсов там мало.'}},
+  'volos': {nearest:'Solun'},
   'patra': {nearest:'Araksos', note:'Patra nema svoj aerodrom — najbliži je Araksos (oko 45 min vožnje).', c:'Patra', k:'own', t:'45 min'},
   'larisa': {nearest:'Solun', note:'Larisa nema svoj aerodrom — najbliži je Solun (oko 1h30 vožnje).', c:'Larisa', k:'own', t:'1h30'},
   'lutraki': {nearest:'Atina', note:'Lutraki nema svoj aerodrom — najbliži je Atina (oko 1h vožnje).', c:'Lutraki', k:'own', t:'1h'},
-  'edipsos': {nearest:'Atina', note:'Edipsos nema svoj aerodrom — najbliži je Atina (oko 2h vožnje, uz trajekt).', i18n:{en:'Edipsos has no airport of its own — the nearest is Athens (about 2 h by car, including a ferry).', ru:'Эдипсос: собственного аэропорта нет, ближайший — Афины (около 2 ч на машине, с паромом).'}},
+  'edipsos': {nearest:'Atina'},
   'olimp': {nearest:'Solun', note:'Olimp nema svoj aerodrom — najbliži je Solun (oko 1h vožnje).', c:'Olimp', k:'own', t:'1h'},
-  'pilion': {nearest:'Solun', note:'Pilion nema svoj aerodrom — najbliži je Solun (oko 2h vožnje), Volos je bliža alternativa bez redovnih letova.', i18n:{en:'Pelion has no airport of its own — the nearest is Thessaloniki (about 2 h by car); Volos is a closer alternative without scheduled flights.', ru:'Пелион: собственного аэропорта нет, ближайший — Салоники (около 2 ч на машине); Волос ближе, но регулярных рейсов там нет.'}},
+  'pilion': {nearest:'Solun'},
   'meteori': {nearest:'Solun', note:'Meteori nemaju aerodrom u blizini — najbliži je Solun (oko 2h vožnje).', c:'Meteori', k:'nearby', t:'2h'},
   'delfi': {nearest:'Atina', note:'Delfi nema svoj aerodrom — najbliži je Atina (oko 2h vožnje).', c:'Delfi', k:'own', t:'2h'},
   'nafplion': {nearest:'Atina', note:'Nafplion nema svoj aerodrom — najbliži je Atina (oko 2h vožnje).', c:'Nafplion', k:'own', t:'2h'},
-  'tasos': {nearest:'Kavala', note:'Tasos nema svoj aerodrom — najbliži je Kavala (oko 1h vožnje, uz trajekt).', i18n:{en:'Thasos has no airport of its own — the nearest is Kavala (about 1 h by car, including a ferry).', ru:'Тасос: собственного аэропорта нет, ближайший — Кавала (около 1 ч на машине, с паромом).'}},
-  'skopelos': {nearest:'Skijatos', note:'Skopelos nema veći aerodrom — najbliži je Skijatos (trajektom oko 1h).', i18n:{en:'Skopelos has no major airport — the nearest is Skiathos (about 1 h by ferry).', ru:'На Скопелосе нет крупного аэропорта — ближайший — Скиатос (около 1 ч на пароме).'}},
+  'tasos': {nearest:'Kavala'},
+  'skopelos': {nearest:'Skijatos'},
   'evija': {nearest:'Atina', note:'Evija nema svoj aerodrom — najbliži je Atina (oko 1h30 vožnje).', c:'Evija', k:'own', t:'1h30'},
-  'idra': {nearest:'Atina', note:'Idra nema svoj aerodrom — najbliži je Atina (trajektom oko 1h30).', i18n:{en:'Hydra has no airport of its own — the nearest is Athens (about 1 h 30 min by ferry).', ru:'На Идре нет собственного аэропорта — ближайший — Афины (около 1 ч 30 мин на пароме).'}},
-  'spece': {nearest:'Atina', note:'Spece nema svoj aerodrom — najbliži je Atina (trajektom oko 2h).', i18n:{en:'Spetses has no airport of its own — the nearest is Athens (about 2 h by ferry).', ru:'На Спеце нет собственного аэропорта — ближайший — Афины (около 2 ч на пароме).'}},
-  'ios': {nearest:'Santorini', note:'Ios nema svoj aerodrom — najbliži je Santorini (trajektom oko 1h), Naksos je alternativa.', i18n:{en:'Ios has no airport of its own — the nearest is Santorini (about 1 h by ferry); Naxos is an alternative.', ru:'На Иосе нет собственного аэропорта — ближайший — Санторини (около 1 ч на пароме); альтернатива — Наксос.'}},
-  'egina': {nearest:'Atina', note:'Egina nema svoj aerodrom — najbliži je Atina (trajektom oko 1h).', i18n:{en:'Aegina has no airport of its own — the nearest is Athens (about 1 h by ferry).', ru:'На Эгине нет собственного аэропорта — ближайший — Афины (около 1 ч на пароме).'}},
-  'poros': {nearest:'Atina', note:'Poros nema svoj aerodrom — najbliži je Atina (trajektom oko 2h).', i18n:{en:'Poros has no airport of its own — the nearest is Athens (about 2 h by ferry).', ru:'На Поросе нет собственного аэропорта — ближайший — Афины (около 2 ч на пароме).'}},
+  'idra': {nearest:'Atina'},
+  'spece': {nearest:'Atina'},
+  'ios': {nearest:'Santorini'},
+  'egina': {nearest:'Atina'},
+  'poros': {nearest:'Atina'},
   // --- Bugarska: aerodromi ---
   'sofija': {hasAirport:true},
   'varna': {hasAirport:true},
@@ -3329,7 +1884,7 @@ const AIRPORT_DB = {
   // --- Bugarska: bez sopstvenog aerodroma ---
   'nesebar': {nearest:'Burgas', note:'Nesebar nema svoj aerodrom — najbliži je Burgas (oko 40 min vožnje).', c:'Nesebar', k:'own', t:'40 min'},
   'bansko': {nearest:'Sofija', note:'Bansko nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Bansko', k:'own', t:'2h'},
-  'ruse': {nearest:'Sofija', note:'Ruse nema svoj aerodrom — najbliži je Sofija (oko 4h vožnje), Bukurešt u Rumuniji je bliža alternativa preko granice (oko 1h30).', i18n:{en:'Ruse has no airport of its own — the nearest is Sofia (about 4 h by car); Bucharest in Romania is a closer alternative across the border (about 1 h 30 min).', ru:'Русе: собственного аэропорта нет, ближайший — София (около 4 ч на машине); ближе через границу — Бухарест в Румынии (около 1 ч 30 мин).'}},
+  'ruse': {nearest:'Sofija'},
   'stara zagora': {nearest:'Plovdiv', note:'Stara Zagora nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).', c:'Stara Zagora', k:'own', t:'1h'},
   'pleven': {nearest:'Sofija', note:'Pleven nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Pleven', k:'own', t:'2h'},
   'veliko trnovo': {nearest:'Sofija', note:'Veliko Trnovo nema svoj aerodrom — najbliži je Sofija (oko 2h30 vožnje), Varna je alternativa.', c:'Veliko Trnovo', k:'own', t:'2h30', alt:'Varna'},
@@ -3375,9 +1930,9 @@ const AIRPORT_DB = {
   'jasi': {hasAirport:true, limited:true},
   'brasov': {hasAirport:true, limited:true},
   // --- Rumunija: bez sopstvenog aerodroma ---
-  'sinaja': {nearest:'Bukurešt', note:'Sinaja nema svoj aerodrom — najbliži je Bukurešt (oko 2h vožnje), Brašov je alternativa (oko 45 min).', i18n:{en:'Sinaia has no airport of its own — the nearest is Bucharest (about 2 h by car); Brașov is an alternative (about 45 min).', ru:'Синая: собственного аэропорта нет, ближайший — Бухарест (около 2 ч на машине); альтернатива — Брашов (около 45 мин).'}},
+  'sinaja': {nearest:'Bukurešt'},
   'bran': {nearest:'Brašov', note:'Bran nema svoj aerodrom — najbliži je Brašov (oko 30 min vožnje).', c:'Bran', k:'own', t:'30 min'},
-  'mamaja': {nearest:'Konstanca', note:'Mamaja nema svoj aerodrom — aerodrom Konstanca je praktično odmah pored (oko 10 min vožnje).', i18n:{en:'Mamaia has no airport of its own — Constanța airport is practically next door (about 10 min by car).', ru:'Мамая: собственного аэропорта нет, аэропорт Констанцы совсем рядом (около 10 мин на машине).'}},
+  'mamaja': {nearest:'Konstanca'},
   // --- Italija: aerodromi ---
   'rim': {hasAirport:true},
   'milano': {hasAirport:true},
@@ -3421,8 +1976,8 @@ const AIRPORT_DB = {
   'salsomadjore terme': {nearest:'Parma', note:'Salsomađore Terme nema svoj aerodrom — najbliži je Parma (oko 40 min vožnje).', c:'Salsomađore Terme', k:'own', t:'40 min'},
   'dolomiti': {nearest:'Verona', note:'Dolomiti nemaju aerodrom u blizini — najbliži je Verona (oko 2h vožnje), Venecija je alternativa.', c:'Dolomiti', k:'nearby', t:'2h', alt:'Venecija'},
   'kortina d\'ampeco': {nearest:'Verona', note:'Kortina d\'Ampeco nema svoj aerodrom — najbliži je Verona (oko 2h vožnje).', c:'Kortina d\'Ampeco', k:'own', t:'2h'},
-  'val gardena': {nearest:'Bolcano', note:'Val Gardena nema svoj aerodrom — najbliži je Bolcano (oko 1h vožnje), Verona je dalja alternativa (oko 2h30).', i18n:{en:'Val Gardena has no airport of its own — the nearest is Bolzano (about 1 h by car); Verona is a farther alternative (about 2 h 30 min).', ru:'Валь-Гардена: собственного аэропорта нет, ближайший — Больцано (около 1 ч на машине); Верона — более дальняя альтернатива (около 2 ч 30 мин).'}},
-  'livinjo': {nearest:'Milano', note:'Livinjo nema svoj aerodrom — najbliži je Milano (oko 3h vožnje), švajcarski Sankt Moric je bliža alternativa preko granice.', i18n:{en:'Livigno has no airport of its own — the nearest is Milan (about 3 h by car); Swiss St. Moritz is a closer alternative across the border.', ru:'Ливиньо: собственного аэропорта нет, ближайший — Милан (около 3 ч на машине); ближе через границу — швейцарский Санкт-Мориц.'}},
+  'val gardena': {nearest:'Bolcano'},
+  'livinjo': {nearest:'Milano'},
   'etna': {nearest:'Katanija', note:'Etna nema svoj aerodrom — najbliži je Katanija (oko 30 min vožnje).', c:'Etna', k:'own', t:'30 min'},
   'pompeji': {nearest:'Napulj', note:'Pompeji nema svoj aerodrom — najbliži je Napulj (oko 40 min vožnje).', c:'Pompeji', k:'own', t:'40 min'},
   'asizi': {nearest:'Perudja', note:'Asizi nema svoj aerodrom — najbliži je Perudja (oko 30 min vožnje).', c:'Asizi', k:'own', t:'30 min'},
@@ -3433,14 +1988,14 @@ const AIRPORT_DB = {
   'amalfi': {nearest:'Napulj', note:'Amalfi nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).', c:'Amalfi', k:'own', t:'1h'},
   'pozitano': {nearest:'Napulj', note:'Pozitano nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).', c:'Pozitano', k:'own', t:'1h'},
   'sorento': {nearest:'Napulj', note:'Sorento nema svoj aerodrom — najbliži je Napulj (oko 1h vožnje).', c:'Sorento', k:'own', t:'1h'},
-  'kapri': {nearest:'Napulj', note:'Kapri nema svoj aerodrom — do ostrva se stiže trajektom iz Napulja, gde je najbliži aerodrom.', i18n:{en:'Capri has no airport of its own — you reach the island by ferry from Naples, where the nearest airport is.', ru:'На Капри нет собственного аэропорта — на остров добираются паромом из Неаполя, где находится ближайший аэропорт.'}},
+  'kapri': {nearest:'Napulj'},
   'portofino': {nearest:'Đenova', note:'Portofino nema svoj aerodrom — najbliži je Đenova (oko 40 min vožnje).', c:'Portofino', k:'own', t:'40 min'},
-  'elba': {nearest:'Pisa', note:'Elba nema svoj aerodrom sa redovnim letovima — najbliži je Pisa (oko 1h30 vožnje plus trajekt iz Pjombina).', i18n:{en:'Elba has no airport with scheduled flights — the nearest is Pisa (about 1 h 30 min by car plus a ferry from Piombino).', ru:'На Эльбе нет аэропорта с регулярными рейсами — ближайший — Пиза (около 1 ч 30 мин на машине плюс паром из Пьомбино).'}},
+  'elba': {nearest:'Pisa'},
   'taormina': {nearest:'Katanija', note:'Taormina nema svoj aerodrom — najbliži je Katanija (oko 45 min vožnje).', c:'Taormina', k:'own', t:'45 min'},
   'luka': {nearest:'Pisa', note:'Luka nema svoj aerodrom — najbliži je Pisa (oko 25 min vožnje).', c:'Luka', k:'own', t:'25 min'},
   'cinkve tere': {nearest:'Đenova', note:'Činkve Tere nema svoj aerodrom — najbliži je Đenova (oko 1h vožnje), Pisa je alternativa.', c:'Činkve Tere', k:'own', t:'1h', alt:'Pisa'},
   'san marino': {nearest:'Rimini', note:'San Marino nema svoj aerodrom — najbliži je Rimini (oko 30 min vožnje).', c:'San Marino', k:'own', t:'30 min'},
-  'vatikan': {nearest:'Rim', note:'Vatikan nema svoj aerodrom — koristi se aerodrom Rim, praktično u samom gradu.', i18n:{en:'Vatican City has no airport of its own — you use Rome’s airport, which is practically in the city itself.', ru:'В Ватикане нет собственного аэропорта — используется аэропорт Рима, практически в самом городе.'}},
+  'vatikan': {nearest:'Rim'},
   'mantova': {nearest:'Verona', note:'Mantova nema svoj aerodrom — najbliži je Verona (oko 45 min vožnje).', c:'Mantova', k:'own', t:'45 min'},
   'ferara': {nearest:'Bolonja', note:'Ferara nema svoj aerodrom — najbliži je Bolonja (oko 40 min vožnje).', c:'Ferara', k:'own', t:'40 min'},
   'urbino': {nearest:'Ankona', note:'Urbino nema svoj aerodrom — najbliži je Ankona (oko 1h vožnje).', c:'Urbino', k:'own', t:'1h'},
@@ -3500,7 +2055,7 @@ const AIRPORT_DB = {
   'halstat': {nearest:'Salcburg', note:'Halštat nema svoj aerodrom — najbliži je Salcburg (oko 1h vožnje).', c:'Halštat', k:'own', t:'1h'},
   'zeloamze': {nearest:'Salcburg', note:'Cel am Ze nema svoj aerodrom — najbliži je Salcburg (oko 1h15 vožnje).', c:'Cel am Ze', k:'own', t:'1h15'},
   'kicbuel': {nearest:'Insbruk', note:'Kicbuel nema svoj aerodrom — najbliži je Insbruk (oko 1h vožnje), Salcburg je alternativa.', c:'Kicbuel', k:'own', t:'1h', alt:'Salcburg'},
-  'sanktanton': {nearest:'Insbruk', note:'Sankt Anton am Arlberg nema svoj aerodrom — najbliži je Insbruk (oko 1h15 vožnje), Cirih je alternativa preko granice.', i18n:{en:'St. Anton am Arlberg has no airport of its own — the nearest is Innsbruck (about 1 h 15 min by car); Zurich is an alternative across the border.', ru:'Санкт-Антон-ам-Арльберг: собственного аэропорта нет, ближайший — Инсбрук (около 1 ч 15 мин на машине); альтернатива через границу — Цюрих.'}},
+  'sanktanton': {nearest:'Insbruk'},
   'baden kod beca': {nearest:'Beč', note:'Baden kod Beča nema svoj aerodrom — najbliži je Beč (oko 30 min vožnje).', c:'Baden kod Beča', k:'own', t:'30 min'},
   'melk': {nearest:'Beč', note:'Melk nema svoj aerodrom — najbliži je Beč (oko 1h15 vožnje).', c:'Melk', k:'own', t:'1h15'},
   'verfen': {nearest:'Salcburg', note:'Verfen nema svoj aerodrom — najbliži je Salcburg (oko 45 min vožnje).', c:'Verfen', k:'own', t:'45 min'},
@@ -3565,7 +2120,7 @@ const AIRPORT_DB = {
   'lemans': {nearest:'Pariz', note:'Le Mans nema svoj aerodrom sa redovnim letovima — najbliži je Pariz (oko 2h vožnje), Tur je alternativa.', c:'Le Mans', k:'sched', t:'2h', alt:'Tur'},
   'amjen': {nearest:'Pariz', note:'Amjen nema svoj aerodrom — najbliži je Pariz (oko 1h30 vožnje).', c:'Amjen', k:'own', t:'1h30'},
   'orlean': {nearest:'Pariz', note:'Orlean nema svoj aerodrom — najbliži je Pariz (oko 1h30 vožnje).', c:'Orlean', k:'own', t:'1h30'},
-  'mec': {nearest:'Nansi', note:'Mec deli aerodrom sa Nansijem (Metz-Nancy-Loren), udaljen oko 40 min vožnje.', i18n:{en:'Metz shares an airport with Nancy (Metz-Nancy-Lorraine), about 40 min by car.', ru:'Мец делит аэропорт с Нанси (Мец — Нанси — Лотарингия), около 40 мин на машине.'}},
+  'mec': {nearest:'Nansi'},
   // --- Nemačka: dodatni aerodromi ---
   'nirnberg': {hasAirport:true, limited:true},
   'hanover': {hasAirport:true, limited:true},
@@ -3584,7 +2139,7 @@ const AIRPORT_DB = {
   'kasel': {hasAirport:true, limited:true},
   // --- Nemačka: bez sopstvenog aerodroma ---
   'hajdelberg': {nearest:'Frankfurt', note:'Hajdelberg nema svoj aerodrom — najbliži je Frankfurt (oko 1h vožnje).', c:'Hajdelberg', k:'own', t:'1h'},
-  'bon': {nearest:'Keln', note:'Bon nema svoj aerodrom — aerodrom Keln praktično nosi i njegovo ime (Keln/Bon), udaljen oko 30 min vožnje.', i18n:{en:'Bonn has no airport of its own — Cologne airport practically carries its name too (Cologne/Bonn), about 30 min by car.', ru:'В Бонне нет собственного аэропорта — аэропорт Кёльна фактически носит и его имя (Кёльн/Бонн), около 30 мин на машине.'}},
+  'bon': {nearest:'Keln'},
   'visbaden': {nearest:'Frankfurt', note:'Visbaden nema svoj aerodrom — najbliži je Frankfurt (oko 40 min vožnje).', c:'Visbaden', k:'own', t:'40 min'},
   'majnc': {nearest:'Frankfurt', note:'Majnc nema svoj aerodrom — najbliži je Frankfurt (oko 45 min vožnje).', c:'Majnc', k:'own', t:'45 min'},
   'ahen': {nearest:'Keln', note:'Ahen nema svoj aerodrom — najbliži je Keln/Bon (oko 1h vožnje).', c:'Ahen', k:'own', t:'1h', nn:'Keln/Bon'},
@@ -3597,13 +2152,13 @@ const AIRPORT_DB = {
   'kemnic': {nearest:'Lajpcig', note:'Kemnic nema svoj aerodrom sa redovnim letovima — najbliži je Lajpcig (oko 1h vožnje).', c:'Kemnic', k:'sched', t:'1h'},
   'ulm': {nearest:'Stutgart', note:'Ulm nema svoj aerodrom — najbliži je Štutgart (oko 1h vožnje).', c:'Ulm', k:'own', t:'1h', nn:'Štutgart'},
   'frajburg': {nearest:'Bazel', note:'Frajburg nema svoj aerodrom — najbliži je Bazel (oko 1h vožnje).', c:'Frajburg', k:'own', t:'1h'},
-  'konstanc': {nearest:'Fridrihshafen', note:'Konstanc nema svoj aerodrom — najbliži je Fridrihshafen (oko 40 min vožnje), Cirih je alternativa preko granice.', i18n:{en:'Konstanz has no airport of its own — the nearest is Friedrichshafen (about 40 min by car); Zurich is an alternative across the border.', ru:'Констанц: собственного аэропорта нет, ближайший — Фридрихсхафен (около 40 мин на машине); альтернатива через границу — Цюрих.'}},
+  'konstanc': {nearest:'Fridrihshafen'},
   // --- Holandija: dodatni aerodromi ---
   'ajndhoven': {hasAirport:true, limited:true},
   'mastriht': {hasAirport:true, limited:true},
   'groningen': {hasAirport:true, limited:true},
   // --- Holandija: bez sopstvenog aerodroma ---
-  'hag': {nearest:'Roterdam', note:'Hag deli aerodrom sa Roterdamom (Rotterdam-Hag), udaljen oko 25 min vožnje.', i18n:{en:'The Hague shares an airport with Rotterdam (Rotterdam The Hague), about 25 min by car.', ru:'Гаага делит аэропорт с Роттердамом (Роттердам — Гаага), около 25 мин на машине.'}},
+  'hag': {nearest:'Roterdam'},
   'utreht': {nearest:'Amsterdam', note:'Utreht nema svoj aerodrom — najbliži je Amsterdam (oko 30 min vožnje).', c:'Utreht', k:'own', t:'30 min'},
   // --- Norveška: dodatni aerodromi ---
   'bergen': {hasAirport:true, limited:true},
@@ -3619,7 +2174,7 @@ const AIRPORT_DB = {
   'svalbard': {hasAirport:true, limited:true},
   // --- Norveška: bez sopstvenog aerodroma ---
   'lilehamer': {nearest:'Oslo', note:'Lilehamer nema svoj aerodrom — najbliži je Oslo (oko 2h vožnje).', c:'Lilehamer', k:'own', t:'2h'},
-  'gejrangerfjord': {nearest:'Olesund', note:'Gejrangerfjord nema svoj aerodrom — najbliži je Olesund (oko 2h vožnje, uz trajekt).', i18n:{en:'Geirangerfjord has no airport of its own — the nearest is Ålesund (about 2 h by car, including a ferry).', ru:'Гейрангер-фьорд: собственного аэропорта нет, ближайший — Олесунн (около 2 ч на машине, с паромом).'}},
+  'gejrangerfjord': {nearest:'Olesund'},
   // --- Švedska: dodatni aerodromi ---
   'malme': {hasAirport:true, limited:true},
   'umeo': {hasAirport:true, limited:true},
@@ -3673,26 +2228,30 @@ const AIRPORT_DB = {
   //     nema redovnih putničkih letova ni sa jednog ukrajinskog aerodroma dok
   //     traje rat — zato se ovde ne tretiraju kao hasAirport:true, već se
   //     korisniku predlaže najbliži aerodrom u susednoj zemlji. ---
-  'kijev': {nearest:'Varsava', note:'Kijev nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Varšava (oko 8h vožnje), realnije je razmotriti voz/autobus preko Poljske.', i18n:{en:'Kyiv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Warsaw (about 8 h by car); it is more realistic to consider a train or bus via Poland.', ru:'В Киеве нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года. Ближайший действующий аэропорт — Варшава (около 8 ч на машине); реалистичнее рассмотреть поезд или автобус через Польшу.'}},
-  'lavov': {nearest:'Zesuv', note:'Lavov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Žešuv u Poljskoj (oko 2h vožnje).', i18n:{en:'Lviv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Rzeszów in Poland (about 2 h by car).', ru:'Во Львове нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года. Ближайший действующий аэропорт — Жешув в Польше (около 2 ч на машине).'}},
-  'odesa': {nearest:'Kisinjev', note:'Odesa nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Kišinjev u Moldaviji (oko 3h vožnje).', i18n:{en:'Odesa has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Chișinău in Moldova (about 3 h by car).', ru:'В Одессе нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года. Ближайший действующий аэропорт — Кишинёв в Молдове (около 3 ч на машине).'}},
-  'harkov': {nearest:'Varsava', note:'Harkov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022, a grad je blizu ratne zone.', i18n:{en:'Kharkiv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022, and the city is close to the war zone.', ru:'В Харькове нет действующего аэропорта — воздушное пространство Украины закрыто для гражданского сообщения с 2022 года, а город находится вблизи зоны боевых действий.'}}
+  'kijev': {nearest:'Varsava'},
+  'lavov': {nearest:'Zesuv'},
+  'odesa': {nearest:'Kisinjev'},
+  'harkov': {nearest:'Varsava'}
 };
-/* Tekst napomene za grad bez aerodroma, na trenutnom jeziku. Srpski koristi
-   originalni info.note; en/ru se sklapaju iz strukturiranih polja (c = grad,
-   k = vrsta "nema ...", t = vreme vožnje, nn = ime aerodroma ako se razlikuje
-   od `nearest`, cc = država, alt = alternativa) ili iz ručno prevedenog
-   info.i18n za napomene sa posebnom formulacijom. */
+Object.keys(AIRPORT_DB).forEach(k => { AIRPORT_DB[k].slug = k; });
+/* Tekst napomene za grad bez aerodroma, na trenutnom jeziku.
+   1) Napomene sa posebnom formulacijom žive u locales/*.json pod
+      'airport_note.<slug>' (srpski izvor + prevodi; slug = ključ u AIRPORT_DB).
+   2) Ostale: srpski koristi originalni info.note; drugi jezici se sklapaju iz
+      strukturiranih polja (c = grad, k = vrsta "nema ...", t = vreme vožnje,
+      nn = ime aerodroma ako se razlikuje od `nearest`, cc = država,
+      alt = alternativa) preko šablona airport_note_tpl. */
 function airportNoteText(info){
   if (!info) return '';
   const lang = getLang();
-  if (lang === 'sr') return info.note || '';
-  if (info.i18n && info.i18n[lang]) return info.i18n[lang];
+  const special = info.slug ? 'airport_note.' + info.slug : null;
+  if (lang === 'sr') return (special && I18N.sr[special]) || info.note || '';
+  if (special && I18N[lang] && I18N[lang][special]) return I18N[lang][special];
   if (info.c && info.k && info.t){
     let near = cityLabel(info.nn || info.nearest);
     if (info.cc){
-      const cc = COUNTRY_LOC_L10N[info.cc];
-      near += ' ' + t('airport_in') + ' ' + (cc ? cc[lang === 'ru' ? 1 : 0] : info.cc);
+      const ccName = I18N[lang] && I18N[lang]['country_loc.' + info.cc];
+      near += ' ' + t('airport_in') + ' ' + (ccName || info.cc);
     }
     return tf('airport_note_tpl', {
       city: cityLabel(info.c),
@@ -3702,7 +2261,7 @@ function airportNoteText(info){
       alt: info.alt ? tf('airport_note_alt', {alt: cityLabel(info.alt)}) : ''
     });
   }
-  return info.note || '';
+  return (special && I18N.sr[special]) || info.note || '';
 }
 /* Nalazi unos u AIRPORT_DB za dati grad (poredi normalizovano ime, dozvoljava
    da grad bude uneto kao deo dužeg stringa, npr. "Bar, Crna Gora"). Vraća null
@@ -5315,13 +3874,9 @@ const MATCH_VIBE_LABELS = {
   get sea(){ return t('mvibe_sea'); }, get city(){ return t('mvibe_city'); }, get nature(){ return t('mvibe_nature'); },
   get nightlife(){ return t('mvibe_nightlife'); }, get mix(){ return t('mvibe_mix'); }
 };
-// sr: nominativ ("sezona za maj"), en: naziv meseca, ru: predloški padež ("ехать в мае").
-const MATCH_MONTH_NAMES_L10N = {
-  sr:['januar','februar','mart','april','maj','jun','jul','avgust','septembar','oktobar','novembar','decembar'],
-  en:['January','February','March','April','May','June','July','August','September','October','November','December'],
-  ru:['январе','феврале','марте','апреле','мае','июне','июле','августе','сентябре','октябре','ноябре','декабре']
-};
-function matchMonthName(month){ return (MATCH_MONTH_NAMES_L10N[getLang()] || MATCH_MONTH_NAMES_L10N.sr)[month - 1]; }
+// Naziv meseca u obliku koji traži rečenica mreason_season (npr. sr: "sezona za maj",
+// ru: predloški padež). Vrednosti su u locales/*.json pod 'match_month.1'..'match_month.12'.
+function matchMonthName(month){ return t('match_month.' + month); }
 
 // Deo bodovanja koji NE zavisi od cene (poklapanje sa odgovorima,
 // sezonom i dužinom puta) — cena/budžet se dodaje posebno u
@@ -5666,8 +4221,8 @@ function showResultsError(){
   body.classList.remove('rb-hidden', 'rb-swap-out');
   body.classList.add('rb-reveal');
   body.innerHTML = '<div class="disclaimer" role="alert" style="text-align:center;padding:18px 12px;">'
-    + '<p style="margin:0 0 10px;">' + L3('Nešto nije u redu i ponude se nisu učitale.', 'Something went wrong and the offers didn’t load.', 'Что-то пошло не так, и предложения не загрузились.') + '</p>'
-    + '<button type="button" class="pkg-alert-btn" onclick="runSearch(false)">' + L3('Pokušaj ponovo', 'Try again', 'Повторить') + '</button></div>';
+    + '<p style="margin:0 0 10px;">' + t('offers_load_error') + '</p>'
+    + '<button type="button" class="pkg-alert-btn" onclick="runSearch(false)">' + t('offers_retry') + '</button></div>';
 }
 // Destinacija koju ne prepoznajemo ni u jednoj našoj bazi — korisniku javljamo
 // da je ponuda okvirna, umesto da tiho prikažemo izmišljen "<grad> Hotel".
@@ -5699,16 +4254,13 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
   window._lastSearchPkgs = pkgs;
   window._lastSearchCtx = {dest, from, to, adults, nights, flags};
 
-  document.getElementById('ctaTitle').textContent = L3(dest + ' te čeka.', cityLabel(dest) + ' is waiting for you.', cityLabel(dest) + ' ждёт тебя.');
+  document.getElementById('ctaTitle').textContent = tf('cta_title', {dest: cityLabel(dest)});
   document.getElementById('ctaDesc').textContent = ctaCopy(dest);
 
   const head = document.getElementById('resultsHead');
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
-  const unknownNote = isKnownDestination(dest) ? '' : L3(
-    'Ne prepoznajemo tačno „' + dest + '“ — proveri pisanje. Ponuda je okvirna, a linkovi vode na opštu pretragu partnera.',
-    'We don’t recognise “' + dest + '” exactly — check the spelling. The offer is approximate and links lead to the partner’s general search.',
-    'Мы не узнаём «' + dest + '» точно — проверь написание. Предложение приблизительное, а ссылки ведут на общий поиск партнёра.');
+  const unknownNote = isKnownDestination(dest) ? '' : tf('unknown_dest_note', {dest: dest});
   const notes = [
     unknownNote ? `<div class="plan-note">🔎 ${escapeHtml(unknownNote)}</div>` : '',
     altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
@@ -6319,12 +4871,12 @@ function validateSearchInputs(extra){
   const flight = on('flight'), hotel = on('hotel');
   const car = on('car') || !!extra.car, activity = on('activity') || !!extra.activity;
   const isDate = v => /^\d{4}-\d{2}-\d{2}$/.test(v || '') && !isNaN(new Date(v));
-  if (!dest) return {ok:false, focus:'dest', msg:L3('Upiši destinaciju da bismo pronašli ponude.', 'Enter a destination so we can find offers.', 'Укажи направление, чтобы мы нашли предложения.')};
-  if (flight && !origin) return {ok:false, focus:'origin', msg:L3('Upiši polazak — bez njega ne možemo da izračunamo let.', 'Enter where you depart from — we need it to price the flight.', 'Укажи пункт вылета — без него мы не можем рассчитать перелёт.')};
-  if (!isDate(from) || !isDate(to)) return {ok:false, focus:'form', msg:L3('Izaberi datume putovanja.', 'Pick your travel dates.', 'Выбери даты поездки.')};
-  if (to <= from) return {ok:false, focus:'form', msg:L3('Datum povratka mora biti posle datuma polaska.', 'The return date must be after the departure date.', 'Дата возвращения должна быть позже даты вылета.')};
-  if (extra.checkPast && from < localTodayStr()) return {ok:false, focus:'form', msg:L3('Datum polaska je u prošlosti — izaberi nove datume.', 'The departure date is in the past — pick new dates.', 'Дата вылета уже прошла — выбери новые даты.')};
-  if (!(flight || hotel || car || activity)) return {ok:false, focus:'form', msg:L3('Uključi bar jednu uslugu: let, smeštaj, auto ili aktivnosti.', 'Turn on at least one service: flights, stay, car or activities.', 'Включи хотя бы одну услугу: перелёт, жильё, авто или активности.')};
+  if (!dest) return {ok:false, focus:'dest', msg:t('val_dest_missing')};
+  if (flight && !origin) return {ok:false, focus:'origin', msg:t('val_origin_missing')};
+  if (!isDate(from) || !isDate(to)) return {ok:false, focus:'form', msg:t('val_dates_missing')};
+  if (to <= from) return {ok:false, focus:'form', msg:t('val_return_before_departure')};
+  if (extra.checkPast && from < localTodayStr()) return {ok:false, focus:'form', msg:t('val_departure_in_past')};
+  if (!(flight || hotel || car || activity)) return {ok:false, focus:'form', msg:t('val_no_service')};
   return {ok:true};
 }
 function focusSearchField(which){
@@ -7312,8 +5864,8 @@ function updateCtaBanner(){
   const ctaDest = pickCtaDestFromTyping() || state.lastDest || '';
   if (ctaTitleEl){
     ctaTitleEl.textContent = ctaDest
-      ? L3(ctaDest + ' te čeka.', cityLabel(ctaDest) + ' is waiting for you.', cityLabel(ctaDest) + ' ждёт тебя.')
-      : L3('Sledeća destinacija te čeka.', 'Your next destination is waiting.', 'Следующее направление уже ждёт.');
+      ? tf('cta_title', {dest: cityLabel(ctaDest)})
+      : t('cta_next_destination');
   }
   if (ctaDescEl) ctaDescEl.textContent = ctaCopy(ctaDest);
 }
@@ -8223,7 +6775,7 @@ function runPassportCheck(){
 }
 const langSwitchBtn = document.getElementById('langSwitchBtn');
 if (langSwitchBtn) langSwitchBtn.addEventListener('click', () => {
-  const order = ['sr', 'en', 'ru'];
+  const order = I18N_LANGS.map(l => l.code);
   const next = order[(order.indexOf(getLang()) + 1) % order.length];
   setLang(next);
 });
