@@ -172,6 +172,7 @@ const I18N = {
     f_flight_sub:'Direktni i sa presedanjem', f_hotel_sub:'Hoteli, apartmani, hosteli',
     f_car_name:'Auto', f_car_sub:'Preuzimanje na aerodromu',
     f_tolls_name:'Putarine', f_tolls_sub:'Procena po ruti i državi',
+    f_tax_name:'Boravišna taksa', f_tax_sub:'Po osobi, po noći — plaća se u hotelu',
     f_activity_name:'Aktivnosti', f_activity_sub:'Karte i ture unapred',
     f_insurance_name:'Osiguranje', f_insurance_sub:'Zdravstveno i za otkazivanje',
     f_esim_sub:'Internet od sletanja',
@@ -306,6 +307,7 @@ const I18N = {
     f_flight_sub:'Direct and with stopovers', f_hotel_sub:'Hotels, apartments, hostels',
     f_car_name:'Car', f_car_sub:'Airport pickup',
     f_tolls_name:'Tolls', f_tolls_sub:'Estimated by route and country',
+    f_tax_name:'Tourist tax', f_tax_sub:'Per person, per night — paid at the hotel',
     f_activity_name:'Activities', f_activity_sub:'Tickets and tours in advance',
     f_insurance_name:'Insurance', f_insurance_sub:'Medical and cancellation cover',
     f_esim_sub:'Internet from landing',
@@ -439,6 +441,7 @@ const I18N = {
     f_flight_sub:'Прямые и с пересадками', f_hotel_sub:'Отели, апартаменты, хостелы',
     f_car_name:'Авто', f_car_sub:'Получение в аэропорту',
     f_tolls_name:'Дорожные сборы', f_tolls_sub:'Оценка по маршруту и стране',
+    f_tax_name:'Туристический сбор', f_tax_sub:'На человека, за ночь — оплачивается в отеле',
     f_activity_name:'Активности', f_activity_sub:'Билеты и туры заранее',
     f_insurance_name:'Страховка', f_insurance_sub:'Медицинская и на случай отмены',
     f_esim_sub:'Интернет сразу по прилёту',
@@ -4543,7 +4546,7 @@ document.getElementById('searchForm').addEventListener('submit', function(e){
 // kasnije u builderState) ne bi dobilo fallback — ostalo bi kakvo je bilo
 // pre poziva (stanje iz prethodno učitanog aranžmana ili undefined), što bi
 // computeCustomPackage moglo da pretvori u NaN cene.
-const BUILDER_ADDON_RATES = { insurance: 18, esim: 9, putarina: 18, transferi: 25 }; // insurance/esim/transferi po osobi, putarina paušalno
+const BUILDER_ADDON_RATES = { insurance: 18, esim: 9, putarina: 18, transferi: 25, touristTax: 2 }; // insurance/esim/transferi po osobi, putarina paušalno, touristTax po osobi po noći
 const BUILDER_DEFAULTS = {
   includeFlight: true,
   flightPref: 'direct',
@@ -4558,6 +4561,7 @@ const BUILDER_DEFAULTS = {
   esim: false,
   putarina: false,
   transferi: false,
+  touristTax: false,
   budget: null
 };
 const builderState = Object.assign({}, BUILDER_DEFAULTS);
@@ -4679,6 +4683,9 @@ function computeCustomPackage(sel, ctx){
   // transferi (aerodrom–smeštaj, cena po osobi), isti obrazac kao gore.
   const putarinaCost = sel.putarina ? BUILDER_ADDON_RATES.putarina : 0;
   const transferiCost = sel.transferi ? BUILDER_ADDON_RATES.transferi * ctx.adults : 0;
+  // Boravišna taksa (city/tourist tax) — po osobi, po noći; naplaćuje se na
+  // licu mesta u hotelu, van same cene smeštaja, zato je poseban dodatak.
+  const touristTaxCost = sel.touristTax ? Math.round(BUILDER_ADDON_RATES.touristTax * ctx.adults * ctx.nights) : 0;
 
   // Isti dnevni tržišni faktor kao u gotovim ponudama (vidi marketFactor) —
   // primenjen na sve stavke osim osiguranja/eSIM-a, koji su fiksni dodaci
@@ -4691,7 +4698,7 @@ function computeCustomPackage(sel, ctx){
   const carExtrasF = Math.round(carExtras * factor);
   const bookingFeeF = Math.round(bookingFee * factor);
 
-  const total = flightPriceF + hotelPriceF + carPriceF + activityPriceF + carExtrasF + bookingFeeF + insuranceCost + esimCost + putarinaCost + transferiCost;
+  const total = flightPriceF + hotelPriceF + carPriceF + activityPriceF + carExtrasF + bookingFeeF + insuranceCost + esimCost + putarinaCost + transferiCost + touristTaxCost;
 
   return {
     flight: {price:flightPriceF, name:flightName, sub:flightSub},
@@ -4700,7 +4707,7 @@ function computeCustomPackage(sel, ctx){
     activity: {price:activityPriceF, count:sel.activityCount},
     carExtras: {price:carExtrasF},
     bookingFee: {price:bookingFeeF},
-    insuranceCost, esimCost, putarinaCost, transferiCost,
+    insuranceCost, esimCost, putarinaCost, transferiCost, touristTaxCost,
     total
   };
 }
@@ -4719,6 +4726,7 @@ function renderBuilder(){
   rows.push(['🧾', 'Taksa za rezervaciju', pkg.bookingFee.price]);
   if (builderState.insurance) rows.push(['🛡️', t('f_insurance_name'), pkg.insuranceCost]);
   if (builderState.putarina) rows.push(['🛣️', t('f_tolls_name'), pkg.putarinaCost]);
+  if (builderState.touristTax) rows.push(['🏛️', t('f_tax_name'), pkg.touristTaxCost]);
   if (builderState.esim) rows.push(['📶', 'eSIM', pkg.esimCost]);
   if (builderState.transferi) rows.push(['🚐', t('f_transfer_name'), pkg.transferiCost]);
 
@@ -4884,7 +4892,7 @@ actCountInput.addEventListener('blur', ()=>{
 });
 
 // Prosti dodaci bez pod-opcija: osiguranje / putarine / eSIM / transferi.
-[['insuranceChk','insurance'], ['putarinaChk','putarina'], ['esimChk','esim'], ['transferiChk','transferi']].forEach(([id, key])=>{
+[['insuranceChk','insurance'], ['putarinaChk','putarina'], ['touristTaxChk','touristTax'], ['esimChk','esim'], ['transferiChk','transferi']].forEach(([id, key])=>{
   document.getElementById(id).addEventListener('change', (e)=>{
     builderState[key] = e.target.checked;
     renderBuilder();
@@ -6397,6 +6405,7 @@ function syncBuilderPanelUi(){
 
   setChk('insuranceChk', builderState.insurance);
   setChk('putarinaChk', builderState.putarina);
+  setChk('touristTaxChk', builderState.touristTax);
   setChk('esimChk', builderState.esim);
   setChk('transferiChk', builderState.transferi);
   document.getElementById('budgetInput').value = builderState.budget || '';
