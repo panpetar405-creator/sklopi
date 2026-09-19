@@ -12,6 +12,9 @@
       trajanje, cena po osobi u jednom pravcu, prevoznici, status linije).
    2) transportCardHtml(dest, adults, origin, flags) — velika kartica ispod
       ponuda na običnoj pretrazi. Prikazuje se SAMO kad let nije izabran.
+      Sadrži: AUTO (razdaljina, vožnja, gorivo — automatski za bilo koja dva
+      mesta, vidi TRANSPORT_ROUTING_URL niže) i AUTOBUS/VOZ (ručna baza, samo
+      polazak iz Beograda).
    3) transportCompactHtml(dest, adults) — kratak blok za kartice
       predloga u "Pronađi svoj izlet".
 
@@ -52,6 +55,23 @@
 const TRANSPORT_DATA_CHECKED = 'septembar 2026';
 const TRANSPORT_PARTNER_URL = 'https://www.omio.com/';
 const TRANSPORT_NEAR_KM = 650;
+
+/* ---- AUTO: razdaljina, trajanje i gorivo za bilo koja dva mesta ----
+   Koordinate: Open-Meteo geokodiranje (isti servis koji sajt već koristi za
+   vremensku prognozu). Ruta: javni OSRM server (router.project-osrm.org) —
+   ❌ NAMENJEN PROBI: pre pravog saobraćaja proveri uslove korišćenja, ili
+   postavi sopstveni OSRM / OpenRouteService (besplatan ključ, dnevno
+   ograničenje) i samo promeni TRANSPORT_ROUTING_URL. Ako ruta ne uspe,
+   koristi se PROCENA po vazdušnoj liniji (označena kao procena).
+   Putarine se NE računaju (nijedan besplatan servis ih ne daje pouzdano).
+   Cena goriva i potrošnja su procene — ažuriraj po potrebi. */
+const TRANSPORT_ROUTING_URL = 'https://router.project-osrm.org/route/v1/driving/';
+const TRANSPORT_FUEL_EUR_PER_L = 1.6;            // prosečna cena litra goriva (EUR) — AŽURIRAJ
+const TRANSPORT_CONSUMPTION_L_100 = [6.0, 8.5];  // potrošnja od-do, l/100 km
+const TRANSPORT_CAR_SEATS = 4;                   // koliko putnika staje u jedan auto
+const TRANSPORT_CAR_MAX_KM = 2500;               // dalje od ovoga red za auto se ne prikazuje
+const TRANSPORT_AIR_TO_ROAD = 1.35;              // faktor vazdušna linija → put (samo za procenu)
+const TRANSPORT_AVG_KMH = 70;                    // prosečna brzina (samo za procenu)
 
 const TRANSPORT_ROUTES = {
   // ---- Autobus: Obilet/Omio/FlixBus, polasci sa BAS-a (Novi Beograd) ----
@@ -257,31 +277,151 @@ function _tcFootHtml(){
     {date: TRANSPORT_DATA_CHECKED})) + '</div>';
 }
 
-// Velika kartica ispod ponuda (obična pretraga). Vraća '' kad nema šta pošteno da se kaže.
+// ---------- AUTO: geokodiranje + ruta (async, sa kešom) ----------
+const _tcGeoCache = new Map(), _tcRouteCache = new Map();
+async function _tcFetchJson(url, ms){
+  const ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const timer = ctl ? setTimeout(() => ctl.abort(), ms || 7000) : null;
+  try {
+    const res = await fetch(url, ctl ? {signal: ctl.signal} : undefined);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } finally { if (timer) clearTimeout(timer); }
+}
+function _tcGeocode(nameRaw){
+  const name = String(nameRaw || '').split(',')[0].trim();
+  if (!name) return Promise.resolve(null);
+  const key = normalizeSr(name);
+  if (_tcGeoCache.has(key)) return _tcGeoCache.get(key);
+  const job = (async () => {
+    let ref = null;
+    try { const i = iataFor(realArrivalAirportFor(name)); if (i && AIRPORT_COORDS[i]) ref = AIRPORT_COORDS[i]; } catch (e){}
+    for (const lang of ['&language=sr', '&language=en', '']){
+      let data;
+      try { data = await _tcFetchJson('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(name) + '&count=10' + lang + '&format=json'); }
+      catch (e){ continue; }
+      let results = (data && data.results) || [];
+      if (!results.length) continue;
+      // Poznat aerodrom u blizini = razrešava dvosmislena imena (npr. "Bar" u Crnoj Gori).
+      if (ref){
+        const near = results.filter(r => haversineKm(ref, [r.latitude, r.longitude]) <= 200);
+        if (near.length) results = near;
+      }
+      const best = pickBestLocationMatch(results, name);
+      if (best) return {lat: best.latitude, lon: best.longitude};
+    }
+    return null;
+  })();
+  _tcGeoCache.set(key, job);
+  job.then(v => { if (!v) _tcGeoCache.delete(key); });
+  return job;
+}
+// Vraća {km, min, approx} ili null (nema rute / previše daleko).
+function _tcRoute(fromRaw, toRaw){
+  const key = normalizeSr(String(fromRaw).split(',')[0]) + '>' + normalizeSr(String(toRaw).split(',')[0]);
+  if (_tcRouteCache.has(key)) return _tcRouteCache.get(key);
+  const job = (async () => {
+    const [a, b] = await Promise.all([_tcGeocode(fromRaw), _tcGeocode(toRaw)]);
+    if (!a || !b) return null;
+    const air = haversineKm([a.lat, a.lon], [b.lat, b.lon]);
+    if (air < 3) return null;
+    try {
+      const data = await _tcFetchJson(TRANSPORT_ROUTING_URL + a.lon + ',' + a.lat + ';' + b.lon + ',' + b.lat + '?overview=false&alternatives=false&steps=false', 8000);
+      if (data && data.code === 'Ok' && data.routes && data.routes[0]){
+        const km = data.routes[0].distance / 1000, min = data.routes[0].duration / 60;
+        return km > TRANSPORT_CAR_MAX_KM ? null : {km, min, approx:false};
+      }
+      if (data && data.code === 'NoRoute') return null; // npr. ostrvo — nema kopnene veze
+    } catch (e){ /* mreža/CORS/ograničenje servisa → procena ispod */ }
+    const km = air * TRANSPORT_AIR_TO_ROAD;
+    if (km > TRANSPORT_CAR_MAX_KM) return null;
+    return {km, min: km / TRANSPORT_AVG_KMH * 60, approx:true};
+  })();
+  _tcRouteCache.set(key, job);
+  return job;
+}
+function _tcDur(min){
+  const h = Math.floor(min / 60), m = Math.round(min % 60 / 5) * 5;
+  const hh = m === 60 ? h + 1 : h, mm = m === 60 ? 0 : m;
+  return hh + ' h' + (mm ? ' ' + mm + ' min' : '');
+}
+
+function _tcCarPlaceholder(fromName, toName, adults){
+  return '<div class="tc-row tc-car" data-pending="1" data-from="' + escapeHtml(fromName) + '" data-to="' + escapeHtml(toName) + '" data-adults="' + escapeHtml(String(adults)) + '">' +
+    '<div class="tc-mode">🚗 ' + escapeHtml(_tt('transport_car', 'Auto')) + '</div>' +
+    '<div class="tc-meta" style="margin-top:0">' + escapeHtml(_tt('transport_car_loading', 'Računam rutu…')) + '</div></div>';
+}
+async function _tcHydrate(el){
+  if (!el || el.dataset.pending !== '1') return;
+  el.dataset.pending = '0';
+  const card = el.closest('.transport-card');
+  const fail = () => {
+    el.remove();
+    // Ako nema ni autobusa ni voza, a auto ne može (nepoznato mesto, ostrvo, previše daleko) — nema šta da se prikaže.
+    if (card && !card.querySelector('.tc-bus, .tc-train')) card.remove();
+  };
+  let r = null;
+  try { r = await _tcRoute(el.dataset.from, el.dataset.to); } catch (e){ r = null; }
+  if (!r) return fail();
+  const n = Math.max(1, Number(el.dataset.adults) || 1);
+  const cars = Math.ceil(n / TRANSPORT_CAR_SEATS);
+  const fLo = r.km * TRANSPORT_CONSUMPTION_L_100[0] / 100 * TRANSPORT_FUEL_EUR_PER_L;
+  const fHi = r.km * TRANSPORT_CONSUMPTION_L_100[1] / 100 * TRANSPORT_FUEL_EUR_PER_L;
+  const approx = r.approx ? _tt('transport_about', 'oko {x}', {x: ''}).trim() + ' ' : '';
+  const km = Math.round(r.km / 5) * 5;
+  const figs =
+    '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(_tt('transport_car_dist', 'Razdaljina')) + '</span><b>' + escapeHtml(approx + km + ' km') + '</b></div>' +
+    '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(_tt('transport_car_time', 'Vožnja')) + '</span><b>' + escapeHtml(approx + _tcDur(r.min)) + '</b></div>' +
+    '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(_tt('transport_car_fuel', 'Gorivo, jedan pravac')) + '</span><b>' + escapeHtml(_tcMoney(Math.round(fLo), Math.round(fHi))) + '</b></div>';
+  const rtLo = fLo * 2 * cars, rtHi = fHi * 2 * cars;
+  const what = cars > 1 ? tfLocal('transport_car_cars', '{n} vozila', {n: cars}) : _tt('transport_car_one', 'ceo auto');
+  let extra = '<div class="tc-group">' + escapeHtml(_tt('transport_car_rt', 'Povratno, {what}: oko {amount}', {what: what, amount: _tcMoney(Math.round(rtLo), Math.round(rtHi))})) + '</div>';
+  if (n > 1) extra += '<div class="tc-group">' + escapeHtml(_tt('transport_car_pp', 'Po osobi, povratno: oko {amount}', {amount: _tcMoney(Math.round(rtLo / n), Math.round(rtHi / n))})) + '</div>';
+  const notes = [_tt('transport_car_note', 'Vreme vožnje je bez zadržavanja na granicama i pauza. Putarine nisu uračunate — zavise od zemalja na ruti.')];
+  if (r.approx) notes.unshift(_tt('transport_car_approx', 'Procena po vazdušnoj liniji (ruta trenutno nije dostupna).'));
+  el.innerHTML = '<div class="tc-mode">🚗 ' + escapeHtml(_tt('transport_car', 'Auto')) + '</div>' +
+    '<div class="tc-figs">' + figs + '</div>' +
+    '<div class="tc-meta">' + notes.map(escapeHtml).join('<br>') + '</div>' + extra;
+}
+function tfLocal(key, fallback, vars){ return _tt(key, fallback, vars); }
+function _tcHydrateAll(){
+  document.querySelectorAll('.tc-car[data-pending="1"]').forEach(_tcHydrate);
+}
+// Kartica se ubacuje u DOM iz app.js (innerHTML) — osmatramo DOM i dopunjavamo red za auto.
+if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined'){
+  new MutationObserver(() => { if (document.querySelector('.tc-car[data-pending="1"]')) _tcHydrateAll(); })
+    .observe(document.documentElement, {childList:true, subtree:true});
+}
+
+// Velika kartica ispod ponuda (obična pretraga). Prikazuje se samo kad let NIJE izabran.
+// Red za AUTO važi za bilo koja dva mesta; autobus/voz samo za polazak iz Beograda (ručna baza).
 function transportCardHtml(destRaw, adults, originRaw, flags){
   try {
-    // Ko je označio let (avion), autobus i voz ga ne zanimaju — kartica se prikazuje
-    // samo kad let NIJE izabran (flags.flight === false).
+    // Ko je označio let (avion), autobus i voz ga ne zanimaju.
     if (flags && flags.flight) return '';
-    if (!_transportOriginIsBeograd(originRaw)) return '';
-    const hit = _transportLookup(destRaw);
-    const city = cityLabel(String(destRaw || '').split(',')[0].trim());
-    if (!hit){
-      if (!_transportIsNear(destRaw)) return '';
-      return '<section class="transport-card tc-empty">' +
-        '<div class="tc-head"><span class="tc-ico" aria-hidden="true">🚌</span><div>' +
-        '<h3>' + escapeHtml(_tt('transport_no_data_title', 'Autobusom ili vozom?')) + '</h3>' +
-        '<p class="tc-sub">' + escapeHtml(_tt('transport_no_data', 'Za rutu Beograd–{dest} još nemamo unete podatke o autobusu i vozu. Uporedi trajanje i cene pre nego što odlučiš.', {dest: city})) + '</p>' +
-        '</div></div>' + _tcCtaHtml() + _tcFootHtml() + '</section>';
-    }
+    const dest = String(destRaw || '').trim();
+    if (!dest) return '';
+    const fromBg = _transportOriginIsBeograd(originRaw);
+    const fromName = String(originRaw || '').trim() || 'Beograd';
+    const fromCity = cityLabel(fromName.split(',')[0].trim());
+    const destCity = cityLabel(dest.split(',')[0].trim());
+    const hit = fromBg ? _transportLookup(dest) : null;
     const rows = [];
-    if (hit.route.bus) rows.push(_tcRowHtml('bus', hit.route.bus, adults));
-    if (hit.route.train) rows.push(_tcRowHtml('train', hit.route.train, adults));
+    if (hit && hit.route.bus) rows.push(_tcRowHtml('bus', hit.route.bus, adults));
+    if (hit && hit.route.train) rows.push(_tcRowHtml('train', hit.route.train, adults));
+    rows.push(_tcCarPlaceholder(fromName, dest, adults));
+    if (!hit){
+      const key = fromBg ? 'transport_no_bus_data' : 'transport_bus_only_bg';
+      const txt = fromBg
+        ? 'Za autobus i voz na ovoj ruti još nemamo unete podatke.'
+        : 'Podaci o autobusu i vozu trenutno postoje samo za polazak iz Beograda.';
+      rows.push('<div class="tc-row"><div class="tc-meta" style="margin-top:0">' + escapeHtml(_tt(key, txt)) + '</div></div>');
+    }
     return '<section class="transport-card">' +
       '<div class="tc-head"><span class="tc-ico" aria-hidden="true">🚌</span><div>' +
-      '<h3>' + escapeHtml(_tt('transport_title', 'Bez aviona: Beograd → {dest}', {dest: city})) + '</h3>' +
-      '<p class="tc-sub">' + escapeHtml(_tt('transport_sub', 'Autobusom ili vozom, okvirno, za polazak iz Beograda')) + '</p>' +
-      '</div></div>' + rows.join('') + _tcCtaHtml() + (hit.route.bus ? _tcBasLinkHtml() : '') + _tcFootHtml() + '</section>';
+      '<h3>' + escapeHtml(_tt('transport_title', 'Bez aviona: {from} → {dest}', {from: fromCity, dest: destCity})) + '</h3>' +
+      '<p class="tc-sub">' + escapeHtml(_tt('transport_sub', 'Auto, autobus ili voz — okvirna procena')) + '</p>' +
+      '</div></div>' + rows.join('') + _tcCtaHtml() + (hit && hit.route.bus ? _tcBasLinkHtml() : '') + _tcFootHtml() + '</section>';
   } catch (e){
     console.warn('[sklopi] transport kartica nije iscrtana:', e);
     return '';
