@@ -5010,6 +5010,11 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
   document.getElementById('applyOptimize').addEventListener('click', ()=>{
     Object.assign(builderState, best.testSel);
     best.apply();
+    // Kartica je u ovom trenutku možda premeštena unutar "Prilagodi svoj
+    // plan" modala (klik na Start) — uskladi startPrefs sa optimizacijom,
+    // inače "Nastavi" ispod nje i dalje čita staru vrednost i ponude i
+    // dalje uključuju stavku koju je optimizacija upravo uklonila.
+    syncStartPrefsFromBuilderState();
     renderBuilder();
     showToast('Izlet ažuriran — ' + best.toastMsg);
   });
@@ -6438,6 +6443,50 @@ function syncBuilderStateFromStartPrefs(){
     budget: startPrefs.budget
   });
   syncBuilderPanelUi();
+}
+
+// Obrnuti smer od gornje funkcije: prepisuje builderState nazad u startPrefs
+// i osvežava izgled forme unutar "Prilagodi svoj plan" modala. Potrebno kad
+// se izlet menja DOK je kartica "Tvoj izlet" premeštena unutar modala (npr.
+// klik na "Primeni ovu izmenu" u optimizaciji) — bez ovoga bi klik na
+// "Nastavi" i dalje čitao staru vrednost iz startPrefs i ponude bi i dalje
+// uključivale stavku koju je optimizacija upravo uklonila.
+function syncStartPrefsFromBuilderState(){
+  Object.assign(startPrefs, {
+    hotelStars: builderState.hotelStars,
+    carPref: builderState.carPref,
+    activityCount: builderState.activityCount,
+    prioritizeRating: builderState.prioritizeRating,
+    prioritizeLocation: builderState.prioritizeLocation,
+    putarina: builderState.putarina,
+    touristTax: builderState.touristTax,
+    budget: builderState.budget
+  });
+
+  const setRadio = (name, val) => document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{ r.checked = (String(r.value) === String(val)); });
+  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+
+  setRadio('spHotelStarsRadio', startPrefs.hotelStars);
+  setChk('spPrioritizeRatingChk', startPrefs.prioritizeRating);
+  setChk('spPrioritizeLocationChk', startPrefs.prioritizeLocation);
+
+  const carOn = startPrefs.carPref !== 'none';
+  setChk('spCarInclude', carOn);
+  qSyncRow('sp-car', carOn);
+  setRadio('spCarPrefRadio', carOn ? startPrefs.carPref : 'small');
+  if (carOn) _spLastCarPref = startPrefs.carPref;
+
+  const actOn = startPrefs.activityCount > 0;
+  setChk('spActivitiesInclude', actOn);
+  qSyncRow('sp-activities', actOn);
+  const spActInput = document.getElementById('spActCountInput');
+  if (spActInput) spActInput.value = startPrefs.activityCount;
+  if (actOn) _spLastActivityCount = startPrefs.activityCount;
+
+  setChk('spPutarinaChk', startPrefs.putarina);
+  setChk('spTouristTaxChk', startPrefs.touristTax);
+  const spBudgetEl = document.getElementById('spBudgetInput');
+  if (spBudgetEl) spBudgetEl.value = startPrefs.budget || '';
 }
 
 // Dugme "Napravi izlet" UNUTAR "Prilagodi svoj plan" modala (iznad
