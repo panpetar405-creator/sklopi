@@ -386,14 +386,20 @@ async function _tcHydrate(el){
   const fHi = r.km * TRANSPORT_CONSUMPTION_L_100[1] / 100 * TRANSPORT_FUEL_EUR_PER_L;
   const approx = r.approx ? _tt('transport_about', 'oko {x}', {x: ''}).trim() + ' ' : '';
   const km = Math.round(r.km / 5) * 5;
+  const rtLo = fLo * 2 * cars, rtHi = fHi * 2 * cars;
+  // Gorivo je trošak VOZILA, ne putnika — deli se po broju kola (kad treba
+  // više od jednog, vidi TRANSPORT_CAR_SEATS), ne po broju osoba. Zato više
+  // nema "po osobi" reda — samo cena za ceo auto (ili sva potrebna vozila),
+  // u oba pravca: jedan smer i oba smera.
+  const rtLabel = cars > 1
+    ? _tt('transport_car_rt_label_cars', 'Cena, oba smera ({n} vozila)', {n: cars})
+    : _tt('transport_car_rt_label', 'Cena, oba smera');
   const figs =
     '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(_tt('transport_car_dist', 'Razdaljina')) + '</span><b>' + escapeHtml(approx + km + ' km') + '</b></div>' +
     '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(_tt('transport_car_time', 'Vožnja')) + '</span><b>' + escapeHtml(approx + _tcDur(r.min)) + '</b></div>' +
-    '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(_tt('transport_car_fuel', 'Gorivo, jedan pravac')) + '</span><b>' + escapeHtml(_tcMoney(Math.round(fLo), Math.round(fHi))) + '</b></div>';
-  const rtLo = fLo * 2 * cars, rtHi = fHi * 2 * cars;
-  const what = cars > 1 ? tfLocal('transport_car_cars', '{n} vozila', {n: cars}) : _tt('transport_car_one', 'ceo auto');
-  let extra = '<div class="tc-group">' + escapeHtml(_tt('transport_car_rt', 'Povratno, {what}: oko {amount}', {what: what, amount: _tcMoney(Math.round(rtLo), Math.round(rtHi))})) + '</div>';
-  if (n > 1) extra += '<div class="tc-group">' + escapeHtml(_tt('transport_car_pp', 'Po osobi, povratno: oko {amount}', {amount: _tcMoney(Math.round(rtLo / n), Math.round(rtHi / n))})) + '</div>';
+    '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(_tt('transport_car_fuel', 'Cena, jedan smer')) + '</span><b>' + escapeHtml(_tcMoney(Math.round(fLo), Math.round(fHi))) + '</b></div>' +
+    '<div class="tc-fig"><span class="tc-lab">' + escapeHtml(rtLabel) + '</span><b>' + escapeHtml(_tcMoney(Math.round(rtLo), Math.round(rtHi))) + '</b></div>';
+  const extra = '';
   const notes = [_tt('transport_car_note', 'Vreme vožnje je bez zadržavanja na granicama i pauza. Putarine nisu uračunate — zavise od zemalja na ruti.')];
   if (r.approx) notes.unshift(_tt('transport_car_approx', 'Procena po vazdušnoj liniji (ruta trenutno nije dostupna).'));
   const mapId = 'tcMap' + Math.random().toString(36).slice(2, 9);
