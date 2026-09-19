@@ -58,7 +58,12 @@ const TRANSPORT_PARTNER_URL = 'https://www.omio.com/';
 const TRANSPORT_NEAR_KM = 650;
 
 /* ---- AUTO: razdaljina, trajanje i gorivo za bilo koja dva mesta ----
-   Koordinate: Open-Meteo geokodiranje (isti servis koji sajt već koristi za
+   Koordinate: prvo poznati aerodrom (AIRPORT_COORDS, isti spisak kao za cenu
+   leta) ako je ime prepoznato — pouzdanije od tekstualne pretrage, jer
+   Open-Meteo/GeoNames često zna grad samo pod internacionalnim imenom
+   (npr. "Skopje", ne "Skoplje"), pa bi srpski naziv vratio 0 rezultata.
+   Za nepoznata imena (slobodno ukucano polazište bez svog aerodroma) i dalje
+   se koristi Open-Meteo geokodiranje (isti servis koji sajt već koristi za
    vremensku prognozu). Ruta: javni OSRM server (router.project-osrm.org) —
    ❌ NAMENJEN PROBI: pre pravog saobraćaja proveri uslove korišćenja, ili
    postavi sopstveni OSRM / OpenRouteService (besplatan ključ, dnevno
@@ -297,17 +302,20 @@ function _tcGeocode(nameRaw){
   const job = (async () => {
     let ref = null;
     try { const i = iataFor(realArrivalAirportFor(name)); if (i && AIRPORT_COORDS[i]) ref = AIRPORT_COORDS[i]; } catch (e){}
+    // Ako je ime prepoznato (isti spisak koji koristi cena leta), koordinate
+    // aerodroma su uređivački provereno TAČNE — koristimo ih direktno, bez
+    // Open-Meteo pretrage. Razlog: Open-Meteo/GeoNames zna grad samo pod
+    // internacionalnim imenom (npr. "Skopje"), pa srpski egzonim ("Skoplje")
+    // ume da vrati NULA rezultata i cela auto stavka onda tiho nestane —
+    // ovo je bio taj bug. Za slobodno ukucana mesta bez poznatog aerodroma
+    // (mali gradovi kao polazište) i dalje se ide na tekstualnu pretragu ispod.
+    if (ref) return {lat: ref[0], lon: ref[1]};
     for (const lang of ['&language=sr', '&language=en', '']){
       let data;
       try { data = await _tcFetchJson('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(name) + '&count=10' + lang + '&format=json'); }
       catch (e){ continue; }
       let results = (data && data.results) || [];
       if (!results.length) continue;
-      // Poznat aerodrom u blizini = razrešava dvosmislena imena (npr. "Bar" u Crnoj Gori).
-      if (ref){
-        const near = results.filter(r => haversineKm(ref, [r.latitude, r.longitude]) <= 200);
-        if (near.length) results = near;
-      }
       const best = pickBestLocationMatch(results, name);
       if (best) return {lat: best.latitude, lon: best.longitude};
     }
