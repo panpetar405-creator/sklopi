@@ -274,7 +274,7 @@ function _tcBasLinkHtml(){
 function _tcFootHtml(){
   return '<div class="tc-foot">' + escapeHtml(_tt('transport_disclaimer',
     'Okvirne vrednosti iz javno dostupnih izvora (provereno: {date}), ne stvarna ponuda prevoznika. Red vožnje i cene se menjaju — proveri pre kupovine.',
-    {date: TRANSPORT_DATA_CHECKED})) + '</div>';
+    {date: _tt('transport_checked_date', TRANSPORT_DATA_CHECKED)})) + '</div>';
 }
 
 // ---------- AUTO: geokodiranje + ruta (async, sa kešom) ----------
