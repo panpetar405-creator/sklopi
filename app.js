@@ -756,6 +756,20 @@ function pickBestLocationMatch(results, query){
   const DAY_NAMES = ['Pon','Uto','Sre','Čet','Pet','Sub','Ned'];
   const today = new Date(); today.setHours(0,0,0,0);
 
+  // Podrazumevani datumi su RELATIVNI na današnji dan (polazak za 14 dana,
+  // 4 noći) — ranije su u HTML-u bili tvrdo zadati (2026-10-01/05), pa bi
+  // posle tog datuma svaka nova pretraga tražila ručni izbor datuma.
+  // Polja su skrivena i pri svakom učitavanju kreću iz HTML default-a, pa
+  // ovde uvek postavljamo svež default (izbor korisnika se čuva tek posle
+  // učitavanja — kalendar i učitavanje sačuvanog izleta ih posle menjaju).
+  (function setRelativeDefaultDates(){
+    const isoLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const start = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
+    const end = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 18);
+    hiddenFrom.value = isoLocal(start);
+    hiddenTo.value = isoLocal(end);
+  })();
+
   function parseISODate(iso){
     const [y,m,d] = iso.split('-').map(Number);
     return new Date(y, m - 1, d);
