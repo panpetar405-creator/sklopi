@@ -617,6 +617,27 @@ SKLOPI<em>.</em>
 </button>
 </div>
 </div>
+<div class="section" id="attractions">
+<div class="section-head">
+<div class="eyebrow" id="attractionsEyebrow" data-i18n="eyebrow_attractions">U partnerstvu sa Viator</div>
+<h2 id="attractionsHead" data-i18n="h2_attractions">Sklopi svoju atrakciju.</h2>
+<p class="section-sub" data-i18n="attractions_sub">Koncerti, gondole, arene, podvodni svetovi i još hiljade doživljaja širom sveta — pronađi svoj i dodaj ga u plan.</p>
+</div>
+<div class="attractions-slider-wrap">
+<button type="button" class="attractions-arrow attractions-arrow--prev" id="attractionsPrev" aria-label="Prethodne atrakcije">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<div class="attractions-slider" id="attractionsSlider"></div>
+<button type="button" class="attractions-arrow attractions-arrow--next" id="attractionsNext" aria-label="Sledeće atrakcije">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+</div>
+<div class="attractions-dots" id="attractionsDots"></div>
+<button type="button" class="btn-alert attractions-see-all" id="attractionsSeeAllBtn" data-i18n="btn_see_all_attractions">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>
+Vidi sve atrakcije
+</button>
+</div>
 <div class="section saved-wrap">
 <div class="section-head">
 <div class="eyebrow" data-i18n="eyebrow_for_later">Za kasnije</div>
@@ -911,6 +932,33 @@ SKLOPI<em>.</em>
 <div class="alert-modal-row" id="greenCardRuleBox"></div>
 <p class="alert-modal-disclaimer" data-i18n="green_card_modal_disclaimer">⚠️ Opšte pravilo za vozila registrovana u Srbiji, radi orijentacije — pred put uvek potvrdi kod svog osiguravača ili AMSS-a, jer se sporazumi povremeno menjaju.</p>
 </section>
+</div>
+</div>
+<div class="results-backdrop" id="attractionsSheetBackdrop"></div>
+<div id="attractionsSheet">
+<div class="section">
+<div class="results-sheet-head">
+<button type="button" class="results-back-btn" id="attractionsSheetBackBtn" aria-label="Nazad na sajt">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+<span>Nazad</span>
+</button>
+</div>
+<div class="section-head" style="margin-bottom:22px;">
+<div class="eyebrow">U partnerstvu sa Viator</div>
+<h2>Sve atrakcije</h2>
+</div>
+<div class="attractions-filter-bar">
+<div class="attractions-filter-row">
+<label for="attractionsCountrySelect">Zemlja</label>
+<select id="attractionsCountrySelect" class="builder-input attractions-country-select">
+<option value="">Sve zemlje</option>
+</select>
+</div>
+<div class="attractions-chip-row" id="attractionsCategoryChips"></div>
+</div>
+<div class="attractions-grid" id="attractionsGrid"></div>
+<p class="attractions-empty" id="attractionsEmpty" hidden>Nema atrakcija za izabrani filter — probaj drugu kombinaciju.</p>
+<p class="alert-modal-disclaimer" style="margin-top:20px;">⚠️ Cene su ilustrativna procena. Tačna cena i dostupnost proveravaju se kod partnera (Viator) pre rezervacije.</p>
 </div>
 </div>
 <div class="results-backdrop" id="featureGuideBackdrop"></div>

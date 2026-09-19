@@ -7312,3 +7312,171 @@ window.onLangChange = function(lang){
   // poslednja stvarna destinacija → generički tekst bez imena grada).
   updateCtaBanner();
 };
+
+/* ==========================================================
+   "Sklopi svoju atrakciju" — slajder + sheet sa filterima
+   (Viator partner sekcija). Podaci ispod su PRIMER/MOCK radi
+   dizajna i UX toka — pre puštanja u produkciju treba ih
+   zameniti stvarnim Viator affiliate API/widget pozivom
+   (po zemlji/gradu/kategoriji), sa keširanjem odgovora.
+   ========================================================== */
+const ATTRACTIONS_DATA = [
+  {id:'a1', name:'Vožnja gondolom kroz kanale', city:'Venecija', country:'Italija', category:'gondole', categoryLabel:'Gondole i panorame', img:'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=70&auto=format&fit=crop', price:45, link:'https://www.viator.com/searchResults/all?text=Venice%20gondola'},
+  {id:'a2', name:'Koncert u Bečkoj filharmoniji', city:'Beč', country:'Austrija', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=70&auto=format&fit=crop', price:69, link:'https://www.viator.com/searchResults/all?text=Vienna%20concert'},
+  {id:'a3', name:'Ulaznica za Koloseum sa vodičem', city:'Rim', country:'Italija', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=70&auto=format&fit=crop', price:39, link:'https://www.viator.com/searchResults/all?text=Colosseum%20tour'},
+  {id:'a4', name:'Utakmica na Santiago Bernabeu', city:'Madrid', country:'Španija', category:'arene', categoryLabel:'Arene i sport', img:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=70&auto=format&fit=crop', price:120, link:'https://www.viator.com/searchResults/all?text=Bernabeu%20tour'},
+  {id:'a5', name:'Ronjenje na Velikom koralnom grebenu', city:'Kernс', country:'Australija', category:'voda', categoryLabel:'Vodene aktivnosti', img:'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&q=70&auto=format&fit=crop', price:159, link:'https://www.viator.com/searchResults/all?text=Great%20Barrier%20Reef%20diving'},
+  {id:'a6', name:'Noćna tura po Montmartru', city:'Pariz', country:'Francuska', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=70&auto=format&fit=crop', price:35, link:'https://www.viator.com/searchResults/all?text=Montmartre%20night%20tour'},
+  {id:'a7', name:'Paragliding iznad Interlakena', city:'Interlaken', country:'Švajcarska', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70&auto=format&fit=crop', price:189, link:'https://www.viator.com/searchResults/all?text=Interlaken%20paragliding'},
+  {id:'a8', name:'Degustacija tapasa u Trijani', city:'Sevilja', country:'Španija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=70&auto=format&fit=crop', price:55, link:'https://www.viator.com/searchResults/all?text=Seville%20tapas%20tour'},
+  {id:'a9', name:'Panoramski točak London Eye', city:'London', country:'Velika Britanija', category:'gondole', categoryLabel:'Gondole i panorame', img:'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=70&auto=format&fit=crop', price:32, link:'https://www.viator.com/searchResults/all?text=London%20Eye'},
+  {id:'a10', name:'DJ set na krovnom baru', city:'Barselona', country:'Španija', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=70&auto=format&fit=crop', price:25, link:'https://www.viator.com/searchResults/all?text=Barcelona%20rooftop%20bar'},
+  {id:'a11', name:'Muzej Akropolja — brza ulaznica', city:'Atina', country:'Grčka', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&q=70&auto=format&fit=crop', price:28, link:'https://www.viator.com/searchResults/all?text=Acropolis%20museum'},
+  {id:'a12', name:'Rafting na reci Soči', city:'Bovec', country:'Slovenija', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1530866495561-507c9faab8c9?w=800&q=70&auto=format&fit=crop', price:65, link:'https://www.viator.com/searchResults/all?text=Soca%20rafting'},
+  {id:'a13', name:'Jazz klub u podrumu', city:'Njujork', country:'SAD', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=70&auto=format&fit=crop', price:48, link:'https://www.viator.com/searchResults/all?text=New%20York%20jazz%20club'},
+  {id:'a14', name:'Vinska tura kroz Toskanu', city:'Firenca', country:'Italija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=70&auto=format&fit=crop', price:79, link:'https://www.viator.com/searchResults/all?text=Tuscany%20wine%20tour'}
+];
+const ATTRACTIONS_CATEGORIES = [
+  {key:'kultura', label:'🏛️ Kultura i znamenitosti'},
+  {key:'muzika', label:'🎵 Muzika i koncerti'},
+  {key:'gondole', label:'🎡 Gondole i panorame'},
+  {key:'arene', label:'🏟️ Arene i sport'},
+  {key:'avantura', label:'🧗 Avantura'},
+  {key:'voda', label:'🌊 Vodene aktivnosti'},
+  {key:'gastro', label:'🍷 Gastro ture'},
+  {key:'noc', label:'🎶 Noćni život'}
+];
+let attractionsActiveCategories = new Set();
+let attractionsActiveCountry = '';
+
+function attractionCardHtml(a){
+  return `<a class="attraction-card" href="${a.link}" target="_blank" rel="noopener sponsored">
+    <div class="ac-photo">
+      <img src="${a.img}" alt="${escapeHtml(a.name)}" loading="lazy">
+      <span class="ac-badge">${escapeHtml(a.categoryLabel)}</span>
+    </div>
+    <div class="ac-body">
+      <span class="ac-name">${escapeHtml(a.name)}</span>
+      <span class="ac-loc">${escapeHtml(a.city)}, ${escapeHtml(a.country)}</span>
+      <span class="ac-price"><span>od</span> €${a.price}</span>
+    </div>
+  </a>`;
+}
+
+function renderAttractionsSlider(){
+  const wrap = document.getElementById('attractionsSlider');
+  if (!wrap) return;
+  const picks = ATTRACTIONS_DATA.slice(0, 5);
+  wrap.innerHTML = picks.map(attractionCardHtml).join('');
+  renderAttractionsDots(picks.length);
+}
+function renderAttractionsDots(count){
+  const dotsWrap = document.getElementById('attractionsDots');
+  if (!dotsWrap) return;
+  dotsWrap.innerHTML = Array.from({length: count}).map((_, i) =>
+    `<button type="button" class="a-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Atrakcija ${i + 1}"></button>`
+  ).join('');
+}
+(function initAttractionsSliderScrollSync(){
+  const slider = document.getElementById('attractionsSlider');
+  if (!slider) return;
+  slider.addEventListener('scroll', () => {
+    const cards = slider.querySelectorAll('.attraction-card');
+    if (!cards.length) return;
+    let closest = 0, minDist = Infinity;
+    cards.forEach((c, i) => {
+      const dist = Math.abs(c.offsetLeft - slider.scrollLeft);
+      if (dist < minDist){ minDist = dist; closest = i; }
+    });
+    document.querySelectorAll('#attractionsDots .a-dot').forEach((d, i) => d.classList.toggle('active', i === closest));
+  }, {passive:true});
+})();
+document.getElementById('attractionsPrev')?.addEventListener('click', () => {
+  document.getElementById('attractionsSlider')?.scrollBy({left:-280, behavior:'smooth'});
+});
+document.getElementById('attractionsNext')?.addEventListener('click', () => {
+  document.getElementById('attractionsSlider')?.scrollBy({left:280, behavior:'smooth'});
+});
+
+function populateAttractionsFilters(){
+  const select = document.getElementById('attractionsCountrySelect');
+  if (select && select.options.length <= 1){
+    const countries = [...new Set(ATTRACTIONS_DATA.map(a => a.country))].sort();
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', () => {
+      attractionsActiveCountry = select.value;
+      renderAttractionsGrid();
+    });
+  }
+  const chipRow = document.getElementById('attractionsCategoryChips');
+  if (chipRow && !chipRow.dataset.built){
+    chipRow.dataset.built = '1';
+    chipRow.innerHTML = ATTRACTIONS_CATEGORIES.map(c =>
+      `<button type="button" class="attraction-chip" data-cat="${c.key}">${c.label}</button>`
+    ).join('');
+    chipRow.querySelectorAll('.attraction-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const key = chip.dataset.cat;
+        if (attractionsActiveCategories.has(key)){
+          attractionsActiveCategories.delete(key);
+          chip.classList.remove('on');
+        } else {
+          attractionsActiveCategories.add(key);
+          chip.classList.add('on');
+        }
+        renderAttractionsGrid();
+      });
+    });
+  }
+}
+function renderAttractionsGrid(){
+  const grid = document.getElementById('attractionsGrid');
+  const empty = document.getElementById('attractionsEmpty');
+  if (!grid) return;
+  const filtered = ATTRACTIONS_DATA.filter(a => {
+    const catOk = attractionsActiveCategories.size === 0 || attractionsActiveCategories.has(a.category);
+    const countryOk = !attractionsActiveCountry || a.country === attractionsActiveCountry;
+    return catOk && countryOk;
+  });
+  grid.innerHTML = filtered.map(attractionCardHtml).join('');
+  if (empty) empty.hidden = filtered.length > 0;
+}
+
+function openAttractionsSheet(){
+  populateAttractionsFilters();
+  renderAttractionsGrid();
+  const sheet = document.getElementById('attractionsSheet');
+  if (!sheet) return;
+  sheet.classList.add('visible');
+  const backdrop = document.getElementById('attractionsSheetBackdrop');
+  if (isMobileResults()){
+    if (backdrop) backdrop.classList.add('open');
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-modal', 'true');
+    lockResultsPageScroll();
+    guardOverlayOpen('attractionsSheet', closeAttractionsSheet);
+  }
+}
+function closeAttractionsSheet(){
+  const sheet = document.getElementById('attractionsSheet');
+  if (!sheet) return;
+  const backdrop = document.getElementById('attractionsSheetBackdrop');
+  const wasLocked = _resultsScrollLocked;
+  sheet.classList.remove('visible');
+  if (backdrop) backdrop.classList.remove('open');
+  sheet.removeAttribute('role');
+  sheet.removeAttribute('aria-modal');
+  if (wasLocked) unlockResultsPageScroll();
+}
+function requestCloseAttractionsSheet(){
+  if (!guardOverlayRequestClose('attractionsSheet')) closeAttractionsSheet();
+}
+document.getElementById('attractionsSeeAllBtn')?.addEventListener('click', openAttractionsSheet);
+document.getElementById('attractionsSheetBackBtn')?.addEventListener('click', requestCloseAttractionsSheet);
+document.getElementById('attractionsSheetBackdrop')?.addEventListener('click', requestCloseAttractionsSheet);
+
+renderAttractionsSlider();

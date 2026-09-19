@@ -778,6 +778,65 @@ a{color:inherit;}
 #featureGuideSheet{display:none;padding-top:34px;padding-bottom:100px;}
 #featureGuideSheet.visible{display:block;}
 #results.visible{display:block;}
+/* ---------- "Sklopi svoju atrakciju" — slajder na naslovnoj ---------- */
+.attractions-slider-wrap{position:relative;display:flex;align-items:center;gap:8px;}
+.attractions-slider{
+    display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;padding:2px 2px 6px;margin:0 -2px;
+    scrollbar-width:none;flex:1;
+}
+.attractions-slider::-webkit-scrollbar{display:none;}
+.attraction-card{
+    flex:0 0 72%;max-width:300px;scroll-snap-align:start;
+    display:flex;flex-direction:column;text-align:left;
+    background:var(--paper);border:1px solid var(--line);border-radius:16px;
+    overflow:hidden;text-decoration:none;color:inherit;font-family:inherit;
+    transition:border-color .15s ease,transform .15s ease,box-shadow .15s ease;
+}
+.attraction-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(15,76,92,0.3);}
+.attraction-card .ac-photo{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--line);}
+.attraction-card .ac-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.attraction-card .ac-badge{
+    position:absolute;top:10px;left:10px;background:rgba(17,24,39,0.72);color:var(--on-dark-strong);
+    font-family:'Work Sans',sans-serif;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:999px;
+    backdrop-filter:blur(2px);
+}
+.attraction-card .ac-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:5px;flex:1;}
+.attraction-card .ac-name{font-family:'Manrope',sans-serif;font-size:16.5px;font-weight:600;color:var(--ink);line-height:1.3;}
+.attraction-card .ac-loc{font-size:13px;color:var(--ink-soft);}
+.attraction-card .ac-price{margin-top:auto;padding-top:8px;font-family:'Manrope',sans-serif;font-size:14.5px;font-weight:600;color:var(--gold-text);}
+.attraction-card .ac-price span{font-weight:500;color:var(--ink-soft);font-size:12.5px;}
+.attractions-arrow{
+    flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+    background:var(--paper);color:var(--ink);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:border-color .15s ease,color .15s ease;
+}
+.attractions-arrow svg{width:16px;height:16px;}
+.attractions-arrow:hover{border-color:var(--gold);color:var(--gold-text);}
+@media (max-width:760px){.attractions-arrow{display:none;}}
+.attractions-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:10px;}
+.attractions-dots .a-dot{width:8px;height:8px;border-radius:50%;border:none;padding:0;background:var(--line);}
+.attractions-dots .a-dot.active{background:var(--gold);}
+@media (min-width:761px){.attractions-dots{display:none;}}
+.attractions-see-all{display:flex;margin:22px auto 0;}
+@media (min-width:600px){.attraction-card{flex:0 0 260px;}}
+/* ---------- "Vidi sve atrakcije" — fullscreen sheet sa filterima ---------- */
+#attractionsSheet{display:none;padding-top:34px;padding-bottom:100px;}
+#attractionsSheet.visible{display:block;}
+.attractions-filter-bar{margin-bottom:22px;display:flex;flex-direction:column;gap:14px;}
+.attractions-filter-row label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:7px;}
+.attractions-country-select{max-width:260px;}
+.attractions-chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.attraction-chip{
+    display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--paper);
+    color:var(--ink-soft);border-radius:999px;padding:8px 14px;font-family:'Work Sans',sans-serif;
+    font-size:13.5px;font-weight:600;cursor:pointer;transition:border-color .15s ease,color .15s ease,background .15s ease;
+}
+.attraction-chip:hover{border-color:var(--gold);color:var(--ink);}
+.attraction-chip.on{background:var(--gold);border-color:var(--gold);color:var(--on-gold);}
+.attractions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;}
+.attractions-grid .attraction-card{flex:none;max-width:none;}
+.attractions-empty{color:var(--ink-soft);font-size:14.5px;padding:30px 0;text-align:center;}
 /* Rezultati (3 kartice ponuda) — "bottom sheet" preko sadržaja stranice na
    mobilnom (vidi @media(max-width:760px) niže): sopstveni prozor sa 90dvh
    visine, zaključanim skrolom pozadine i "Nazad" dugmetom, umesto da budu
@@ -1034,6 +1093,13 @@ a{color:inherit;}
 .item-card.car .item-label{color:var(--coral-text);}
 .item-name{font-family:'Manrope',sans-serif;font-size:19px;font-weight:600;margin-top:4px;line-height:1.32;color:var(--ink);}
 .item-sub{font-size:14.5px;color:var(--ink-soft);margin-top:3px;}
+.item-perks{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:2px;}
+.item-perks .perk{font-size:13px;line-height:1.35;color:var(--ink-soft);padding-left:16px;position:relative;}
+.item-perks .perk::before{position:absolute;left:0;top:0;font-weight:700;}
+.item-perks .perk.pos{color:var(--ink);}
+.item-perks .perk.pos::before{content:"✓";color:var(--aqua);}
+.item-perks .perk.neg::before{content:"–";color:var(--ink-soft);}
+.item-perks .perk.neu::before{content:"·";color:var(--ink-soft);}
 .item-provider{
     font-size:12px;color:var(--ink-soft);border:1px solid var(--line);
     border-radius:10px;padding:1px 7px;margin-left:5px;
@@ -1151,6 +1217,8 @@ ide na kraj (margin-left:auto). eSIM ima i dugme "Airalo" pored, pa je
     .item-label{font-size:10px;}
     .item-name{font-size:14px;margin-top:1px;line-height:1.25;}
     .item-sub{font-size:11px;margin-top:1px;}
+    .item-perks{margin-top:3px;gap:1px;}
+    .item-perks .perk{font-size:10.5px;padding-left:12px;}
     .item-price{font-size:14px;margin-top:3px;}
     .item-btn{margin-top:8px;padding:10px;font-size:13px;border-radius:7px;}
 
@@ -1967,6 +2035,22 @@ footer{
     overflow:hidden;
     animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
 }
+#attractionsSheet.visible{
+    position:fixed;left:0;right:0;bottom:0;top:auto;z-index:59;
+    height:95dvh;max-height:95dvh;
+    padding-top:0;padding-bottom:0;
+    background:var(--bg);
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -24px 50px -20px rgba(15,76,92,0.4);
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
+}
+#attractionsSheet.visible > .section{
+    flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    margin:0;
+    padding:0 20px calc(28px + env(safe-area-inset-bottom));
+}
 /* .section (globalno .section{margin:0 auto;max-width:1180px}) je ovde
    flex-child unutar #results.visible (flex-direction:column). Auto
    margine na cross-axis flex-child-a poništavaju stretch i teraju ga
@@ -1992,6 +2076,7 @@ footer{
 @media (prefers-reduced-motion:reduce){
     #results.visible{animation:none;}
     #featureGuideSheet.visible{animation:none;}
+    #attractionsSheet.visible{animation:none;}
 }
 .results-sheet-head{
     display:flex;align-items:center;position:sticky;top:0;z-index:2;
