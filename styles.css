@@ -818,7 +818,14 @@ a{color:inherit;}
 .attractions-dots .a-dot{width:8px;height:8px;border-radius:50%;border:none;padding:0;background:var(--line);}
 .attractions-dots .a-dot.active{background:var(--gold);}
 @media (min-width:761px){.attractions-dots{display:none;}}
-.attractions-see-all{display:flex;margin:22px auto 0;}
+/* .btn-alert je dizajniran za tamnu pozadinu (color:var(--on-dark)) —
+   ova sekcija je na svetloj (--bg/--paper), pa dugme ovde dobija svoju
+   sopstvenu, čitljivu varijantu (isti obrazac kao .passport-check-btn). */
+.attractions-see-all{
+    display:flex;width:auto;margin:22px auto 0;
+    background:transparent;border:1.5px solid var(--gold);color:var(--gold-text);
+}
+.attractions-see-all:hover{background:var(--gold-soft);border-color:var(--gold);}
 @media (min-width:600px){.attraction-card{flex:0 0 260px;}}
 /* ---------- "Vidi sve atrakcije" — fullscreen sheet sa filterima ---------- */
 #attractionsSheet{display:none;padding-top:34px;padding-bottom:100px;}
