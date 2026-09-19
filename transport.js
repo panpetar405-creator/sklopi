@@ -464,7 +464,7 @@ function transportCardHtml(destRaw, adults, originRaw, flags){
     }
     return '<section class="transport-card">' +
       '<div class="tc-head"><span class="tc-ico" aria-hidden="true">🚗</span><div>' +
-      '<h3>' + escapeHtml(_tt('transport_title', 'Bez aviona: {from} → {dest}', {from: fromCity, dest: destCity})) + '</h3>' +
+      '<h3>' + escapeHtml(_tt('transport_title_car', '{from} → {dest}', {from: fromCity, dest: destCity})) + '</h3>' +
       '<p class="tc-sub">' + escapeHtml(_tt('transport_sub_car', 'Auto — okvirna procena vožnje')) + '</p>' +
       '</div></div>' + rows.join('') + (hit && hit.route.bus ? _tcCtaHtml() + _tcBasLinkHtml() : '') + _tcFootHtml() + '</section>';
   } catch (e){
