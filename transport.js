@@ -10,8 +10,8 @@
    ŠTA RADI
    1) TRANSPORT_ROUTES — ručno uneta baza ruta iz BEOGRADA (autobus/voz:
       trajanje, cena po osobi u jednom pravcu, prevoznici, status linije).
-   2) transportCardHtml(dest, adults, origin) — velika kartica ispod
-      ponuda na običnoj pretrazi.
+   2) transportCardHtml(dest, adults, origin, flags) — velika kartica ispod
+      ponuda na običnoj pretrazi. Prikazuje se SAMO kad let nije izabran.
    3) transportCompactHtml(dest, adults) — kratak blok za kartice
       predloga u "Pronađi svoj izlet".
 
@@ -258,8 +258,11 @@ function _tcFootHtml(){
 }
 
 // Velika kartica ispod ponuda (obična pretraga). Vraća '' kad nema šta pošteno da se kaže.
-function transportCardHtml(destRaw, adults, originRaw){
+function transportCardHtml(destRaw, adults, originRaw, flags){
   try {
+    // Ko je označio let (avion), autobus i voz ga ne zanimaju — kartica se prikazuje
+    // samo kad let NIJE izabran (flags.flight === false).
+    if (flags && flags.flight) return '';
     if (!_transportOriginIsBeograd(originRaw)) return '';
     const hit = _transportLookup(destRaw);
     const city = cityLabel(String(destRaw || '').split(',')[0].trim());
