@@ -4730,8 +4730,6 @@ function computeCustomPackage(sel, ctx){
 
   // --- Gorivo i putarine (samo ako je auto uključen) ---
   const carExtras = sel.carPref === 'none' ? 0 : Math.round(18 + rng()*20);
-  // --- Taksa za rezervaciju ---
-  const bookingFee = Math.round(10 + rng()*10);
 
   // --- Osiguranje i eSIM (dodaci, cena po osobi) ---
   // NAPOMENA: namerno NE koristi rng() — ovo su uključi/isključi dodaci
@@ -4760,9 +4758,8 @@ function computeCustomPackage(sel, ctx){
   const carPriceF = Math.round(carPrice * factor);
   const activityPriceF = Math.round(activityPrice * factor);
   const carExtrasF = Math.round(carExtras * factor);
-  const bookingFeeF = Math.round(bookingFee * factor);
 
-  const total = flightPriceF + hotelPriceF + carPriceF + activityPriceF + carExtrasF + bookingFeeF + insuranceCost + esimCost + putarinaCost + transferiCost + touristTaxCost;
+  const total = flightPriceF + hotelPriceF + carPriceF + activityPriceF + carExtrasF + insuranceCost + esimCost + putarinaCost + transferiCost + touristTaxCost;
 
   return {
     flight: {price:flightPriceF, name:flightName, sub:flightSub},
@@ -4770,7 +4767,6 @@ function computeCustomPackage(sel, ctx){
     car:    {price:carPriceF, pref:sel.carPref},
     activity: {price:activityPriceF, count:sel.activityCount},
     carExtras: {price:carExtrasF},
-    bookingFee: {price:bookingFeeF},
     insuranceCost, esimCost, putarinaCost, transferiCost, touristTaxCost,
     total
   };
@@ -4787,7 +4783,6 @@ function renderBuilder(){
   if (builderState.carPref !== 'none') rows.push(['🚗', 'Auto', pkg.car.price]);
   if (builderState.activityCount > 0) rows.push(['🎟️', t('builder_activities_label'), pkg.activity.price]);
   if (pkg.carExtras.price > 0) rows.push(['⛽', 'Gorivo i putarine (auto)', pkg.carExtras.price]);
-  rows.push(['🧾', 'Taksa za rezervaciju', pkg.bookingFee.price]);
   if (builderState.insurance) rows.push(['🛡️', t('f_insurance_name'), pkg.insuranceCost]);
   if (builderState.putarina) rows.push(['🛣️', t('f_tolls_name'), pkg.putarinaCost]);
   if (builderState.touristTax) rows.push(['🏛️', t('f_tax_name'), pkg.touristTaxCost]);
