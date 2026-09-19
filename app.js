@@ -2630,6 +2630,37 @@ const EXTRA_COSTS = {
 };
 
 /* ==========================================================
+   DEV-ONLY PROVERA KONZISTENTNOSTI: pkg.flight.sub mora odgovarati
+   traženom tipu leta (flightPref). Isključena je u produkciji (vidi
+   DEV_MODE ispod) — svrha joj je da ulovi baš onu vrstu greške na koju
+   upozorava komentar iznad fetchFlights/computeCustomPackage: neko
+   promeni fetchFlights (ili flightSubText) i zaboravi da uskladi opis,
+   pa "najjeftiniji" let na kartici i dalje piše "direktan let" (ili
+   obrnuto). Bez ovoga bi to čekalo sledeću rundu ručne provere — sa
+   ovim, konzola prijavi grešku ODMAH čim se to dogodi, u dev okruženju.
+   Proverava se i na kartičnom putu (buildPackage) i na builder putu
+   (computeCustomPackage) — obe zovu istu flightSubText, ali svaka
+   sklapa svoj `sub` iz nje, pa svaka može zasebno da se pokvari.
+========================================================== */
+const DEV_MODE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /(^|[?&])debug(=1)?(&|$)/.test(location.search);
+
+function assertFlightSubConsistency(flightPref, sub, sourceLabel){
+  if (!DEV_MODE || !sub) return;
+  const saysPresedanje = sub.includes('presedanje');
+  const shouldSayPresedanje = flightPref === 'cheapest';
+  if (saysPresedanje !== shouldSayPresedanje){
+    console.error(
+      '[sklopi][dev-check] Neusklađen opis leta! flightPref="' + flightPref + '" '
+      + (shouldSayPresedanje
+          ? 'treba da pominje "presedanje" u sub-u, ali ne pominje'
+          : 'NE treba da pominje "presedanje" u sub-u, ali pominje')
+      + ' — sub="' + sub + '" (izvor: ' + sourceLabel + '). '
+      + 'Verovatno je fetchFlights/flightSubText promenjen bez usklađivanja negde drugde, ili obrnuto.'
+    );
+  }
+}
+
+/* ==========================================================
    PRICING + SCORE ENGINE
 ========================================================== */
 function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, originCode){
@@ -2639,6 +2670,8 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
   const car    = flags.car    ? fetchCar(rng, days, tier, flags) : null;
   const activity = flags.activity ? fetchActivity(rng, dest, tier, flags) : null;
   const extras = EXTRA_COSTS[tier];
+
+  if (flight) assertFlightSubConsistency(flags.flightPref || 'direct', flight.sub, 'buildPackage (' + tier + ')');
 
   // Tržišni faktor menja samo cenu, ne i ime/opis stavke (ti se biraju
   // gore, iz rng niza, pre ove linije — pa ostaju stabilni iz dana u dan).
@@ -4772,6 +4805,7 @@ function computeCustomPackage(sel, ctx){
     flightPref: sel.flightPref, arrival: builderArrival, destRaw: ctx.dest,
     adults: ctx.adults, limitedNetwork: isLimitedNetworkOrigin(ctx.originCode)
   });
+  assertFlightSubConsistency(sel.flightPref || 'direct', flightSub, 'computeCustomPackage');
 
   // --- Hotel ---
   const hotelBasePerNight = HOTEL_STAR_BASE_PRICE[sel.hotelStars] + rng()*22;
