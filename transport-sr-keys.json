@@ -1,0 +1,22 @@
+{
+  "transport_about": "oko {x}",
+  "transport_status_seasonal": "Sezonska linija",
+  "transport_status_planned": "Nova linija — proveri da li saobraća",
+  "transport_bus": "Autobus",
+  "transport_train": "Voz",
+  "transport_duration": "Trajanje",
+  "transport_price_pp": "Cena po osobi, jedan pravac",
+  "transport_operators": "Prevoznici: {list}",
+  "transport_group_rt": "{n} {pax}, povratno: oko {amount}",
+  "transport_cta": "Uporedi na Omio-u",
+  "transport_disclaimer": "Okvirne vrednosti iz javno dostupnih izvora (provereno: {date}), ne stvarna ponuda prevoznika. Red vožnje i cene se menjaju — proveri pre kupovine.",
+  "transport_no_data_title": "Autobusom ili vozom?",
+  "transport_no_data": "Za rutu Beograd–{dest} još nemamo unete podatke o autobusu i vozu. Uporedi trajanje i cene pre nego što odlučiš.",
+  "transport_title": "Bez aviona: Beograd → {dest}",
+  "transport_sub": "Autobusom ili vozom, okvirno, za polazak iz Beograda",
+  "transport_pp_short": "po osobi",
+  "transport_status_planned_short": "nova linija, proveri",
+  "transport_status_seasonal_short": "sezonski",
+  "transport_compact_title": "A bez aviona?",
+  "transport_compact_foot": "Okvirno, iz Beograda. Proveri red vožnje i cene pre kupovine."
+}

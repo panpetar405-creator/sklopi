@@ -4278,7 +4278,7 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
   setTimeout(() => {
     if (seq !== undefined && seq !== window._searchSeq) return;
     try {
-      body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}`;
+      body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}${typeof transportCardHtml === 'function' ? transportCardHtml(dest, adults, originCode) : ''}`;
       initPackagesSlider(body.querySelector('.packages-slider-wrap'));
       body.classList.remove('rb-swap-out');
       body.classList.remove('rb-hidden');
@@ -4443,7 +4443,7 @@ function matchPkgHtml(pick, idx, budget, answers, month){
       </div>
     </div>
     <div class="match-reason">💡 ${escapeHtml(reasonText)}</div>
-    ${busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;">🚌 <b>${escapeHtml(t('match_bus_title'))}</b><br>${escapeHtml(busNote)}</div>` : ''}
+    ${(typeof transportCompactHtml === 'function' && transportCompactHtml(dest, pick.adults)) || (busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;">🚌 <b>${escapeHtml(t('match_bus_title'))}</b><br>${escapeHtml(busNote)}</div>` : '')}
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     <div class="confirm-banner">
       <span>${iconSvg('check')} ${budget ? (fitsBudget ? t('fits_budget') + fmtEUR(budget) + '.' : t('over_budget')) : t('match_no_budget')}</span>
