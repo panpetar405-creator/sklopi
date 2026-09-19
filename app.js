@@ -4919,118 +4919,190 @@ function wireChipGroup(groupName, onChange){
 function qRow(name){ return document.querySelector('.q-row[data-row="'+name+'"]'); }
 function qSyncRow(name, isOpen){ const row = qRow(name); if (row) row.classList.toggle('checked', isOpen); }
 
-['flight','hotel'].forEach(key=>{
-  const cbId = key === 'flight' ? 'flightInclude' : 'hotelInclude';
-  const stateKey = key === 'flight' ? 'includeFlight' : 'includeHotel';
-  const cb = document.getElementById(cbId);
-  qSyncRow(key, cb.checked);
-  cb.addEventListener('change', ()=>{
-    builderState[stateKey] = cb.checked;
-    qSyncRow(key, cb.checked);
-    renderBuilder();
-  });
-});
+/* ==========================================================
+   JEDINSTVENO STANJE FORME — builderState + renderFormUI()
+   ----------------------------------------------------------
+   builderState je JEDINI izvor istine — i za samostalnu "Kontrola
+   sadržaja" sekciju (#builderPanel) i za "Prilagodi svoj plan" modal
+   (#startPrefsModal, otvara se klikom na Start). Ranije je modal imao
+   svoju KOPIJU stanja (startPrefs) koju je trebalo ručno prepisivati
+   u builderState i nazad (dve sync funkcije) — svako novo polje se
+   moralo ručno dodati na ~4 mesta (default, listener u panelu,
+   listener u modalu, OBE sync funkcije). To je tačan obrazac greške
+   koju je trebalo ispraviti.
 
-document.querySelectorAll('input[name="flightPrefRadio"]').forEach(r=>{
-  r.addEventListener('change', ()=>{
-    builderState.flightPref = r.value;
-    document.getElementById('airlineName').style.display = (r.value === 'airline') ? 'block' : 'none';
-    renderBuilder();
-  });
-});
-document.getElementById('airlineName').addEventListener('input', (e)=>{
-  builderState.airlineName = e.target.value.trim();
-  renderBuilder();
-});
+   Sad postoji SAMO builderState + JEDNA renderFormUI() koja iscrtava
+   OBA UI-ja iz njega + JEDNA wireFormFields() koja kači listener na
+   odgovarajući element u OBA UI-ja (kad element postoji — letovi/
+   hotel toggle, osiguranje, eSIM i transferi postoje samo u panelu,
+   ne i u brzom modalu; modal id-jevi su isti kao panelovi, samo sa
+   "sp" prefiksom). Za novo prosto polje (checkbox/radio): dodaj jedan
+   unos u FORM_FIELDS. Auto i aktivnosti imaju poseban obrazac
+   (čekboks uključi/isključi + pamćenje poslednje vrednosti), pa su
+   ožičeni preko setupToggleRadioField / setupToggleCountField —
+   svaki JEDNOM, ne duplirano za panel i modal.
+========================================================== */
+function setChkVal(id, val){ const el = document.getElementById(id); if (el) el.checked = !!val; }
+function setRadioVal(name, val){ document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{ r.checked = (String(r.value) === String(val)); }); }
 
-document.querySelectorAll('input[name="hotelStarsRadio"]').forEach(r=>{
-  r.addEventListener('change', ()=>{
-    builderState.hotelStars = Number(r.value);
-    renderBuilder();
-  });
-});
-document.getElementById('prioritizeRatingChk').addEventListener('change', (e)=>{
-  builderState.prioritizeRating = e.target.checked;
-  renderBuilder();
-});
-document.getElementById('prioritizeLocationChk').addEventListener('change', (e)=>{
-  builderState.prioritizeLocation = e.target.checked;
-  renderBuilder();
-});
-
-// Rent a car: checkbox uključi/isključi (mapira se na carPref==='none'),
-// tip vozila je radio grupa. Pamtimo poslednji izabrani tip da bi ponovno
-// čekiranje vratilo baš njega, ne uvek "Mali auto".
-let _lastCarPref = builderState.carPref !== 'none' ? builderState.carPref : 'small';
-const carIncludeEl = document.getElementById('carInclude');
-qSyncRow('car', carIncludeEl.checked);
-carIncludeEl.addEventListener('change', ()=>{
-  if (carIncludeEl.checked){
-    builderState.carPref = _lastCarPref;
+// Jednostavna polja: jedan checkbox/radio u panelu, po volji i isti tip
+// u modalu (modal:null → polje postoji samo u panelu, ne i u brzom modalu).
+const FORM_FIELDS = [
+  { key:'includeFlight',       type:'checkbox', panel:'flightInclude',         modal:null,                    row:'flight' },
+  { key:'includeHotel',        type:'checkbox', panel:'hotelInclude',          modal:null,                    row:'hotel' },
+  { key:'hotelStars',          type:'radio',    panel:'hotelStarsRadio',       modal:'spHotelStarsRadio',     numeric:true },
+  { key:'prioritizeRating',    type:'checkbox', panel:'prioritizeRatingChk',   modal:'spPrioritizeRatingChk' },
+  { key:'prioritizeLocation',  type:'checkbox', panel:'prioritizeLocationChk', modal:'spPrioritizeLocationChk' },
+  { key:'insurance',           type:'checkbox', panel:'insuranceChk',          modal:null },
+  { key:'putarina',            type:'checkbox', panel:'putarinaChk',           modal:'spPutarinaChk' },
+  { key:'touristTax',          type:'checkbox', panel:'touristTaxChk',         modal:'spTouristTaxChk' },
+  { key:'esim',                type:'checkbox', panel:'esimChk',               modal:null },
+  { key:'transferi',           type:'checkbox', panel:'transferiChk',          modal:null }
+];
+function renderSimpleField(f){
+  const val = builderState[f.key];
+  if (f.type === 'checkbox'){
+    setChkVal(f.panel, val);
+    if (f.modal) setChkVal(f.modal, val);
+    if (f.row) qSyncRow(f.row, !!val);
   } else {
-    if (builderState.carPref !== 'none') _lastCarPref = builderState.carPref;
-    builderState.carPref = 'none';
+    setRadioVal(f.panel, val);
+    if (f.modal) setRadioVal(f.modal, val);
   }
-  qSyncRow('car', carIncludeEl.checked);
-  renderBuilder();
-});
-document.querySelectorAll('input[name="carPrefRadio"]').forEach(r=>{
-  r.addEventListener('change', ()=>{
-    builderState.carPref = r.value;
-    _lastCarPref = r.value;
+}
+function wireSimpleField(f){
+  const onChange = (raw) => {
+    builderState[f.key] = f.numeric ? Number(raw) : raw;
+    renderFormUI();
     renderBuilder();
-  });
-});
-
-// Aktivnosti: checkbox uključi/isključi (mapira se na activityCount===0),
-// broj se unosi u polje umesto starog +/- stepera. Pamtimo poslednji broj
-// da ponovno čekiranje vrati istu vrednost, ne uvek podrazumevanih 2.
-let _lastActivityCount = builderState.activityCount > 0 ? builderState.activityCount : 2;
-const actIncludeEl = document.getElementById('activitiesInclude');
-const actCountInput = document.getElementById('actCountInput');
-qSyncRow('activities', actIncludeEl.checked);
-actIncludeEl.addEventListener('change', ()=>{
-  if (actIncludeEl.checked){
-    builderState.activityCount = _lastActivityCount;
-    actCountInput.value = _lastActivityCount;
+  };
+  if (f.type === 'checkbox'){
+    [f.panel, f.modal].filter(Boolean).forEach(id=>{
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', ()=> onChange(el.checked));
+    });
   } else {
-    if (builderState.activityCount > 0) _lastActivityCount = builderState.activityCount;
-    builderState.activityCount = 0;
+    [f.panel, f.modal].filter(Boolean).forEach(name=>{
+      document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{
+        r.addEventListener('change', ()=> onChange(r.value));
+      });
+    });
   }
-  qSyncRow('activities', actIncludeEl.checked);
-  renderBuilder();
-});
-actCountInput.addEventListener('focus', ()=>{ actCountInput.select(); });
-actCountInput.addEventListener('input', ()=>{
-  const raw = actCountInput.value;
-  const n = raw === '' ? 0 : Math.max(0, Math.min(10, Math.floor(Number(raw)) || 0));
-  builderState.activityCount = n;
-  if (n > 0) _lastActivityCount = n;
-  renderBuilder();
-});
-actCountInput.addEventListener('blur', ()=>{
-  actIncludeEl.checked = builderState.activityCount > 0;
-  qSyncRow('activities', actIncludeEl.checked);
-});
+}
 
-// Prosti dodaci bez pod-opcija: osiguranje / putarine / eSIM / transferi.
-[['insuranceChk','insurance'], ['putarinaChk','putarina'], ['touristTaxChk','touristTax'], ['esimChk','esim'], ['transferiChk','transferi']].forEach(([id, key])=>{
-  document.getElementById(id).addEventListener('change', (e)=>{
-    builderState[key] = e.target.checked;
-    renderBuilder();
+// Let: radio grupa + tekstualno polje za ime kompanije (prikazano samo
+// kad je izabrano "Određena kompanija") — u panelu i u modalu odjednom.
+const FLIGHT_PREF = { panelRadio:'flightPrefRadio', modalRadio:'spFlightPrefRadio', panelText:'airlineName', modalText:'spAirlineName' };
+function renderFlightPrefField(){
+  setRadioVal(FLIGHT_PREF.panelRadio, builderState.flightPref);
+  setRadioVal(FLIGHT_PREF.modalRadio, builderState.flightPref);
+  const showAirline = builderState.flightPref === 'airline';
+  [FLIGHT_PREF.panelText, FLIGHT_PREF.modalText].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = showAirline ? 'block' : 'none';
+    if (document.activeElement !== el) el.value = builderState.airlineName || '';
   });
-});
+}
+function wireFlightPrefField(){
+  [FLIGHT_PREF.panelRadio, FLIGHT_PREF.modalRadio].forEach(name=>{
+    document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{
+      r.addEventListener('change', ()=>{
+        builderState.flightPref = r.value;
+        renderFormUI();
+        renderBuilder();
+      });
+    });
+  });
+  [FLIGHT_PREF.panelText, FLIGHT_PREF.modalText].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', ()=>{
+      builderState.airlineName = el.value.trim();
+      renderBuilder();
+    });
+  });
+}
+
+// Rent a car / aktivnosti: čekboks uključi/isključi (mapira se na
+// carPref==='none' odn. activityCount===0) + radio/broj za detalje.
+// Pamti se JEDNA poslednja "uključena" vrednost — ponovno čekiranje u
+// BILO KOM od dva UI-ja vraća istu vrednost, ne dve odvojene (ranije:
+// _lastCarPref za panel, _spLastCarPref za modal, ručno usklađivane).
+function setupToggleRadioField({ key, offValue, defaultOnValue, panelToggleId, modalToggleId, panelRow, modalRow, panelRadioName, modalRadioName }){
+  let lastOnValue = builderState[key] !== offValue ? builderState[key] : defaultOnValue;
+  function setOn(isOn, radioVal){
+    builderState[key] = isOn ? (radioVal || lastOnValue) : offValue;
+    if (builderState[key] !== offValue) lastOnValue = builderState[key];
+    renderFormUI();
+    renderBuilder();
+  }
+  [panelToggleId, modalToggleId].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', ()=> setOn(el.checked));
+  });
+  [panelRadioName, modalRadioName].forEach(name=>{
+    document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{
+      r.addEventListener('change', ()=> setOn(true, r.value));
+    });
+  });
+  return function render(){
+    const isOn = builderState[key] !== offValue;
+    setChkVal(panelToggleId, isOn);
+    setChkVal(modalToggleId, isOn);
+    qSyncRow(panelRow, isOn);
+    qSyncRow(modalRow, isOn);
+    setRadioVal(panelRadioName, isOn ? builderState[key] : lastOnValue);
+    setRadioVal(modalRadioName, isOn ? builderState[key] : lastOnValue);
+  };
+}
+function setupToggleCountField({ key, defaultOnValue, min, max, panelToggleId, modalToggleId, panelRow, modalRow, panelInputId, modalInputId }){
+  let lastOnValue = builderState[key] > 0 ? builderState[key] : defaultOnValue;
+  function setOn(isOn){
+    builderState[key] = isOn ? lastOnValue : 0;
+    renderFormUI();
+    renderBuilder();
+  }
+  [panelToggleId, modalToggleId].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', ()=> setOn(el.checked));
+  });
+  [panelInputId, modalInputId].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('focus', ()=> el.select());
+    el.addEventListener('input', ()=>{
+      const raw = el.value;
+      const n = raw === '' ? 0 : Math.max(min, Math.min(max, Math.floor(Number(raw)) || 0));
+      builderState[key] = n;
+      if (n > 0) lastOnValue = n;
+      renderFormUI();
+      renderBuilder();
+    });
+    el.addEventListener('blur', renderFormUI);
+  });
+  return function render(){
+    const isOn = builderState[key] > 0;
+    setChkVal(panelToggleId, isOn);
+    setChkVal(modalToggleId, isOn);
+    qSyncRow(panelRow, isOn);
+    qSyncRow(modalRow, isOn);
+    [panelInputId, modalInputId].forEach(id=>{
+      const el = document.getElementById(id);
+      if (el && document.activeElement !== el) el.value = builderState[key];
+    });
+  };
+}
 
 // Gornja granica je namerno velikodušna (niko realno ne planira izlet
 // preko ovoga), samo sprečava apsurdne unose tipa "1e10" ili slučajno
 // dodat nepotreban nule. Budžet mora biti ceo broj > 0, ne negativan
 // i ne decimalan — sve ostalo se ili odbacuje (null) ili zaokružuje/seče.
+// Isto polje ideje u panelu i modalu — pisano jednom, primenjeno na oba.
 const MAX_BUDGET = 50000;
-
-document.getElementById('budgetInput').addEventListener('input', (e)=>{
-  const raw = e.target.value;
+function clampBudgetInput(el){
+  const raw = el.value;
   if (!raw) { builderState.budget = null; renderBuilder(); return; }
-
   const n = Math.floor(Number(raw));
   if (!Number.isFinite(n) || n <= 0) {
     // Prazno/nevalidno/negativno dok korisnik još kuca (npr. samo "-") —
@@ -5040,11 +5112,57 @@ document.getElementById('budgetInput').addEventListener('input', (e)=>{
     const clamped = Math.min(n, MAX_BUDGET);
     // Ako je uneta decimala ili broj veći od granice, ispravi i prikaz
     // u polju da korisnik vidi tačno koja vrednost se zapravo koristi.
-    if (String(clamped) !== raw) e.target.value = clamped;
+    if (String(clamped) !== raw) el.value = clamped;
     builderState.budget = clamped;
   }
   renderBuilder();
-});
+}
+function wireBudgetField(){
+  ['budgetInput','spBudgetInput'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', ()=> clampBudgetInput(el));
+  });
+}
+function renderBudgetField(){
+  ['budgetInput','spBudgetInput'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (el && document.activeElement !== el) el.value = builderState.budget || '';
+  });
+}
+
+let _renderCarField = null;
+let _renderActivitiesField = null;
+
+// Kači SVE listenere (panel + modal) odjednom. Poziva se JEDNOM, pri učitavanju.
+function wireFormFields(){
+  FORM_FIELDS.forEach(wireSimpleField);
+  wireFlightPrefField();
+  wireBudgetField();
+  _renderCarField = setupToggleRadioField({
+    key:'carPref', offValue:'none', defaultOnValue:'small',
+    panelToggleId:'carInclude', modalToggleId:'spCarInclude',
+    panelRow:'car', modalRow:'sp-car',
+    panelRadioName:'carPrefRadio', modalRadioName:'spCarPrefRadio'
+  });
+  _renderActivitiesField = setupToggleCountField({
+    key:'activityCount', defaultOnValue:2, min:0, max:10,
+    panelToggleId:'activitiesInclude', modalToggleId:'spActivitiesInclude',
+    panelRow:'activities', modalRow:'sp-activities',
+    panelInputId:'actCountInput', modalInputId:'spActCountInput'
+  });
+}
+// Iscrtava OBA UI-ja (panel i modal) iz builderState. Poziva se posle
+// svake izmene stanja (iz bilo kog UI-ja), i posle svake spoljašnje
+// izmene builderState (učitavanje sačuvanog izleta, primena optimizacije).
+function renderFormUI(){
+  FORM_FIELDS.forEach(renderSimpleField);
+  renderFlightPrefField();
+  renderBudgetField();
+  if (_renderCarField) _renderCarField();
+  if (_renderActivitiesField) _renderActivitiesField();
+}
+wireFormFields();
+renderFormUI();
 
 // Recalculate live if destination/dates/passengers change up in the ticket
 ['dest','dateFrom','dateTo','adults'].forEach(id=>{
@@ -5071,7 +5189,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
       message: `Ako promeniš hotel na ${testSel.hotelStars}★, zadržavaš skoro istu lokaciju uz malo nižu ocenu (${alt.hotel.rating} umesto ${current.hotel.rating}).`,
       toastMsg: 'hotel promenjen na ' + testSel.hotelStars + '★.',
       apply(){
-        syncBuilderPanelUi();
+        renderFormUI();
       }
     });
   }
@@ -5089,7 +5207,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
         : 'Ako uzmeš manji auto umesto SUV-a, uštedu dobijaš uz nešto manje prtljažnog prostora.',
       toastMsg: 'auto promenjen na ' + (carDowngrade === 'none' ? 'bez auta' : 'mali auto') + '.',
       apply(){
-        syncBuilderPanelUi();
+        renderFormUI();
       }
     });
   }
@@ -5104,7 +5222,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
       message: `Ako smanjiš broj aktivnosti na ${testSel.activityCount}, ostaje ti i dalje dovoljno vremena za slobodno istraživanje.`,
       toastMsg: 'broj aktivnosti smanjen na ' + testSel.activityCount + '.',
       apply(){
-        syncBuilderPanelUi();
+        renderFormUI();
       }
     });
   }
@@ -5129,11 +5247,6 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
   document.getElementById('applyOptimize').addEventListener('click', ()=>{
     Object.assign(builderState, best.testSel);
     best.apply();
-    // Kartica je u ovom trenutku možda premeštena unutar "Prilagodi svoj
-    // plan" modala (klik na Start) — uskladi startPrefs sa optimizacijom,
-    // inače "Nastavi" ispod nje i dalje čita staru vrednost i ponude i
-    // dalje uključuju stavku koju je optimizacija upravo uklonila.
-    syncStartPrefsFromBuilderState();
     renderBuilder();
     showToast('Izlet ažuriran — ' + best.toastMsg);
   });
@@ -5872,7 +5985,7 @@ function loadSavedTrip(tripId){
 
   if (trip.selection && trip.selection.kind === 'builder' && trip.selection.builderState){
     Object.assign(builderState, BUILDER_DEFAULTS, trip.selection.builderState);
-    syncBuilderPanelUi();
+    renderFormUI();
     renderBuilder();
     document.getElementById('builderSummary').style.display = 'block';
     document.getElementById('builderPlaceholder').style.display = 'none';
@@ -6378,27 +6491,20 @@ if (passportCheckSubmit) passportCheckSubmit.addEventListener('click', runPasspo
 
 /* ==========================================================
    "PRILAGODI SVOJ PLAN" — modal koji se otvara klikom na Start
-   Nezavisan je od buildera ("Želiš više kontrole?" sekcije ispod) —
-   ima svoje polje stanja (startPrefs) da izbori ovde ne diraju
-   builderState niti obrnuto. Klik na "Nastavi" prevodi ono što se
+   Nije nezavisan od buildera ("Želiš više kontrole?" sekcije ispod) —
+   to je bio izvor bug-a. Oba UI-ja dele ISTO stanje (builderState);
+   polja ovog modala su ožičena zajedno sa panelovim gore
+   (wireFormFields/renderFormUI). Klik na "Nastavi" prevodi ono što se
    realno odražava na gotove ponude (auto/aktivnosti uključeni ili ne)
    u toggle-row iznad forme, pa pokreće istu pretragu koja bi se
    pokrenula i ranije klikom na Start — samo sad odmah otkriva sve
    3 kartice, bez dodatnog klika na "Nastavi" na plan-kartici.
 ========================================================== */
-const startPrefs = {
-  flightPref: 'direct', airlineName: '', hotelStars: 4, carPref: 'small', activityCount: 2,
-  prioritizeRating: false, prioritizeLocation: false,
-  putarina: false, touristTax: false, budget: null
-};
-
 function openStartPrefsModal(){
-  // Pre otvaranja, uvek preuzmi stvarno trenutno stanje iz builderState —
-  // bez ovoga bi modal i dalje prikazivao startPrefs default vrednosti (ili
-  // poslednje ručno uneto ovde) čak i kad je builderState u međuvremenu
-  // promenjen na neki drugi način (npr. učitavanjem sačuvanog izleta preko
-  // loadSavedTrip, koji ažurira builderState ali ne i startPrefs).
-  syncStartPrefsFromBuilderState();
+  // Pre otvaranja, ponovo iscrtaj oba UI-ja iz builderState — bez ovoga
+  // modal ne bi prikazao stanje ako je builderState u međuvremenu
+  // promenjen na neki drugi način (npr. učitavanjem sačuvanog izleta).
+  renderFormUI();
   document.getElementById('startPrefsBackdrop').classList.add('open');
   document.getElementById('startPrefsModal').classList.add('open');
   guardOverlayOpen('startPrefs', closeStartPrefsModal);
@@ -6409,12 +6515,9 @@ function requestCloseStartPrefsModal(){
 function closeStartPrefsModal(){
   document.getElementById('startPrefsBackdrop').classList.remove('open');
   document.getElementById('startPrefsModal').classList.remove('open');
-  // Bez obzira na to da li je korisnik stigao do klika na "Napravi izlet"
-  // unutar modala, izbori se ipak snimaju u builderState pri zatvaranju —
-  // tako je samostalna "Kontrola sadržaja" sekcija uvek usklađena sa
-  // poslednjim izborima iz ovog modala, a kartica "Tvoj izlet" (ako je bila
-  // premeštena unutar modala) vraća se tačno na svoje originalno mesto.
-  syncBuilderStateFromStartPrefs();
+  // Kartica "Tvoj izlet" (ako je bila premeštena unutar modala) vraća se
+  // tačno na svoje originalno mesto — stanje samo (builderState) nije
+  // trebalo posebno snimati, jer modal njime i direktno upravlja.
   restoreBuilderSummaryPosition();
 }
 document.getElementById('startPrefsClose').addEventListener('click', requestCloseStartPrefsModal);
@@ -6423,92 +6526,10 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && document.getElementById('startPrefsModal').classList.contains('open')) requestCloseStartPrefsModal();
 });
 
-// Radio grupe za let/hotel su statične (bez isključi-kučkice — let i hotel
-// su uvek deo osnovnog paketa), samo beleže izbor u startPrefs.
-document.querySelectorAll('input[name="spFlightPrefRadio"]').forEach(r=>{
-  r.addEventListener('change', () => {
-    startPrefs.flightPref = r.value;
-    document.getElementById('spAirlineName').style.display = (r.value === 'airline') ? 'block' : 'none';
-  });
-});
-document.getElementById('spAirlineName').addEventListener('input', (e) => {
-  startPrefs.airlineName = e.target.value.trim();
-});
-document.querySelectorAll('input[name="spHotelStarsRadio"]').forEach(r=>{
-  r.addEventListener('change', () => { startPrefs.hotelStars = Number(r.value); });
-});
-document.getElementById('spPrioritizeRatingChk').addEventListener('change', (e) => {
-  startPrefs.prioritizeRating = e.target.checked;
-});
-document.getElementById('spPrioritizeLocationChk').addEventListener('change', (e) => {
-  startPrefs.prioritizeLocation = e.target.checked;
-});
-
-// Rent a car: čekboks uključi/isključi (mapira se na carPref==='none'),
-// isti obrazac kao u glavnom upitniku (#builderPanel).
-let _spLastCarPref = startPrefs.carPref !== 'none' ? startPrefs.carPref : 'small';
-const spCarIncludeEl = document.getElementById('spCarInclude');
-qSyncRow('sp-car', spCarIncludeEl.checked);
-spCarIncludeEl.addEventListener('change', () => {
-  if (spCarIncludeEl.checked){
-    startPrefs.carPref = _spLastCarPref;
-  } else {
-    if (startPrefs.carPref !== 'none') _spLastCarPref = startPrefs.carPref;
-    startPrefs.carPref = 'none';
-  }
-  qSyncRow('sp-car', spCarIncludeEl.checked);
-});
-document.querySelectorAll('input[name="spCarPrefRadio"]').forEach(r=>{
-  r.addEventListener('change', () => {
-    startPrefs.carPref = r.value;
-    _spLastCarPref = r.value;
-  });
-});
-
-// Aktivnosti: čekboks uključi/isključi (mapira se na activityCount===0),
-// broj se unosi u polje umesto starog +/- stepera.
-let _spLastActivityCount = startPrefs.activityCount > 0 ? startPrefs.activityCount : 2;
-const spActIncludeEl = document.getElementById('spActivitiesInclude');
-const spActCountInput = document.getElementById('spActCountInput');
-qSyncRow('sp-activities', spActIncludeEl.checked);
-spActIncludeEl.addEventListener('change', () => {
-  if (spActIncludeEl.checked){
-    startPrefs.activityCount = _spLastActivityCount;
-    spActCountInput.value = _spLastActivityCount;
-  } else {
-    if (startPrefs.activityCount > 0) _spLastActivityCount = startPrefs.activityCount;
-    startPrefs.activityCount = 0;
-  }
-  qSyncRow('sp-activities', spActIncludeEl.checked);
-});
-spActCountInput.addEventListener('focus', () => { spActCountInput.select(); });
-spActCountInput.addEventListener('input', () => {
-  const raw = spActCountInput.value;
-  const n = raw === '' ? 0 : Math.max(0, Math.min(10, Math.floor(Number(raw)) || 0));
-  startPrefs.activityCount = n;
-  if (n > 0) _spLastActivityCount = n;
-});
-spActCountInput.addEventListener('blur', () => {
-  spActIncludeEl.checked = startPrefs.activityCount > 0;
-  qSyncRow('sp-activities', spActIncludeEl.checked);
-});
-
-document.getElementById('spBudgetInput').addEventListener('input', (e) => {
-  const raw = e.target.value;
-  const n = Math.floor(Number(raw));
-  if (!raw || !Number.isFinite(n) || n <= 0) { startPrefs.budget = null; return; }
-  const clamped = Math.min(n, MAX_BUDGET);
-  if (String(clamped) !== raw) e.target.value = clamped;
-  startPrefs.budget = clamped;
-});
-
-// Prosti dodaci bez pod-opcija u "Prilagodi svoj plan" modalu: putarine /
-// boravišna taksa — isti obrazac kao u glavnom upitniku (#builderPanel).
-[['spPutarinaChk','putarina'], ['spTouristTaxChk','touristTax']].forEach(([id, key])=>{
-  document.getElementById(id).addEventListener('change', (e) => {
-    startPrefs[key] = e.target.checked;
-  });
-});
+// Polja ovog modala (let/hotel/auto/aktivnosti/putarine/taksa/budžet) su
+// ožičena zajedno sa panelovim ekvivalentima gore, preko wireFormFields() —
+// vidi "JEDINSTVENO STANJE FORME". Ovde ostaje samo ono što je specifično
+// za PONAŠANJE modala (otvaranje/zatvaranje, "Napravi izlet", "Nastavi").
 
 // Postavlja "on" toggle u transport-row-u SAMO ako trenutno nije već u
 // traženom stanju — izbegava suvišan click event (i, za let, suvišan
@@ -6520,116 +6541,6 @@ function setTransportToggle(dataT, shouldBeOn){
   if (isOn !== shouldBeOn) el.click();
 }
 
-// Sinhronizuje sve checkbox/radio elemente u upitniku (#builderPanel) sa
-// builderState — pozvano posle učitavanja sačuvanog izleta, primene
-// optimizacije, ili prenosa izbora iz "Prilagodi svoj plan" modala, da
-// izgled forme nikad ne ostane neusklađen sa stvarnim stanjem.
-function syncBuilderPanelUi(){
-  const setRadio = (name, val) => document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{ r.checked = (String(r.value) === String(val)); });
-  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
-
-  setChk('flightInclude', builderState.includeFlight);
-  qSyncRow('flight', builderState.includeFlight);
-  setRadio('flightPrefRadio', builderState.flightPref);
-  document.getElementById('airlineName').style.display = (builderState.flightPref === 'airline') ? 'block' : 'none';
-  document.getElementById('airlineName').value = builderState.airlineName || '';
-
-  setChk('hotelInclude', builderState.includeHotel);
-  qSyncRow('hotel', builderState.includeHotel);
-  setRadio('hotelStarsRadio', builderState.hotelStars);
-  setChk('prioritizeRatingChk', builderState.prioritizeRating);
-  setChk('prioritizeLocationChk', builderState.prioritizeLocation);
-
-  const carOn = builderState.carPref !== 'none';
-  setChk('carInclude', carOn);
-  qSyncRow('car', carOn);
-  setRadio('carPrefRadio', carOn ? builderState.carPref : 'small');
-
-  const actOn = builderState.activityCount > 0;
-  setChk('activitiesInclude', actOn);
-  qSyncRow('activities', actOn);
-  const actInput = document.getElementById('actCountInput');
-  if (actInput) actInput.value = builderState.activityCount;
-
-  setChk('insuranceChk', builderState.insurance);
-  setChk('putarinaChk', builderState.putarina);
-  setChk('touristTaxChk', builderState.touristTax);
-  setChk('esimChk', builderState.esim);
-  setChk('transferiChk', builderState.transferi);
-  document.getElementById('budgetInput').value = builderState.budget || '';
-}
-
-// Prepisuje izbore iz "Prilagodi svoj plan" modala u builderState — isti
-// oblik polja, pa je ovo čist prenos, bez nagađanja/pretvaranja.
-function syncBuilderStateFromStartPrefs(){
-  Object.assign(builderState, {
-    flightPref: startPrefs.flightPref,
-    airlineName: startPrefs.airlineName,
-    hotelStars: startPrefs.hotelStars,
-    carPref: startPrefs.carPref,
-    activityCount: startPrefs.activityCount,
-    prioritizeRating: startPrefs.prioritizeRating,
-    prioritizeLocation: startPrefs.prioritizeLocation,
-    putarina: startPrefs.putarina,
-    touristTax: startPrefs.touristTax,
-    budget: startPrefs.budget
-  });
-  syncBuilderPanelUi();
-}
-
-// Obrnuti smer od gornje funkcije: prepisuje builderState nazad u startPrefs
-// i osvežava izgled forme unutar "Prilagodi svoj plan" modala. Potrebno kad
-// se izlet menja DOK je kartica "Tvoj izlet" premeštena unutar modala (npr.
-// klik na "Primeni ovu izmenu" u optimizaciji) — bez ovoga bi klik na
-// "Nastavi" i dalje čitao staru vrednost iz startPrefs i ponude bi i dalje
-// uključivale stavku koju je optimizacija upravo uklonila.
-function syncStartPrefsFromBuilderState(){
-  Object.assign(startPrefs, {
-    flightPref: builderState.flightPref,
-    airlineName: builderState.airlineName,
-    hotelStars: builderState.hotelStars,
-    carPref: builderState.carPref,
-    activityCount: builderState.activityCount,
-    prioritizeRating: builderState.prioritizeRating,
-    prioritizeLocation: builderState.prioritizeLocation,
-    putarina: builderState.putarina,
-    touristTax: builderState.touristTax,
-    budget: builderState.budget
-  });
-
-  const setRadio = (name, val) => document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{ r.checked = (String(r.value) === String(val)); });
-  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
-
-  setRadio('spFlightPrefRadio', startPrefs.flightPref);
-  const spAirlineEl = document.getElementById('spAirlineName');
-  if (spAirlineEl){
-    spAirlineEl.style.display = (startPrefs.flightPref === 'airline') ? 'block' : 'none';
-    spAirlineEl.value = startPrefs.airlineName || '';
-  }
-
-  setRadio('spHotelStarsRadio', startPrefs.hotelStars);
-  setChk('spPrioritizeRatingChk', startPrefs.prioritizeRating);
-  setChk('spPrioritizeLocationChk', startPrefs.prioritizeLocation);
-
-  const carOn = startPrefs.carPref !== 'none';
-  setChk('spCarInclude', carOn);
-  qSyncRow('sp-car', carOn);
-  setRadio('spCarPrefRadio', carOn ? startPrefs.carPref : 'small');
-  if (carOn) _spLastCarPref = startPrefs.carPref;
-
-  const actOn = startPrefs.activityCount > 0;
-  setChk('spActivitiesInclude', actOn);
-  qSyncRow('sp-activities', actOn);
-  const spActInput = document.getElementById('spActCountInput');
-  if (spActInput) spActInput.value = startPrefs.activityCount;
-  if (actOn) _spLastActivityCount = startPrefs.activityCount;
-
-  setChk('spPutarinaChk', startPrefs.putarina);
-  setChk('spTouristTaxChk', startPrefs.touristTax);
-  const spBudgetEl = document.getElementById('spBudgetInput');
-  if (spBudgetEl) spBudgetEl.value = startPrefs.budget || '';
-}
-
 // Dugme "Napravi izlet" UNUTAR "Prilagodi svoj plan" modala (iznad
 // "Nastavi") — umesto da vodi na posebnu sekciju niže na strani, kartica
 // "Tvoj izlet" (#builderSummary — ista, sa svom svojom logikom: optimizuj/
@@ -6638,8 +6549,6 @@ function syncStartPrefsFromBuilderState(){
 // jedinstvena kartica koja se otvara klikom na Start. Vraća se na svoje
 // originalno mesto kad se modal zatvori (restoreBuilderSummaryPosition).
 document.getElementById('spMakeBtn').addEventListener('click', () => {
-  syncBuilderStateFromStartPrefs();
-
   const destInput = document.getElementById('dest');
   if (!destInput.value.trim()){
     showToast('Unesi destinaciju da bismo napravili izlet.');
@@ -6681,8 +6590,8 @@ document.getElementById('startPrefsContinue').addEventListener('click', () => {
   // Let i hotel ostaju kakvi su već podešeni gore — let namerno ne
   // uključujemo automatski jer bi to iznenada tražilo popunjeno "Polazak"
   // polje koje ovaj modal ne prikuplja.
-  setTransportToggle('car', startPrefs.carPref !== 'none');
-  setTransportToggle('activity', startPrefs.activityCount > 0);
+  setTransportToggle('car', builderState.carPref !== 'none');
+  setTransportToggle('activity', builderState.activityCount > 0);
   trackFunnelEvent('offers_view', {
     destination: document.getElementById('dest').value.trim() || 'Atina'
   });
