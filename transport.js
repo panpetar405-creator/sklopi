@@ -112,9 +112,11 @@ const TRANSPORT_ROUTES = {
     bus: {hMin:9, hMax:10, eurMin:25, eurMax:46,
           note:'Cena zavisi od prevoznika i polaska; ima i noćnih polazaka.'}
   },
+  // Zadar: red vožnje BAS-a za 24.09.2026 (08:00→20:10, 20:20→07:30, 22:45→08:00;
+  // 5.359 / 5.900 / 3.889 din; Megapul Zadar, Banbus+Auto Trans, Koop Split).
   'Zadar': {
-    bus: {hMin:10, hMax:12, eurMin:31, eurMax:70,
-          note:'Cena jako zavisi od polaska (najpovoljnije od oko 31 €).'}
+    bus: {hMin:9, hMax:12, eurMin:33, eurMax:50, operators:['Megapul Zadar','Banbus + Auto Trans','Koop Split'],
+          note:'Polasci ujutru i uveče, vožnja traje 9 do 12 sati zavisno od linije (preko Siska i Gline ili direktnije).'}
   },
   'Split': {
     bus: {hMin:10, hMax:12, eurMin:38, eurMax:57,
@@ -244,6 +246,11 @@ function _tcCtaHtml(){
   return '<a class="tc-cta" href="' + TRANSPORT_PARTNER_URL + '" target="_blank" rel="noopener">' +
     escapeHtml(_tt('transport_cta', 'Uporedi na Omio-u')) + ' →</a>';
 }
+// Zvanični red vožnje i prodaja karata za polaske iz Beograda (Beogradska autobuska stanica).
+function _tcBasLinkHtml(){
+  return '<a href="https://www.bas.rs/sr/autobuske-karte" target="_blank" rel="noopener" style="display:block;margin-top:12px;text-align:center;font-size:15px;color:var(--deep);text-decoration:underline;">' +
+    escapeHtml(_tt('transport_bas_link', 'Red vožnje i karte na sajtu BAS-a')) + '</a>';
+}
 function _tcFootHtml(){
   return '<div class="tc-foot">' + escapeHtml(_tt('transport_disclaimer',
     'Okvirne vrednosti iz javno dostupnih izvora (provereno: {date}), ne stvarna ponuda prevoznika. Red vožnje i cene se menjaju — proveri pre kupovine.',
@@ -271,7 +278,7 @@ function transportCardHtml(destRaw, adults, originRaw){
       '<div class="tc-head"><span class="tc-ico" aria-hidden="true">🚌</span><div>' +
       '<h3>' + escapeHtml(_tt('transport_title', 'Bez aviona: Beograd → {dest}', {dest: city})) + '</h3>' +
       '<p class="tc-sub">' + escapeHtml(_tt('transport_sub', 'Autobusom ili vozom, okvirno, za polazak iz Beograda')) + '</p>' +
-      '</div></div>' + rows.join('') + _tcCtaHtml() + _tcFootHtml() + '</section>';
+      '</div></div>' + rows.join('') + _tcCtaHtml() + (hit.route.bus ? _tcBasLinkHtml() : '') + _tcFootHtml() + '</section>';
   } catch (e){
     console.warn('[sklopi] transport kartica nije iscrtana:', e);
     return '';
