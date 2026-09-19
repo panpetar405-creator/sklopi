@@ -249,6 +249,13 @@ const I18N = {
     aff_badge:'Afilijacija', aff_badge_title:'Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.',
     base_package_note:'Cena osnovnog paketa — dodaj osiguranje ili eSIM po želji.',
     fits_budget:'Uklapa se u tvoj budžet od ', over_budget:'Malo iznad budžeta, ali najbliža opcija koju imamo.',
+    // --- Opisi paketa (pkgDescText / TIER_META.*.desc) ---
+    pkg_desc_hotel_better:'bolji hotel', pkg_desc_hotel_cheapest:'najjeftiniji hotel', pkg_desc_hotel_verified:'provereni hotel',
+    pkg_desc_flight_stopover:'let sa presedanjem', pkg_desc_flight_airline:'let odabranom kompanijom', pkg_desc_flight_direct:'direktan let',
+    pkg_desc_car_spacious:'prostraniji auto', pkg_desc_car:'auto', pkg_desc_activities:'aktivnosti', pkg_desc_and:'i',
+    tier_best_desc:'Najbolji odnos cene i kvaliteta',
+    tier_comfort_desc:'Bolji hotel i ostale stavke u istoj kategoriji koju si tražio/la',
+    tier_budget_desc:'Najniža cena u istoj kategoriji koju si tražio/la',
   },
   en: {
     nav_how:'How it works', nav_dest:'Destinations', nav_about:'About',
@@ -383,6 +390,13 @@ const I18N = {
     aff_badge:'Affiliate', aff_badge_title:'This is an affiliate (sponsored) link — if you book through it, SKLOPI may earn a commission from the partner. Your price stays the same.',
     base_package_note:'Base package price — add insurance or eSIM if you like.',
     fits_budget:'Fits your budget of ', over_budget:'Slightly over budget, but the closest option we have.',
+    // --- Package descriptions (pkgDescText / TIER_META.*.desc) ---
+    pkg_desc_hotel_better:'a better hotel', pkg_desc_hotel_cheapest:'the cheapest hotel', pkg_desc_hotel_verified:'a vetted hotel',
+    pkg_desc_flight_stopover:'a flight with a layover', pkg_desc_flight_airline:'a flight with your chosen airline', pkg_desc_flight_direct:'a direct flight',
+    pkg_desc_car_spacious:'a roomier car', pkg_desc_car:'a car', pkg_desc_activities:'activities', pkg_desc_and:'and',
+    tier_best_desc:'Best balance of price and quality',
+    tier_comfort_desc:'A better hotel and other items, in the same category you asked for',
+    tier_budget_desc:'Lowest price in the same category you asked for',
   },
   ru: {
     nav_how:'Как это работает', nav_dest:'Направления', nav_about:'О нас',
@@ -517,6 +531,13 @@ const I18N = {
     aff_badge:'Партнёрская ссылка', aff_badge_title:'Это партнёрская (спонсируемая) ссылка — если вы забронируете через неё, SKLOPI может получить комиссию от партнёра. Цена для вас не меняется.',
     base_package_note:'Цена базового пакета — добавь страховку или eSIM по желанию.',
     fits_budget:'Вписывается в твой бюджет ', over_budget:'Немного выше бюджета, но самый близкий вариант, который у нас есть.',
+    // --- Описания пакетов (pkgDescText / TIER_META.*.desc) ---
+    pkg_desc_hotel_better:'отель классом выше', pkg_desc_hotel_cheapest:'самый дешёвый отель', pkg_desc_hotel_verified:'проверенный отель',
+    pkg_desc_flight_stopover:'перелёт с пересадкой', pkg_desc_flight_airline:'перелёт выбранной авиакомпанией', pkg_desc_flight_direct:'прямой перелёт',
+    pkg_desc_car_spacious:'более просторный авто', pkg_desc_car:'авто', pkg_desc_activities:'активности', pkg_desc_and:'и',
+    tier_best_desc:'Лучшее соотношение цены и качества',
+    tier_comfort_desc:'Отель получше и остальное — в той же категории, которую ты выбрал(а)',
+    tier_budget_desc:'Самая низкая цена в той же категории, которую ты выбрал(а)',
   }
 };
 function getLang(){
@@ -2710,10 +2731,13 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
     flightPref: flags.flightPref, carPref: flags.carPref};
 }
 
+// label ostaje kao nazivi paketa (Best Value / Comfort / Budget); desc je
+// getter koji ide kroz t(), pa uvek prati trenutni jezik (nije keširan pri
+// učitavanju skripte).
 const TIER_META = {
-  best:    {label:'Best Value', desc:'Najbolji odnos cene i kvaliteta'},
-  comfort: {label:'Comfort', desc:'Bolji hotel i ostale stavke u istoj kategoriji koju si tražio/la'},
-  budget:  {label:'Budget', desc:'Najniža cena u istoj kategoriji koju si tražio/la'}
+  best:    {label:'Best Value', get desc(){ return t('tier_best_desc'); }},
+  comfort: {label:'Comfort',    get desc(){ return t('tier_comfort_desc'); }},
+  budget:  {label:'Budget',     get desc(){ return t('tier_budget_desc'); }}
 };
 
 /* Opis kartice ponude mora pratiti stvarni sadržaj paketa — koje usluge
@@ -2732,24 +2756,38 @@ const TIER_META = {
    se ne ističe kao posebna "Budget prednost". */
 function pkgDescText(pkg){
   const bits = [];
-  if (pkg.hotel) bits.push(pkg.tier === 'comfort' ? 'bolji hotel' : pkg.tier === 'budget' ? 'najjeftiniji hotel' : 'provereni hotel');
+  if (pkg.hotel) bits.push(t(pkg.tier === 'comfort' ? 'pkg_desc_hotel_better' : pkg.tier === 'budget' ? 'pkg_desc_hotel_cheapest' : 'pkg_desc_hotel_verified'));
   if (pkg.flight){
-    bits.push(pkg.flightPref === 'cheapest' ? 'let sa presedanjem'
-      : pkg.flightPref === 'airline' ? 'let odabranom kompanijom'
-      : 'direktan let');
+    bits.push(t(pkg.flightPref === 'cheapest' ? 'pkg_desc_flight_stopover'
+      : pkg.flightPref === 'airline' ? 'pkg_desc_flight_airline'
+      : 'pkg_desc_flight_direct'));
   }
-  if (pkg.car) bits.push(pkg.carPref === 'suv' ? 'prostraniji auto' : 'auto');
-  if (pkg.activity) bits.push('aktivnosti');
+  if (pkg.car) bits.push(t(pkg.carPref === 'suv' ? 'pkg_desc_car_spacious' : 'pkg_desc_car'));
+  if (pkg.activity) bits.push(t('pkg_desc_activities'));
 
   if (!bits.length) return TIER_META[pkg.tier].label;
 
   let text = bits.length === 1
     ? bits[0]
-    : bits.slice(0, -1).join(', ') + ' i ' + bits[bits.length - 1];
+    : bits.slice(0, -1).join(', ') + ' ' + t('pkg_desc_and') + ' ' + bits[bits.length - 1];
   text = text.charAt(0).toUpperCase() + text.slice(1);
 
   return text;
 }
+
+// Kartice se iscrtavaju jednom (pkgHtml), pa bez ovoga opis ostaje na starom
+// jeziku posle prebacivanja SR/EN/RU. Osveži samo .pkg-desc, ne ceo rezultat.
+const _prevOnLangChangePkgDesc = window.onLangChange;
+window.onLangChange = function(lang){
+  if (typeof _prevOnLangChangePkgDesc === 'function') _prevOnLangChangePkgDesc(lang);
+  const pkgs = window._lastSearchPkgs;
+  if (!Array.isArray(pkgs)) return;
+  document.querySelectorAll('.pkg .pkg-desc').forEach(el => {
+    const card = el.closest('.pkg');
+    const pkg = pkgs.find(p => card.classList.contains(p.tier));
+    if (pkg) el.textContent = pkgDescText(pkg);
+  });
+};
 
 const ICONS = {
   flight: '<path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/>',
