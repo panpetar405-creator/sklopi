@@ -632,6 +632,7 @@ a{color:inherit;}
 .section{max-width:1180px;margin:0 auto;padding:0 40px;}
 .section + .section{margin-top:64px;}
 #attractions{margin-top:64px;}
+#attractionsHead{color:var(--royal-plum);}
 #faq{margin-top:64px;}
 .section.action-cards-wrap{margin-top:64px;margin-bottom:64px;}
 .section-head{margin:0 0 40px;}
