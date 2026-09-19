@@ -4421,7 +4421,9 @@ function matchPkgHtml(pick, idx, budget, answers, month){
     itemCardHtml(pkg.car,'car',pkg)
   ].filter(Boolean).join('');
   // Autobus/voz zanima samo one koji NISU izabrali let — ko je označio avion, ne prikazuje im se.
-  const busNote = pkg.flight ? '' : busTrainNoteFor(dest, pick.adults);
+  // Privremeno isključeno na zahtev ("za sada samo auto") — busTrainNoteFor() ostaje u kodu
+  // nedirnut, samo se ne poziva, radi lakšeg vraćanja kasnije.
+  const busNote = '';
   const reasonText = matchReasonSentence(pick, answers, month);
 
   return `

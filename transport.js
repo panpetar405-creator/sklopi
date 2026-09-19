@@ -435,9 +435,14 @@ if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined'){
 
 // Velika kartica ispod ponuda (obična pretraga). Prikazuje se samo kad let NIJE izabran.
 // Red za AUTO važi za bilo koja dva mesta; autobus/voz samo za polazak iz Beograda (ručna baza).
+// ---- Privremeni prekidač: bus/voz sekcija je ostala u kodu (TRANSPORT_ROUTES,
+// _tcRowHtml, _tcBasLinkHtml...) radi lakšeg vraćanja kasnije, ali se trenutno
+// NE prikazuje — samo AUTO red (na zahtev: "za sada ukloni bus i voz, samo auto"). ----
+const TRANSPORT_SHOW_BUS_TRAIN = false;
+
 function transportCardHtml(destRaw, adults, originRaw, flags){
   try {
-    // Ko je označio let (avion), autobus i voz ga ne zanimaju.
+    // Ko je označio let (avion), auto/bus/voz ga ne zanimaju.
     if (flags && flags.flight) return '';
     const dest = String(destRaw || '').trim();
     if (!dest) return '';
@@ -445,12 +450,12 @@ function transportCardHtml(destRaw, adults, originRaw, flags){
     const fromName = String(originRaw || '').trim() || 'Beograd';
     const fromCity = cityLabel(fromName.split(',')[0].trim());
     const destCity = cityLabel(dest.split(',')[0].trim());
-    const hit = fromBg ? _transportLookup(dest) : null;
+    const hit = (TRANSPORT_SHOW_BUS_TRAIN && fromBg) ? _transportLookup(dest) : null;
     const rows = [];
     if (hit && hit.route.bus) rows.push(_tcRowHtml('bus', hit.route.bus, adults));
     if (hit && hit.route.train) rows.push(_tcRowHtml('train', hit.route.train, adults));
     rows.push(_tcCarPlaceholder(fromName, dest, adults));
-    if (!hit){
+    if (TRANSPORT_SHOW_BUS_TRAIN && !hit){
       const key = fromBg ? 'transport_no_bus_data' : 'transport_bus_only_bg';
       const txt = fromBg
         ? 'Za autobus i voz na ovoj ruti još nemamo unete podatke.'
@@ -458,10 +463,10 @@ function transportCardHtml(destRaw, adults, originRaw, flags){
       rows.push('<div class="tc-row"><div class="tc-meta" style="margin-top:0">' + escapeHtml(_tt(key, txt)) + '</div></div>');
     }
     return '<section class="transport-card">' +
-      '<div class="tc-head"><span class="tc-ico" aria-hidden="true">🚌</span><div>' +
+      '<div class="tc-head"><span class="tc-ico" aria-hidden="true">🚗</span><div>' +
       '<h3>' + escapeHtml(_tt('transport_title', 'Bez aviona: {from} → {dest}', {from: fromCity, dest: destCity})) + '</h3>' +
-      '<p class="tc-sub">' + escapeHtml(_tt('transport_sub', 'Auto, autobus ili voz — okvirna procena')) + '</p>' +
-      '</div></div>' + rows.join('') + _tcCtaHtml() + (hit && hit.route.bus ? _tcBasLinkHtml() : '') + _tcFootHtml() + '</section>';
+      '<p class="tc-sub">' + escapeHtml(_tt('transport_sub_car', 'Auto — okvirna procena vožnje')) + '</p>' +
+      '</div></div>' + rows.join('') + (hit && hit.route.bus ? _tcCtaHtml() + _tcBasLinkHtml() : '') + _tcFootHtml() + '</section>';
   } catch (e){
     console.warn('[sklopi] transport kartica nije iscrtana:', e);
     return '';
@@ -472,6 +477,7 @@ function transportCardHtml(destRaw, adults, originRaw, flags){
 // Vraća '' ako destinacije nema u bazi — pozivač tada koristi stariju napomenu.
 function transportCompactHtml(destRaw, adults){
   try {
+    if (!TRANSPORT_SHOW_BUS_TRAIN) return ''; // isključeno za sada — nema auto varijantu ovog kratkog bloka
     const hit = _transportLookup(destRaw);
     if (!hit) return '';
     const parts = [];
