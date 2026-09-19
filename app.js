@@ -4819,17 +4819,15 @@ async function bumpClickStat(){
 /* ==========================================================
    FORM WIRING
 ========================================================== */
-/* ---- "Polazak" (poreklo/origin) je bitno SAMO kad se traži let — za
-   hotel/auto/aktivnosti nema smisla pitati odakle korisnik kreće. Polje
-   se sakriva kad je "Letovi" toggle isključen (i to je podrazumevano
-   stanje pri učitavanju stranice), a ponovo se pojavljuje čim se let
-   uključi. Required atribut prati isto stanje, da prazno polje ne
-   blokira slanje forme kad let uopšte nije deo pretrage. ---- */
+/* ---- "Polazak" (poreklo/origin) polje je sada TRAJNO vidljivo, bez
+   obzira na "Letovi" toggle — korisnik može uneti polazište i kad
+   avion nije označen. Required atribut i dalje prati "Letovi" toggle,
+   jer je polazište obavezno samo kad se stvarno traži let (vidi i
+   validateSearchInputs ispod), dok za hotel/auto/aktivnosti ostaje
+   opciono. ---- */
 function updateOriginVisibility(showOrigin){
-  const stub = document.getElementById('originStub');
   const originInput = document.getElementById('origin');
-  if (!stub || !originInput) return;
-  stub.style.display = showOrigin ? '' : 'none';
+  if (!originInput) return;
   if (showOrigin) originInput.setAttribute('required', 'required');
   else originInput.removeAttribute('required');
 }
