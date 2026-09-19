@@ -256,6 +256,14 @@ const I18N = {
     tier_best_desc:'Najbolji odnos cene i kvaliteta',
     tier_comfort_desc:'Bolji hotel i ostale stavke u istoj kategoriji koju si tražio/la',
     tier_budget_desc:'Najniža cena u istoj kategoriji koju si tražio/la',
+    // --- Šta je uključeno u ponudu (perks po tier-u) ---
+    perk_flight_bag_cabin:'samo ručni prtljag', perk_flight_bag_checked:'prtljag od 23 kg uključen',
+    perk_flight_flex:'izmena datuma bez kazne', perk_flight_fixed:'bez izmene datuma',
+    perk_hotel_breakfast:'doručak uključen', perk_hotel_no_breakfast:'bez doručka',
+    perk_hotel_central:'u centru grada', perk_hotel_dist_mid:'oko 1,5 km od centra', perk_hotel_dist_far:'oko 3 km od centra',
+    perk_hotel_free_cancel:'besplatno otkazivanje', perk_hotel_no_cancel:'nepovratna rezervacija',
+    perk_car_km_unlimited:'neograničena kilometraža', perk_car_km_limited:'ograničena kilometraža',
+    perk_car_cover_full:'puno osiguranje bez participacije', perk_car_cover_basic:'osnovno osiguranje uz depozit',
   },
   en: {
     nav_how:'How it works', nav_dest:'Destinations', nav_about:'About',
@@ -397,6 +405,14 @@ const I18N = {
     tier_best_desc:'Best balance of price and quality',
     tier_comfort_desc:'A better hotel and other items, in the same category you asked for',
     tier_budget_desc:'Lowest price in the same category you asked for',
+    // --- What's included (perks per tier) ---
+    perk_flight_bag_cabin:'cabin bag only', perk_flight_bag_checked:'23 kg checked bag included',
+    perk_flight_flex:'free date changes', perk_flight_fixed:'no date changes',
+    perk_hotel_breakfast:'breakfast included', perk_hotel_no_breakfast:'no breakfast',
+    perk_hotel_central:'in the city centre', perk_hotel_dist_mid:'about 1.5 km from the centre', perk_hotel_dist_far:'about 3 km from the centre',
+    perk_hotel_free_cancel:'free cancellation', perk_hotel_no_cancel:'non-refundable',
+    perk_car_km_unlimited:'unlimited mileage', perk_car_km_limited:'limited mileage',
+    perk_car_cover_full:'full coverage, no excess', perk_car_cover_basic:'basic cover with a deposit',
   },
   ru: {
     nav_how:'Как это работает', nav_dest:'Направления', nav_about:'О нас',
@@ -538,6 +554,14 @@ const I18N = {
     tier_best_desc:'Лучшее соотношение цены и качества',
     tier_comfort_desc:'Отель получше и остальное — в той же категории, которую ты выбрал(а)',
     tier_budget_desc:'Самая низкая цена в той же категории, которую ты выбрал(а)',
+    // --- Что включено (перки по тарифу) ---
+    perk_flight_bag_cabin:'только ручная кладь', perk_flight_bag_checked:'багаж 23 кг включён',
+    perk_flight_flex:'бесплатное изменение даты', perk_flight_fixed:'без изменения даты',
+    perk_hotel_breakfast:'завтрак включён', perk_hotel_no_breakfast:'без завтрака',
+    perk_hotel_central:'в центре города', perk_hotel_dist_mid:'около 1,5 км от центра', perk_hotel_dist_far:'около 3 км от центра',
+    perk_hotel_free_cancel:'бесплатная отмена', perk_hotel_no_cancel:'невозвратное бронирование',
+    perk_car_km_unlimited:'неограниченный пробег', perk_car_km_limited:'ограниченный пробег',
+    perk_car_cover_full:'полная страховка без франшизы', perk_car_cover_basic:'базовая страховка с депозитом',
   }
 };
 function getLang(){
@@ -2664,6 +2688,57 @@ function flightSubText(opts){
   return sub;
 }
 
+/* ==========================================================
+   ŠTA JE UKLJUČENO PO TIER-U (perks) — tri kartice se razlikuju ne samo
+   po ceni nego i po SADRŽAJU: prtljag/izmena datuma (let), doručak,
+   udaljenost od centra i otkazivanje (hotel), kilometraža i osiguranje
+   (auto). Svaki perk je {k: i18n ključ, pos: true|false|null} —
+   pos:true je prednost (računa se u qualityScore), false je odricanje,
+   null neutralno. Kategorija koju je korisnik tražio (tip leta,
+   zvezdice, tip auta) se NE menja — samo ono što ta cena uključuje.
+   Ne zove rng() (ne sme da pomeri niz nasumičnih vrednosti).
+========================================================== */
+function tierPerks(kind, tier, opts){
+  opts = opts || {};
+  if (kind === 'flight'){
+    return [
+      tier === 'budget' ? {k:'perk_flight_bag_cabin', pos:false} : {k:'perk_flight_bag_checked', pos:true},
+      tier === 'comfort' ? {k:'perk_flight_flex', pos:true} : {k:'perk_flight_fixed', pos:false}
+    ];
+  }
+  if (kind === 'hotel'){
+    // "Blizu centra" kao prioritet korisnika važi za sve tri kartice.
+    const central = opts.prioritizeLocation || tier === 'comfort';
+    return [
+      tier === 'budget' ? {k:'perk_hotel_no_breakfast', pos:false} : {k:'perk_hotel_breakfast', pos:true},
+      central ? {k:'perk_hotel_central', pos:true}
+        : tier === 'best' ? {k:'perk_hotel_dist_mid', pos:null}
+        : {k:'perk_hotel_dist_far', pos:false},
+      tier === 'budget' ? {k:'perk_hotel_no_cancel', pos:false} : {k:'perk_hotel_free_cancel', pos:true}
+    ];
+  }
+  if (kind === 'car'){
+    return [
+      tier === 'budget' ? {k:'perk_car_km_limited', pos:false} : {k:'perk_car_km_unlimited', pos:true},
+      tier === 'comfort' ? {k:'perk_car_cover_full', pos:true} : {k:'perk_car_cover_basic', pos:false}
+    ];
+  }
+  return [];
+}
+// Kvalitet iz STVARNOG sadržaja: udeo ostvarenih prednosti među uključenim
+// stavkama, preslikan na 55–97 (Budget bez prednosti ≈55, sve prednosti 97).
+// Bez ijedne stavke sa perks-ovima vraća staru fiksnu vrednost po tier-u.
+function qualityFromPerks(items, tier){
+  let possible = 0, earned = 0;
+  items.forEach(it => {
+    if (!it || !it.perks) return;
+    possible += it.perks.length;
+    earned += it.perks.filter(pk => pk.pos === true).length;
+  });
+  if (!possible) return {best:84, budget:58, comfort:97}[tier];
+  return Math.round(55 + 42 * earned / possible);
+}
+
 function fetchFlights(rng, dest, adults, tier, originCode, prefs){
   prefs = prefs || {};
   const flightPref = prefs.flightPref || 'direct';
@@ -2693,7 +2768,8 @@ function fetchFlights(rng, dest, adults, tier, originCode, prefs){
   return {
     provider:p.provider, providerLabel:p.name, type:'flight',
     name: carrier + (departure ? ' ' + departure : '') + ' → ' + arrival,
-    sub, price, currency:'EUR'
+    sub, price, currency:'EUR',
+    perks: tierPerks('flight', tier)
   };
 }
 function fetchHotel(rng, dest, nights, adults, tier, prefs){
@@ -2725,9 +2801,10 @@ function fetchHotel(rng, dest, nights, adults, tier, prefs){
     provider:p.provider, providerLabel:p.name, type:'hotel',
     name: arr[Math.floor(rng()*arr.length)],
     sub: nights+' noć' + (nights===1?'':'i') + ' · ' + stars + '★ · ocena ' + rating.toFixed(1)
-      + (prefs.prioritizeLocation ? ' · centar grada' : '')
       + (rooms > 1 ? ' · cena za ' + rooms + ' sobe' : ''),
-    price, currency:'EUR'
+    price, currency:'EUR',
+    // "Centar grada" (prioritizeLocation) sad dolazi kroz perks (i18n).
+    perks: tierPerks('hotel', tier, {prioritizeLocation: prefs.prioritizeLocation})
   };
 }
 function fetchCar(rng, days, tier, prefs){
@@ -2750,7 +2827,8 @@ function fetchCar(rng, days, tier, prefs){
     provider:p.provider, providerLabel:p.name, type:'car',
     name: arr[Math.floor(rng()*arr.length)],
     sub: days+' dana · automatski/ručni menjač' + (carType==='suv' ? ' · SUV' : ''),
-    price, currency:'EUR'
+    price, currency:'EUR',
+    perks: tierPerks('car', tier)
   };
 }
 function fetchActivity(rng, dest, tier, prefs){
@@ -2855,7 +2933,9 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
   // razlikama unutar iste kategorije (npr. koji tačno hotel od nekoliko u
   // istoj zvezdičnoj klasi, ili koja avio-kompanija kad korisnik nije
   // tražio konkretnu).
-  const qualityScore = {best:84, budget:58, comfort:97}[tier];
+  // Sad izveden iz STVARNIH perks-ova uključenih stavki (vidi qualityFromPerks),
+  // a ne iz fiksne konstante po tier-u.
+  const qualityScore = qualityFromPerks([flight, hotel, car], tier);
 
   return {tier, flight, hotel, car, activity, fuel, tolls, insuranceCost, esimCost, total, qualityScore,
     // Stvarno tražene kategorije (isti izbor za sve tri kartice — vidi
@@ -3013,8 +3093,8 @@ function refreshDisplayedPrices(){
     renderBuilder();
   }
   const results = document.getElementById('results');
-  if (window._lastSearchCtx && results && results.classList.contains('visible')){
-    runSearch(false);
+  if (window._lastSearchCtx && results && results.classList.contains('visible') && validateSearchInputs().ok){
+    runSearch(false); // tiho preskoči ako je forma u međuvremenu izmenjena u neispravno stanje
   }
 }
 
@@ -3766,18 +3846,28 @@ function escapeHtml(str){
 
 async function fetchPackagesFromBackend(payload){
   if (!API_BASE) return null; // backend jos nije deploy-ovan — nema smisla ni pokusavati
+  // Tajmaut: spor backend ne sme da drži skeleton unedogled — posle 6 s
+  // (ili prekida) pada na lokalnu procenu, isto kao kad je nedostupan.
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const timer = ctrl ? setTimeout(() => ctrl.abort(), 6000) : null;
   try {
     const res = await fetch(API_BASE + '/api/search', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: ctrl ? ctrl.signal : undefined
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
-    return json.packages;
+    // Prazan ili neispravan odgovor = kao da backend nije odgovorio.
+    const pkgs = json && json.packages;
+    if (!Array.isArray(pkgs) || !pkgs.length || !pkgs.every(pk => pk && TIER_META[pk.tier])) throw new Error('neispravan odgovor');
+    return pkgs;
   } catch(err){
     console.warn('[sklopi] backend nedostupan, koristim lokalni mock:', err.message);
     return null;
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 
@@ -4232,10 +4322,38 @@ function closeResultsSheet(){
   });
 })();
 
-async function renderResults(dest, from, to, nights, days, adults, flags, originCode, autoReveal){
+function showResultsError(){
+  const body = document.getElementById('resultsBody');
+  if (!body) return;
+  body.classList.remove('rb-hidden', 'rb-swap-out');
+  body.classList.add('rb-reveal');
+  body.innerHTML = '<div class="disclaimer" role="alert" style="text-align:center;padding:18px 12px;">'
+    + '<p style="margin:0 0 10px;">' + L3('Nešto nije u redu i ponude se nisu učitale.', 'Something went wrong and the offers didn’t load.', 'Что-то пошло не так, и предложения не загрузились.') + '</p>'
+    + '<button type="button" class="pkg-alert-btn" onclick="runSearch(false)">' + L3('Pokušaj ponovo', 'Try again', 'Повторить') + '</button></div>';
+}
+// Destinacija koju ne prepoznajemo ni u jednoj našoj bazi — korisniku javljamo
+// da je ponuda okvirna, umesto da tiho prikažemo izmišljen "<grad> Hotel".
+function isKnownDestination(destRaw){
+  const key = normalizeSr(String(destRaw || '').split(',')[0].trim());
+  if (!key) return false;
+  if (POPULAR_DESTINATIONS.some(d => normalizeSr(d.name) === key)) return true;
+  if (MATCH_DESTINATIONS.some(d => normalizeSr(d.name) === key)) return true;
+  return !!airportInfoFor(destRaw);
+}
+async function renderResults(dest, from, to, nights, days, adults, flags, originCode, autoReveal, seq){
+  try {
+    await renderResultsInner(dest, from, to, nights, days, adults, flags, originCode, autoReveal, seq);
+  } catch (err) {
+    console.error('[sklopi] prikaz ponuda nije uspeo:', err);
+    if (seq !== undefined && seq !== window._searchSeq) return;
+    showResultsError();
+  }
+}
+async function renderResultsInner(dest, from, to, nights, days, adults, flags, originCode, autoReveal, seq){
   const backendPkgs = await fetchPackagesFromBackend({
     dest, from, to, adults, originCode, flags
   });
+  if (seq !== undefined && seq !== window._searchSeq) return; // stigla je novija pretraga
   const pkgs = backendPkgs || computePackagesLocally(dest, from, to, nights, days, adults, flags, originCode);
 
   // Global kontekst za "Sačuvaj ovu ponudu" dugme na svakoj kartici —
@@ -4249,7 +4367,12 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const head = document.getElementById('resultsHead');
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
+  const unknownNote = isKnownDestination(dest) ? '' : L3(
+    'Ne prepoznajemo tačno „' + dest + '“ — proveri pisanje. Ponuda je okvirna, a linkovi vode na opštu pretragu partnera.',
+    'We don’t recognise “' + dest + '” exactly — check the spelling. The offer is approximate and links lead to the partner’s general search.',
+    'Мы не узнаём «' + dest + '» точно — проверь написание. Предложение приблизительное, а ссылки ведут на общий поиск партнёра.');
   const notes = [
+    unknownNote ? `<div class="plan-note">🔎 ${escapeHtml(unknownNote)}</div>` : '',
     altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
     destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : ''
   ].filter(Boolean).join('');
@@ -4263,15 +4386,21 @@ async function renderResults(dest, from, to, nights, days, adults, flags, origin
   const hadSkeleton = !!body.querySelector('.skel-packages');
   body.classList.add('rb-swap-out');
   setTimeout(() => {
-    body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}`;
-    initPackagesSlider(body.querySelector('.packages-slider-wrap'));
-    body.classList.remove('rb-swap-out');
-    body.classList.remove('rb-hidden');
-    body.classList.add('rb-reveal');
+    if (seq !== undefined && seq !== window._searchSeq) return;
+    try {
+      body.innerHTML = `${packagesSliderHtml(pkgs.map(pkgHtml))}`;
+      initPackagesSlider(body.querySelector('.packages-slider-wrap'));
+      body.classList.remove('rb-swap-out');
+      body.classList.remove('rb-hidden');
+      body.classList.add('rb-reveal');
 
-    requestAnimationFrame(() => {
-      scrollIntoCenterBelowHeader(body.querySelector('.packages .pkg') || body);
-    });
+      requestAnimationFrame(() => {
+        scrollIntoCenterBelowHeader(body.querySelector('.packages .pkg') || body);
+      });
+    } catch (err) {
+      console.error('[sklopi] iscrtavanje kartica nije uspelo:', err);
+      showResultsError();
+    }
   }, hadSkeleton ? 180 : 0);
 }
 
@@ -4292,6 +4421,7 @@ function itemCardHtml(item, kind, pkg){
       <div class="item-label">${labels[kind]}${item.providerLabel!=='SKLOPI' ? `<span class="item-provider">${escapeHtml(item.providerLabel)}</span>` : ''}</div>
       <div class="item-name">${escapeHtml(item.name)}</div>
       <div class="item-sub">${escapeHtml(item.sub)}</div>
+      ${item.perks && item.perks.length ? `<ul class="item-perks">${item.perks.map(pk => `<li class="perk ${pk.pos === true ? 'pos' : pk.pos === false ? 'neg' : 'neu'}" data-i18n="${pk.k}">${escapeHtml(t(pk.k))}</li>`).join('')}</ul>` : ''}
       <div class="item-price tabular">${fmtEUR(item.price)}</div>
       <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" data-dest="${escapeHtml(pkg&&pkg.dest||'')}" data-tier="${escapeHtml(pkg&&pkg.tier||'')}" onclick="bookItem(this)">${btnLabel[kind]}</a>
       ${affBadgeHtml()}
@@ -4817,12 +4947,54 @@ document.querySelectorAll('.toggle').forEach(t=>{
 // (trenutno "Letovi" nije uključen po default-u, pa se polje krije od starta).
 updateOriginVisibility(document.querySelector('.toggle[data-t="flight"] input').checked);
 
+function localTodayStr(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+/* Provera unosa PRE pokretanja pretrage — umesto tihih zamena (prazna
+   destinacija → "Atina") i NaN cena (neispravni datumi). Vraća
+   {ok:true} ili {ok:false, msg, focus}. `extra` dozvoljava pozivaocu da
+   javi uključivanje auta/aktivnosti koje još nije primenjeno na toggle-ove
+   (modal "Prilagodi svoj plan" ih tek postavlja); `checkPast` se traži samo
+   za NOVU pretragu — ne i za učitavanje sačuvanog izleta sa starim datumima. */
+function validateSearchInputs(extra){
+  extra = extra || {};
+  const dest = document.getElementById('dest').value.trim();
+  const origin = document.getElementById('origin').value.trim();
+  const from = document.getElementById('dateFrom').value;
+  const to = document.getElementById('dateTo').value;
+  const on = k => { const el = document.querySelector('.toggle[data-t="' + k + '"]'); return !!(el && el.classList.contains('on')); };
+  const flight = on('flight'), hotel = on('hotel');
+  const car = on('car') || !!extra.car, activity = on('activity') || !!extra.activity;
+  const isDate = v => /^\d{4}-\d{2}-\d{2}$/.test(v || '') && !isNaN(new Date(v));
+  if (!dest) return {ok:false, focus:'dest', msg:L3('Upiši destinaciju da bismo pronašli ponude.', 'Enter a destination so we can find offers.', 'Укажи направление, чтобы мы нашли предложения.')};
+  if (flight && !origin) return {ok:false, focus:'origin', msg:L3('Upiši polazak — bez njega ne možemo da izračunamo let.', 'Enter where you depart from — we need it to price the flight.', 'Укажи пункт вылета — без него мы не можем рассчитать перелёт.')};
+  if (!isDate(from) || !isDate(to)) return {ok:false, focus:'form', msg:L3('Izaberi datume putovanja.', 'Pick your travel dates.', 'Выбери даты поездки.')};
+  if (to <= from) return {ok:false, focus:'form', msg:L3('Datum povratka mora biti posle datuma polaska.', 'The return date must be after the departure date.', 'Дата возвращения должна быть позже даты вылета.')};
+  if (extra.checkPast && from < localTodayStr()) return {ok:false, focus:'form', msg:L3('Datum polaska je u prošlosti — izaberi nove datume.', 'The departure date is in the past — pick new dates.', 'Дата вылета уже прошла — выбери новые даты.')};
+  if (!(flight || hotel || car || activity)) return {ok:false, focus:'form', msg:L3('Uključi bar jednu uslugu: let, smeštaj, auto ili aktivnosti.', 'Turn on at least one service: flights, stay, car or activities.', 'Включи хотя бы одну услугу: перелёт, жильё, авто или активности.')};
+  return {ok:true};
+}
+function focusSearchField(which){
+  const el = which === 'dest' || which === 'origin' ? document.getElementById(which) : null;
+  const form = document.getElementById('searchForm');
+  if (form) form.scrollIntoView({behavior:'smooth', block:'center'});
+  if (el) setTimeout(() => el.focus({preventScroll:true}), 250);
+}
+
 async function runSearch(shouldScroll, autoReveal){
-  const dest = document.getElementById('dest').value.trim() || 'Atina';
+  const check = validateSearchInputs();
+  if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
+  const dest = document.getElementById('dest').value.trim();
   const originCode = document.getElementById('origin').value.trim();
   const from = document.getElementById('dateFrom').value;
   const to = document.getElementById('dateTo').value;
-  const adults = document.getElementById('adults').value || '2';
+  // Ranije se nights/days ovde NIKAD nisu definisali, pa je poziv u
+  // setTimeout-u ispod bacao ReferenceError i skeleton ostajao zauvek.
+  const nights = nightsBetween(from, to);
+  const days = nights;
+  const adults = String(Math.min(9, Math.max(1, Number(document.getElementById('adults').value) || 2)));
+  const seq = window._searchSeq = (window._searchSeq || 0) + 1; // samo poslednja pretraga sme da iscrta rezultate
   const flags = {
     flight:    document.querySelector('.toggle[data-t="flight"]').classList.contains('on'),
     hotel:     document.querySelector('.toggle[data-t="hotel"]').classList.contains('on'),
@@ -4857,7 +5029,8 @@ async function runSearch(shouldScroll, autoReveal){
   logAirportDbMiss(dest, 'dest');
 
   setTimeout(()=>{
-    renderResults(dest, from, to, nights, days, adults, flags, originCode, autoReveal);
+    if (seq !== window._searchSeq) return; // u međuvremenu pokrenuta novija pretraga
+    renderResults(dest, from, to, nights, days, adults, flags, originCode, autoReveal, seq);
   }, 700);
 }
 
@@ -6805,6 +6978,15 @@ document.getElementById('spMakeBtn').addEventListener('click', () => {
 });
 
 document.getElementById('startPrefsContinue').addEventListener('click', () => {
+  // Validacija PRE zatvaranja modala i history guard-a — ako unos nije
+  // ispravan, ne otvaramo rezultate (inače bi ostao "osiroteo" overlay).
+  const check = validateSearchInputs({checkPast:true, car: builderState.carPref !== 'none', activity: builderState.activityCount > 0});
+  if (!check.ok){
+    requestCloseStartPrefsModal();
+    showToast(check.msg);
+    focusSearchField(check.focus);
+    return;
+  }
   // Direktan prelazak na rezultate — vidi komentar uz guardOverlayReplace
   // (zašto NE koristimo requestCloseStartPrefsModal ovde).
   closeStartPrefsModal();
@@ -6817,7 +6999,7 @@ document.getElementById('startPrefsContinue').addEventListener('click', () => {
   setTransportToggle('car', builderState.carPref !== 'none');
   setTransportToggle('activity', builderState.activityCount > 0);
   trackFunnelEvent('offers_view', {
-    destination: document.getElementById('dest').value.trim() || 'Atina'
+    destination: document.getElementById('dest').value.trim()
   });
   // Odmah skrolujemo ka rezultatima (na loading skeleton) — ranije se ovde
   // NIJE skrolovalo dok se ponude ne učitaju, pa je stranica ostajala pri
