@@ -4580,6 +4580,9 @@ function restoreBuilderSummaryPosition(){
   } else {
     BS_ORIGINAL_PARENT.appendChild(bs);
   }
+  // Vrati "Nastavi" dugme (skriveno dok je kartica bila unutar modala —
+  // vidi #spMakeBtn) sad kad je kartica opet na svom originalnom mestu.
+  document.getElementById('builderContinueBtn').style.display = '';
 }
 
 // Builder panel — zatvoren po default-u (vidi style="display:none" na
@@ -6461,6 +6464,12 @@ document.getElementById('spMakeBtn').addEventListener('click', () => {
   const slot = document.getElementById('spBuilderSlot');
   const bs = document.getElementById('builderSummary');
   if (slot && bs.parentElement !== slot) slot.appendChild(bs);
+
+  // Unutar modala "Prilagodi svoj plan" ne treba dupli "Nastavi" — modal
+  // već ima svoje dugme (#startPrefsContinue) ispod cele forme, pa
+  // #builderContinueBtn (koje inače otkriva linkove za rezervaciju) ovde
+  // sakrivamo da ne bude dva "Nastavi" jedno ispod drugog.
+  document.getElementById('builderContinueBtn').style.display = 'none';
 
   renderBuilder();
   bs.style.display = 'block';
