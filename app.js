@@ -6261,7 +6261,8 @@ if (passportCheckSubmit) passportCheckSubmit.addEventListener('click', runPasspo
 ========================================================== */
 const startPrefs = {
   flightPref: 'direct', hotelStars: 4, carPref: 'small', activityCount: 2,
-  prioritizeRating: false, prioritizeLocation: false, budget: null
+  prioritizeRating: false, prioritizeLocation: false,
+  putarina: false, touristTax: false, budget: null
 };
 
 function openStartPrefsModal(){
@@ -6362,6 +6363,14 @@ document.getElementById('spBudgetInput').addEventListener('input', (e) => {
   startPrefs.budget = clamped;
 });
 
+// Prosti dodaci bez pod-opcija u "Prilagodi svoj plan" modalu: putarine /
+// boravišna taksa — isti obrazac kao u glavnom upitniku (#builderPanel).
+[['spPutarinaChk','putarina'], ['spTouristTaxChk','touristTax']].forEach(([id, key])=>{
+  document.getElementById(id).addEventListener('change', (e) => {
+    startPrefs[key] = e.target.checked;
+  });
+});
+
 // Postavlja "on" toggle u transport-row-u SAMO ako trenutno nije već u
 // traženom stanju — izbegava suvišan click event (i, za let, suvišan
 // updateOriginVisibility poziv) kad se ništa ne menja.
@@ -6421,6 +6430,8 @@ function syncBuilderStateFromStartPrefs(){
     activityCount: startPrefs.activityCount,
     prioritizeRating: startPrefs.prioritizeRating,
     prioritizeLocation: startPrefs.prioritizeLocation,
+    putarina: startPrefs.putarina,
+    touristTax: startPrefs.touristTax,
     budget: startPrefs.budget
   });
   syncBuilderPanelUi();
