@@ -247,6 +247,69 @@ const I18N = {
     ac_searching:'Tražim…', ac_no_results:'Nema predloga za taj naziv.',
     results_back:'Nazad', results_back_aria:'Nazad na sajt',
     night:'noć', nights:'noći', passenger:'putnik', passengers:'putnika',
+    // ---- statistička traka, raspodela cene, atrakcije, modal 'Prilagodi svoj plan', čipovi upitnika ----
+    stat_items:'stavki sabranih u jednu cenu',
+    stat_partners:'partnera za rezervaciju',
+    stat_cities:'gradova u ponudi',
+    pc_title:'Od čega se sastoji cena paketa',
+    pc_sub:'Ilustrativna raspodela troškova po % — koliko koja stavka opterećuje budžet.',
+    pc_aria:'Raspodela cene paketa: letovi 32% oko 384 evra, smeštaj 24% oko 288 evra, auto 12% oko 144 evra, aktivnosti 10% oko 120 evra, osiguranje 8% oko 96 evra, putarine 6% oko 72 evra, eSIM 5% oko 60 evra, transferi 3% oko 36 evra',
+    pc_flights:'Letovi',
+    pc_hotel:'Smeštaj',
+    pc_car:'Auto',
+    pc_activities:'Aktivnosti',
+    pc_insurance:'Osiguranje',
+    pc_tolls:'Putarine',
+    pc_esim:'eSIM',
+    pc_transfers:'Transferi',
+    pc_foot:'⚠️ Ilustrativna procena na primeru tipičnog paketa — stvarna raspodela zavisi od destinacije, sezone i tvojih izbora u builderu.',
+    attr_prev_aria:'Prethodne atrakcije',
+    attr_next_aria:'Sledeće atrakcije',
+    attr_all_title:'Sve atrakcije',
+    attr_country:'Zemlja',
+    attr_all_countries:'Sve zemlje',
+    attr_empty:'Nema atrakcija za izabrani filter — probaj drugu kombinaciju.',
+    attr_disclaimer:'⚠️ Cene su ilustrativna procena. Tačna cena i dostupnost proveravaju se kod partnera (Viator) pre rezervacije.',
+    attr_from:'od',
+    attr_dot_aria:'Atrakcija {n}',
+    attr_cat_kultura:'Kultura i znamenitosti',
+    attr_cat_muzika:'Muzika i koncerti',
+    attr_cat_gondole:'Gondole i panorame',
+    attr_cat_arene:'Arene i sport',
+    attr_cat_avantura:'Avantura',
+    attr_cat_voda:'Vodene aktivnosti',
+    attr_cat_gastro:'Gastro ture',
+    attr_cat_noc:'Noćni život',
+    attr_a1:'Vožnja gondolom kroz kanale',
+    attr_a2:'Koncert u Bečkoj filharmoniji',
+    attr_a3:'Ulaznica za Koloseum sa vodičem',
+    attr_a4:'Utakmica na Santiago Bernabeu',
+    attr_a5:'Ronjenje na Velikom koralnom grebenu',
+    attr_a6:'Noćna tura po Montmartru',
+    attr_a7:'Paragliding iznad Interlakena',
+    attr_a8:'Degustacija tapasa u Trijani',
+    attr_a9:'Panoramski točak London Eye',
+    attr_a10:'DJ set na krovnom baru',
+    attr_a11:'Muzej Akropolja — brza ulaznica',
+    attr_a12:'Rafting na reci Soči',
+    attr_a13:'Jazz klub u podrumu',
+    attr_a14:'Vinska tura kroz Toskanu',
+    sp_eyebrow:'Želiš više kontrole?',
+    sp_title:'Prilagodi svoj plan',
+    sp_sub:'Par brzih izbora pre nego što ti pripremimo ponudu — ostalo prepusti nama.',
+    mc_solo:'Sam/a',
+    mc_couple:'Par',
+    mc_friends:'Društvo',
+    mc_family:'Porodica',
+    mc_sea:'More i plaža',
+    mc_city:'Grad i kultura',
+    mc_nature:'Priroda i planina',
+    mc_nightlife:'Noćni život',
+    mc_mix:'Malo od svega',
+    match_back:'← Nazad',
+    placeholder_email:'tvoj@email.com',
+    alt_banner_lake:'Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor',
+    alt_banner_europe:'Popularna evropska destinacija u sumrak',
     // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
     flight_sub_direct:'direktan let',
     flight_sub_stopover:'jedno presedanje',
@@ -467,6 +530,69 @@ const I18N = {
     ac_searching:'Searching…', ac_no_results:'No suggestions for that name.',
     results_back:'Back', results_back_aria:'Back to site',
     night:'night', nights:'nights', passenger:'traveler', passengers:'travelers',
+    // ---- statistička traka, raspodela cene, atrakcije, modal 'Prilagodi svoj plan', čipovi upitnika ----
+    stat_items:'items combined into one price',
+    stat_partners:'booking partners',
+    stat_cities:'cities on offer',
+    pc_title:'What a package price is made of',
+    pc_sub:'Illustrative cost breakdown in % — how much each item weighs on your budget.',
+    pc_aria:'Package price breakdown: flights 32% about 384 euros, accommodation 24% about 288 euros, car 12% about 144 euros, activities 10% about 120 euros, insurance 8% about 96 euros, tolls 6% about 72 euros, eSIM 5% about 60 euros, transfers 3% about 36 euros',
+    pc_flights:'Flights',
+    pc_hotel:'Accommodation',
+    pc_car:'Car',
+    pc_activities:'Activities',
+    pc_insurance:'Insurance',
+    pc_tolls:'Tolls',
+    pc_esim:'eSIM',
+    pc_transfers:'Transfers',
+    pc_foot:'⚠️ Illustrative estimate based on a typical package — the actual breakdown depends on the destination, the season and your choices in the builder.',
+    attr_prev_aria:'Previous attractions',
+    attr_next_aria:'Next attractions',
+    attr_all_title:'All attractions',
+    attr_country:'Country',
+    attr_all_countries:'All countries',
+    attr_empty:'No attractions match this filter — try a different combination.',
+    attr_disclaimer:'⚠️ Prices are an illustrative estimate. The exact price and availability are checked with the partner (Viator) before booking.',
+    attr_from:'from',
+    attr_dot_aria:'Attraction {n}',
+    attr_cat_kultura:'Culture & landmarks',
+    attr_cat_muzika:'Music & concerts',
+    attr_cat_gondole:'Gondolas & views',
+    attr_cat_arene:'Arenas & sports',
+    attr_cat_avantura:'Adventure',
+    attr_cat_voda:'Water activities',
+    attr_cat_gastro:'Food tours',
+    attr_cat_noc:'Nightlife',
+    attr_a1:'Gondola ride through the canals',
+    attr_a2:'Concert at the Vienna Philharmonic',
+    attr_a3:'Colosseum ticket with a guide',
+    attr_a4:'Match at Santiago Bernabéu',
+    attr_a5:'Diving on the Great Barrier Reef',
+    attr_a6:'Montmartre night tour',
+    attr_a7:'Paragliding over Interlaken',
+    attr_a8:'Tapas tasting in Triana',
+    attr_a9:'London Eye observation wheel',
+    attr_a10:'DJ set at a rooftop bar',
+    attr_a11:'Acropolis Museum — fast-track ticket',
+    attr_a12:'Rafting on the Soča River',
+    attr_a13:'Basement jazz club',
+    attr_a14:'Wine tour through Tuscany',
+    sp_eyebrow:'Want more control?',
+    sp_title:'Customize your plan',
+    sp_sub:'A few quick choices before we prepare your offer — leave the rest to us.',
+    mc_solo:'Solo',
+    mc_couple:'Couple',
+    mc_friends:'Friends',
+    mc_family:'Family',
+    mc_sea:'Sea & beach',
+    mc_city:'City & culture',
+    mc_nature:'Nature & mountains',
+    mc_nightlife:'Nightlife',
+    mc_mix:'A bit of everything',
+    match_back:'← Back',
+    placeholder_email:'your@email.com',
+    alt_banner_lake:'A wooden house by a mountain lake at dusk — an idyllic holiday destination',
+    alt_banner_europe:'A popular European destination at dusk',
     // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
     flight_sub_direct:'direct flight',
     flight_sub_stopover:'one stopover',
@@ -687,6 +813,69 @@ const I18N = {
     ac_searching:'Ищем…', ac_no_results:'Нет предложений для такого названия.',
     results_back:'Назад', results_back_aria:'Назад на сайт',
     night:'ночь', nights:'ночей', passenger:'путешественник', passengers:'путешественников',
+    // ---- statistička traka, raspodela cene, atrakcije, modal 'Prilagodi svoj plan', čipovi upitnika ----
+    stat_items:'позиций в одной цене',
+    stat_partners:'партнёров для бронирования',
+    stat_cities:'городов в предложении',
+    pc_title:'Из чего состоит цена пакета',
+    pc_sub:'Иллюстративное распределение расходов в % — какую долю бюджета занимает каждая статья.',
+    pc_aria:'Распределение цены пакета: перелёты 32% около 384 евро, проживание 24% около 288 евро, авто 12% около 144 евро, активности 10% около 120 евро, страховка 8% около 96 евро, дорожные сборы 6% около 72 евро, eSIM 5% около 60 евро, трансферы 3% около 36 евро',
+    pc_flights:'Перелёты',
+    pc_hotel:'Проживание',
+    pc_car:'Авто',
+    pc_activities:'Активности',
+    pc_insurance:'Страховка',
+    pc_tolls:'Дорожные сборы',
+    pc_esim:'eSIM',
+    pc_transfers:'Трансферы',
+    pc_foot:'⚠️ Иллюстративная оценка на примере типичного пакета — реальное распределение зависит от направления, сезона и твоего выбора в конструкторе.',
+    attr_prev_aria:'Предыдущие атракции',
+    attr_next_aria:'Следующие атракции',
+    attr_all_title:'Все атракции',
+    attr_country:'Страна',
+    attr_all_countries:'Все страны',
+    attr_empty:'Нет атракций по выбранному фильтру — попробуй другую комбинацию.',
+    attr_disclaimer:'⚠️ Цены — иллюстративная оценка. Точную цену и наличие мест нужно проверить у партнёра (Viator) перед бронированием.',
+    attr_from:'от',
+    attr_dot_aria:'Атракция {n}',
+    attr_cat_kultura:'Культура и достопримечательности',
+    attr_cat_muzika:'Музыка и концерты',
+    attr_cat_gondole:'Гондолы и панорамы',
+    attr_cat_arene:'Арены и спорт',
+    attr_cat_avantura:'Приключения',
+    attr_cat_voda:'Водные активности',
+    attr_cat_gastro:'Гастротуры',
+    attr_cat_noc:'Ночная жизнь',
+    attr_a1:'Прогулка на гондоле по каналам',
+    attr_a2:'Концерт в Венской филармонии',
+    attr_a3:'Билет в Колизей с гидом',
+    attr_a4:'Матч на «Сантьяго Бернабеу»',
+    attr_a5:'Дайвинг на Большом Барьерном рифе',
+    attr_a6:'Ночная экскурсия по Монмартру',
+    attr_a7:'Полёт на параплане над Интерлакеном',
+    attr_a8:'Дегустация тапас в Триане',
+    attr_a9:'Колесо обозрения London Eye',
+    attr_a10:'DJ-сет в баре на крыше',
+    attr_a11:'Музей Акрополя — билет без очереди',
+    attr_a12:'Рафтинг на реке Соча',
+    attr_a13:'Джаз-клуб в подвале',
+    attr_a14:'Винный тур по Тоскане',
+    sp_eyebrow:'Хочешь больше контроля?',
+    sp_title:'Настрой свой план',
+    sp_sub:'Несколько быстрых выборов, прежде чем мы подготовим предложение, — остальное оставь нам.',
+    mc_solo:'Один/одна',
+    mc_couple:'Пара',
+    mc_friends:'Компания',
+    mc_family:'Семья',
+    mc_sea:'Море и пляж',
+    mc_city:'Город и культура',
+    mc_nature:'Природа и горы',
+    mc_nightlife:'Ночная жизнь',
+    mc_mix:'Всего понемногу',
+    match_back:'← Назад',
+    placeholder_email:'твой@email.com',
+    alt_banner_lake:'Деревянный дом у горного озера в сумерках — идиллическое место для отдыха',
+    alt_banner_europe:'Популярное европейское направление в сумерках',
     // ---- dinamički stringovi: podnaslovi stavki, kartice ponuda, rezultati upitnika, napomene o aerodromima ----
     flight_sub_direct:'прямой рейс',
     flight_sub_stopover:'одна пересадка',
@@ -881,6 +1070,7 @@ function activitiesLabel(n){ return n + ' ' + pluralForm(n, {sr:['aktivnost','ak
 
 // [en, ru] po srpskom nazivu (ključ se poredi preko normalizeSr — bez dijakritika).
 const CITY_L10N = {
+  'Kerns':['Cairns','Кэрнс'],
   'Adana':['Adana','Адана'],
   'Amsterdam':['Amsterdam','Амстердам'],
   'Ankara':['Ankara','Анкара'],
@@ -1492,6 +1682,12 @@ function countryLabel(name){
   const e = _countryNorm[normalizeSr(String(name).trim())];
   return e ? (lang === 'ru' ? e[1] : e[0]) : name;
 }
+// "🧭 Prag" (statistika "poslednja destinacija" čuva i emoji prefiks) — prevodi samo naziv grada.
+function cityLabelWithPrefix(s){
+  if (s == null) return s;
+  const m = /^(\p{Extended_Pictographic}\uFE0F?\s+)(.+)$/u.exec(String(s));
+  return m ? m[1] + cityLabel(m[2]) : cityLabel(s);
+}
 // '1h30' / '40 min' / '2h' (format iz AIRPORT_DB) → '1 h 30 min' / '1 ч 30 мин'
 function driveTimeLabel(tStr){
   if (getLang() === 'sr') return tStr;
@@ -1509,6 +1705,7 @@ function applyStaticI18n(){
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
   document.querySelectorAll('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label'))); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.setAttribute('title', t(el.getAttribute('data-i18n-title'))); });
+  document.querySelectorAll('[data-i18n-alt]').forEach(el => { el.setAttribute('alt', t(el.getAttribute('data-i18n-alt'))); });
   const btn = document.getElementById('langSwitchBtn');
   if (btn){
     btn.classList.toggle('is-en', lang === 'en');
@@ -5502,7 +5699,7 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
   window._lastSearchPkgs = pkgs;
   window._lastSearchCtx = {dest, from, to, adults, nights, flags};
 
-  document.getElementById('ctaTitle').textContent = L3(dest + ' te čeka.', dest + ' is waiting for you.', dest + ' ждёт тебя.');
+  document.getElementById('ctaTitle').textContent = L3(dest + ' te čeka.', cityLabel(dest) + ' is waiting for you.', cityLabel(dest) + ' ждёт тебя.');
   document.getElementById('ctaDesc').textContent = ctaCopy(dest);
 
   const head = document.getElementById('resultsHead');
@@ -6017,7 +6214,7 @@ function showToast(msg){
 function updateStats(){
   document.getElementById('statSearches').textContent = Math.max(state.searches, STAT_DISPLAY_FLOOR.searches);
   document.getElementById('statClicks').textContent = Math.max(state.clicks, STAT_DISPLAY_FLOOR.clicks);
-  document.getElementById('statLast').textContent = state.lastDest || STAT_LAST_DEST_FALLBACK;
+  document.getElementById('statLast').textContent = cityLabelWithPrefix(state.lastDest || STAT_LAST_DEST_FALLBACK);
   saveStats();
 }
 
@@ -7087,7 +7284,7 @@ function updateStatLastPreview(destRaw){
   const statLastEl = document.getElementById('statLast');
   if (!statLastEl) return;
   const typed = (destRaw || '').trim();
-  statLastEl.textContent = typed || state.lastDest || STAT_LAST_DEST_FALLBACK;
+  statLastEl.textContent = cityLabelWithPrefix(typed || state.lastDest || STAT_LAST_DEST_FALLBACK);
 }
 function pickCtaDestFromTyping(){
   const originVal = (document.getElementById('origin') || {}).value || '';
@@ -7115,7 +7312,7 @@ function updateCtaBanner(){
   const ctaDest = pickCtaDestFromTyping() || state.lastDest || '';
   if (ctaTitleEl){
     ctaTitleEl.textContent = ctaDest
-      ? L3(ctaDest + ' te čeka.', ctaDest + ' is waiting for you.', ctaDest + ' ждёт тебя.')
+      ? L3(ctaDest + ' te čeka.', cityLabel(ctaDest) + ' is waiting for you.', cityLabel(ctaDest) + ' ждёт тебя.')
       : L3('Sledeća destinacija te čeka.', 'Your next destination is waiting.', 'Следующее направление уже ждёт.');
   }
   if (ctaDescEl) ctaDescEl.textContent = ctaCopy(ctaDest);
@@ -8475,7 +8672,7 @@ const ATTRACTIONS_DATA = [
   {id:'a2', name:'Koncert u Bečkoj filharmoniji', city:'Beč', country:'Austrija', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=70&auto=format&fit=crop', price:69, link:'https://www.viator.com/searchResults/all?text=Vienna%20concert'},
   {id:'a3', name:'Ulaznica za Koloseum sa vodičem', city:'Rim', country:'Italija', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=70&auto=format&fit=crop', price:39, link:'https://www.viator.com/searchResults/all?text=Colosseum%20tour'},
   {id:'a4', name:'Utakmica na Santiago Bernabeu', city:'Madrid', country:'Španija', category:'arene', categoryLabel:'Arene i sport', img:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=70&auto=format&fit=crop', price:120, link:'https://www.viator.com/searchResults/all?text=Bernabeu%20tour'},
-  {id:'a5', name:'Ronjenje na Velikom koralnom grebenu', city:'Kernс', country:'Australija', category:'voda', categoryLabel:'Vodene aktivnosti', img:'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&q=70&auto=format&fit=crop', price:159, link:'https://www.viator.com/searchResults/all?text=Great%20Barrier%20Reef%20diving'},
+  {id:'a5', name:'Ronjenje na Velikom koralnom grebenu', city:'Kerns', country:'Australija', category:'voda', categoryLabel:'Vodene aktivnosti', img:'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&q=70&auto=format&fit=crop', price:159, link:'https://www.viator.com/searchResults/all?text=Great%20Barrier%20Reef%20diving'},
   {id:'a6', name:'Noćna tura po Montmartru', city:'Pariz', country:'Francuska', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=70&auto=format&fit=crop', price:35, link:'https://www.viator.com/searchResults/all?text=Montmartre%20night%20tour'},
   {id:'a7', name:'Paragliding iznad Interlakena', city:'Interlaken', country:'Švajcarska', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70&auto=format&fit=crop', price:189, link:'https://www.viator.com/searchResults/all?text=Interlaken%20paragliding'},
   {id:'a8', name:'Degustacija tapasa u Trijani', city:'Sevilja', country:'Španija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=70&auto=format&fit=crop', price:55, link:'https://www.viator.com/searchResults/all?text=Seville%20tapas%20tour'},
@@ -8486,29 +8683,33 @@ const ATTRACTIONS_DATA = [
   {id:'a13', name:'Jazz klub u podrumu', city:'Njujork', country:'SAD', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=70&auto=format&fit=crop', price:48, link:'https://www.viator.com/searchResults/all?text=New%20York%20jazz%20club'},
   {id:'a14', name:'Vinska tura kroz Toskanu', city:'Firenca', country:'Italija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=70&auto=format&fit=crop', price:79, link:'https://www.viator.com/searchResults/all?text=Tuscany%20wine%20tour'}
 ];
+// Oznake kategorija dolaze iz I18N (attr_cat_<key>); ovde ostaju samo ključ i emoji.
 const ATTRACTIONS_CATEGORIES = [
-  {key:'kultura', label:'🏛️ Kultura i znamenitosti'},
-  {key:'muzika', label:'🎵 Muzika i koncerti'},
-  {key:'gondole', label:'🎡 Gondole i panorame'},
-  {key:'arene', label:'🏟️ Arene i sport'},
-  {key:'avantura', label:'🧗 Avantura'},
-  {key:'voda', label:'🌊 Vodene aktivnosti'},
-  {key:'gastro', label:'🍷 Gastro ture'},
-  {key:'noc', label:'🎶 Noćni život'}
+  {key:'kultura', emoji:'🏛️'},
+  {key:'muzika', emoji:'🎵'},
+  {key:'gondole', emoji:'🎡'},
+  {key:'arene', emoji:'🏟️'},
+  {key:'avantura', emoji:'🧗'},
+  {key:'voda', emoji:'🌊'},
+  {key:'gastro', emoji:'🍷'},
+  {key:'noc', emoji:'🎶'}
 ];
+function attractionCategoryLabel(key){ return t('attr_cat_' + key); }
 let attractionsActiveCategories = new Set();
 let attractionsActiveCountry = '';
 
 function attractionCardHtml(a){
+  // Naziv iz I18N (attr_<id>), grad/država kroz rečnike; a.name ostaje srpski izvor.
+  const name = t('attr_' + a.id);
   return `<a class="attraction-card" href="${a.link}" target="_blank" rel="noopener sponsored">
     <div class="ac-photo">
-      <img src="${a.img}" alt="${escapeHtml(a.name)}" loading="lazy">
-      <span class="ac-badge">${escapeHtml(a.categoryLabel)}</span>
+      <img src="${a.img}" alt="${escapeHtml(name)}" loading="lazy">
+      <span class="ac-badge">${escapeHtml(attractionCategoryLabel(a.category))}</span>
     </div>
     <div class="ac-body">
-      <span class="ac-name">${escapeHtml(a.name)}</span>
-      <span class="ac-loc">${escapeHtml(a.city)}, ${escapeHtml(a.country)}</span>
-      <span class="ac-price"><span>od</span> €${a.price}</span>
+      <span class="ac-name">${escapeHtml(name)}</span>
+      <span class="ac-loc">${escapeHtml(cityLabel(a.city))}, ${escapeHtml(countryLabel(a.country))}</span>
+      <span class="ac-price"><span>${escapeHtml(t('attr_from'))}</span> €${a.price}</span>
     </div>
   </a>`;
 }
@@ -8524,7 +8725,7 @@ function renderAttractionsDots(count){
   const dotsWrap = document.getElementById('attractionsDots');
   if (!dotsWrap) return;
   dotsWrap.innerHTML = Array.from({length: count}).map((_, i) =>
-    `<button type="button" class="a-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Atrakcija ${i + 1}"></button>`
+    `<button type="button" class="a-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="${escapeHtml(tf('attr_dot_aria', {n: i + 1}))}"></button>`
   ).join('');
 }
 (function initAttractionsSliderScrollSync(){
@@ -8548,28 +8749,39 @@ document.getElementById('attractionsNext')?.addEventListener('click', () => {
   document.getElementById('attractionsSlider')?.scrollBy({left:280, behavior:'smooth'});
 });
 
+let _attractionsFiltersWired = false;
+// Poziva se pri svakom otvaranju sheet-a i pri promeni jezika: opcije zemalja i
+// čipovi kategorija se grade ponovo (na trenutnom jeziku), a slušaoci se
+// postavljaju samo jednom. Vrednost opcije ostaje srpski naziv zemlje (filter).
 function populateAttractionsFilters(){
   const select = document.getElementById('attractionsCountrySelect');
-  if (select && select.options.length <= 1){
-    const countries = [...new Set(ATTRACTIONS_DATA.map(a => a.country))].sort();
+  if (select){
+    const lang = getLang();
+    const countries = [...new Set(ATTRACTIONS_DATA.map(a => a.country))]
+      .sort((x, y) => String(countryLabel(x)).localeCompare(String(countryLabel(y)), lang));
+    while (select.options.length > 1) select.remove(1); // prva opcija ("Sve zemlje") je iz HTML-a
     countries.forEach(c => {
       const opt = document.createElement('option');
-      opt.value = c; opt.textContent = c;
+      opt.value = c; opt.textContent = countryLabel(c);
       select.appendChild(opt);
     });
-    select.addEventListener('change', () => {
-      attractionsActiveCountry = select.value;
-      renderAttractionsGrid();
-    });
+    select.value = attractionsActiveCountry;
+    if (!_attractionsFiltersWired){
+      select.addEventListener('change', () => {
+        attractionsActiveCountry = select.value;
+        renderAttractionsGrid();
+      });
+    }
   }
   const chipRow = document.getElementById('attractionsCategoryChips');
-  if (chipRow && !chipRow.dataset.built){
-    chipRow.dataset.built = '1';
+  if (chipRow){
     chipRow.innerHTML = ATTRACTIONS_CATEGORIES.map(c =>
-      `<button type="button" class="attraction-chip" data-cat="${c.key}">${c.label}</button>`
+      `<button type="button" class="attraction-chip${attractionsActiveCategories.has(c.key) ? ' on' : ''}" data-cat="${c.key}">${c.emoji} ${escapeHtml(attractionCategoryLabel(c.key))}</button>`
     ).join('');
-    chipRow.querySelectorAll('.attraction-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
+    if (!_attractionsFiltersWired){
+      chipRow.addEventListener('click', (e) => {
+        const chip = e.target.closest('.attraction-chip');
+        if (!chip) return;
         const key = chip.dataset.cat;
         if (attractionsActiveCategories.has(key)){
           attractionsActiveCategories.delete(key);
@@ -8580,8 +8792,9 @@ function populateAttractionsFilters(){
         }
         renderAttractionsGrid();
       });
-    });
+    }
   }
+  _attractionsFiltersWired = true;
 }
 function renderAttractionsGrid(){
   const grid = document.getElementById('attractionsGrid');
@@ -8630,3 +8843,17 @@ document.getElementById('attractionsSheetBackBtn')?.addEventListener('click', re
 document.getElementById('attractionsSheetBackdrop')?.addEventListener('click', requestCloseAttractionsSheet);
 
 renderAttractionsSlider();
+
+// Promena jezika: slajder i (ako je otvoren) sheet sa filterima se iscrtavaju ponovo,
+// a "poslednja destinacija" u statistici dobija preveden naziv grada.
+const _prevOnLangChangeAttractions = window.onLangChange;
+window.onLangChange = function(lang){
+  if (typeof _prevOnLangChangeAttractions === 'function') _prevOnLangChangeAttractions(lang);
+  renderAttractionsSlider();
+  const sheet = document.getElementById('attractionsSheet');
+  if (sheet && sheet.classList.contains('visible')){
+    populateAttractionsFilters();
+    renderAttractionsGrid();
+  }
+  updateStatLastPreview((document.getElementById('dest') || {}).value || '');
+};

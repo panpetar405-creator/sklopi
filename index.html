@@ -302,9 +302,9 @@ SKLOPI<em>.</em>
 <div class="stat"><div class="val tabular" id="statSearches">182</div><div class="lab" data-i18n="stat_searches">pretraga</div></div>
 <div class="stat"><div class="val tabular" id="statClicks">96</div><div class="lab" data-i18n="stat_clicks">klikova na ponude</div></div>
 <div class="stat"><div class="val" id="statLast">Atina</div><div class="lab" data-i18n="stat_last">poslednja destinacija</div></div>
-<div class="stat"><div class="val">8</div><div class="lab">stavki sabranih u jednu cenu</div></div>
-<div class="stat"><div class="val">5</div><div class="lab">partnera za rezervaciju</div></div>
-<div class="stat"><div class="val">700+</div><div class="lab">gradova u ponudi</div></div>
+<div class="stat"><div class="val">8</div><div class="lab" data-i18n="stat_items">stavki sabranih u jednu cenu</div></div>
+<div class="stat"><div class="val">5</div><div class="lab" data-i18n="stat_partners">partnera za rezervaciju</div></div>
+<div class="stat"><div class="val">700+</div><div class="lab" data-i18n="stat_cities">gradova u ponudi</div></div>
 </div>
 </div>
 <div class="section" id="attractions">
@@ -314,11 +314,11 @@ SKLOPI<em>.</em>
 <p class="section-sub" data-i18n="attractions_sub">Koncerti, gondole, arene, podvodni svetovi i još hiljade doživljaja širom sveta — pronađi svoj i dodaj ga u plan.</p>
 </div>
 <div class="attractions-slider-wrap">
-<button type="button" class="attractions-arrow attractions-arrow--prev" id="attractionsPrev" aria-label="Prethodne atrakcije">
+<button type="button" class="attractions-arrow attractions-arrow--prev" id="attractionsPrev" data-i18n-aria-label="attr_prev_aria" aria-label="Prethodne atrakcije">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
 </button>
 <div class="attractions-slider" id="attractionsSlider"></div>
-<button type="button" class="attractions-arrow attractions-arrow--next" id="attractionsNext" aria-label="Sledeće atrakcije">
+<button type="button" class="attractions-arrow attractions-arrow--next" id="attractionsNext" data-i18n-aria-label="attr_next_aria" aria-label="Sledeće atrakcije">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
 </button>
 </div>
@@ -328,58 +328,58 @@ SKLOPI<em>.</em>
 <div class="section price-chart-section">
 <div class="price-chart">
 <div class="price-chart-head">
-<h3>Od čega se sastoji cena paketa</h3>
-<p>Ilustrativna raspodela troškova po % — koliko koja stavka opterećuje budžet.</p>
+<h3 data-i18n="pc_title">Od čega se sastoji cena paketa</h3>
+<p data-i18n="pc_sub">Ilustrativna raspodela troškova po % — koliko koja stavka opterećuje budžet.</p>
 </div>
-<div class="price-hbar-list" role="img" aria-label="Raspodela cene paketa: letovi 32% oko 384 evra, smeštaj 24% oko 288 evra, auto 12% oko 144 evra, aktivnosti 10% oko 120 evra, osiguranje 8% oko 96 evra, putarine 6% oko 72 evra, eSIM 5% oko 60 evra, transferi 3% oko 36 evra">
+<div class="price-hbar-list" role="img" data-i18n-aria-label="pc_aria" aria-label="Raspodela cene paketa: letovi 32% oko 384 evra, smeštaj 24% oko 288 evra, auto 12% oko 144 evra, aktivnosti 10% oko 120 evra, osiguranje 8% oko 96 evra, putarine 6% oko 72 evra, eSIM 5% oko 60 evra, transferi 3% oko 36 evra">
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--flight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></span>Letovi</div>
+<div class="phr-label"><span class="phr-ic phr-ic--flight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></span><span data-i18n="pc_flights">Letovi</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--flight" style="width:32%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">32%</span><span class="phr-eur tabular">≈ €384</span></div>
 </div>
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--hotel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"/></svg></span>Smeštaj</div>
+<div class="phr-label"><span class="phr-ic phr-ic--hotel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"/></svg></span><span data-i18n="pc_hotel">Smeštaj</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--hotel" style="width:24%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">24%</span><span class="phr-eur tabular">≈ €288</span></div>
 </div>
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M6 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M15 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M6 12h12"/></svg></span>Auto</div>
+<div class="phr-label"><span class="phr-ic phr-ic--car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M6 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M15 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M6 12h12"/></svg></span><span data-i18n="pc_car">Auto</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--car" style="width:12%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">12%</span><span class="phr-eur tabular">≈ €144</span></div>
 </div>
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></span>Aktivnosti</div>
+<div class="phr-label"><span class="phr-ic phr-ic--activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></span><span data-i18n="pc_activities">Aktivnosti</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--activity" style="width:10%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">10%</span><span class="phr-eur tabular">≈ €120</span></div>
 </div>
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--insurance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/></svg></span>Osiguranje</div>
+<div class="phr-label"><span class="phr-ic phr-ic--insurance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/></svg></span><span data-i18n="pc_insurance">Osiguranje</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--insurance" style="width:8%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">8%</span><span class="phr-eur tabular">≈ €96</span></div>
 </div>
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--tolls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20L11 4h2l7 16M8 15h8"/></svg></span>Putarine</div>
+<div class="phr-label"><span class="phr-ic phr-ic--tolls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20L11 4h2l7 16M8 15h8"/></svg></span><span data-i18n="pc_tolls">Putarine</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--tolls" style="width:6%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">6%</span><span class="phr-eur tabular">≈ €72</span></div>
 </div>
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--esim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8.5a8.5 8.5 0 0112 0M8.7 11.2a4.7 4.7 0 016.6 0M11.4 13.9a1 1 0 011.2 0"/><circle cx="12" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg></span>eSIM</div>
+<div class="phr-label"><span class="phr-ic phr-ic--esim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8.5a8.5 8.5 0 0112 0M8.7 11.2a4.7 4.7 0 016.6 0M11.4 13.9a1 1 0 011.2 0"/><circle cx="12" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg></span><span data-i18n="pc_esim">eSIM</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--esim" style="width:5%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">5%</span><span class="phr-eur tabular">≈ €60</span></div>
 </div>
 <div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--transfer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 17.5L17 6.5" stroke-dasharray="2.2 2.6"/></svg></span>Transferi</div>
+<div class="phr-label"><span class="phr-ic phr-ic--transfer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 17.5L17 6.5" stroke-dasharray="2.2 2.6"/></svg></span><span data-i18n="pc_transfers">Transferi</span></div>
 <div class="phr-track"><div class="phr-fill phr-fill--transfer" style="width:3%"></div></div>
 <div class="phr-nums"><span class="phr-pct tabular">3%</span><span class="phr-eur tabular">≈ €36</span></div>
 </div>
 </div>
-<p class="price-chart-foot">⚠️ Ilustrativna procena na primeru tipičnog paketa — stvarna raspodela zavisi od destinacije, sezone i tvojih izbora u builderu.</p>
+<p class="price-chart-foot" data-i18n="pc_foot">⚠️ Ilustrativna procena na primeru tipičnog paketa — stvarna raspodela zavisi od destinacije, sezone i tvojih izbora u builderu.</p>
 </div>
 </div>
 <div class="promo-banner">
 <div class="promo-banner-card">
 <div class="promo-banner-photo">
-<img src="banner-jezero-planina.jpg" alt="Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor" loading="lazy">
+<img src="banner-jezero-planina.jpg" data-i18n-alt="alt_banner_lake" alt="Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor" loading="lazy">
 </div>
 <div class="promo-banner-cap">
 <p class="promo-banner-kicker" data-i18n="promo_banner_kicker">Trenutak za sebe</p>
@@ -646,7 +646,7 @@ SKLOPI<em>.</em>
 </div>
 <div class="cta-banner">
 <div class="cta-photo">
-<img src="https://images.unsplash.com/photo-1595190613644-68ce8e2a9814?w=1600&q=70&auto=format&fit=crop" alt="Popularna evropska destinacija u sumrak" loading="lazy">
+<img src="https://images.unsplash.com/photo-1595190613644-68ce8e2a9814?w=1600&q=70&auto=format&fit=crop" data-i18n-alt="alt_banner_europe" alt="Popularna evropska destinacija u sumrak" loading="lazy">
 </div>
 <div class="cta-inner">
 <div class="cta-left">
@@ -707,11 +707,11 @@ SKLOPI<em>.</em>
 </div>
 <div class="alert-modal-backdrop" id="startPrefsBackdrop"></div>
 <div class="start-modal" id="startPrefsModal" role="dialog" aria-modal="true" aria-labelledby="startPrefsTitle">
-<button type="button" class="alert-modal-close" id="startPrefsClose" aria-label="Zatvori">✕</button>
+<button type="button" class="alert-modal-close" id="startPrefsClose" data-i18n-aria-label="aria_close" aria-label="Zatvori">✕</button>
 <div class="start-modal-head">
-<div class="start-modal-eyebrow">Želiš više kontrole?</div>
-<h3 id="startPrefsTitle">Prilagodi svoj plan</h3>
-<p class="start-modal-sub">Par brzih izbora pre nego što ti pripremimo ponudu — ostalo prepusti nama.</p>
+<div class="start-modal-eyebrow" data-i18n="sp_eyebrow">Želiš više kontrole?</div>
+<h3 id="startPrefsTitle" data-i18n="sp_title">Prilagodi svoj plan</h3>
+<p class="start-modal-sub" data-i18n="sp_sub">Par brzih izbora pre nego što ti pripremimo ponudu — ostalo prepusti nama.</p>
 </div>
 <div class="start-modal-body">
 <div class="builder-form q-form">
@@ -812,7 +812,7 @@ SKLOPI<em>.</em>
 </div>
 <div class="q-sub-inner" style="padding-left:53px;">
 <div class="builder-budget-row">
-<span>€</span><input type="number" id="spBudgetInput" class="q-text-field" placeholder="npr. 700" min="0" max="50000" step="1">
+<span>€</span><input type="number" id="spBudgetInput" class="q-text-field" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
 </div>
 </div>
 </div>
@@ -831,7 +831,7 @@ SKLOPI<em>.</em>
 <p class="alert-modal-sub" id="alertModalSub"></p>
 <div class="alert-modal-row">
 <label for="alertEmail" data-i18n="label_email">Email</label>
-<input type="email" id="alertEmail" class="auth-input" placeholder="tvoj@email.com" autocomplete="email" required style="width:100%;">
+<input type="email" id="alertEmail" class="auth-input" data-i18n-placeholder="placeholder_email" placeholder="tvoj@email.com" autocomplete="email" required style="width:100%;">
 </div>
 <div class="alert-modal-row">
 <label for="alertThreshold" data-i18n="label_alert_threshold">Javi mi kad ukupna procenjena cena padne ispod</label>
@@ -856,25 +856,25 @@ SKLOPI<em>.</em>
 <div class="match-step active" data-step="1">
 <div class="match-step-title" data-i18n="match_step1_title">Sa kim putuješ?</div>
 <div class="match-chip-grid">
-<button type="button" class="match-chip" onclick="selectMatchChip('companion','solo',this,2)"><span class="mc-ic">🧍</span><span class="mc-label">Sam/a</span></button>
-<button type="button" class="match-chip" onclick="selectMatchChip('companion','couple',this,2)"><span class="mc-ic">💑</span><span class="mc-label">Par</span></button>
-<button type="button" class="match-chip" onclick="selectMatchChip('companion','friends',this,2)"><span class="mc-ic">🎉</span><span class="mc-label">Društvo</span></button>
-<button type="button" class="match-chip" onclick="selectMatchChip('companion','family',this,2)"><span class="mc-ic">👨‍👩‍👧</span><span class="mc-label">Porodica</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','solo',this,2)"><span class="mc-ic">🧍</span><span class="mc-label" data-i18n="mc_solo">Sam/a</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','couple',this,2)"><span class="mc-ic">💑</span><span class="mc-label" data-i18n="mc_couple">Par</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','friends',this,2)"><span class="mc-ic">🎉</span><span class="mc-label" data-i18n="mc_friends">Društvo</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('companion','family',this,2)"><span class="mc-ic">👨‍👩‍👧</span><span class="mc-label" data-i18n="mc_family">Porodica</span></button>
 </div>
 </div>
 <div class="match-step" data-step="2">
-<button type="button" class="match-back" data-back="1">← Nazad</button>
+<button type="button" class="match-back" data-back="1" data-i18n="match_back">← Nazad</button>
 <div class="match-step-title" data-i18n="match_step2_title">Šta ti znači odmor?</div>
 <div class="match-chip-grid">
-<button type="button" class="match-chip" onclick="selectMatchChip('vibe','sea',this,3)"><span class="mc-ic">🌊</span><span class="mc-label">More i plaža</span></button>
-<button type="button" class="match-chip" onclick="selectMatchChip('vibe','city',this,3)"><span class="mc-ic">🏙️</span><span class="mc-label">Grad i kultura</span></button>
-<button type="button" class="match-chip" onclick="selectMatchChip('vibe','nature',this,3)"><span class="mc-ic">🌲</span><span class="mc-label">Priroda i planina</span></button>
-<button type="button" class="match-chip" onclick="selectMatchChip('vibe','nightlife',this,3)"><span class="mc-ic">🎶</span><span class="mc-label">Noćni život</span></button>
-<button type="button" class="match-chip match-chip-wide" onclick="selectMatchChip('vibe','mix',this,3)"><span class="mc-ic">✨</span><span class="mc-label">Malo od svega</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','sea',this,3)"><span class="mc-ic">🌊</span><span class="mc-label" data-i18n="mc_sea">More i plaža</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','city',this,3)"><span class="mc-ic">🏙️</span><span class="mc-label" data-i18n="mc_city">Grad i kultura</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','nature',this,3)"><span class="mc-ic">🌲</span><span class="mc-label" data-i18n="mc_nature">Priroda i planina</span></button>
+<button type="button" class="match-chip" onclick="selectMatchChip('vibe','nightlife',this,3)"><span class="mc-ic">🎶</span><span class="mc-label" data-i18n="mc_nightlife">Noćni život</span></button>
+<button type="button" class="match-chip match-chip-wide" onclick="selectMatchChip('vibe','mix',this,3)"><span class="mc-ic">✨</span><span class="mc-label" data-i18n="mc_mix">Malo od svega</span></button>
 </div>
 </div>
 <div class="match-step" data-step="3">
-<button type="button" class="match-back" data-back="2">← Nazad</button>
+<button type="button" class="match-back" data-back="2" data-i18n="match_back">← Nazad</button>
 <div class="match-step-title" data-i18n="match_step3_title">Koliki je ukupan budžet?</div>
 <div class="alert-modal-row" style="margin-top:2px;">
 <label for="matchBudget" data-i18n="match_label_budget">Ukupan budžet (za sve putnike, opciono)</label>
@@ -935,36 +935,36 @@ SKLOPI<em>.</em>
 <div id="attractionsSheet">
 <div class="section">
 <div class="results-sheet-head">
-<button type="button" class="results-back-btn" id="attractionsSheetBackBtn" aria-label="Nazad na sajt">
+<button type="button" class="results-back-btn" id="attractionsSheetBackBtn" data-i18n-aria-label="results_back_aria" aria-label="Nazad na sajt">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-<span>Nazad</span>
+<span data-i18n="results_back">Nazad</span>
 </button>
 </div>
 <div class="section-head" style="margin-bottom:22px;">
-<div class="eyebrow">U partnerstvu sa Viator</div>
-<h2>Sve atrakcije</h2>
+<div class="eyebrow" data-i18n="eyebrow_attractions">U partnerstvu sa Viator</div>
+<h2 data-i18n="attr_all_title">Sve atrakcije</h2>
 </div>
 <div class="attractions-filter-bar">
 <div class="attractions-filter-row">
-<label for="attractionsCountrySelect">Zemlja</label>
+<label for="attractionsCountrySelect" data-i18n="attr_country">Zemlja</label>
 <select id="attractionsCountrySelect" class="builder-input attractions-country-select">
-<option value="">Sve zemlje</option>
+<option value="" data-i18n="attr_all_countries">Sve zemlje</option>
 </select>
 </div>
 <div class="attractions-chip-row" id="attractionsCategoryChips"></div>
 </div>
 <div class="attractions-grid" id="attractionsGrid"></div>
-<p class="attractions-empty" id="attractionsEmpty" hidden>Nema atrakcija za izabrani filter — probaj drugu kombinaciju.</p>
-<p class="alert-modal-disclaimer" style="margin-top:20px;">⚠️ Cene su ilustrativna procena. Tačna cena i dostupnost proveravaju se kod partnera (Viator) pre rezervacije.</p>
+<p class="attractions-empty" id="attractionsEmpty" data-i18n="attr_empty" hidden>Nema atrakcija za izabrani filter — probaj drugu kombinaciju.</p>
+<p class="alert-modal-disclaimer" style="margin-top:20px;" data-i18n="attr_disclaimer">⚠️ Cene su ilustrativna procena. Tačna cena i dostupnost proveravaju se kod partnera (Viator) pre rezervacije.</p>
 </div>
 </div>
 <div class="results-backdrop" id="featureGuideBackdrop"></div>
 <div id="featureGuideSheet">
 <div class="section">
 <div class="results-sheet-head">
-<button type="button" class="results-back-btn" id="featureGuideBackBtn" aria-label="Nazad na sajt">
+<button type="button" class="results-back-btn" id="featureGuideBackBtn" data-i18n-aria-label="results_back_aria" aria-label="Nazad na sajt">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-<span>Nazad</span>
+<span data-i18n="results_back">Nazad</span>
 </button>
 </div>
 <div id="featureGuideHead"></div>
