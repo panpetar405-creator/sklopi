@@ -2762,10 +2762,15 @@ function qualityFromPerks(items, tier){
   return Math.round(55 + 42 * earned / possible);
 }
 
-function fetchFlights(rng, dest, adults, tier, originCode, prefs){
+function fetchFlights(rng, dest, adults, tier, originCode, prefs, seeds){
   prefs = prefs || {};
   const flightPref = prefs.flightPref || 'direct';
-  const base = 60 + Math.floor(rng()*140);
+  // `seeds.flightBase`, kad je prosleđen, je IZVUČEN JEDNOM po pretrazi (vidi
+  // buildPriceSeeds) i DELI se između sve tri tier kartice — vidi komentar
+  // uz buildPriceSeeds za razlog (bez ovoga je redosled cena Budget/Best/
+  // Comfort bio samo statistički verovatan, ne garantovan). Fallback na
+  // staro ponašanje kad seeds nije prosleđen (npr. poziv sa jednim tier-om).
+  const base = (seeds && seeds.flightBase != null) ? seeds.flightBase : 60 + Math.floor(rng()*140);
   const tierMult = {budget:0.72, best:1, comfort:1.55}[tier];
   // Ista logika kao u "Sastavi svoj paket" builderu (computeCustomPackage)
   // — cena stvarno zavisi od TRAŽENOG tipa leta, ne samo od tier-a kartice,
@@ -2795,7 +2800,7 @@ function fetchFlights(rng, dest, adults, tier, originCode, prefs){
     perks: tierPerks('flight', tier)
   };
 }
-function fetchHotel(rng, dest, nights, adults, tier, prefs){
+function fetchHotel(rng, dest, nights, adults, tier, prefs, seeds){
   prefs = prefs || {};
   const stars = [3,4,5].includes(prefs.hotelStars) ? prefs.hotelStars : 4;
   // Bazna cena i dalje zavisi od tier-a kartice (zato se tri ponude i dalje
@@ -2807,7 +2812,10 @@ function fetchHotel(rng, dest, nights, adults, tier, prefs){
   let mult = tierMult;
   if (prefs.prioritizeRating) mult += 0.08;
   if (prefs.prioritizeLocation) mult += 0.06;
-  const perNight = Math.round(starBase * mult + rng()*14);
+  // hotelJitter deljen između tier-a (vidi buildPriceSeeds) — inače je ovaj
+  // "šum" po noći znao da bude veći od same razlike koju pravi tierMult.
+  const jitter = (seeds && seeds.hotelJitter != null) ? seeds.hotelJitter : rng()*14;
+  const perNight = Math.round(starBase * mult + jitter);
   const price = Math.round(perNight * nights * Math.ceil(adults/2));
   const p = PARTNERS.hotel;
   let rating = HOTEL_STAR_RATING_BASE[stars] + rng()*0.25;
@@ -2830,7 +2838,7 @@ function fetchHotel(rng, dest, nights, adults, tier, prefs){
     perks: tierPerks('hotel', tier, {prioritizeLocation: prefs.prioritizeLocation})
   };
 }
-function fetchCar(rng, days, tier, prefs){
+function fetchCar(rng, days, tier, prefs, seeds){
   prefs = prefs || {};
   // Tip auta (mali/SUV) je sad STVARNO ono što je korisnik izabrao, ne
   // nasumičan model iz tier-liste — tier i dalje menja cenu (Budget je
@@ -2838,7 +2846,9 @@ function fetchCar(rng, days, tier, prefs){
   const carType = prefs.carPref === 'suv' ? 'suv' : 'small';
   const tierMult = {budget:0.85, best:1, comfort:1.25}[tier];
   const typeBase = CAR_TYPE_BASE_PRICE[carType];
-  const perDay = Math.round(typeBase * tierMult + rng()*10);
+  // carJitter deljen između tier-a — isti razlog kao kod hotela iznad.
+  const jitter = (seeds && seeds.carJitter != null) ? seeds.carJitter : rng()*10;
+  const perDay = Math.round(typeBase * tierMult + jitter);
   const price = Math.round(perDay * days);
   const p = PARTNERS.car;
   const models = {
@@ -2854,13 +2864,15 @@ function fetchCar(rng, days, tier, prefs){
     perks: tierPerks('car', tier)
   };
 }
-function fetchActivity(rng, dest, tier, prefs){
+function fetchActivity(rng, dest, tier, prefs, seeds){
   prefs = prefs || {};
   // Broj aktivnosti je sad STVARNO onaj iz upitnika (podrazumevano 1 ako
   // nije poznat), cena se sabira po broju, ne fiksno za jednu aktivnost.
   const count = Math.max(1, Math.round(prefs.activityCount) || 1);
   const tierMult = {budget:0.85, best:1, comfort:1.3}[tier];
-  const perActivity = Math.round((18 + rng()*20) * tierMult);
+  // activityJitter deljen između tier-a — isti razlog kao kod hotela/auta.
+  const jitter = (seeds && seeds.activityJitter != null) ? seeds.activityJitter : rng()*20;
+  const perActivity = Math.round((18 + jitter) * tierMult);
   const price = perActivity * count;
   const p = PARTNERS.activity;
   const opts = {
@@ -2877,6 +2889,31 @@ function fetchActivity(rng, dest, tier, prefs){
     price, currency:'EUR'
   };
 }
+
+/* Baza za jitter/cenu koja se izvlači JEDNOM po pretrazi (ne po tier-u) i
+   deli se između Budget/Best/Comfort poziva buildPackage — vidi
+   fetchFlights/fetchHotel/fetchCar/fetchActivity iznad. Uzrok bug-a koji je
+   ovo zamenilo: svaka tier kartica je ranije izvlačila SVOJU nezavisnu
+   nasumičnu "bazu" cene, uporedivu po veličini sa razlikom koju sam
+   tier-množilac pravi — pa je Budget na ~47% kombinacija ulaza (izmereno
+   preko runBuildPackageInvariantChecks niže) ispadao SKUPLJI od Best Value,
+   iako je tier-množilac uvek budget<best<comfort. Sad se taj nasumični deo
+   izvlači jednom, a tier i dalje menja SAMO množilac — pa je redosled cena
+   garantovan (do na retke, veoma male hotel/car cene gde zaokruživanje na
+   ceo broj teorijski može izjednačiti dva tier-a — to je prihvatljivo,
+   "jednako" nije kršenje Budget≤Best≤Comfort).
+   Carrier/model/naziv hotela i dalje se biraju NEZAVISNO po tier-u (preko
+   `rng` direktno, ne preko `seeds`) — to je samo prikazani tekst, ne cena,
+   pa razlika u imenu između kartica ostaje (namerna raznovrsnost). */
+function buildPriceSeeds(rng){
+  return {
+    flightBase: 60 + Math.floor(rng()*140),
+    hotelJitter: rng()*14,
+    carJitter: rng()*10,
+    activityJitter: rng()*20
+  };
+}
+
 
 const EXTRA_COSTS = {
   best:    {fuel:45, tolls:28, insurance:22, esim:12},
@@ -2918,13 +2955,13 @@ function assertFlightSubConsistency(flightPref, sub, sourceLabel){
 /* ==========================================================
    PRICING + SCORE ENGINE
 ========================================================== */
-function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, originCode, seasonMult){
+function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, originCode, seasonMult, seeds){
   factor = factor || 1;
   seasonMult = seasonMult || 1; // sezona (seasonFactor) — samo let/smeštaj/auto
-  const flight = flags.flight ? fetchFlights(rng, dest, adults, tier, originCode, flags) : null;
-  const hotel  = flags.hotel  ? fetchHotel(rng, dest, nights, adults, tier, flags) : null;
-  const car    = flags.car    ? fetchCar(rng, days, tier, flags) : null;
-  const activity = flags.activity ? fetchActivity(rng, dest, tier, flags) : null;
+  const flight = flags.flight ? fetchFlights(rng, dest, adults, tier, originCode, flags, seeds) : null;
+  const hotel  = flags.hotel  ? fetchHotel(rng, dest, nights, adults, tier, flags, seeds) : null;
+  const car    = flags.car    ? fetchCar(rng, days, tier, flags, seeds) : null;
+  const activity = flags.activity ? fetchActivity(rng, dest, tier, flags, seeds) : null;
   const extras = EXTRA_COSTS[tier];
 
   if (flight) assertFlightSubConsistency(flags.flightPref || 'direct', flight.sub, 'buildPackage (' + tier + ')');
@@ -2967,6 +3004,112 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
     // koju je korisnik tražio, samo cenu/kvalitet unutar nje.
     flightPref: flags.flightPref, carPref: flags.carPref};
 }
+
+/* ==========================================================
+   DEV-ONLY PROVERA: invarijante nad buildPackage.
+   Isti mehanizam/razlog kao assertFlightSubConsistency iznad, ali
+   umesto da hvata JEDNU vrstu neusklađenosti, prolazi kroz mnogo
+   nasumičnih kombinacija ulaza (destinacija/noći/putnici/flags) i
+   proverava tri opšta svojstva koja moraju da važe za SVAKU
+   kombinaciju, bez obzira na to kako se pricing logika menja u
+   budućnosti:
+     1) total === zbir uključenih stavki (+ gorivo + putarine) —
+        lako se pokvari ako neko doda novo polje u cenu a zaboravi
+        da ga uključi u `total`, ili obrnuto.
+     2) stavka koju `flags` nije tražio(la) MORA biti null — nema
+        "duha" u paketu (npr. auto na kartici kad Auto toggle nije
+        uključen).
+     3) cena raste Budget ≤ Best ≤ Comfort. Do 19.9. je ovo znalo da
+        pukne na ~47% nasumičnih ulaza jer je svaka tier kartica
+        nezavisno izvlačila SOPSTVENU nasumičnu "bazu" cene (jitter
+        uporediv po veličini sa samim tier-množiocem). Otkriveno baš
+        preko ove provere. Popravljeno deljenim `priceSeeds`
+        (buildPriceSeeds) koji se izvlače JEDNOM po pretrazi i prosleđuju
+        u sve tri buildPackage kartice — sad je redosled matematički
+        garantovan (tier-množilac je jedina promenljiva), osim retkog
+        teoretskog slučaja gde zaokruživanje na ceo broj izjednači dva
+        susedna tier-a (jednako ≠ kršenje ≤). Test i dalje prolazi kroz
+        60 različitih ulaza, sad kao regresiona zaštita da se neko opet
+        ne vrati na nezavisno izvlačenje po tier-u.
+   `rng` se namerno DELI između tri poziva, istim redosledom
+   (best → comfort → budget) kao u computePackagesLocally — testira
+   se stvarni redosled poziva iz produkcije, ne tri izolovana rng-a.
+========================================================== */
+function runBuildPackageInvariantChecks(){
+  if (!DEV_MODE) return;
+  const TIERS_IN_ORDER = ['best', 'comfort', 'budget'];
+  const FLAG_COMBOS = [
+    {flight:true,  hotel:true,  car:true,  activity:true},
+    {flight:true,  hotel:true,  car:false, activity:false},
+    {flight:false, hotel:true,  car:false, activity:true},
+    {flight:true,  hotel:false, car:true,  activity:false},
+    {flight:false, hotel:false, car:false, activity:true}
+  ];
+  const DESTS = ['Atina', 'Rim', 'Barselona', 'Budva', 'Beč'];
+  const TRIALS = 60;
+  let failures = 0;
+
+  for (let i = 0; i < TRIALS; i++){
+    const seed = 1000 + i * 97;
+    const rng = seededRandom(seed);
+    const dest = DESTS[i % DESTS.length];
+    const nights = 2 + (i % 7);
+    const days = nights + 1;
+    const adults = 1 + (i % 4);
+    const flags = {
+      ...FLAG_COMBOS[i % FLAG_COMBOS.length],
+      flightPref: ['direct', 'cheapest', 'airline'][i % 3],
+      carPref: i % 2 ? 'suv' : 'small',
+      hotelStars: [3, 4, 5][i % 3],
+      activityCount: 1 + (i % 3)
+    };
+    const originCode = 'BEG';
+    const inputDesc = 'seed=' + seed + ' dest=' + dest + ' nights=' + nights + ' adults=' + adults + ' flags=' + JSON.stringify(flags);
+    const priceSeeds = buildPriceSeeds(rng);
+
+    const results = {};
+    TIERS_IN_ORDER.forEach(tier => {
+      results[tier] = buildPackage(rng, dest, nights, days, adults, tier, flags, 1, originCode, 1, priceSeeds);
+    });
+
+    TIERS_IN_ORDER.forEach(tier => {
+      const pkg = results[tier];
+
+      // 1) total === zbir uključenih stavki
+      const sum = (pkg.flight ? pkg.flight.price : 0) + (pkg.hotel ? pkg.hotel.price : 0)
+                + (pkg.car ? pkg.car.price : 0) + (pkg.activity ? pkg.activity.price : 0)
+                + pkg.fuel + pkg.tolls;
+      if (sum !== pkg.total){
+        failures++;
+        console.error('[sklopi][invariant] total (' + pkg.total + ') != zbir stavki (' + sum + '). tier=' + tier + ' — ' + inputDesc);
+      }
+
+      // 2) nema stavke koju korisnik nije tražio
+      ['flight', 'hotel', 'car', 'activity'].forEach(key => {
+        const requested = !!flags[key];
+        const present = !!pkg[key];
+        if (requested !== present){
+          failures++;
+          console.error('[sklopi][invariant] stavka "' + key + '" ne prati flags (traženo=' + requested + ', prisutno=' + present + '). tier=' + tier + ' — ' + inputDesc);
+        }
+      });
+    });
+
+    // 3) Budget ≤ Best ≤ Comfort
+    if (results.budget.total > results.best.total || results.best.total > results.comfort.total){
+      failures++;
+      console.error('[sklopi][invariant] cena nije Budget≤Best≤Comfort (budget=' + results.budget.total
+        + ', best=' + results.best.total + ', comfort=' + results.comfort.total + ') — ' + inputDesc);
+    }
+  }
+
+  if (failures){
+    console.error('[sklopi][invariant] ukupno ' + failures + ' problema u buildPackage invarijantama (vidi gore).');
+  } else {
+    console.log('[sklopi][invariant] buildPackage: svih ' + TRIALS + ' probnih kombinacija prošlo (total/stavke/redosled cena).');
+  }
+}
+runBuildPackageInvariantChecks();
 
 // label ostaje kao nazivi paketa (Best Value / Comfort / Budget); desc je
 // getter koji ide kroz t(), pa uvek prati trenutni jezik (nije keširan pri
@@ -3898,8 +4041,10 @@ function computePackagesLocally(dest, from, to, nights, days, adults, flags, ori
   const seed = hashSeed(dest.toLowerCase()+dest.length+nights+adults);
   const rng = seededRandom(seed);
   const factor = marketFactor(dest, todayStr());
+  // Deljena "baza" cene za sve tri tier kartice — vidi buildPriceSeeds.
+  const priceSeeds = buildPriceSeeds(rng);
 
-  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor, originCode, seasonFactor(dest, from)));
+  const pkgs = ['best','comfort','budget'].map(t => buildPackage(rng, dest, nights, days, adults, t, flags, factor, originCode, seasonFactor(dest, from), priceSeeds));
   pkgs.forEach(p => attachAffiliateLinks(p, dest, from, to, adults, {originCode, flags}));
 
   // Price score is relative to the cheapest of THIS run's three packages —
