@@ -1585,6 +1585,46 @@ function iataFor(airportNameRaw){
   return AIRPORT_IATA[norm] || null;
 }
 
+/* ---- Cena leta zavisi od RUTE (polazište → destinacija), ne samo od
+   nasumične osnove. Koordinate aerodroma (približne, dovoljne za
+   procenu udaljenosti) za IATA kodove iz AIRPORT_IATA. Bez koordinata
+   za bilo koji kraj rute, flightRouteMult() vraća 1 (staro ponašanje). ---- */
+const AIRPORT_COORDS = {
+  BEG:[44.82,20.29], INI:[43.34,21.85], TGD:[42.36,19.25], TIV:[42.40,18.72], ZAG:[45.74,16.07], SPU:[43.54,16.30],
+  DBV:[42.56,18.27], ZAD:[44.11,15.35], PUY:[44.89,13.92], SJJ:[43.82,18.33], OMO:[43.29,17.85], SKP:[41.96,21.62],
+  OHD:[41.18,20.74], PRN:[42.36,21.03], LJU:[46.22,14.46], TIA:[41.41,19.72], BUD:[47.44,19.26], TSR:[45.81,21.34],
+  OTP:[44.57,26.09], SOF:[42.69,23.41], VAR:[43.23,27.83], SKG:[40.52,22.97], ATH:[37.94,23.94], CFU:[39.60,19.91],
+  JTR:[36.40,25.48], JMK:[37.44,25.35], RHO:[36.41,28.09], HER:[35.34,25.18], FCO:[41.80,12.25], MXP:[45.63,8.72],
+  VCE:[45.51,12.35], NAP:[40.89,14.29], BCN:[41.30,2.08], MAD:[40.47,-3.56], AGP:[36.67,-4.50], IBZ:[38.87,1.37],
+  LIS:[38.77,-9.13], OPO:[41.24,-8.68], CDG:[49.01,2.55], NCE:[43.66,7.22], LON:[51.47,-0.45], AMS:[52.31,4.76],
+  BER:[52.36,13.50], MUC:[48.35,11.79], FRA:[50.03,8.57], ZRH:[47.46,8.55], VIE:[48.11,16.57], PRG:[50.10,14.26],
+  BTS:[48.17,17.21], WAW:[52.17,20.97], KRK:[50.08,19.78], IST:[41.26,28.74], AYT:[36.90,30.80], BJV:[37.25,27.66],
+  TLV:[32.01,34.89], DXB:[25.25,55.36], CAI:[30.12,31.41], RAK:[31.61,-8.04], LCA:[34.88,33.63], MLA:[35.86,14.48],
+  PMI:[39.55,2.74], CPH:[55.62,12.65], ARN:[59.65,17.93], OSL:[60.19,11.10], HEL:[60.32,24.96], DUB:[53.42,-6.27],
+  BRU:[50.90,4.48], BSL:[47.59,7.53], GVA:[46.24,6.11], NYC:[40.64,-73.78], BKK:[13.69,100.75], TYO:[35.55,139.78]
+};
+function haversineKm(a, b){
+  const R = 6371, rad = x => x * Math.PI / 180;
+  const dLat = rad(b[0] - a[0]), dLon = rad(b[1] - a[1]);
+  const h = Math.sin(dLat/2)**2 + Math.cos(rad(a[0])) * Math.cos(rad(b[0])) * Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+// Množilac cene leta za konkretnu rutu. 1500 km = referentna (množilac 1);
+// kraće rute jeftinije, dalje skuplje (ograničeno 0.6–4). Polazište bez
+// sopstvenog aerodroma računa se od NAJBLIŽEG pravog (Novi Sad → Beograd),
+// isto kao tekst na kartici. Mala mreža linija (Niš) daje +12% —
+// ista okolnost na koju flightSubText već upozorava korisnika.
+// NE zove rng() — ne sme da pomeri niz nasumičnih vrednosti.
+function flightRouteMult(originRaw, destRaw){
+  const o = iataFor(realDepartureAirportFor(originRaw));
+  const d = iataFor(realArrivalAirportFor(destRaw));
+  if (!o || !d || !AIRPORT_COORDS[o] || !AIRPORT_COORDS[d]) return 1;
+  const km = o === d ? 0 : haversineKm(AIRPORT_COORDS[o], AIRPORT_COORDS[d]);
+  let m = Math.min(4, Math.max(0.6, 0.5 + 0.5 * (km / 1500)));
+  if (isLimitedNetworkOrigin(originRaw)) m *= 1.12;
+  return m;
+}
+
 /* ==========================================================
    AFFILIATE DEEP LINKS — STATUS PRE PRODUKCIJE
    Jedino mesto gde treba gledati šta je spremno, umesto komentara
@@ -2596,7 +2636,8 @@ function fetchFlights(rng, dest, adults, tier, originCode, prefs){
   // — cena stvarno zavisi od TRAŽENOG tipa leta, ne samo od tier-a kartice,
   // tako da "najjeftiniji" izbor u upitniku zaista donese nižu cenu ovde.
   const prefMult = FLIGHT_PREF_PRICE_MULT[flightPref] || 1;
-  const price = Math.round(base * tierMult * prefMult * adults);
+  // Cena zavisi i od RUTE (udaljenost polazište→destinacija, vidi flightRouteMult).
+  const price = Math.round(base * tierMult * prefMult * adults * flightRouteMult(originCode, dest));
   const p = PARTNERS.flight;
   // Ako je tražena određena avio-kompanija, kartica STVARNO prikazuje tu
   // kompaniju — ne nasumičnu iz liste.
@@ -3880,12 +3921,14 @@ function computeMatchFitScore(cand, answers, nights, month){
 function computeMatchCandidates(from, to, adults, flags){
   const nights = nightsBetween(from, to);
   const days = nights;
+  // Polazište iz forme — utiče na cenu leta (flightRouteMult) i na deep link.
+  const matchOrigin = (document.getElementById('origin') || {}).value || '';
   return MATCH_DESTINATIONS.map(d => {
     const seed = hashSeed(d.name.toLowerCase()+d.name.length+nights+adults);
     const rng = seededRandom(seed);
     const factor = marketFactor(d.name, todayStr());
-    const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags, factor);
-    attachAffiliateLinks(pkg, d.name, from, to, adults, {originCode: (document.getElementById('origin') || {}).value || '', flags});
+    const pkg = buildPackage(rng, d.name, nights, days, adults, 'best', flags, factor, matchOrigin);
+    attachAffiliateLinks(pkg, d.name, from, to, adults, {originCode: matchOrigin, flags});
     return {dest:d.name, country:d.extra||'', pkg, tags:d};
   });
 }
@@ -4886,7 +4929,7 @@ function computeCustomPackage(sel, ctx){
   // --- Flight ---
   const flightBase = 55 + rng()*130;
   const flightMult = FLIGHT_PREF_PRICE_MULT[sel.flightPref];
-  const flightPrice = Math.round(flightBase * flightMult * ctx.adults);
+  const flightPrice = Math.round(flightBase * flightMult * ctx.adults * flightRouteMult(ctx.originCode, ctx.dest));
   // pickCarrierName zove rng() u IDENTIČNOM obrascu kao na kartičnom putu
   // (fetchFlights) — tačno jednom, i samo kad nije tražena konkretna
   // kompanija. Ne prosleđujemo forceCarrier ovde (builder nema tier-ove).
