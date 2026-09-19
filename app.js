@@ -4827,8 +4827,6 @@ async function runMatchSearch(isReroll){
     if (!isMobileResults()) results.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
-  bumpSearchStat('🧭 ' + (budget ? fmtEUR(budget) : 'Match'));
-
   setTimeout(()=>{
     const nights = nightsBetween(from, to);
     const month = new Date(from).getMonth() + 1;
@@ -4836,6 +4834,9 @@ async function runMatchSearch(isReroll){
     const excludeNames = isReroll ? (window._lastMatchPicks || []).map(p => p.dest) : [];
     const pool = excludeNames.length ? candidates.filter(c => !excludeNames.includes(c.dest)) : candidates;
     const {picks, usedFallback} = pickMatchDestinations(answers, budget, pool, nights, month, 3);
+    // "Poslednja destinacija" u statistici treba da bude GRAD (kao kod obične
+    // pretrage), a ne budžet — zato se beleži tek kad su predlozi izračunati.
+    bumpSearchStat('🧭 ' + (picks[0] ? picks[0].dest : 'Match'));
     renderMatchResults(picks, {from, to, adults, nights, flags}, budget, answers, usedFallback);
   }, isReroll ? 0 : 700);
 }
