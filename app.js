@@ -2627,13 +2627,18 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
   // flight directness, car size) — it doesn't depend on this run's prices.
   const qualityScore = {best:84, budget:58, comfort:97}[tier];
 
-  return {tier, flight, hotel, car, activity, fuel, tolls, insuranceCost, esimCost, total, qualityScore};
+  return {tier, flight, hotel, car, activity, fuel, tolls, insuranceCost, esimCost, total, qualityScore,
+    // Stvarno tražene kategorije (isti izbor za sve tri kartice — vidi
+    // komentar uz `flags` u runSearch) — pkgDescText ih koristi umesto da
+    // nagađa tip leta/auta iz tier-a, jer tier više ne menja KATEGORIJU
+    // koju je korisnik tražio, samo cenu/kvalitet unutar nje.
+    flightPref: flags.flightPref, carPref: flags.carPref};
 }
 
 const TIER_META = {
   best:    {label:'Best Value', desc:'Najbolji odnos cene i kvaliteta'},
-  comfort: {label:'Comfort', desc:'Bolji hotel, direktan let, prostraniji auto'},
-  budget:  {label:'Budget', desc:'Najniža cena, bez iznajmljivanja auta'}
+  comfort: {label:'Comfort', desc:'Bolji hotel i ostale stavke u istoj kategoriji koju si tražio/la'},
+  budget:  {label:'Budget', desc:'Najniža cena u istoj kategoriji koju si tražio/la'}
 };
 
 /* Opis kartice ponude mora pratiti stvarni sadržaj paketa — koje usluge
@@ -2641,12 +2646,24 @@ const TIER_META = {
    tier-u. Korisnik bira usluge preko toggle-a iznad forme (Letovi/Smeštaj/
    Auto/Aktivnosti), pa npr. Comfort ponuda bez izabranog Auto toggle-a ne
    sme da u opisu i dalje piše "prostraniji auto" kad auto nije ni prikazan
-   na kartici. */
+   na kartici.
+   Tip leta i tip auta su TAKOĐE isti izbor na sve tri kartice (flags.
+   flightPref/carPref iz upitnika važe podjednako za best/comfort/budget —
+   tier menja samo cenu/kvalitet, ne i kategoriju), pa se ovde opisuju na
+   osnovu STVARNOG izbora (pkg.flightPref/pkg.carPref), a ne fiksno po
+   tier-u — inače bi npr. Comfort pisao "direktan let" i kad je korisnik
+   tražio najjeftiniji let sa presedanjem. Iz istog razloga, odsustvo auta
+   (kad Auto toggle nije uključen) važi podjednako za sve tri kartice, pa
+   se ne ističe kao posebna "Budget prednost". */
 function pkgDescText(pkg){
   const bits = [];
   if (pkg.hotel) bits.push(pkg.tier === 'comfort' ? 'bolji hotel' : pkg.tier === 'budget' ? 'najjeftiniji hotel' : 'provereni hotel');
-  if (pkg.flight) bits.push(pkg.tier === 'comfort' ? 'direktan let' : pkg.tier === 'budget' ? 'najjeftiniji let' : 'let');
-  if (pkg.car) bits.push(pkg.tier === 'comfort' ? 'prostraniji auto' : 'auto');
+  if (pkg.flight){
+    bits.push(pkg.flightPref === 'cheapest' ? 'let sa presedanjem'
+      : pkg.flightPref === 'airline' ? 'let odabranom kompanijom'
+      : 'direktan let');
+  }
+  if (pkg.car) bits.push(pkg.carPref === 'suv' ? 'prostraniji auto' : 'auto');
   if (pkg.activity) bits.push('aktivnosti');
 
   if (!bits.length) return TIER_META[pkg.tier].label;
@@ -2655,10 +2672,6 @@ function pkgDescText(pkg){
     ? bits[0]
     : bits.slice(0, -1).join(', ') + ' i ' + bits[bits.length - 1];
   text = text.charAt(0).toUpperCase() + text.slice(1);
-
-  // Budget tier namerno nikad ne uključuje auto (vidi fetchCar) — istakni
-  // to kao prednost umesto da ga prosto izostaviš iz rečenice.
-  if (pkg.tier === 'budget' && !pkg.car) text += ', bez iznajmljivanja auta';
 
   return text;
 }
@@ -6324,12 +6337,18 @@ if (passportCheckSubmit) passportCheckSubmit.addEventListener('click', runPasspo
    3 kartice, bez dodatnog klika na "Nastavi" na plan-kartici.
 ========================================================== */
 const startPrefs = {
-  flightPref: 'direct', hotelStars: 4, carPref: 'small', activityCount: 2,
+  flightPref: 'direct', airlineName: '', hotelStars: 4, carPref: 'small', activityCount: 2,
   prioritizeRating: false, prioritizeLocation: false,
   putarina: false, touristTax: false, budget: null
 };
 
 function openStartPrefsModal(){
+  // Pre otvaranja, uvek preuzmi stvarno trenutno stanje iz builderState —
+  // bez ovoga bi modal i dalje prikazivao startPrefs default vrednosti (ili
+  // poslednje ručno uneto ovde) čak i kad je builderState u međuvremenu
+  // promenjen na neki drugi način (npr. učitavanjem sačuvanog izleta preko
+  // loadSavedTrip, koji ažurira builderState ali ne i startPrefs).
+  syncStartPrefsFromBuilderState();
   document.getElementById('startPrefsBackdrop').classList.add('open');
   document.getElementById('startPrefsModal').classList.add('open');
   guardOverlayOpen('startPrefs', closeStartPrefsModal);
@@ -6357,7 +6376,13 @@ document.addEventListener('keydown', (e) => {
 // Radio grupe za let/hotel su statične (bez isključi-kučkice — let i hotel
 // su uvek deo osnovnog paketa), samo beleže izbor u startPrefs.
 document.querySelectorAll('input[name="spFlightPrefRadio"]').forEach(r=>{
-  r.addEventListener('change', () => { startPrefs.flightPref = r.value; });
+  r.addEventListener('change', () => {
+    startPrefs.flightPref = r.value;
+    document.getElementById('spAirlineName').style.display = (r.value === 'airline') ? 'block' : 'none';
+  });
+});
+document.getElementById('spAirlineName').addEventListener('input', (e) => {
+  startPrefs.airlineName = e.target.value.trim();
 });
 document.querySelectorAll('input[name="spHotelStarsRadio"]').forEach(r=>{
   r.addEventListener('change', () => { startPrefs.hotelStars = Number(r.value); });
@@ -6489,6 +6514,7 @@ function syncBuilderPanelUi(){
 function syncBuilderStateFromStartPrefs(){
   Object.assign(builderState, {
     flightPref: startPrefs.flightPref,
+    airlineName: startPrefs.airlineName,
     hotelStars: startPrefs.hotelStars,
     carPref: startPrefs.carPref,
     activityCount: startPrefs.activityCount,
@@ -6509,6 +6535,8 @@ function syncBuilderStateFromStartPrefs(){
 // uključivale stavku koju je optimizacija upravo uklonila.
 function syncStartPrefsFromBuilderState(){
   Object.assign(startPrefs, {
+    flightPref: builderState.flightPref,
+    airlineName: builderState.airlineName,
     hotelStars: builderState.hotelStars,
     carPref: builderState.carPref,
     activityCount: builderState.activityCount,
@@ -6521,6 +6549,13 @@ function syncStartPrefsFromBuilderState(){
 
   const setRadio = (name, val) => document.querySelectorAll('input[name="'+name+'"]').forEach(r=>{ r.checked = (String(r.value) === String(val)); });
   const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+
+  setRadio('spFlightPrefRadio', startPrefs.flightPref);
+  const spAirlineEl = document.getElementById('spAirlineName');
+  if (spAirlineEl){
+    spAirlineEl.style.display = (startPrefs.flightPref === 'airline') ? 'block' : 'none';
+    spAirlineEl.value = startPrefs.airlineName || '';
+  }
 
   setRadio('spHotelStarsRadio', startPrefs.hotelStars);
   setChk('spPrioritizeRatingChk', startPrefs.prioritizeRating);
