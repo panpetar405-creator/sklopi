@@ -1,4 +1,4 @@
-name = "sklopi-price-alerts"
+name = "sklopi"
 main = "price-alert-worker.js"
 compatibility_date = "2025-09-01"
 
