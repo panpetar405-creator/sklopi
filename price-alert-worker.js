@@ -121,7 +121,7 @@ async function handleFlightSearch(url, env) {
       {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${atob(env.DUFFEL_API_KEY_B64)
+         Authorization: `Bearer ${env.DUFFEL_API_KEY}`, 
           'Duffel-Version': 'v2',
           'Content-Type': 'application/json',
           'Accept-Encoding': 'gzip'
