@@ -1,10 +1,11 @@
 /* ==========================================================
    SKLOPI — Price Alert Worker
 
-   Radi dve stvari:
+   Radi tri stvari:
    1) Cron proverava aktivne price_alerts i šalje email
       kada procenjena cena padne ispod praga.
    2) /unsubscribe?token=... gasi alert.
+   3) /api/flights — pretraga letova preko Duffel API-ja.
 
    ENV / SECRETS:
      SUPABASE_URL
@@ -12,6 +13,7 @@
      RESEND_API_KEY
      ALERT_FROM_EMAIL
      SITE_URL
+     DUFFEL_API_KEY
 ========================================================== */
 
 import { computeAlertPrice } from './pricing-core.js';
@@ -54,6 +56,15 @@ export default {
       }
     }
 
+    if (url.pathname === '/api/flights') {
+      if (request.method === 'OPTIONS') {
+        return corsPreflightResponse(env);
+      }
+      if (request.method === 'GET') {
+        return handleFlightSearch(url, env);
+      }
+    }
+
     return new Response('SKLOPI price-alert worker.', {
       status: 200
     });
@@ -64,11 +75,121 @@ export default {
   }
 };
 
+/* ==========================================================
+   FLIGHT SEARCH (Duffel)
+
+   GET /api/flights?origin=BEG&destination=ATH&departure_date=2026-10-01
+       &return_date=2026-10-08&adults=2
+
+   Test mode (duffel_test_... ključ) vraća sandbox ponude
+   ("Duffel Airways") — pravi podaci tek sa live ključem.
+========================================================== */
+async function handleFlightSearch(url, env) {
+  const cors = corsHeaders(env);
+  const origin = url.searchParams.get('origin');
+  const destination = url.searchParams.get('destination');
+  const departureDate = url.searchParams.get('departure_date');
+  const returnDate = url.searchParams.get('return_date');
+  const adults = Math.max(1, Number(url.searchParams.get('adults') || '1'));
+
+  if (!origin || !destination || !departureDate) {
+    return new Response(
+      JSON.stringify({
+        error:
+          'Nedostaju obavezni parametri: origin, destination, departure_date.'
+      }),
+      {
+        status: 400,
+        headers: { ...cors, 'content-type': 'application/json; charset=utf-8' }
+      }
+    );
+  }
+
+  const slices = [{ origin, destination, departure_date: departureDate }];
+  if (returnDate) {
+    slices.push({
+      origin: destination,
+      destination: origin,
+      departure_date: returnDate
+    });
+  }
+  const passengers = Array.from({ length: adults }, () => ({ type: 'adult' }));
+
+  try {
+    const res = await fetch(
+      'https://api.duffel.com/air/offer_requests?return_offers=true',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${env.DUFFEL_API_KEY}`,
+          'Duffel-Version': 'v2',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip'
+        },
+        body: JSON.stringify({
+          data: { slices, passengers, cabin_class: 'economy' }
+        })
+      }
+    );
+
+    const payload = await res.json();
+
+    if (!res.ok) {
+      console.error(
+        '[price-alert-worker] Duffel greška:',
+        JSON.stringify(payload)
+      );
+      return new Response(
+        JSON.stringify({ error: 'Duffel API greška.', details: payload }),
+        {
+          status: 502,
+          headers: {
+            ...cors,
+            'content-type': 'application/json; charset=utf-8'
+          }
+        }
+      );
+    }
+
+    const offers = (payload.data && payload.data.offers) || [];
+    const simplified = offers.slice(0, 5).map((offer) => ({
+      id: offer.id,
+      total_amount: offer.total_amount,
+      total_currency: offer.total_currency,
+      airline: offer.owner && offer.owner.name,
+      airline_iata: offer.owner && offer.owner.iata_code,
+      slices: (offer.slices || []).map((slice) => ({
+        origin: slice.origin && slice.origin.iata_code,
+        destination: slice.destination && slice.destination.iata_code,
+        departing_at:
+          slice.segments && slice.segments[0] && slice.segments[0].departing_at,
+        arriving_at:
+          slice.segments &&
+          slice.segments[slice.segments.length - 1] &&
+          slice.segments[slice.segments.length - 1].arriving_at
+      }))
+    }));
+
+    return new Response(JSON.stringify({ offers: simplified }), {
+      status: 200,
+      headers: {
+        ...cors,
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'public, max-age=300'
+      }
+    });
+  } catch (err) {
+    console.error('[price-alert-worker] Duffel network greška:', err);
+    return new Response(JSON.stringify({ error: 'Greška servera.' }), {
+      status: 500,
+      headers: { ...cors, 'content-type': 'application/json; charset=utf-8' }
+    });
+  }
+}
 
 /* ==========================================================
    UNSUBSCRIBE
 ========================================================== */
-
 async function handleUnsubscribe(url, env) {
   const token = url.searchParams.get('token');
 
@@ -105,7 +226,6 @@ async function handleUnsubscribe(url, env) {
       '[price-alert-worker] unsubscribe update nije uspeo:',
       await safeResponseText(res)
     );
-
     return new Response(
       'Došlo je do greške. Pokušaj ponovo kasnije.',
       { status: 500 }
@@ -125,22 +245,22 @@ async function handleUnsubscribe(url, env) {
     `<!DOCTYPE html>
 <html lang="sr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>SKLOPI — Alert ugašen</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SKLOPI — Alert ugašen</title>
 </head>
 <body style="font-family:sans-serif;max-width:480px;margin:60px auto;text-align:center;color:#16242A;padding:20px;">
-  <h2>Alert je ugašen.</h2>
-  <p>
-    Više nećeš dobijati obaveštenja za ovu pretragu.
-    Možeš napraviti novi alert bilo kada na Skoknici.
-  </p>
-  <a
-    href="${escapeHtml(env.SITE_URL || 'https://sklopi.rs')}"
-    style="color:#8f6423;"
-  >
-    ← Nazad na Skoknicu
-  </a>
+<h2>Alert je ugašen.</h2>
+<p>
+Više nećeš dobijati obaveštenja za ovu pretragu.
+Možeš napraviti novi alert bilo kada na Skoknici.
+</p>
+<a
+href="${escapeHtml(env.SITE_URL || 'https://sklopi.rs')}"
+style="color:#8f6423;"
+>
+← Nazad na Skoknicu
+</a>
 </body>
 </html>`,
     {
@@ -153,16 +273,13 @@ async function handleUnsubscribe(url, env) {
   );
 }
 
-
 /* ==========================================================
    CONFIRM ALERT (double opt-in)
-
    Klik na link iz potvrdnog mejla — prebacuje alert iz
    pending_confirmation u active. Worker koristi service_role,
    pa ovo radi bez obzira na RLS (browser sam ne može ni da
    pročita ni da promeni status — vidi price_alerts.sql).
 ========================================================== */
-
 async function handleConfirmAlert(url, env) {
   const token = url.searchParams.get('token');
 
@@ -193,7 +310,6 @@ async function handleConfirmAlert(url, env) {
       '[price-alert-worker] confirm update nije uspeo:',
       await safeResponseText(res)
     );
-
     return new Response(
       'Došlo je do greške. Pokušaj ponovo kasnije.',
       { status: 500 }
@@ -221,22 +337,22 @@ async function handleConfirmAlert(url, env) {
     `<!DOCTYPE html>
 <html lang="sr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>SKLOPI — Alert potvrđen</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SKLOPI — Alert potvrđen</title>
 </head>
 <body style="font-family:sans-serif;max-width:480px;margin:60px auto;text-align:center;color:#16242A;padding:20px;">
-  <h2>Alert je aktiviran ✅</h2>
-  <p>
-    Javićemo ti mejlom kad procenjena cena padne ispod praga
-    koji si postavio/la.
-  </p>
-  <a
-    href="${escapeHtml(siteUrl)}"
-    style="color:#8f6423;"
-  >
-    ← Nazad na Skoknicu
-  </a>
+<h2>Alert je aktiviran ✅</h2>
+<p>
+Javićemo ti mejlom kad procenjena cena padne ispod praga
+koji si postavio/la.
+</p>
+<a
+href="${escapeHtml(siteUrl)}"
+style="color:#8f6423;"
+>
+← Nazad na Skoknicu
+</a>
 </body>
 </html>`,
     {
@@ -249,10 +365,8 @@ async function handleConfirmAlert(url, env) {
   );
 }
 
-
 /* ==========================================================
    SEND CONFIRMATION EMAIL (pozvano sa sajta odmah posle insert-a)
-
    Browser sme samo INSERT u price_alerts (vidi RLS u
    price_alerts.sql) — nema SELECT, pa ne može sam da pročita
    confirmation_token novog reda da bi napravio link. Umesto
@@ -260,7 +374,6 @@ async function handleConfirmAlert(url, env) {
    upravo upisao; worker (service_role) pronađe TAJ red i pošalje
    mejl sa pravim tokenom.
 ========================================================== */
-
 async function handleSendConfirmation(request, env) {
   const cors = corsHeaders(env);
 
@@ -332,11 +445,10 @@ async function handleSendConfirmation(request, env) {
   return new Response('OK', { status: 200, headers: cors });
 }
 
-
 function corsHeaders(env) {
   return {
     'Access-Control-Allow-Origin': env.SITE_URL || 'https://sklopi.rs',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'content-type': 'text/plain; charset=utf-8'
   };
@@ -346,10 +458,8 @@ function corsPreflightResponse(env) {
   return new Response(null, { status: 204, headers: corsHeaders(env) });
 }
 
-
 async function sendConfirmationEmail(alert, env) {
   const siteUrl = env.SITE_URL || 'https://sklopi.rs';
-
   const confirmUrl =
     `${siteUrl.replace(/\/$/, '')}` +
     `/go/confirm-alert?token=${encodeURIComponent(alert.confirmation_token)}`;
@@ -358,54 +468,51 @@ async function sendConfirmationEmail(alert, env) {
   const subject = `Potvrdi svoj price alert za ${safeDest}`;
 
   const html = `
-    <div style="
-      font-family:'Work Sans',Arial,sans-serif;
-      max-width:520px;
-      margin:0 auto;
-      color:#16242A;
-      line-height:1.6;
-    ">
-      <h2 style="
-        font-family:Georgia,serif;
-        color:#123138;
-      ">
-        SKLOPI 🔔
-      </h2>
-
-      <p>
-        Skoro gotovo — potvrdi da si to zaista ti tražio/la
-        obaveštenje o ceni za
-        <b>${escapeHtml(alert.dest)}</b>,
-        ispod
-        <b style="font-size:18px;color:#8f6423;">${alert.threshold}€</b>.
-      </p>
-
-      <p>
-        <a
-          href="${escapeHtml(confirmUrl)}"
-          style="
-            display:inline-block;
-            background:#B8863B;
-            color:#241505;
-            padding:12px 20px;
-            border-radius:4px;
-            text-decoration:none;
-            font-weight:600;
-          "
-        >
-          Potvrdi alert →
-        </a>
-      </p>
-
-      <p style="
-        color:#4B5D62;
-        font-size:13px;
-      ">
-        Ako nisi ti tražio/la ovo, samo ignoriši ovaj mejl —
-        alert ostaje neaktivan i ne dobijaš ništa dalje.
-      </p>
-    </div>
-  `;
+<div style="
+font-family:'Work Sans',Arial,sans-serif;
+max-width:520px;
+margin:0 auto;
+color:#16242A;
+line-height:1.6;
+">
+<h2 style="
+font-family:Georgia,serif;
+color:#123138;
+">
+SKLOPI 🔔
+</h2>
+<p>
+Skoro gotovo — potvrdi da si to zaista ti tražio/la
+obaveštenje o ceni za
+<b>${escapeHtml(alert.dest)}</b>,
+ispod
+<b style="font-size:18px;color:#8f6423;">${alert.threshold}€</b>.
+</p>
+<p>
+<a
+href="${escapeHtml(confirmUrl)}"
+style="
+display:inline-block;
+background:#B8863B;
+color:#241505;
+padding:12px 20px;
+border-radius:4px;
+text-decoration:none;
+font-weight:600;
+"
+>
+Potvrdi alert →
+</a>
+</p>
+<p style="
+color:#4B5D62;
+font-size:13px;
+">
+Ako nisi ti tražio/la ovo, samo ignoriši ovaj mejl —
+alert ostaje neaktivan i ne dobijaš ništa dalje.
+</p>
+</div>
+`;
 
   try {
     const res = await fetch(
@@ -434,7 +541,6 @@ async function sendConfirmationEmail(alert, env) {
     }
 
     return true;
-
   } catch (err) {
     console.error(
       '[price-alert-worker] Resend (potvrda) network greška:',
@@ -444,11 +550,9 @@ async function sendConfirmationEmail(alert, env) {
   }
 }
 
-
 /* ==========================================================
    MAIN CRON
 ========================================================== */
-
 async function checkAllAlerts(env) {
   const todayKey = new Date().toISOString().slice(0, 10);
 
@@ -462,7 +566,6 @@ async function checkAllAlerts(env) {
       '[price-alert-worker] neuspešno čitanje price_alerts:',
       await safeResponseText(res)
     );
-
     return;
   }
 
@@ -484,11 +587,9 @@ async function checkAllAlerts(env) {
   }
 }
 
-
 /* ==========================================================
    CHECK ONE ALERT
 ========================================================== */
-
 async function checkOneAlert(alert, todayKey, env) {
   const price = computeAlertPrice(alert, todayKey);
 
@@ -543,7 +644,6 @@ async function checkOneAlert(alert, todayKey, env) {
     return;
   }
 
-
   /*
    * Cena je pala ispod praga.
    *
@@ -567,10 +667,8 @@ async function checkOneAlert(alert, todayKey, env) {
       '[price-alert-worker] email nije poslat; alert ostaje active:',
       alert.id
     );
-
     return;
   }
-
 
   /*
    * Email je uspešno prihvaćen od Resend-a.
@@ -609,15 +707,12 @@ async function checkOneAlert(alert, todayKey, env) {
   }
 }
 
-
 /* ==========================================================
    SEND EMAIL
 ========================================================== */
-
 async function sendAlertEmail(alert, price, env) {
   const siteUrl =
     env.SITE_URL || 'https://sklopi.rs';
-
   const unsubUrl =
     `${siteUrl.replace(/\/$/, '')}` +
     `/go/unsubscribe?token=${encodeURIComponent(alert.unsubscribe_token)}`;
@@ -635,87 +730,81 @@ async function sendAlertEmail(alert, price, env) {
   // dest ide i u subject (van HTML-a), pa uklanjamo novi red
   // kao dodatnu meru opreza protiv header-injection stila problema.
   const safeDest = String(alert.dest).replace(/[\r\n]/g, ' ');
-
   const subject =
     `Cena za ${safeDest} je pala na ${price}€`;
 
   const html = `
-    <div style="
-      font-family:'Work Sans',Arial,sans-serif;
-      max-width:520px;
-      margin:0 auto;
-      color:#16242A;
-      line-height:1.6;
-    ">
-      <h2 style="
-        font-family:Georgia,serif;
-        color:#123138;
-      ">
-        SKLOPI 🔔
-      </h2>
-
-      <p>
-        Procenjena cena za
-        <b>${escapeHtml(alert.dest)}</b>
-        (${escapeHtml(tierLabel)})
-        je pala na
-        <b style="
-          font-size:20px;
-          color:#8f6423;
-        ">
+<div style="
+font-family:'Work Sans',Arial,sans-serif;
+max-width:520px;
+margin:0 auto;
+color:#16242A;
+line-height:1.6;
+">
+<h2 style="
+font-family:Georgia,serif;
+color:#123138;
+">
+SKLOPI 🔔
+</h2>
+<p>
+Procenjena cena za
+<b>${escapeHtml(alert.dest)}</b>
+(${escapeHtml(tierLabel)})
+je pala na
+<b style="
+font-size:20px;
+color:#8f6423;
+">
           ${price}€
-        </b>
-        — ispod tvog praga od
+</b>
+— ispod tvog praga od
         ${alert.threshold}€.
-      </p>
-
-      <p style="
-        color:#4B5D62;
-        font-size:13.5px;
-      ">
-        ⚠️ Ovo je i dalje ilustrativna procena,
-        ne stvarna ponuda partnera — proveri
-        tačnu cenu i dostupnost pre rezervacije.
-      </p>
-
-      <p>
-        <a
-          href="${escapeHtml(siteUrl)}"
-          style="
-            display:inline-block;
-            background:#B8863B;
-            color:#241505;
-            padding:12px 20px;
-            border-radius:4px;
-            text-decoration:none;
-            font-weight:600;
-          "
-        >
-          Pogledaj na Skoknici →
-        </a>
-      </p>
-
-      <hr style="
-        border:none;
-        border-top:1px solid #DDD6C6;
-        margin:28px 0 14px;
-      ">
-
-      <p style="
-        font-size:12px;
-        color:#4B5D62;
-      ">
-        Dobio/la si ovaj mejl jer si postavio/la
-        price alert na Skoknici.
-        <a
-          href="${escapeHtml(unsubUrl)}"
-          style="color:#4B5D62;"
-        >
-          Odjavi me sa ovog alerta
-        </a>.
-      </p>
-    </div>
-  `;
+</p>
+<p style="
+color:#4B5D62;
+font-size:13.5px;
+">
+⚠️ Ovo je i dalje ilustrativna procena,
+ne stvarna ponuda partnera — proveri
+tačnu cenu i dostupnost pre rezervacije.
+</p>
+<p>
+<a
+href="${escapeHtml(siteUrl)}"
+style="
+display:inline-block;
+background:#B8863B;
+color:#241505;
+padding:12px 20px;
+border-radius:4px;
+text-decoration:none;
+font-weight:600;
+"
+>
+Pogledaj na Skoknici →
+</a>
+</p>
+<hr style="
+border:none;
+border-top:1px solid #DDD6C6;
+margin:28px 0 14px;
+">
+<p style="
+font-size:12px;
+color:#4B5D62;
+">
+Dobio/la si ovaj mejl jer si postavio/la
+price alert na Skoknici.
+<a
+href="${escapeHtml(unsubUrl)}"
+style="color:#4B5D62;"
+>
+Odjavi me sa ovog alerta
+</a>.
+</p>
+</div>
+`;
 
   try {
     const res = await fetch(
@@ -742,51 +831,42 @@ async function sendAlertEmail(alert, price, env) {
         '[price-alert-worker] Resend slanje nije uspelo:',
         await safeResponseText(res)
       );
-
       return false;
     }
 
     return true;
-
   } catch (err) {
     console.error(
       '[price-alert-worker] Resend network greška:',
       err
     );
-
     return false;
   }
 }
 
-
 /* ==========================================================
    SUPABASE REST HELPER
 ========================================================== */
-
 function sbFetch(env, path, options = {}) {
   return fetch(
     `${env.SUPABASE_URL}/rest/v1/${path}`,
     {
       ...options,
-
       headers: {
         apikey: env.SUPABASE_SERVICE_ROLE_KEY,
         Authorization:
           `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
         Prefer: 'return=minimal',
-
         ...(options.headers || {})
       }
     }
   );
 }
 
-
 /* ==========================================================
    HELPERS
 ========================================================== */
-
 async function safeResponseText(response) {
   try {
     return await response.text();
@@ -794,7 +874,6 @@ async function safeResponseText(response) {
     return `HTTP ${response.status}`;
   }
 }
-
 
 function escapeHtml(value) {
   return String(value).replace(
@@ -808,4 +887,3 @@ function escapeHtml(value) {
     })[char]
   );
 }
-
