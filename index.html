@@ -115,6 +115,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=16">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+<!-- PRIVREMENO: Travelpayouts Drive (ukloniti posle verifikacije naloga) -->
+<script data-cmp-ab="2">
+(function () {
+  var script = document.createElement("script");
+  script.async = 1;
+  script.setAttribute("data-cmp-ab","2");
+  script.src = 'https://tp-em.com/NTc2MDMx.js?t=576031';
+  document.head.appendChild(script);
+})();
+</script>
 </head>
 <body>
 <div class="topbar-wrap">
@@ -326,52 +336,6 @@ SKLOPI<em>.</em>
 </div>
 <div class="attractions-dots" id="attractionsDots"></div>
 <button type="button" class="btn-alert attractions-see-all" id="attractionsSeeAllBtn" data-i18n="btn_see_all_attractions">🧭 Vidi sve atrakcije</button>
-</div>
-<div class="section price-chart-section">
-<div class="price-chart">
-<div class="price-chart-head">
-<h3 data-i18n="pc_title">Od čega se sastoji cena paketa</h3>
-<p data-i18n="pc_sub">Primer po osobi: 7 dana, avion + hotel 4★ + rentakar. Koliko koja stavka opterećuje budžet.</p>
-</div>
-<div class="price-hbar-list" role="img" data-i18n-aria-label="pc_aria" aria-label="Raspodela cene paketa po osobi: letovi 27% oko 190 evra, smeštaj 33% oko 230 evra, auto i gorivo 22% oko 150 evra, aktivnosti 13% oko 90 evra, osiguranje 3% oko 20 evra, putarine 1% oko 10 evra, eSIM 1% oko 10 evra">
-<div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--hotel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"/></svg></span><span data-i18n="pc_hotel">Smeštaj</span></div>
-<div class="phr-track"><div class="phr-fill phr-fill--hotel" style="width:33%"></div></div>
-<div class="phr-nums"><span class="phr-pct tabular">33%</span><span class="phr-eur tabular">≈ €230</span></div>
-</div>
-<div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--flight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></span><span data-i18n="pc_flights">Letovi</span></div>
-<div class="phr-track"><div class="phr-fill phr-fill--flight" style="width:27%"></div></div>
-<div class="phr-nums"><span class="phr-pct tabular">27%</span><span class="phr-eur tabular">≈ €190</span></div>
-</div>
-<div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--car"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M6 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M15 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M6 12h12"/></svg></span><span data-i18n="pc_car">Auto</span></div>
-<div class="phr-track"><div class="phr-fill phr-fill--car" style="width:22%"></div></div>
-<div class="phr-nums"><span class="phr-pct tabular">22%</span><span class="phr-eur tabular">≈ €150</span></div>
-</div>
-<div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></span><span data-i18n="pc_activities">Aktivnosti</span></div>
-<div class="phr-track"><div class="phr-fill phr-fill--activity" style="width:13%"></div></div>
-<div class="phr-nums"><span class="phr-pct tabular">13%</span><span class="phr-eur tabular">≈ €90</span></div>
-</div>
-<div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--insurance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/></svg></span><span data-i18n="pc_insurance">Osiguranje</span></div>
-<div class="phr-track"><div class="phr-fill phr-fill--insurance" style="width:3%"></div></div>
-<div class="phr-nums"><span class="phr-pct tabular">3%</span><span class="phr-eur tabular">≈ €20</span></div>
-</div>
-<div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--tolls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20L11 4h2l7 16M8 15h8"/></svg></span><span data-i18n="pc_tolls">Putarine</span></div>
-<div class="phr-track"><div class="phr-fill phr-fill--tolls" style="width:1%"></div></div>
-<div class="phr-nums"><span class="phr-pct tabular">1%</span><span class="phr-eur tabular">≈ €10</span></div>
-</div>
-<div class="phr-row">
-<div class="phr-label"><span class="phr-ic phr-ic--esim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8.5a8.5 8.5 0 0112 0M8.7 11.2a4.7 4.7 0 016.6 0M11.4 13.9a1 1 0 011.2 0"/><circle cx="12" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg></span><span data-i18n="pc_esim">eSIM</span></div>
-<div class="phr-track"><div class="phr-fill phr-fill--esim" style="width:1%"></div></div>
-<div class="phr-nums"><span class="phr-pct tabular">1%</span><span class="phr-eur tabular">≈ €10</span></div>
-</div>
-</div>
-<p class="price-chart-foot" data-i18n="pc_foot">⚠️ Procena za 1 osobu, uz pretpostavku da dvoje putnika dele sobu i auto. Ne uključuje hranu. Stvarna raspodela zavisi od destinacije, sezone i tvojih izbora u builderu.</p>
-</div>
 </div>
 <div class="promo-banner">
 <div class="promo-banner-card">
@@ -977,7 +941,6 @@ SKLOPI<em>.</em>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 <script src="i18n-data.js?v=179844fd"></script>
 <script src="app.js?v=18"></script>
-<script src="price-mix.js?v=1"></script>
 <script src="transport.js?v=8"></script>
 <script src="transport-i18n.js?v=1"></script>
 <script src="cookies.js"></script>
