@@ -23,4 +23,4 @@ crons = ["0 8 * * *"]
 SUPABASE_URL = "https://qmiyaaepdvmgwesagnar.supabase.co"
 ALERT_FROM_EMAIL = "SKLOPI <alerti@sklopi.rs>"
 SITE_URL = "https://sklopi.rs"
-DUFFEL_API_KEY_B64 = "ZHVmZmVsX3Rlc3RfXzN5RXZuZEJpX0lIQ2lIdlBWMWR1VVVMc"
+# DUFFEL_API_KEY_B64 = "ZHVmZmVsX3Rlc3RfXzN5RXZuZEJpX0lIQ2lIdlBWMWR1VVVMc"
