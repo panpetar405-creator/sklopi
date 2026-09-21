@@ -4261,7 +4261,13 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
   const unknownNote = isKnownDestination(dest) ? '' : tf('unknown_dest_note', {dest: dest});
+  // Link ka stranici destinacije (destinacija.html): letovi, smeštaj, atrakcije, ruta i saveti za iste datume.
+  const destPageUrl = 'destinacija.html?' + new URLSearchParams({
+    od: originCode || 'Beograd', do: dest, polazak: from, povratak: to, putnika: String(adults)
+  }).toString();
+  const destPageNote = `<div class="plan-note">🧭 <b>Sve o putu na jednom mestu</b><br>Letovi, smeštaj, atrakcije, ruta i saveti za tvoje datume. <a href="${escapeHtml(destPageUrl)}" style="color:var(--deep);font-weight:600;">Otvori stranicu destinacije</a></div>`;
   const notes = [
+    destPageNote,
     unknownNote ? `<div class="plan-note">🔎 ${escapeHtml(unknownNote)}</div>` : '',
     altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
     destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : ''
