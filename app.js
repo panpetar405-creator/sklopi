@@ -7425,10 +7425,15 @@ window.onLangChange = function(lang){
    SEKCIJA "DESTINACIJE" (#destinacije) — slajderi po vrsti odmora.
    GRADOVI: dok pravi API nije gotov, dolaze iz MATCH_DESTINATIONS (isti gradovi/države
    kao u "Pronađi svoj izlet"). Svaki grad je samo u JEDNOM slajderu (bez ponavljanja).
-   FOTOGRAFIJE: prava fotografija svakog grada — glavna slika njegovog članka na engleskoj
-   Wikipediji (Wikimedia Commons). Jedan zahtev za sve gradove, tek kad sekcija dođe u
-   vidno polje; rezultat se kešira 7 dana u localStorage. Ako fotografija ne stigne,
-   kartica ostaje gradijent sa nazivom (nikad slika drugog mesta).
+   FOTOGRAFIJE: glavna slika članka na engleskoj Wikipediji (Wikimedia Commons), a šta se
+   traži zavisi od slajdera (vidi DEST_ROW_WIKI):
+     • "More i plaža"        → poznata plaža tog mesta,
+     • "Gradovi i kultura"   → kulturna ustanova iz tog grada (muzej, pozorište, biblioteka…),
+     • "Priroda i planina"   → prirodna znamenitost tog mesta (jezero, klisura, planina…).
+   Za svako mesto može stajati i više kandidata — uzima se prvi koji ima sliku; ako nijedan nema,
+   pada na glavnu sliku samog grada. Slajder "Blizu Srbije" i dalje prikazuje sliku grada.
+   Jedan zahtev za sve, tek kad sekcija dođe u vidno polje; rezultat se kešira 7 dana u
+   localStorage. Ako ništa ne stigne, kartica ostaje gradijent sa nazivom (nikad slika drugog mesta).
    REDOSLED PRVENSTVA slike: item.img (iz API-ja) → DEST_IMG_OVERRIDES (tvoje slike) → Wikipedija.
    PRELAZAK NA PRAVI API: upiši adresu u DEST_API_URL. Očekivan oblik odgovora:
      [{key:'sea', title:'More i plaža',   (title je opciono)
@@ -7449,6 +7454,44 @@ const DEST_WIKI_TITLES = {
   'Kapadokija':'Cappadocia','Kairo':'Cairo','Šarm El Šeik':'Sharm El Sheikh','Marakeš':'Marrakesh',
   'Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
   'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town'
+};
+// Šta se slika po vrsti slajdera: srpski naziv grada → naslov(i) članka na engleskoj Wikipediji
+// (string ili niz kandidata; prvi sa slikom pobeđuje). Ako nijedan nema sliku, koristi se slika grada.
+// Zamena slike = promeni naslov članka; sopstvenu fotku za mesto možeš staviti u DEST_IMG_OVERRIDES.
+const DEST_ROW_WIKI = {
+  // MORE I PLAŽA — plaža tog mesta
+  sea: {
+    'Dubrovnik':['Banje Beach','Lokrum'],
+    'Split':['Bačvice','Kašjuni'],
+    'Hvar':['Pakleni Islands'],
+    'Varna':['Golden Sands','Saints Constantine and Helena, Bulgaria'],
+    'Atina':['Athens Riviera','Vouliagmeni'],
+    'Santorini':['Perissa','Kamari, Santorini','Red Beach (Santorini)'],
+    'Mikonos':['Paradise Beach (Mykonos)','Psarou','Platis Gialos','Ornos'],
+    'Rodos':['Tsambika Beach','Tsambika','Faliraki','Prasonisi']
+  },
+  // GRADOVI I KULTURA — kulturna ustanova iz tog grada
+  city: {
+    'Zagreb':['Croatian National Theatre in Zagreb','Mimara Museum','Museum of Broken Relationships'],
+    'Ljubljana':['National and University Library of Slovenia','National Gallery of Slovenia','National Museum of Slovenia'],
+    'Sarajevo':['National Museum of Bosnia and Herzegovina','Sarajevo City Hall','Gallery of Bosnia and Herzegovina'],
+    'Mostar':['Museum of Herzegovina','Mostar Gymnasium'],
+    'Bukurešt':['Romanian Athenaeum','National Museum of Art of Romania','Romanian National Opera, Bucharest'],
+    'Istanbul':['Istanbul Archaeology Museums','Istanbul Modern','Topkapı Palace'],
+    'Prag':['National Theatre (Prague)','Rudolfinum','National Museum (Prague)'],
+    'Bratislava':['Slovak National Theatre','Slovak National Museum','Slovak National Gallery']
+  },
+  // PRIRODA I PLANINA — prirodna znamenitost tog mesta
+  nature: {
+    'Ohrid':['Lake Ohrid','Galičica National Park'],
+    'Kotor':['Bay of Kotor'],
+    'Herceg Novi':['Orjen','Mount Orjen','Luštica'],
+    'Bled':['Lake Bled'],
+    'Krf':['Paleokastritsa','Mount Pantokrator'],
+    'Krit':['Samariá Gorge','Samaria Gorge','Balos Lagoon','Elafonisi'],
+    'Kapadokija':['Göreme National Park and the Rock Sites of Cappadocia','Cappadocia'],
+    'Bali':['Mount Batur','Tegallalang']
+  }
 };
 const DEST_ROW_LIMIT = 8;
 // prio = redosled kojim slajderi "biraju" gradove (da se nijedan ne ponovi); redosled prikaza je redosled niza.
@@ -7484,7 +7527,7 @@ function destMockRows(){
   DEST_ROW_DEFS.slice().sort((a, b) => a.prio - b.prio).forEach(def => {
     const picks = MATCH_DESTINATIONS.filter(d => def.test(d) && !used.has(d.name)).slice(0, DEST_ROW_LIMIT);
     picks.forEach(d => used.add(d.name));
-    byKey[def.key] = picks.map(d => ({dest:d.name, country:d.extra}));
+    byKey[def.key] = picks.map(d => ({dest:d.name, country:d.extra, row:def.key}));
   });
   return DEST_ROW_DEFS.map(def => ({key:def.key, items:byKey[def.key]}));
 }
@@ -7494,19 +7537,32 @@ async function loadDestinationRows(){
       const r = await fetch(DEST_API_URL, {headers:{Accept:'application/json'}});
       if (r.ok){
         const data = await r.json();
-        if (Array.isArray(data) && data.length) return data;
+        if (Array.isArray(data) && data.length){
+          data.forEach(r => (r.items || []).forEach(it => { if (!it.row) it.row = r.key; }));
+          return data;
+        }
       }
     } catch(e){ console.warn('[sklopi] destinacije: API nije dostupan, koristim test podatke.', e); }
   }
   return destMockRows();
 }
 
-/* ---- fotografije gradova (Wikipedija) ---- */
-const DEST_PHOTO_CACHE_KEY = 'sklopi_dest_photos_v1';
+/* ---- fotografije (Wikipedija) ---- */
+// v2: keš pamti i naslove bez slike (''), da se ne pitaju ponovo pri svakom učitavanju.
+const DEST_PHOTO_CACHE_KEY = 'sklopi_dest_photos_v2';
 const DEST_PHOTO_TTL = 7 * 24 * 3600 * 1000;
 let _destPhotoMap = {};            // naziv destinacije → URL fotografije
 let _destPhotosStarted = false;
-function destWikiTitle(it){ return it.wiki || DEST_WIKI_TITLES[it.dest] || it.dest; }
+// Kandidati po prioritetu: (1) wiki iz API-ja, ili (2) plaža/ustanova/priroda po vrsti slajdera,
+// pa na kraju (3) sam grad kao rezerva.
+function destWikiCandidates(it){
+  if (it.wiki) return [it.wiki];
+  const spec = (DEST_ROW_WIKI[it.row] || {})[it.dest];
+  const list = spec ? (Array.isArray(spec) ? spec.slice() : [spec]) : [];
+  const city = DEST_WIKI_TITLES[it.dest] || it.dest;
+  if (list.indexOf(city) < 0) list.push(city);
+  return list;
+}
 function destPhotoFor(it){ return it.img || DEST_IMG_OVERRIDES[it.dest] || _destPhotoMap[it.dest] || ''; }
 function destReadPhotoCache(){
   try {
@@ -7517,6 +7573,14 @@ function destReadPhotoCache(){
 }
 function destWritePhotoCache(m){
   try { localStorage.setItem(DEST_PHOTO_CACHE_KEY, JSON.stringify({ts: Date.now(), m})); } catch(e){}
+}
+// Prolazi kandidate redom: prvi sa slikom pobeđuje; ako naiđe na naslov koji još nije proveren, čeka.
+function destResolve(it, cache){
+  for (const t of destWikiCandidates(it)){
+    if (!(t in cache)) return {url:'', pending:true};
+    if (cache[t]) return {url:cache[t], pending:false};
+  }
+  return {url:'', pending:false};
 }
 // Jedan (ili nekoliko, po 40 naslova) upita ka Wikipedia API-ju; vraća {naslov: URL}.
 async function destFetchWikiPhotos(titles){
@@ -7557,20 +7621,22 @@ function destApplyPhotos(rows){
 async function destLoadPhotos(rows){
   const items = rows.flatMap(r => r.items || []);
   const cache = destReadPhotoCache();
-  const missing = [];
-  items.forEach(it => {
-    if (destPhotoFor(it)) return;
-    const t = destWikiTitle(it);
-    if (cache[t]) _destPhotoMap[it.dest] = cache[t]; else missing.push(t);
+  const need = new Set();
+  const resolveAll = () => items.forEach(it => {
+    if (it.img || DEST_IMG_OVERRIDES[it.dest]) return;
+    const r = destResolve(it, cache);
+    if (r.url) _destPhotoMap[it.dest] = r.url;
+    else if (r.pending) destWikiCandidates(it).forEach(t => { if (!(t in cache)) need.add(t); });
   });
+  resolveAll();
   destApplyPhotos(rows);
-  const uniq = [...new Set(missing)];
-  if (!uniq.length) return;
+  if (!need.size) return;
   try {
-    Object.assign(cache, await destFetchWikiPhotos(uniq));
+    const got = await destFetchWikiPhotos([...need]);
+    need.forEach(t => { cache[t] = got[t] || ''; });
     destWritePhotoCache(cache);
   } catch(e){ console.warn('[sklopi] destinacije: fotografije sa Wikipedije nisu stigle.', e); return; }
-  items.forEach(it => { const u = cache[destWikiTitle(it)]; if (u && !destPhotoFor(it)) _destPhotoMap[it.dest] = u; });
+  resolveAll();
   destApplyPhotos(rows);
 }
 // Fotografije se učitavaju tek kad je sekcija blizu vidnog polja (ne opterećuje početno učitavanje).
