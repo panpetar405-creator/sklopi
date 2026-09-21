@@ -4728,7 +4728,7 @@ function bookItem(btn){
     activity: 'aktivnost na Viator-u',
     esim:     'eSIM na Airalo-u'
   };
-  showToast('Klik zabeležen za ' + (labels[kind]||kind) + ' (' + fmtEUR(price) + ') · otvaram partnera…');
+  showToast('Klik zabeležen za ' + (labels[kind]||kind) + (price > 0 ? ' (' + fmtEUR(price) + ')' : '') + ' · otvaram partnera…');
   // Napomena: ne pozivamo window.open ovde — <a href target="_blank"> sam
   // otvara link. Ranije smo ovde imali window.open(url,'_blank','noopener'),
   // ali JS-generisani popup tabovi znaju da se na mobilnom Chrome-u ne povežu
@@ -7423,29 +7423,29 @@ window.onLangChange = function(lang){
 
 /* ==========================================================
    SEKCIJA "DESTINACIJE" (#destinacije) — slajderi po vrsti odmora.
+   Isti princip kao 3 kartice ponude: svaka kartica predlaže PARTNERSKU ponudu i vodi na
+   partnera istim buildAffiliateLink() (isti aid/pid iz config.js, dok ih nema — test 'SKLOPI'):
+     • "Blizu Srbije" i "More i plaža" → HOTEL na Booking.com. Ime, ocena i cena su ILUSTRATIVNI
+       (ista fetchHotel() kao na karticama ponude); dugme otvara PRETRAGU hotela u tom gradu
+       (datumi i putnici iz forme, ako su upisani; 4★ kao na kartici).
+     • "Gradovi i kultura" i "Priroda i planina" → ATRAKCIJE na Viator-u: dugme otvara Viator
+       pretragu (muzeji / priroda) za taj grad. Nema izmišljenih naziva tura ni cena.
    GRADOVI: dok pravi API nije gotov, dolaze iz MATCH_DESTINATIONS (isti gradovi/države
    kao u "Pronađi svoj izlet"). Svaki grad je samo u JEDNOM slajderu (bez ponavljanja).
-   FOTOGRAFIJE: glavna slika članka na engleskoj Wikipediji (Wikimedia Commons), a šta se
-   traži zavisi od slajdera (vidi DEST_ROW_WIKI):
-     • "More i plaža"        → poznata plaža tog mesta,
-     • "Gradovi i kultura"   → kulturna ustanova iz tog grada (muzej, pozorište, biblioteka…),
-     • "Priroda i planina"   → prirodna znamenitost tog mesta (jezero, klisura, planina…).
-   Za svako mesto može stajati i više kandidata — uzima se prvi koji ima sliku; ako nijedan nema,
-   pada na glavnu sliku samog grada. Slajder "Blizu Srbije" i dalje prikazuje sliku grada.
-   Jedan zahtev za sve, tek kad sekcija dođe u vidno polje; rezultat se kešira 7 dana u
-   localStorage. Ako ništa ne stigne, kartica ostaje gradijent sa nazivom (nikad slika drugog mesta).
-   REDOSLED PRVENSTVA slike: item.img (iz API-ja) → DEST_IMG_OVERRIDES (tvoje slike) → Wikipedija.
+   FOTOGRAFIJE: nema stranih izvora. Kartica ima gradijent + ikonu vrste odmora. Prava slika
+   partnera (Booking/Viator) stiže kad partner da API pristup: item.img iz DEST_API_URL ili
+   tvoja slika u DEST_IMG_OVERRIDES — prikazuje se odmah, bez ikakve druge izmene.
    PRELAZAK NA PRAVI API: upiši adresu u DEST_API_URL. Očekivan oblik odgovora:
      [{key:'sea', title:'More i plaža',   (title je opciono)
-       items:[{dest:'Budva', country:'Crna Gora', img:'https://…', wiki:'Budva'}]}]
-   (img i wiki su opciono; wiki je naslov članka na Wikipediji ako se razlikuje od naziva.)
+       items:[{dest:'Budva', country:'Crna Gora', img:'https://…', partner:'hotel'|'activity'}]}]
+   (img i partner su opciono; bez partner-a odlučuje vrsta slajdera — vidi DEST_ROW_PARTNER.)
 ========================================================== */
 const DEST_API_URL = '';
-// Tvoje sopstvene fotografije po gradu, npr. {'Budva':'img/destinacije/budva.jpg'} —
-// imaju prednost nad Wikipedijom. Ključ je naziv grada na srpskom, kao u MATCH_DESTINATIONS.
+// Tvoje sopstvene fotografije po gradu, npr. {'Budva':'img/destinacije/budva.jpg'}.
+// Ključ je naziv grada na srpskom, kao u MATCH_DESTINATIONS.
 const DEST_IMG_OVERRIDES = {};
-// Srpski naziv → naslov članka na engleskoj Wikipediji (gde se razlikuje ili treba razjasniti).
-const DEST_WIKI_TITLES = {
+// Srpski naziv → engleski naziv za Viator pretragu (gde se razlikuje).
+const DEST_EN_NAMES = {
   'Budimpešta':'Budapest','Beč':'Vienna','Sofija':'Sofia','Solun':'Thessaloniki','Skoplje':'Skopje',
   'Sarande':'Sarandë','Split':'Split, Croatia','Bukurešt':'Bucharest','Prag':'Prague','Krf':'Corfu',
   'Atina':'Athens','Mikonos':'Mykonos','Rodos':'Rhodes','Krit':'Crete','Rim':'Rome','Milano':'Milan',
@@ -7455,44 +7455,11 @@ const DEST_WIKI_TITLES = {
   'Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
   'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town'
 };
-// Šta se slika po vrsti slajdera: srpski naziv grada → naslov(i) članka na engleskoj Wikipediji
-// (string ili niz kandidata; prvi sa slikom pobeđuje). Ako nijedan nema sliku, koristi se slika grada.
-// Zamena slike = promeni naslov članka; sopstvenu fotku za mesto možeš staviti u DEST_IMG_OVERRIDES.
-const DEST_ROW_WIKI = {
-  // MORE I PLAŽA — plaža tog mesta
-  sea: {
-    'Dubrovnik':['Banje Beach','Lokrum'],
-    'Split':['Bačvice','Kašjuni'],
-    'Hvar':['Pakleni Islands'],
-    'Varna':['Golden Sands','Saints Constantine and Helena, Bulgaria'],
-    'Atina':['Athens Riviera','Vouliagmeni'],
-    'Santorini':['Perissa','Kamari, Santorini','Red Beach (Santorini)'],
-    'Mikonos':['Paradise Beach (Mykonos)','Psarou','Platis Gialos','Ornos'],
-    'Rodos':['Tsambika Beach','Tsambika','Faliraki','Prasonisi']
-  },
-  // GRADOVI I KULTURA — kulturna ustanova iz tog grada
-  city: {
-    'Zagreb':['Croatian National Theatre in Zagreb','Mimara Museum','Museum of Broken Relationships'],
-    'Ljubljana':['National and University Library of Slovenia','National Gallery of Slovenia','National Museum of Slovenia'],
-    'Sarajevo':['National Museum of Bosnia and Herzegovina','Sarajevo City Hall','Gallery of Bosnia and Herzegovina'],
-    'Mostar':['Museum of Herzegovina','Mostar Gymnasium'],
-    'Bukurešt':['Romanian Athenaeum','National Museum of Art of Romania','Romanian National Opera, Bucharest'],
-    'Istanbul':['Istanbul Archaeology Museums','Istanbul Modern','Topkapı Palace'],
-    'Prag':['National Theatre (Prague)','Rudolfinum','National Museum (Prague)'],
-    'Bratislava':['Slovak National Theatre','Slovak National Museum','Slovak National Gallery']
-  },
-  // PRIRODA I PLANINA — prirodna znamenitost tog mesta
-  nature: {
-    'Ohrid':['Lake Ohrid','Galičica National Park'],
-    'Kotor':['Bay of Kotor'],
-    'Herceg Novi':['Orjen','Mount Orjen','Luštica'],
-    'Bled':['Lake Bled'],
-    'Krf':['Paleokastritsa','Mount Pantokrator'],
-    'Krit':['Samariá Gorge','Samaria Gorge','Balos Lagoon','Elafonisi'],
-    'Kapadokija':['Göreme National Park and the Rock Sites of Cappadocia','Cappadocia'],
-    'Bali':['Mount Batur','Tegallalang']
-  }
-};
+// Šta kartica nudi po vrsti slajdera: 'hotel' (Booking.com) ili 'activity' (Viator).
+const DEST_ROW_PARTNER = {near:'hotel', sea:'hotel', city:'activity', nature:'activity'};
+const DEST_ROW_ICON = {near:'🧭', sea:'🏖️', city:'🏛️', nature:'🌲'};
+// Ključna reč koja se dodaje nazivu grada u Viator pretrazi.
+const DEST_VIATOR_KEYWORD = {city:'museums', nature:'nature tours'};
 const DEST_ROW_LIMIT = 8;
 // prio = redosled kojim slajderi "biraju" gradove (da se nijedan ne ponovi); redosled prikaza je redosled niza.
 const DEST_ROW_DEFS = [
@@ -7505,17 +7472,26 @@ const DEST_ROW_DEFS = [
 // ako nedostaje jezik, pada na srpski kao i t().
 const DEST_TXT = {
   sr:{eyebrow:'Odaberi pravac', title:'Destinacije',
-      sub:'Prelistaj ideje po vrsti odmora. Klikni na grad i upisujemo ga u pretragu — datume biraš ti.',
+      sub:'Prelistaj ideje po vrsti odmora. Klikni na naziv grada i upisujemo ga u pretragu, ili otvori ponudu partnera — datume biraš ti.',
       row_near:'Blizu Srbije', row_sea:'More i plaža', row_city:'Gradovi i kultura', row_nature:'Priroda i planina',
-      prev:'Prethodne destinacije', next:'Sledeće destinacije', credit:'Fotografije: '},
+      prev:'Prethodne destinacije', next:'Sledeće destinacije', pick_aria:'Upiši u pretragu: ',
+      per_night:'po noći', label_activity:'Atrakcije', btn_viator:'Pogledaj na Viator-u',
+      act_city:'Muzeji, pozorišta i galerije', act_nature:'Priroda, parkovi i izleti', act_sub:'Ulaznice i organizovane ture',
+      credit:'Cene su ilustrativna procena; tačnu cenu i dostupnost proveri kod partnera. Linkovi ka Booking.com-u i Viator-u su partnerski — SKLOPI može da dobije proviziju, a tebi cena ostaje ista.'},
   en:{eyebrow:'Pick a direction', title:'Destinations',
-      sub:'Browse ideas by kind of trip. Tap a city and we fill it into the search — you pick the dates.',
+      sub:'Browse ideas by kind of trip. Tap a city name and we fill it into the search, or open the partner offer — you pick the dates.',
       row_near:'Close to Serbia', row_sea:'Sea and beaches', row_city:'Cities and culture', row_nature:'Nature and mountains',
-      prev:'Previous destinations', next:'Next destinations', credit:'Photos: '},
+      prev:'Previous destinations', next:'Next destinations', pick_aria:'Fill into search: ',
+      per_night:'per night', label_activity:'Attractions', btn_viator:'View on Viator',
+      act_city:'Museums, theatres and galleries', act_nature:'Nature, parks and day trips', act_sub:'Tickets and guided tours',
+      credit:'Prices are an illustrative estimate; check the exact price and availability with the partner. Links to Booking.com and Viator are affiliate links — SKLOPI may earn a commission at no extra cost to you.'},
   ru:{eyebrow:'Выбери направление', title:'Направления',
-      sub:'Листай идеи по типу отдыха. Нажми на город — мы подставим его в поиск, даты выбираешь ты.',
+      sub:'Листай идеи по типу отдыха. Нажми на название города — мы подставим его в поиск, или открой предложение партнёра — даты выбираешь ты.',
       row_near:'Недалеко от Сербии', row_sea:'Море и пляжи', row_city:'Города и культура', row_nature:'Природа и горы',
-      prev:'Предыдущие направления', next:'Следующие направления', credit:'Фото: '}
+      prev:'Предыдущие направления', next:'Следующие направления', pick_aria:'Подставить в поиск: ',
+      per_night:'за ночь', label_activity:'Впечатления', btn_viator:'Смотреть на Viator',
+      act_city:'Музеи, театры и галереи', act_nature:'Природа, парки и экскурсии', act_sub:'Билеты и экскурсии с гидом',
+      credit:'Цены — ориентировочная оценка; точную цену и наличие проверяйте у партнёра. Ссылки на Booking.com и Viator партнёрские — SKLOPI может получить комиссию, а цена для вас не меняется.'}
 };
 function dtx(key){
   const own = DEST_TXT[getLang()];
@@ -7538,7 +7514,7 @@ async function loadDestinationRows(){
       if (r.ok){
         const data = await r.json();
         if (Array.isArray(data) && data.length){
-          data.forEach(r => (r.items || []).forEach(it => { if (!it.row) it.row = r.key; }));
+          data.forEach(row => (row.items || []).forEach(it => { if (!it.row) it.row = row.key; }));
           return data;
         }
       }
@@ -7547,109 +7523,50 @@ async function loadDestinationRows(){
   return destMockRows();
 }
 
-/* ---- fotografije (Wikipedija) ---- */
-// v2: keš pamti i naslove bez slike (''), da se ne pitaju ponovo pri svakom učitavanju.
-const DEST_PHOTO_CACHE_KEY = 'sklopi_dest_photos_v2';
-const DEST_PHOTO_TTL = 7 * 24 * 3600 * 1000;
-let _destPhotoMap = {};            // naziv destinacije → URL fotografije
-let _destPhotosStarted = false;
-// Kandidati po prioritetu: (1) wiki iz API-ja, ili (2) plaža/ustanova/priroda po vrsti slajdera,
-// pa na kraju (3) sam grad kao rezerva.
-function destWikiCandidates(it){
-  if (it.wiki) return [it.wiki];
-  const spec = (DEST_ROW_WIKI[it.row] || {})[it.dest];
-  const list = spec ? (Array.isArray(spec) ? spec.slice() : [spec]) : [];
-  const city = DEST_WIKI_TITLES[it.dest] || it.dest;
-  if (list.indexOf(city) < 0) list.push(city);
-  return list;
+/* ---- partnerska ponuda na kartici ---- */
+function destKind(it){ return it.partner || DEST_ROW_PARTNER[it.row] || 'hotel'; }
+function destPhotoFor(it){ return it.img || DEST_IMG_OVERRIDES[it.dest] || ''; }
+// Ilustrativni hotel: ista fetchHotel() kao na karticama ponude (4★, 2 osobe, 1 noć),
+// seed po gradu — pa je hotel na kartici uvek isti za isti grad.
+function destSimHotel(dest){
+  const rng = seededRandom(hashSeed('destcard|' + String(dest).toLowerCase()));
+  return fetchHotel(rng, dest, 1, 2, 'best', {hotelStars:4}, null);
 }
-function destPhotoFor(it){ return it.img || DEST_IMG_OVERRIDES[it.dest] || _destPhotoMap[it.dest] || ''; }
-function destReadPhotoCache(){
-  try {
-    const c = JSON.parse(localStorage.getItem(DEST_PHOTO_CACHE_KEY) || 'null');
-    if (c && c.m && Date.now() - c.ts < DEST_PHOTO_TTL) return c.m;
-  } catch(e){}
-  return {};
-}
-function destWritePhotoCache(m){
-  try { localStorage.setItem(DEST_PHOTO_CACHE_KEY, JSON.stringify({ts: Date.now(), m})); } catch(e){}
-}
-// Prolazi kandidate redom: prvi sa slikom pobeđuje; ako naiđe na naslov koji još nije proveren, čeka.
-function destResolve(it, cache){
-  for (const t of destWikiCandidates(it)){
-    if (!(t in cache)) return {url:'', pending:true};
-    if (cache[t]) return {url:cache[t], pending:false};
+// Link se računa u trenutku klika (datumi u formi su se mogli promeniti od iscrtavanja).
+function destPartnerLink(kind, dest, rowKey){
+  if (kind === 'hotel'){
+    const val = id => (document.getElementById(id) || {}).value || '';
+    const from = val('dateFrom'), to = val('dateTo');
+    const iso = /^\d{4}-\d{2}-\d{2}$/;
+    if (iso.test(from) && iso.test(to) && to > from){
+      return buildAffiliateLink('hotel', {dest, from, to, adults: Number(val('adults')) || 2, hotelStars: 4});
+    }
+    return 'https://www.booking.com/searchresults.html?ss=' + encodeURIComponent(dest) +
+      '&nflt=class%3D4&aid=' + encodeURIComponent(affId('hotel'));
   }
-  return {url:'', pending:false};
+  const en = DEST_EN_NAMES[dest] || dest;
+  const kw = DEST_VIATOR_KEYWORD[rowKey] || '';
+  return buildAffiliateLink('activity', {dest: en + (kw ? ' ' + kw : '')});
 }
-// Jedan (ili nekoliko, po 40 naslova) upita ka Wikipedia API-ju; vraća {naslov: URL}.
-async function destFetchWikiPhotos(titles){
-  const out = {};
-  for (let i = 0; i < titles.length; i += 40){
-    const chunk = titles.slice(i, i + 40);
-    const url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&redirects=1' +
-      '&prop=pageimages&piprop=thumbnail&pithumbsize=500&titles=' + encodeURIComponent(chunk.join('|'));
-    const r = await fetch(url);
-    if (!r.ok) throw new Error('wiki ' + r.status);
-    const q = (await r.json()).query || {};
-    const norm = {}, red = {}, thumb = {};
-    (q.normalized || []).forEach(n => { norm[n.from] = n.to; });
-    (q.redirects || []).forEach(n => { red[n.from] = n.to; });
-    (q.pages || []).forEach(p => { if (p.thumbnail && p.thumbnail.source) thumb[p.title] = p.thumbnail.source; });
-    chunk.forEach(t => {
-      let k = norm[t] || t; k = red[k] || k;
-      if (thumb[k]) out[t] = thumb[k];
-    });
+function destOfferHtml(it, kind){
+  const provider = PARTNERS[kind].name;
+  if (kind === 'hotel'){
+    const h = destSimHotel(it.dest);
+    return `<div class="dc-offer">
+      <div class="item-label"><span>${escapeHtml(t('item_label_hotel'))}</span><span class="item-provider">${escapeHtml(provider)}</span></div>
+      <div class="item-name">${escapeHtml(h.name)}</div>
+      <div class="item-sub">${escapeHtml(h.sub)}</div>
+      <div class="item-price tabular">${fmtEUR(h.price)} <span class="dc-per">${escapeHtml(dtx('per_night'))}</span></div>
+      <div class="dc-actions"><a class="item-btn hotel dc-book" href="${escapeHtml(destPartnerLink('hotel', it.dest, it.row))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${h.price}" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(t('btn_book_booking'))}</a></div>
+    </div>`;
   }
-  return out;
-}
-// Ubacuje <img> u kartice koje su već iscrtane, bez ponovnog iscrtavanja (čuva skrol slajdera).
-function destApplyPhotos(rows){
-  const byName = {};
-  (rows || []).forEach(r => (r.items || []).forEach(it => { byName[it.dest] = it; }));
-  document.querySelectorAll('#destRows .dest-card').forEach(card => {
-    const photo = card.querySelector('.dc-photo');
-    if (!photo || photo.querySelector('img')) return;
-    const it = byName[card.dataset.dest];
-    const url = it ? destPhotoFor(it) : '';
-    if (!url) return;
-    const img = document.createElement('img');
-    img.alt = ''; img.decoding = 'async'; img.loading = 'lazy'; img.src = url;
-    photo.appendChild(img);
-  });
-}
-async function destLoadPhotos(rows){
-  const items = rows.flatMap(r => r.items || []);
-  const cache = destReadPhotoCache();
-  const need = new Set();
-  const resolveAll = () => items.forEach(it => {
-    if (it.img || DEST_IMG_OVERRIDES[it.dest]) return;
-    const r = destResolve(it, cache);
-    if (r.url) _destPhotoMap[it.dest] = r.url;
-    else if (r.pending) destWikiCandidates(it).forEach(t => { if (!(t in cache)) need.add(t); });
-  });
-  resolveAll();
-  destApplyPhotos(rows);
-  if (!need.size) return;
-  try {
-    const got = await destFetchWikiPhotos([...need]);
-    need.forEach(t => { cache[t] = got[t] || ''; });
-    destWritePhotoCache(cache);
-  } catch(e){ console.warn('[sklopi] destinacije: fotografije sa Wikipedije nisu stigle.', e); return; }
-  resolveAll();
-  destApplyPhotos(rows);
-}
-// Fotografije se učitavaju tek kad je sekcija blizu vidnog polja (ne opterećuje početno učitavanje).
-function destStartPhotos(rows){
-  if (_destPhotosStarted) return;
-  _destPhotosStarted = true;
-  const sec = document.getElementById('destinacije');
-  if (sec && 'IntersectionObserver' in window){
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some(e => e.isIntersecting)){ io.disconnect(); destLoadPhotos(rows); }
-    }, {rootMargin:'600px 0px'});
-    io.observe(sec);
-  } else destLoadPhotos(rows);
+  const nameKey = it.row === 'nature' ? 'act_nature' : 'act_city';
+  return `<div class="dc-offer">
+      <div class="item-label"><span>${escapeHtml(dtx('label_activity'))}</span><span class="item-provider">${escapeHtml(provider)}</span></div>
+      <div class="item-name">${escapeHtml(dtx(nameKey))}</div>
+      <div class="item-sub">${escapeHtml(dtx('act_sub'))}</div>
+      <div class="dc-actions"><a class="item-btn activity dc-book" href="${escapeHtml(destPartnerLink('activity', it.dest, it.row))}" target="_blank" rel="noopener" data-kind="activity" data-price="0" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(dtx('btn_viator'))}</a></div>
+    </div>`;
 }
 
 /* ---- prikaz ---- */
@@ -7658,10 +7575,15 @@ function destCardHtml(it){
   const name = cityLabel(it.dest);
   const country = it.country ? countryLabel(it.country) : '';
   const url = destPhotoFor(it);
-  return `<button type="button" class="dest-card" data-dest="${escapeHtml(it.dest)}">
-    <span class="dc-photo">${url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" decoding="async">` : ''}</span>
-    <span class="dc-cap"><span class="dc-name">${escapeHtml(name)}</span>${country ? `<span class="dc-country">${escapeHtml(country)}</span>` : ''}</span>
-  </button>`;
+  const kind = destKind(it);
+  const icon = DEST_ROW_ICON[it.row] || (kind === 'hotel' ? '🏨' : '🎟️');
+  return `<div class="dest-card dest-card--${kind}" data-dest="${escapeHtml(it.dest)}" data-kind="${kind}" data-row="${escapeHtml(it.row || '')}">
+    <button type="button" class="dc-pick" aria-label="${escapeHtml(dtx('pick_aria') + name)}">
+      <span class="dc-photo">${url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" decoding="async">` : `<span class="dc-ico" aria-hidden="true">${icon}</span>`}</span>
+      <span class="dc-cap"><span class="dc-name">${escapeHtml(name)}</span>${country ? `<span class="dc-country">${escapeHtml(country)}</span>` : ''}</span>
+    </button>
+    ${destOfferHtml(it, kind)}
+  </div>`;
 }
 function destRowHtml(row, idx){
   const items = row.items || [];
@@ -7688,11 +7610,20 @@ async function renderDestinations(){
   if (!_destRowsPromise) _destRowsPromise = loadDestinationRows();
   const rows = await _destRowsPromise;
   wrap.innerHTML = rows.map(destRowHtml).join('');
-  destStartPhotos(rows);
 }
 (function initDestinations(){
   const wrap = document.getElementById('destRows');
   if (!wrap) return;
+  // Link ka partneru se osvežava PRE nego što se okine dugme (capture faza), da nosi
+  // trenutne datume/putnike iz forme, a GA klik (bookItem) dobije isti URL.
+  wrap.addEventListener('click', (e) => {
+    const book = e.target.closest && e.target.closest('a.dc-book');
+    if (!book) return;
+    const card = book.closest('.dest-card');
+    if (!card) return;
+    book.href = destPartnerLink(card.dataset.kind, card.dataset.dest, card.dataset.row);
+    book.dataset.url = book.href;
+  }, true);
   wrap.addEventListener('click', (e) => {
     const arrowBtn = e.target.closest('.attractions-arrow');
     if (arrowBtn){
@@ -7700,7 +7631,9 @@ async function renderDestinations(){
       if (slider) slider.scrollBy({left: Number(arrowBtn.dataset.dir) * Math.max(240, slider.clientWidth * 0.8), behavior:'smooth'});
       return;
     }
-    const card = e.target.closest('.dest-card');
+    const pick = e.target.closest('.dc-pick');
+    if (!pick) return;
+    const card = pick.closest('.dest-card');
     if (!card) return;
     // Isti tok kao dolazak sa ?dest= (prefillDestFromQuery): popuni Destinacija i skroluj
     // do forme, BEZ automatske pretrage — datume i putnike korisnik i dalje bira.
@@ -7718,5 +7651,11 @@ renderDestinations();
 const _prevOnLangChangeDest = window.onLangChange;
 window.onLangChange = function(lang){
   if (typeof _prevOnLangChangeDest === 'function') _prevOnLangChangeDest(lang);
+  renderDestinations();
+};
+// Promena valute (EUR/RSD): cena hotela na karticama se iscrtava ponovo.
+const _prevRefreshPricesDest = refreshDisplayedPrices;
+refreshDisplayedPrices = function(){
+  _prevRefreshPricesDest();
   renderDestinations();
 };
