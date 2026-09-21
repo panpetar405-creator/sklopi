@@ -7423,30 +7423,40 @@ window.onLangChange = function(lang){
 
 /* ==========================================================
    SEKCIJA "DESTINACIJE" (#destinacije) — slajderi po vrsti odmora.
-   TEST FAZA: dok pravi API nije gotov, gradovi dolaze iz postojeće
-   MATCH_DESTINATIONS baze (isti gradovi/države kao u "Pronađi svoj izlet"),
-   a fotografije su NASUMIČNE — bilo koja slika iz DEST_PHOTO_POOL,
-   ne stvarna slika tog grada.
+   GRADOVI: dok pravi API nije gotov, dolaze iz MATCH_DESTINATIONS (isti gradovi/države
+   kao u "Pronađi svoj izlet"). Svaki grad je samo u JEDNOM slajderu (bez ponavljanja).
+   FOTOGRAFIJE: prava fotografija svakog grada — glavna slika njegovog članka na engleskoj
+   Wikipediji (Wikimedia Commons). Jedan zahtev za sve gradove, tek kad sekcija dođe u
+   vidno polje; rezultat se kešira 7 dana u localStorage. Ako fotografija ne stigne,
+   kartica ostaje gradijent sa nazivom (nikad slika drugog mesta).
+   REDOSLED PRVENSTVA slike: item.img (iz API-ja) → DEST_IMG_OVERRIDES (tvoje slike) → Wikipedija.
    PRELAZAK NA PRAVI API: upiši adresu u DEST_API_URL. Očekivan oblik odgovora:
      [{key:'sea', title:'More i plaža',   (title je opciono)
-       items:[{dest:'Budva', country:'Crna Gora', img:'https://…'}]}]   (img je opciono)
-   Ako stavka ima img, koristi se ona; nasumična fotka se dodeljuje samo
-   stavkama bez img. Ostatak koda (render, klik, strelice) ostaje isti.
+       items:[{dest:'Budva', country:'Crna Gora', img:'https://…', wiki:'Budva'}]}]
+   (img i wiki su opciono; wiki je naslov članka na Wikipediji ako se razlikuje od naziva.)
 ========================================================== */
 const DEST_API_URL = '';
-const DEST_PHOTO_POOL = [
-  'photo-1523906834658-6e24ef2386f9','photo-1465847899084-d164df4dedc6','photo-1552832230-c0197dd311b5',
-  'photo-1522778119026-d647f0596c20','photo-1546026423-cc4642628d2b','photo-1502602898657-3e91760cbb34',
-  'photo-1441974231531-c6227db76b6e','photo-1414235077428-338989a2e8c0','photo-1513635269975-59663e0ac1ad',
-  'photo-1470229722913-7c0e2dbbafd3','photo-1555993539-1732b0258235','photo-1530866495561-507c9faab8c9',
-  'photo-1493225457124-a3eb161ffa5f','photo-1506377247377-2a5b3b417ebb','photo-1595190613644-68ce8e2a9814'
-].map(id => 'https://images.unsplash.com/' + id + '?w=640&h=800&q=70&auto=format&fit=crop');
+// Tvoje sopstvene fotografije po gradu, npr. {'Budva':'img/destinacije/budva.jpg'} —
+// imaju prednost nad Wikipedijom. Ključ je naziv grada na srpskom, kao u MATCH_DESTINATIONS.
+const DEST_IMG_OVERRIDES = {};
+// Srpski naziv → naslov članka na engleskoj Wikipediji (gde se razlikuje ili treba razjasniti).
+const DEST_WIKI_TITLES = {
+  'Budimpešta':'Budapest','Beč':'Vienna','Sofija':'Sofia','Solun':'Thessaloniki','Skoplje':'Skopje',
+  'Sarande':'Sarandë','Split':'Split, Croatia','Bukurešt':'Bucharest','Prag':'Prague','Krf':'Corfu',
+  'Atina':'Athens','Mikonos':'Mykonos','Rodos':'Rhodes','Krit':'Crete','Rim':'Rome','Milano':'Milan',
+  'Venecija':'Venice','Firenca':'Florence','Barselona':'Barcelona','Malaga':'Málaga','Ibica':'Ibiza',
+  'Lisabon':'Lisbon','Pariz':'Paris','Nica':'Nice','Minhen':'Munich','Cirih':'Zürich','Antalija':'Antalya',
+  'Kapadokija':'Cappadocia','Kairo':'Cairo','Šarm El Šeik':'Sharm El Sheikh','Marakeš':'Marrakesh',
+  'Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
+  'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town'
+};
 const DEST_ROW_LIMIT = 8;
+// prio = redosled kojim slajderi "biraju" gradove (da se nijedan ne ponovi); redosled prikaza je redosled niza.
 const DEST_ROW_DEFS = [
-  {key:'near',   test: d => d.distance === 'near'},
-  {key:'sea',    test: d => d.vibes.includes('sea')},
-  {key:'city',   test: d => d.vibes.includes('city')},
-  {key:'nature', test: d => d.vibes.includes('nature')}
+  {key:'near',   prio:1, test: d => d.distance === 'near'},
+  {key:'sea',    prio:2, test: d => d.vibes.includes('sea')},
+  {key:'city',   prio:3, test: d => d.vibes.includes('city')},
+  {key:'nature', prio:0, test: d => d.vibes.includes('nature') && !d.vibes.includes('city')}
 ];
 // Tekstovi sekcije žive ovde (ne u i18n-data.js) da sekcija radi bez izmene prevoda;
 // ako nedostaje jezik, pada na srpski kao i t().
@@ -7454,44 +7464,29 @@ const DEST_TXT = {
   sr:{eyebrow:'Odaberi pravac', title:'Destinacije',
       sub:'Prelistaj ideje po vrsti odmora. Klikni na grad i upisujemo ga u pretragu — datume biraš ti.',
       row_near:'Blizu Srbije', row_sea:'More i plaža', row_city:'Gradovi i kultura', row_nature:'Priroda i planina',
-      prev:'Prethodne destinacije', next:'Sledeće destinacije'},
+      prev:'Prethodne destinacije', next:'Sledeće destinacije', credit:'Fotografije: '},
   en:{eyebrow:'Pick a direction', title:'Destinations',
       sub:'Browse ideas by kind of trip. Tap a city and we fill it into the search — you pick the dates.',
       row_near:'Close to Serbia', row_sea:'Sea and beaches', row_city:'Cities and culture', row_nature:'Nature and mountains',
-      prev:'Previous destinations', next:'Next destinations'},
+      prev:'Previous destinations', next:'Next destinations', credit:'Photos: '},
   ru:{eyebrow:'Выбери направление', title:'Направления',
       sub:'Листай идеи по типу отдыха. Нажми на город — мы подставим его в поиск, даты выбираешь ты.',
       row_near:'Недалеко от Сербии', row_sea:'Море и пляжи', row_city:'Города и культура', row_nature:'Природа и горы',
-      prev:'Предыдущие направления', next:'Следующие направления'}
+      prev:'Предыдущие направления', next:'Следующие направления', credit:'Фото: '}
 };
 function dtx(key){
   const own = DEST_TXT[getLang()];
   const v = (own && own[key] !== undefined) ? own[key] : DEST_TXT.sr[key];
   return v === undefined ? '' : v;
 }
-function destShuffle(arr){
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 function destMockRows(){
-  return DEST_ROW_DEFS.map(def => ({
-    key: def.key,
-    items: MATCH_DESTINATIONS.filter(def.test).slice(0, DEST_ROW_LIMIT).map(d => ({dest:d.name, country:d.extra}))
-  }));
-}
-// Nasumična fotka po stavci — bira se JEDNOM pri učitavanju (ne pri svakom renderu),
-// pa se slike ne menjaju kad korisnik promeni jezik. U jednom redu nema ponavljanja
-// dok god ima manje stavki nego slika u poolu.
-function destAssignPlaceholders(rows){
-  rows.forEach(row => {
-    const photos = destShuffle(DEST_PHOTO_POOL);
-    (row.items || []).forEach((it, i) => { if (!it.img) it.img = photos[i % photos.length]; });
+  const used = new Set(), byKey = {};
+  DEST_ROW_DEFS.slice().sort((a, b) => a.prio - b.prio).forEach(def => {
+    const picks = MATCH_DESTINATIONS.filter(d => def.test(d) && !used.has(d.name)).slice(0, DEST_ROW_LIMIT);
+    picks.forEach(d => used.add(d.name));
+    byKey[def.key] = picks.map(d => ({dest:d.name, country:d.extra}));
   });
-  return rows;
+  return DEST_ROW_DEFS.map(def => ({key:def.key, items:byKey[def.key]}));
 }
 async function loadDestinationRows(){
   if (DEST_API_URL){
@@ -7505,12 +7500,100 @@ async function loadDestinationRows(){
   }
   return destMockRows();
 }
+
+/* ---- fotografije gradova (Wikipedija) ---- */
+const DEST_PHOTO_CACHE_KEY = 'sklopi_dest_photos_v1';
+const DEST_PHOTO_TTL = 7 * 24 * 3600 * 1000;
+let _destPhotoMap = {};            // naziv destinacije → URL fotografije
+let _destPhotosStarted = false;
+function destWikiTitle(it){ return it.wiki || DEST_WIKI_TITLES[it.dest] || it.dest; }
+function destPhotoFor(it){ return it.img || DEST_IMG_OVERRIDES[it.dest] || _destPhotoMap[it.dest] || ''; }
+function destReadPhotoCache(){
+  try {
+    const c = JSON.parse(localStorage.getItem(DEST_PHOTO_CACHE_KEY) || 'null');
+    if (c && c.m && Date.now() - c.ts < DEST_PHOTO_TTL) return c.m;
+  } catch(e){}
+  return {};
+}
+function destWritePhotoCache(m){
+  try { localStorage.setItem(DEST_PHOTO_CACHE_KEY, JSON.stringify({ts: Date.now(), m})); } catch(e){}
+}
+// Jedan (ili nekoliko, po 40 naslova) upita ka Wikipedia API-ju; vraća {naslov: URL}.
+async function destFetchWikiPhotos(titles){
+  const out = {};
+  for (let i = 0; i < titles.length; i += 40){
+    const chunk = titles.slice(i, i + 40);
+    const url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&redirects=1' +
+      '&prop=pageimages&piprop=thumbnail&pithumbsize=500&titles=' + encodeURIComponent(chunk.join('|'));
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('wiki ' + r.status);
+    const q = (await r.json()).query || {};
+    const norm = {}, red = {}, thumb = {};
+    (q.normalized || []).forEach(n => { norm[n.from] = n.to; });
+    (q.redirects || []).forEach(n => { red[n.from] = n.to; });
+    (q.pages || []).forEach(p => { if (p.thumbnail && p.thumbnail.source) thumb[p.title] = p.thumbnail.source; });
+    chunk.forEach(t => {
+      let k = norm[t] || t; k = red[k] || k;
+      if (thumb[k]) out[t] = thumb[k];
+    });
+  }
+  return out;
+}
+// Ubacuje <img> u kartice koje su već iscrtane, bez ponovnog iscrtavanja (čuva skrol slajdera).
+function destApplyPhotos(rows){
+  const byName = {};
+  (rows || []).forEach(r => (r.items || []).forEach(it => { byName[it.dest] = it; }));
+  document.querySelectorAll('#destRows .dest-card').forEach(card => {
+    const photo = card.querySelector('.dc-photo');
+    if (!photo || photo.querySelector('img')) return;
+    const it = byName[card.dataset.dest];
+    const url = it ? destPhotoFor(it) : '';
+    if (!url) return;
+    const img = document.createElement('img');
+    img.alt = ''; img.decoding = 'async'; img.loading = 'lazy'; img.src = url;
+    photo.appendChild(img);
+  });
+}
+async function destLoadPhotos(rows){
+  const items = rows.flatMap(r => r.items || []);
+  const cache = destReadPhotoCache();
+  const missing = [];
+  items.forEach(it => {
+    if (destPhotoFor(it)) return;
+    const t = destWikiTitle(it);
+    if (cache[t]) _destPhotoMap[it.dest] = cache[t]; else missing.push(t);
+  });
+  destApplyPhotos(rows);
+  const uniq = [...new Set(missing)];
+  if (!uniq.length) return;
+  try {
+    Object.assign(cache, await destFetchWikiPhotos(uniq));
+    destWritePhotoCache(cache);
+  } catch(e){ console.warn('[sklopi] destinacije: fotografije sa Wikipedije nisu stigle.', e); return; }
+  items.forEach(it => { const u = cache[destWikiTitle(it)]; if (u && !destPhotoFor(it)) _destPhotoMap[it.dest] = u; });
+  destApplyPhotos(rows);
+}
+// Fotografije se učitavaju tek kad je sekcija blizu vidnog polja (ne opterećuje početno učitavanje).
+function destStartPhotos(rows){
+  if (_destPhotosStarted) return;
+  _destPhotosStarted = true;
+  const sec = document.getElementById('destinacije');
+  if (sec && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)){ io.disconnect(); destLoadPhotos(rows); }
+    }, {rootMargin:'600px 0px'});
+    io.observe(sec);
+  } else destLoadPhotos(rows);
+}
+
+/* ---- prikaz ---- */
 let _destRowsPromise = null;
 function destCardHtml(it){
   const name = cityLabel(it.dest);
   const country = it.country ? countryLabel(it.country) : '';
+  const url = destPhotoFor(it);
   return `<button type="button" class="dest-card" data-dest="${escapeHtml(it.dest)}">
-    <span class="dc-photo"><img src="${escapeHtml(it.img)}" alt="" loading="lazy" decoding="async"></span>
+    <span class="dc-photo">${url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" decoding="async">` : ''}</span>
     <span class="dc-cap"><span class="dc-name">${escapeHtml(name)}</span>${country ? `<span class="dc-country">${escapeHtml(country)}</span>` : ''}</span>
   </button>`;
 }
@@ -7532,13 +7615,14 @@ function destRowHtml(row, idx){
 async function renderDestinations(){
   const wrap = document.getElementById('destRows');
   if (!wrap) return;
-  [['destSecEyebrow','eyebrow'], ['destSecTitle','title'], ['destSecSub','sub']].forEach(([id, key]) => {
+  [['destSecEyebrow','eyebrow'], ['destSecTitle','title'], ['destSecSub','sub'], ['destCreditText','credit']].forEach(([id, key]) => {
     const el = document.getElementById(id);
     if (el) el.textContent = dtx(key);
   });
-  if (!_destRowsPromise) _destRowsPromise = loadDestinationRows().then(destAssignPlaceholders);
+  if (!_destRowsPromise) _destRowsPromise = loadDestinationRows();
   const rows = await _destRowsPromise;
   wrap.innerHTML = rows.map(destRowHtml).join('');
+  destStartPhotos(rows);
 }
 (function initDestinations(){
   const wrap = document.getElementById('destRows');
