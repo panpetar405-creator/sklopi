@@ -2766,3 +2766,39 @@ footer{padding:28px 20px;}
 .phr-row[hidden]{display:none;}
 .price-chart-tabs{margin:0 0 6px;}
 .price-chart-scn{margin:8px 0 18px;font-size:13.5px;color:var(--ink-soft);line-height:1.5;}
+
+/* ---------- Sekcija "Destinacije" — slajderi po vrsti odmora (#destinacije) ----------
+   Koristi postojeći slajder (.attractions-slider-wrap / .attractions-slider / strelice),
+   a kartica je "photo-first": fotografija sa nazivom grada preko donje ivice. */
+#destinacije{scroll-margin-top:calc(var(--topbar-h) + 12px);}
+.dest-rows{display:flex;flex-direction:column;gap:34px;}
+.dest-row-title{font-size:20px;font-weight:600;color:var(--ink);margin:0 0 14px;}
+.dest-card{
+    flex:0 0 68%;max-width:250px;scroll-snap-align:start;position:relative;display:block;
+    padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit;cursor:pointer;
+    border-radius:16px;overflow:hidden;
+    transition:transform .15s ease,box-shadow .15s ease;
+}
+@media (min-width:600px){.dest-card{flex:0 0 230px;}}
+.dest-card .dc-photo{
+    display:block;position:relative;aspect-ratio:4/5;
+    background:linear-gradient(160deg,var(--deep) 0%,var(--aqua) 100%);
+}
+.dest-card .dc-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
+.dest-card .dc-photo img.is-broken{visibility:hidden;}
+.dest-card .dc-photo::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(to top,rgba(17,24,39,0.8) 0%,rgba(17,24,39,0) 55%);
+}
+.dest-card .dc-cap{
+    position:absolute;left:0;right:0;bottom:0;z-index:1;padding:14px 16px 15px;
+    display:flex;flex-direction:column;gap:2px;color:var(--on-dark-strong);
+}
+.dest-card .dc-name{font-family:'Manrope',sans-serif;font-size:21px;font-weight:600;line-height:1.2;}
+.dest-card .dc-country{font-size:14px;color:var(--on-dark);}
+.dest-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px -18px rgba(15,76,92,0.45);}
+.dest-card:hover .dc-photo img{transform:scale(1.04);}
+@media (prefers-reduced-motion:reduce){
+    .dest-card,.dest-card .dc-photo img{transition:none;}
+    .dest-card:hover,.dest-card:hover .dc-photo img{transform:none;}
+}

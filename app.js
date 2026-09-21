@@ -7420,3 +7420,153 @@ window.onLangChange = function(lang){
   }
   updateStatLastPreview((document.getElementById('dest') || {}).value || '');
 };
+
+/* ==========================================================
+   SEKCIJA "DESTINACIJE" (#destinacije) — slajderi po vrsti odmora.
+   TEST FAZA: dok pravi API nije gotov, gradovi dolaze iz postojeće
+   MATCH_DESTINATIONS baze (isti gradovi/države kao u "Pronađi svoj izlet"),
+   a fotografije su NASUMIČNE — bilo koja slika iz DEST_PHOTO_POOL,
+   ne stvarna slika tog grada.
+   PRELAZAK NA PRAVI API: upiši adresu u DEST_API_URL. Očekivan oblik odgovora:
+     [{key:'sea', title:'More i plaža',   (title je opciono)
+       items:[{dest:'Budva', country:'Crna Gora', img:'https://…'}]}]   (img je opciono)
+   Ako stavka ima img, koristi se ona; nasumična fotka se dodeljuje samo
+   stavkama bez img. Ostatak koda (render, klik, strelice) ostaje isti.
+========================================================== */
+const DEST_API_URL = '';
+const DEST_PHOTO_POOL = [
+  'photo-1523906834658-6e24ef2386f9','photo-1465847899084-d164df4dedc6','photo-1552832230-c0197dd311b5',
+  'photo-1522778119026-d647f0596c20','photo-1546026423-cc4642628d2b','photo-1502602898657-3e91760cbb34',
+  'photo-1441974231531-c6227db76b6e','photo-1414235077428-338989a2e8c0','photo-1513635269975-59663e0ac1ad',
+  'photo-1470229722913-7c0e2dbbafd3','photo-1555993539-1732b0258235','photo-1530866495561-507c9faab8c9',
+  'photo-1493225457124-a3eb161ffa5f','photo-1506377247377-2a5b3b417ebb','photo-1595190613644-68ce8e2a9814'
+].map(id => 'https://images.unsplash.com/' + id + '?w=640&h=800&q=70&auto=format&fit=crop');
+const DEST_ROW_LIMIT = 8;
+const DEST_ROW_DEFS = [
+  {key:'near',   test: d => d.distance === 'near'},
+  {key:'sea',    test: d => d.vibes.includes('sea')},
+  {key:'city',   test: d => d.vibes.includes('city')},
+  {key:'nature', test: d => d.vibes.includes('nature')}
+];
+// Tekstovi sekcije žive ovde (ne u i18n-data.js) da sekcija radi bez izmene prevoda;
+// ako nedostaje jezik, pada na srpski kao i t().
+const DEST_TXT = {
+  sr:{eyebrow:'Odaberi pravac', title:'Destinacije',
+      sub:'Prelistaj ideje po vrsti odmora. Klikni na grad i upisujemo ga u pretragu — datume biraš ti.',
+      row_near:'Blizu Srbije', row_sea:'More i plaža', row_city:'Gradovi i kultura', row_nature:'Priroda i planina',
+      prev:'Prethodne destinacije', next:'Sledeće destinacije'},
+  en:{eyebrow:'Pick a direction', title:'Destinations',
+      sub:'Browse ideas by kind of trip. Tap a city and we fill it into the search — you pick the dates.',
+      row_near:'Close to Serbia', row_sea:'Sea and beaches', row_city:'Cities and culture', row_nature:'Nature and mountains',
+      prev:'Previous destinations', next:'Next destinations'},
+  ru:{eyebrow:'Выбери направление', title:'Направления',
+      sub:'Листай идеи по типу отдыха. Нажми на город — мы подставим его в поиск, даты выбираешь ты.',
+      row_near:'Недалеко от Сербии', row_sea:'Море и пляжи', row_city:'Города и культура', row_nature:'Природа и горы',
+      prev:'Предыдущие направления', next:'Следующие направления'}
+};
+function dtx(key){
+  const own = DEST_TXT[getLang()];
+  const v = (own && own[key] !== undefined) ? own[key] : DEST_TXT.sr[key];
+  return v === undefined ? '' : v;
+}
+function destShuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function destMockRows(){
+  return DEST_ROW_DEFS.map(def => ({
+    key: def.key,
+    items: MATCH_DESTINATIONS.filter(def.test).slice(0, DEST_ROW_LIMIT).map(d => ({dest:d.name, country:d.extra}))
+  }));
+}
+// Nasumična fotka po stavci — bira se JEDNOM pri učitavanju (ne pri svakom renderu),
+// pa se slike ne menjaju kad korisnik promeni jezik. U jednom redu nema ponavljanja
+// dok god ima manje stavki nego slika u poolu.
+function destAssignPlaceholders(rows){
+  rows.forEach(row => {
+    const photos = destShuffle(DEST_PHOTO_POOL);
+    (row.items || []).forEach((it, i) => { if (!it.img) it.img = photos[i % photos.length]; });
+  });
+  return rows;
+}
+async function loadDestinationRows(){
+  if (DEST_API_URL){
+    try {
+      const r = await fetch(DEST_API_URL, {headers:{Accept:'application/json'}});
+      if (r.ok){
+        const data = await r.json();
+        if (Array.isArray(data) && data.length) return data;
+      }
+    } catch(e){ console.warn('[sklopi] destinacije: API nije dostupan, koristim test podatke.', e); }
+  }
+  return destMockRows();
+}
+let _destRowsPromise = null;
+function destCardHtml(it){
+  const name = cityLabel(it.dest);
+  const country = it.country ? countryLabel(it.country) : '';
+  return `<button type="button" class="dest-card" data-dest="${escapeHtml(it.dest)}">
+    <span class="dc-photo"><img src="${escapeHtml(it.img)}" alt="" loading="lazy" decoding="async"></span>
+    <span class="dc-cap"><span class="dc-name">${escapeHtml(name)}</span>${country ? `<span class="dc-country">${escapeHtml(country)}</span>` : ''}</span>
+  </button>`;
+}
+function destRowHtml(row, idx){
+  const items = row.items || [];
+  if (!items.length) return '';
+  const title = row.title || dtx('row_' + row.key) || row.key || '';
+  const arrow = (dir, path) => `<button type="button" class="attractions-arrow attractions-arrow--${dir < 0 ? 'prev' : 'next'}" data-dir="${dir}" aria-label="${escapeHtml(dtx(dir < 0 ? 'prev' : 'next'))}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${path}"/></svg></button>`;
+  return `<div class="dest-row">
+    <h3 class="dest-row-title" id="destRowTitle${idx}">${escapeHtml(title)}</h3>
+    <div class="attractions-slider-wrap">
+      ${arrow(-1, 'M15 18l-6-6 6-6')}
+      <div class="attractions-slider dest-slider" role="group" aria-labelledby="destRowTitle${idx}">${items.map(destCardHtml).join('')}</div>
+      ${arrow(1, 'M9 18l6-6-6-6')}
+    </div>
+  </div>`;
+}
+async function renderDestinations(){
+  const wrap = document.getElementById('destRows');
+  if (!wrap) return;
+  [['destSecEyebrow','eyebrow'], ['destSecTitle','title'], ['destSecSub','sub']].forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = dtx(key);
+  });
+  if (!_destRowsPromise) _destRowsPromise = loadDestinationRows().then(destAssignPlaceholders);
+  const rows = await _destRowsPromise;
+  wrap.innerHTML = rows.map(destRowHtml).join('');
+}
+(function initDestinations(){
+  const wrap = document.getElementById('destRows');
+  if (!wrap) return;
+  wrap.addEventListener('click', (e) => {
+    const arrowBtn = e.target.closest('.attractions-arrow');
+    if (arrowBtn){
+      const slider = arrowBtn.parentElement.querySelector('.dest-slider');
+      if (slider) slider.scrollBy({left: Number(arrowBtn.dataset.dir) * Math.max(240, slider.clientWidth * 0.8), behavior:'smooth'});
+      return;
+    }
+    const card = e.target.closest('.dest-card');
+    if (!card) return;
+    // Isti tok kao dolazak sa ?dest= (prefillDestFromQuery): popuni Destinacija i skroluj
+    // do forme, BEZ automatske pretrage — datume i putnike korisnik i dalje bira.
+    const destInput = document.getElementById('dest');
+    if (!destInput) return;
+    destInput.value = card.dataset.dest;
+    document.getElementById('searchForm')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  // Fotografija koja ne učita se sakriva, a kartica ostaje čitljiva na gradijentu.
+  wrap.addEventListener('error', (e) => {
+    if (e.target && e.target.tagName === 'IMG') e.target.classList.add('is-broken');
+  }, true);
+})();
+renderDestinations();
+const _prevOnLangChangeDest = window.onLangChange;
+window.onLangChange = function(lang){
+  if (typeof _prevOnLangChangeDest === 'function') _prevOnLangChangeDest(lang);
+  renderDestinations();
+};
