@@ -784,7 +784,7 @@ a{color:inherit;}
 /* ---------- "Sklopi svoju atrakciju" — slajder na naslovnoj ---------- */
 .attractions-slider-wrap{position:relative;display:flex;align-items:center;gap:8px;}
 .attractions-slider{
-    display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+    display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
     -webkit-overflow-scrolling:touch;padding:2px 2px 6px;margin:0 -2px;
     scrollbar-width:none;flex:1;
 }
