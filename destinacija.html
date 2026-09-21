@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#0F4C5C">
 <title>Destinacija — SKLOPI</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500;1,600&family=Manrope:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=17">
@@ -93,6 +94,17 @@
 @media (max-width:760px){
   .dp-slider-track{margin:0 -16px;padding-left:16px;padding-right:16px;scroll-padding-left:16px;}
 }
+/* fotografija na vrhu kartice (test: nasumične slike dok pravi API ne bude gotov) */
+.dp-sl-photo{
+  position:relative;aspect-ratio:16/10;overflow:hidden;
+  background:linear-gradient(135deg,var(--deep) 0%,var(--aqua) 100%);
+}
+.dp-sl-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.dp-sl-photo img.is-broken{visibility:hidden;}
+.dp-sl-banner.on-photo{
+  position:absolute;left:0;right:0;bottom:0;height:auto;padding:28px 14px 10px;
+  background:linear-gradient(to top,rgba(17,24,39,0.78) 0%,rgba(17,24,39,0) 100%);color:var(--on-dark-strong);
+}
 
 </style>
 </head>
@@ -106,7 +118,7 @@
 SKLOPI<em>.</em>
 </div>
 <nav>
-<a href="index.html#faq">Kako radi</a><a href="index.html#results">Destinacije</a><a href="index.html#about">O nama</a>
+<a href="index.html#faq">Kako radi</a><a href="index.html#destinacije">Destinacije</a><a href="index.html#about">O nama</a>
 </nav>
 <div class="topbar-right">
 <button type="button" class="lang-switch currency-switch" data-currency="EUR" aria-label="Promeni valutu"><span class="cs-eur">EUR</span><span class="ls-sep">/</span><span class="cs-rsd">RSD</span></button>
@@ -467,9 +479,41 @@ function slider(id, label, cards){
   return '<div class="dp-slider"><div class="dp-slider-track" id="' + id + '" tabindex="0" role="region" aria-label="' + esc(label) + '">' +
     cards.join('') + '</div></div>';
 }
+/* ---- fotografije u karticama ----
+   TEST FAZA: dok pravi API ne bude gotov, svaka kartica dobija NASUMIČNU fotografiju
+   iz DP_PHOTO_POOL (nije stvarna slika hotela/auta/aktivnosti). Prava ponuda može doneti
+   sopstveni o.img — placeholder se dodaje samo kartici kojoj img fali.
+   Kad API bude spreman: DP_PLACEHOLDER_PHOTOS = false (ili ostavi, ako neke ponude nemaju sliku). */
+const DP_PLACEHOLDER_PHOTOS = true;
+const DP_PHOTO_POOL = [
+  'photo-1523906834658-6e24ef2386f9','photo-1465847899084-d164df4dedc6','photo-1552832230-c0197dd311b5',
+  'photo-1522778119026-d647f0596c20','photo-1546026423-cc4642628d2b','photo-1502602898657-3e91760cbb34',
+  'photo-1441974231531-c6227db76b6e','photo-1414235077428-338989a2e8c0','photo-1513635269975-59663e0ac1ad',
+  'photo-1470229722913-7c0e2dbbafd3','photo-1555993539-1732b0258235','photo-1530866495561-507c9faab8c9',
+  'photo-1493225457124-a3eb161ffa5f','photo-1506377247377-2a5b3b417ebb','photo-1595190613644-68ce8e2a9814'
+].map(id => 'https://images.unsplash.com/' + id + '?w=640&h=400&q=70&auto=format&fit=crop');
+function dpShuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+// Dodeljuje nasumične slike (bez ponavljanja unutar jednog slajdera, dok ih ima dovoljno).
+function withPhotos(list){
+  if (!DP_PLACEHOLDER_PHOTOS) return list;
+  const pool = dpShuffle(DP_PHOTO_POOL);
+  list.forEach((o, i) => { if (!o.img) o.img = pool[i % pool.length]; });
+  return list;
+}
+function photoHtml(img, overlay){
+  return img ? '<div class="dp-sl-photo"><img src="' + esc(img) + '" alt="" loading="lazy" decoding="async">' + (overlay || '') + '</div>' : '';
+}
 function offerCard(o, partner, bannerCls){
   const badge = o.simulated ? '<span class="dp-badge">primer</span>' : (o.badge ? '<span class="dp-badge dp-partner">' + esc(o.badge) + '</span>' : '');
-  const banner = o.banner ? '<div class="dp-sl-banner ' + (bannerCls || '') + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
+  const bannerRow = o.banner ? '<div class="dp-sl-banner ' + (o.img ? 'on-photo' : (bannerCls || '')) + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
+  const banner = o.img ? photoHtml(o.img, bannerRow) : bannerRow;
   return '<article class="dp-sl-card">' + banner + '<div class="dp-sl-body">' +
     (o.banner ? '' : badge) +
     '<div class="dp-sl-title">' + esc(o.title) + '</div>' +
@@ -627,7 +671,7 @@ function getOffers(kind, c){
 function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls, token){
   return getOffers(kind, c).then(list => {
     if (token !== renderToken) return;
-    $(boxId).innerHTML = slider(sliderId, label, list.map(o => offerCard(o, partner, bannerCls)));
+    $(boxId).innerHTML = slider(sliderId, label, withPhotos(list).map(o => offerCard(o, partner, bannerCls)));
     $(countId).textContent = countLabel(list.length);
     initSlider(sliderId);
   });
@@ -640,7 +684,7 @@ function flightCard(o, adults, c){
     '<div class="dp-leg"><div class="dp-fl-route">' + esc(s.origin) + ' <div class="dp-fl-line"></div> ' + esc(s.destination) + '</div>' +
     '<div class="dp-fl-times"><span>' + esc(fmtDT(s.departing_at)) + '</span><span>' + esc(fmtDT(s.arriving_at)) + '</span></div></div>'
   ).join('');
-  return '<article class="dp-sl-card"><div class="dp-sl-body">' +
+  return '<article class="dp-sl-card">' + photoHtml(o.img) + '<div class="dp-sl-body">' +
     '<div class="dp-flight-row"><div class="dp-fl-logo">' + esc(o.airline_iata || '✈') + '</div>' +
     '<div class="dp-fl-mid"><div class="dp-fl-airline">' + esc(o.airline || 'Aviokompanija') + '</div>' + test + '</div></div>' +
     legs +
@@ -681,6 +725,7 @@ function loadFlights(c){
         list.innerHTML = '<div class="dp-card"><p class="dp-note">Za ove datume nema ponuda na ovoj ruti. Probaj druge datume ili uporedi na KAYAK-u.</p><div class="dp-links">' + kayak + '</div></div>';
         return;
       }
+      withPhotos(offers);
       count.textContent = countLabel(offers.length);
       list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => flightCard(o, c.P.adults, c))) +
         '<div class="dp-links dp-links-after">' + kayak + '</div>';
@@ -902,6 +947,11 @@ function init(){
     const n = Math.max(1, Math.floor(track.clientWidth / step));
     track.scrollBy({left: +b.getAttribute('data-dir') * step * n, behavior: REDUCED ? 'auto' : 'smooth'});
   });
+  // Fotografija koja ne učita se sakriva; kartica ostaje čitljiva na gradijentu.
+  document.addEventListener('error', ev => {
+    const im = ev.target;
+    if (im && im.tagName === 'IMG' && im.closest && im.closest('.dp-sl-photo')) im.classList.add('is-broken');
+  }, true);
   $('dpStart').addEventListener('change', () => {
     const s = parseISO($('dpStart').value);
     if (!s) return;
