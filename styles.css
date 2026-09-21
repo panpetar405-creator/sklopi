@@ -2793,6 +2793,7 @@ footer{padding:28px 20px;}
 .dest-card--activity .dc-photo{background:linear-gradient(160deg,var(--deep2) 0%,var(--deep) 100%);}
 .dest-card .dc-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
 .dest-card .dc-photo img.is-broken{visibility:hidden;}
+.dest-card .dc-photo img:not(.is-broken) + .dc-ico{display:none;}
 .dest-card .dc-ico{
     position:absolute;left:0;right:0;top:0;bottom:42%;display:flex;align-items:center;justify-content:center;
     font-size:40px;line-height:1;opacity:.92;

@@ -7432,9 +7432,12 @@ window.onLangChange = function(lang){
        pretragu (muzeji / priroda) za taj grad. Nema izmišljenih naziva tura ni cena.
    GRADOVI: dok pravi API nije gotov, dolaze iz MATCH_DESTINATIONS (isti gradovi/države
    kao u "Pronađi svoj izlet"). Svaki grad je samo u JEDNOM slajderu (bez ponavljanja).
-   FOTOGRAFIJE: nema stranih izvora. Kartica ima gradijent + ikonu vrste odmora. Prava slika
-   partnera (Booking/Viator) stiže kad partner da API pristup: item.img iz DEST_API_URL ili
-   tvoja slika u DEST_IMG_OVERRIDES — prikazuje se odmah, bez ikakve druge izmene.
+   FOTOGRAFIJE: samo od partnera (Viator) ili tvoje. Kartica ima gradijent + ikonu vrste odmora
+   dok slika ne stigne (ili ako nikad ne stigne). Redosled prvenstva slike:
+     item.img (iz DEST_API_URL) → DEST_IMG_OVERRIDES (tvoje slike) → Viator preko Worker-a.
+   Viator API ključ stoji SAMO na Worker-u (worker/destination-images.js), nikad u pregledaču.
+   Adresa Worker-a: window.SKLOPI_DEST_IMG_URL, ili SKLOPI_ALERT_WORKER_URL + '/go/destination-images'
+   (config.js). Dok ni jedno nije podešeno, ništa se ne poziva i kartice ostaju kao sada.
    PRELAZAK NA PRAVI API: upiši adresu u DEST_API_URL. Očekivan oblik odgovora:
      [{key:'sea', title:'More i plaža',   (title je opciono)
        items:[{dest:'Budva', country:'Crna Gora', img:'https://…', partner:'hotel'|'activity'}]}]
@@ -7460,6 +7463,9 @@ const DEST_ROW_PARTNER = {near:'hotel', sea:'hotel', city:'activity', nature:'ac
 const DEST_ROW_ICON = {near:'🧭', sea:'🏖️', city:'🏛️', nature:'🌲'};
 // Ključna reč koja se dodaje nazivu grada u Viator pretrazi.
 const DEST_VIATOR_KEYWORD = {city:'museums', nature:'nature tours'};
+// Viator pretraga za sliku kartice = engleski naziv grada + ključna reč vrste odmora
+// (isti izraz kao u Viator linku na kartici, a za "More i plaža" — plaža).
+const DEST_IMG_KEYWORD = Object.assign({sea:'beach'}, DEST_VIATOR_KEYWORD);
 const DEST_ROW_LIMIT = 8;
 // prio = redosled kojim slajderi "biraju" gradove (da se nijedan ne ponovi); redosled prikaza je redosled niza.
 const DEST_ROW_DEFS = [
@@ -7523,9 +7529,78 @@ async function loadDestinationRows(){
   return destMockRows();
 }
 
+/* ---- slike sa Viator-a (preko Worker-a) ---- */
+const DEST_IMG_CACHE_KEY = 'sklopi_dest_img_v1';
+const DEST_IMG_TTL = 3600 * 1000;   // Viator dozvoljava keširanje rezultata pretrage do 1 h
+let _destImgMap = {};               // naziv destinacije → URL slike
+let _destImgStarted = false;
+function destImgEndpoint(){
+  if (window.SKLOPI_DEST_IMG_URL) return window.SKLOPI_DEST_IMG_URL;
+  const base = window.SKLOPI_ALERT_WORKER_URL;
+  return base ? String(base).replace(/\/$/, '') + '/go/destination-images' : '';
+}
+function destViatorQuery(it){
+  const en = DEST_EN_NAMES[it.dest] || it.dest;
+  const kw = DEST_IMG_KEYWORD[it.row] || '';
+  return en + (kw ? ' ' + kw : '');
+}
+function destReadImgCache(){
+  try {
+    const c = JSON.parse(localStorage.getItem(DEST_IMG_CACHE_KEY) || 'null');
+    if (c && c.m && Date.now() - c.ts < DEST_IMG_TTL) return c;
+  } catch(e){}
+  return {ts: Date.now(), m: {}};
+}
+function destWriteImgCache(c){ try { localStorage.setItem(DEST_IMG_CACHE_KEY, JSON.stringify(c)); } catch(e){} }
+// Ubacuje <img> u već iscrtane kartice, bez ponovnog iscrtavanja (čuva skrol slajdera).
+function destApplyImages(){
+  document.querySelectorAll('#destRows .dest-card').forEach(card => {
+    const photo = card.querySelector('.dc-photo');
+    const url = _destImgMap[card.dataset.dest];
+    if (!photo || !url || photo.querySelector('img')) return;
+    const img = document.createElement('img');
+    img.alt = ''; img.decoding = 'async'; img.loading = 'lazy'; img.src = url;
+    photo.insertBefore(img, photo.firstChild);
+  });
+}
+async function destLoadImages(rows){
+  const endpoint = destImgEndpoint();
+  if (!endpoint) return;
+  const items = rows.flatMap(r => r.items || []).filter(it => !it.img && !DEST_IMG_OVERRIDES[it.dest]);
+  if (!items.length) return;
+  const cache = destReadImgCache();
+  const need = [];
+  items.forEach(it => { if (cache.m[it.dest]) _destImgMap[it.dest] = cache.m[it.dest]; else need.push(it); });
+  destApplyImages();
+  if (!need.length) return;
+  try {
+    const r = await fetch(endpoint, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({items: need.map(it => ({d: it.dest, q: destViatorQuery(it)}))})
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const got = ((await r.json()) || {}).images || {};
+    Object.keys(got).forEach(k => { if (got[k]){ cache.m[k] = got[k]; _destImgMap[k] = got[k]; } });
+    destWriteImgCache(cache);
+  } catch(e){ console.warn('[sklopi] destinacije: slike sa Viator-a nisu stigle.', e); return; }
+  destApplyImages();
+}
+// Slike se traže tek kad je sekcija blizu vidnog polja (ne opterećuje početno učitavanje).
+function destStartImages(rows){
+  if (_destImgStarted || !destImgEndpoint()) return;
+  _destImgStarted = true;
+  const sec = document.getElementById('destinacije');
+  if (sec && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)){ io.disconnect(); destLoadImages(rows); }
+    }, {rootMargin:'600px 0px'});
+    io.observe(sec);
+  } else destLoadImages(rows);
+}
+
 /* ---- partnerska ponuda na kartici ---- */
 function destKind(it){ return it.partner || DEST_ROW_PARTNER[it.row] || 'hotel'; }
-function destPhotoFor(it){ return it.img || DEST_IMG_OVERRIDES[it.dest] || ''; }
+function destPhotoFor(it){ return it.img || DEST_IMG_OVERRIDES[it.dest] || _destImgMap[it.dest] || ''; }
 // Ilustrativni hotel: ista fetchHotel() kao na karticama ponude (4★, 2 osobe, 1 noć),
 // seed po gradu — pa je hotel na kartici uvek isti za isti grad.
 function destSimHotel(dest){
@@ -7610,6 +7685,7 @@ async function renderDestinations(){
   if (!_destRowsPromise) _destRowsPromise = loadDestinationRows();
   const rows = await _destRowsPromise;
   wrap.innerHTML = rows.map(destRowHtml).join('');
+  destStartImages(rows);
 }
 (function initDestinations(){
   const wrap = document.getElementById('destRows');
