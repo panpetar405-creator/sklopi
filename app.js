@@ -7529,9 +7529,11 @@ async function loadDestinationRows(){
   return destMockRows();
 }
 
-/* ---- slike sa Viator-a (preko Worker-a) ---- */
+/* ---- slike sa Viator-a (preko Worker-a), sa privremenim Wikipedia fallback-om ---- */
 const DEST_IMG_CACHE_KEY = 'sklopi_dest_img_v1';
 const DEST_IMG_TTL = 3600 * 1000;   // Viator dozvoljava keširanje rezultata pretrage do 1 h
+const WIKI_IMG_CACHE_KEY = 'sklopi_dest_img_wiki_v1';
+const WIKI_IMG_TTL = 7 * 24 * 3600 * 1000; // Wikipedia slike su stabilne, keš na 7 dana
 let _destImgMap = {};               // naziv destinacije → URL slike
 let _destImgStarted = false;
 function destImgEndpoint(){
@@ -7544,14 +7546,19 @@ function destViatorQuery(it){
   const kw = DEST_IMG_KEYWORD[it.row] || '';
   return en + (kw ? ' ' + kw : '');
 }
-function destReadImgCache(){
+// Naslov Wikipedia članka za grad (bez zemlje posle zareza — REST API to ne voli).
+function destWikiTitle(it){
+  const en = DEST_EN_NAMES[it.dest] || it.dest;
+  return en.split(',')[0].trim();
+}
+function destReadImgCache(key, ttl){
   try {
-    const c = JSON.parse(localStorage.getItem(DEST_IMG_CACHE_KEY) || 'null');
-    if (c && c.m && Date.now() - c.ts < DEST_IMG_TTL) return c;
+    const c = JSON.parse(localStorage.getItem(key) || 'null');
+    if (c && c.m && Date.now() - c.ts < ttl) return c;
   } catch(e){}
   return {ts: Date.now(), m: {}};
 }
-function destWriteImgCache(c){ try { localStorage.setItem(DEST_IMG_CACHE_KEY, JSON.stringify(c)); } catch(e){} }
+function destWriteImgCache(key, c){ try { localStorage.setItem(key, JSON.stringify(c)); } catch(e){} }
 // Ubacuje <img> u već iscrtane kartice, bez ponovnog iscrtavanja (čuva skrol slajdera).
 function destApplyImages(){
   document.querySelectorAll('#destRows .dest-card').forEach(card => {
@@ -7563,16 +7570,48 @@ function destApplyImages(){
     photo.insertBefore(img, photo.firstChild);
   });
 }
-async function destLoadImages(rows){
-  const endpoint = destImgEndpoint();
-  if (!endpoint) return;
-  const items = rows.flatMap(r => r.items || []).filter(it => !it.img && !DEST_IMG_OVERRIDES[it.dest]);
+// PRIVREMENO: Wikipedia REST API (javan, ne traži ključ) dok Viator Worker ne bude spreman.
+// Čim SKLOPI_DEST_IMG_URL / SKLOPI_ALERT_WORKER_URL budu podešeni u config.js, Viator
+// automatski preuzima prioritet (vidi destLoadImages ispod) — ovo ostaje samo kao rezerva
+// ako Viator za neku destinaciju ne vrati sliku.
+async function fetchWikiImage(title){
+  try {
+    const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title));
+    if (!r.ok) return '';
+    const data = await r.json();
+    return (data.thumbnail && data.thumbnail.source) || (data.originalimage && data.originalimage.source) || '';
+  } catch(e){ return ''; }
+}
+async function destLoadImagesWiki(rows){
+  const items = rows.flatMap(r => r.items || []).filter(it => !it.img && !DEST_IMG_OVERRIDES[it.dest] && !_destImgMap[it.dest]);
   if (!items.length) return;
-  const cache = destReadImgCache();
+  const cache = destReadImgCache(WIKI_IMG_CACHE_KEY, WIKI_IMG_TTL);
   const need = [];
   items.forEach(it => { if (cache.m[it.dest]) _destImgMap[it.dest] = cache.m[it.dest]; else need.push(it); });
   destApplyImages();
   if (!need.length) return;
+  let next = 0;
+  async function worker(){
+    while (next < need.length){
+      const it = need[next++];
+      const url = await fetchWikiImage(destWikiTitle(it));
+      if (url){ cache.m[it.dest] = url; _destImgMap[it.dest] = url; }
+    }
+  }
+  await Promise.all(Array.from({length: Math.min(4, need.length)}, worker));
+  destWriteImgCache(WIKI_IMG_CACHE_KEY, cache);
+  destApplyImages();
+}
+async function destLoadImages(rows){
+  const endpoint = destImgEndpoint();
+  if (!endpoint) return destLoadImagesWiki(rows);   // Viator Worker još nije podešen — koristi Wikipedia
+  const items = rows.flatMap(r => r.items || []).filter(it => !it.img && !DEST_IMG_OVERRIDES[it.dest]);
+  if (!items.length) return;
+  const cache = destReadImgCache(DEST_IMG_CACHE_KEY, DEST_IMG_TTL);
+  const need = [];
+  items.forEach(it => { if (cache.m[it.dest]) _destImgMap[it.dest] = cache.m[it.dest]; else need.push(it); });
+  destApplyImages();
+  if (!need.length) return destLoadImagesWiki(rows);
   try {
     const r = await fetch(endpoint, {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -7581,13 +7620,14 @@ async function destLoadImages(rows){
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const got = ((await r.json()) || {}).images || {};
     Object.keys(got).forEach(k => { if (got[k]){ cache.m[k] = got[k]; _destImgMap[k] = got[k]; } });
-    destWriteImgCache(cache);
-  } catch(e){ console.warn('[sklopi] destinacije: slike sa Viator-a nisu stigle.', e); return; }
+    destWriteImgCache(DEST_IMG_CACHE_KEY, cache);
+  } catch(e){ console.warn('[sklopi] destinacije: slike sa Viator-a nisu stigle.', e); }
   destApplyImages();
+  return destLoadImagesWiki(rows); // popuni Wikipedia slikom sve što Viator nije pokrio
 }
 // Slike se traže tek kad je sekcija blizu vidnog polja (ne opterećuje početno učitavanje).
 function destStartImages(rows){
-  if (_destImgStarted || !destImgEndpoint()) return;
+  if (_destImgStarted) return;
   _destImgStarted = true;
   const sec = document.getElementById('destinacije');
   if (sec && 'IntersectionObserver' in window){
