@@ -1450,15 +1450,22 @@ function flightRouteMult(originRaw, destRaw){
    Booking.com (hotel/auto), Viator (aktivnosti). Ako se Airalo ili osiguranje
    ikad prikažu u UI-ju, dodaj ih i ovde. */
 function affDisc(){
+  // Spisak partnera prati šta se STVARNO prikazuje sa provizijom: KAYAK, Booking.com,
+  // Viator uvek; Omio tek kad u config.js dobije pravi tracking link (SKLOPI_AFF.isLive).
+  // Ako se Airalo ili osiguranje ikad prikažu na glavnoj stranici, dodaj ih i ovde.
+  const omio = !!(window.SKLOPI_AFF && window.SKLOPI_AFF.isLive('omio'));
+  const list = (names, and) => names.length < 2 ? names.join('')
+    : names.slice(0, -1).join(', ') + ' ' + and + ' ' + names[names.length - 1];
+  const base = ['KAYAK', 'Booking.com', 'Viator'].concat(omio ? ['Omio'] : []);
   const D = {
-    sr:'Linkovi ka KAYAK-u, Booking.com-u i Viator-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.',
-    en:'Links to KAYAK, Booking.com and Viator are affiliate links: SKLOPI may earn a commission at no extra cost to you. Confirm prices and availability on the partner\'s site.',
-    ru:'Ссылки на KAYAK, Booking.com и Viator партнёрские: SKLOPI может получить комиссию, а цена для вас не меняется. Цены и наличие проверяйте на сайте партнёра.'
+    sr:'Linkovi ka ' + list(base.map(n => n + '-u'), 'i') + ' su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.',
+    en:'Links to ' + list(base, 'and') + ' are affiliate links: SKLOPI may earn a commission at no extra cost to you. Confirm prices and availability on the partner\'s site.',
+    ru:'Ссылки на ' + list(base, 'и') + ' партнёрские: SKLOPI может получить комиссию, а цена для вас не меняется. Цены и наличие проверяйте на сайте партнёра.'
   };
   return D[getLang()] || D.sr;
 }
-const AFF_IDS = window.SKLOPI_AFF_IDS || {};
-function affId(kind){ return AFF_IDS[PARTNERS[kind].provider] || 'SKLOPI'; }
+// ID-jevi se čitaju SAMO preko affiliate.js (a upisuju samo u config.js → SKLOPI_AFF_IDS).
+function affId(kind){ return window.SKLOPI_AFF.id(PARTNERS[kind].provider); }
 
 function buildAffiliateLink(kind, ctx){
   const enc = encodeURIComponent;
@@ -1486,10 +1493,14 @@ function buildAffiliateLink(kind, ctx){
       // filter kategorije (class=3/4/5), a prioritet ocene/lokacije kao
       // redosled rezultata — da link otvara ono što kartica opisuje.
       const rooms = Math.max(1, Math.ceil((Number(ctx.adults) || 2) / 2));
+      // Datumi i broj gostiju su opcioni: bez njih (destinacije pre izbora datuma)
+      // link ostaje obična pretraga grada, ali i dalje nosi affiliate ID.
+      const dates = (ctx.from && ctx.to) ? `&checkin=${ctx.from}&checkout=${ctx.to}` : '';
+      const guests = (ctx.adults != null) ? `&group_adults=${ctx.adults}&no_rooms=${rooms}` : '';
       const stars = [3,4,5].includes(ctx.hotelStars) ? `&nflt=class%3D${ctx.hotelStars}` : '';
       const order = ctx.prioritizeRating ? '&order=review_score_and_price'
                   : ctx.prioritizeLocation ? '&order=distance_from_search' : '';
-      return `https://www.booking.com/searchresults.html?ss=${dest}&checkin=${ctx.from}&checkout=${ctx.to}&group_adults=${ctx.adults}&no_rooms=${rooms}${stars}${order}&aid=${affId('hotel')}`;
+      return `https://www.booking.com/searchresults.html?ss=${dest}${dates}${guests}${stars}${order}&aid=${affId('hotel')}`;
     }
     case 'car':
       return `https://www.booking.com/cars/results.html?ss=${dest}&pickupDate=${ctx.from}&dropoffDate=${ctx.to}&aid=${affId('car')}`;
@@ -4329,8 +4340,10 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
 
 /* ---- Vidljiva oznaka "affiliate/sponzorisan link" pored svake CTA
    rezervacije — potrošačka zaštita/transparentnost, ne samo FTC. ---- */
-function affBadgeHtml(){
-  return `<span class="aff-badge" title="${escapeHtml(t('aff_badge_title'))}" data-i18n-title="aff_badge_title" tabindex="0">🔗 <span data-i18n="aff_badge">${escapeHtml(t('aff_badge'))}</span></span>`;
+function affBadgeHtml(opts){
+  // opts.plain: bez tabindex-a — za oznaku UNUTAR <a> kartice (fokusabilan element u linku nije dobar).
+  const focus = (opts && opts.plain) ? '' : ' tabindex="0"';
+  return `<span class="aff-badge" title="${escapeHtml(t('aff_badge_title'))}" data-i18n-title="aff_badge_title"${focus}>🔗 <span data-i18n="aff_badge">${escapeHtml(t('aff_badge'))}</span></span>`;
 }
 
 function itemCardHtml(item, kind, pkg){
@@ -7255,20 +7268,20 @@ window.onLangChange = function(lang){
    (po zemlji/gradu/kategoriji), sa keširanjem odgovora.
    ========================================================== */
 const ATTRACTIONS_DATA = [
-  {id:'a1', name:'Vožnja gondolom kroz kanale', city:'Venecija', country:'Italija', category:'gondole', categoryLabel:'Gondole i panorame', img:'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=70&auto=format&fit=crop', price:45, link:'https://www.viator.com/searchResults/all?text=Venice%20gondola'},
-  {id:'a2', name:'Koncert u Bečkoj filharmoniji', city:'Beč', country:'Austrija', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=70&auto=format&fit=crop', price:69, link:'https://www.viator.com/searchResults/all?text=Vienna%20concert'},
-  {id:'a3', name:'Ulaznica za Koloseum sa vodičem', city:'Rim', country:'Italija', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=70&auto=format&fit=crop', price:39, link:'https://www.viator.com/searchResults/all?text=Colosseum%20tour'},
-  {id:'a4', name:'Utakmica na Santiago Bernabeu', city:'Madrid', country:'Španija', category:'arene', categoryLabel:'Arene i sport', img:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=70&auto=format&fit=crop', price:120, link:'https://www.viator.com/searchResults/all?text=Bernabeu%20tour'},
-  {id:'a5', name:'Ronjenje na Velikom koralnom grebenu', city:'Kerns', country:'Australija', category:'voda', categoryLabel:'Vodene aktivnosti', img:'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&q=70&auto=format&fit=crop', price:159, link:'https://www.viator.com/searchResults/all?text=Great%20Barrier%20Reef%20diving'},
-  {id:'a6', name:'Noćna tura po Montmartru', city:'Pariz', country:'Francuska', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=70&auto=format&fit=crop', price:35, link:'https://www.viator.com/searchResults/all?text=Montmartre%20night%20tour'},
-  {id:'a7', name:'Paragliding iznad Interlakena', city:'Interlaken', country:'Švajcarska', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70&auto=format&fit=crop', price:189, link:'https://www.viator.com/searchResults/all?text=Interlaken%20paragliding'},
-  {id:'a8', name:'Degustacija tapasa u Trijani', city:'Sevilja', country:'Španija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=70&auto=format&fit=crop', price:55, link:'https://www.viator.com/searchResults/all?text=Seville%20tapas%20tour'},
-  {id:'a9', name:'Panoramski točak London Eye', city:'London', country:'Velika Britanija', category:'gondole', categoryLabel:'Gondole i panorame', img:'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=70&auto=format&fit=crop', price:32, link:'https://www.viator.com/searchResults/all?text=London%20Eye'},
-  {id:'a10', name:'DJ set na krovnom baru', city:'Barselona', country:'Španija', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=70&auto=format&fit=crop', price:25, link:'https://www.viator.com/searchResults/all?text=Barcelona%20rooftop%20bar'},
-  {id:'a11', name:'Muzej Akropolja — brza ulaznica', city:'Atina', country:'Grčka', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&q=70&auto=format&fit=crop', price:28, link:'https://www.viator.com/searchResults/all?text=Acropolis%20museum'},
-  {id:'a12', name:'Rafting na reci Soči', city:'Bovec', country:'Slovenija', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1530866495561-507c9faab8c9?w=800&q=70&auto=format&fit=crop', price:65, link:'https://www.viator.com/searchResults/all?text=Soca%20rafting'},
-  {id:'a13', name:'Jazz klub u podrumu', city:'Njujork', country:'SAD', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=70&auto=format&fit=crop', price:48, link:'https://www.viator.com/searchResults/all?text=New%20York%20jazz%20club'},
-  {id:'a14', name:'Vinska tura kroz Toskanu', city:'Firenca', country:'Italija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=70&auto=format&fit=crop', price:79, link:'https://www.viator.com/searchResults/all?text=Tuscany%20wine%20tour'}
+  {id:'a1', name:'Vožnja gondolom kroz kanale', city:'Venecija', country:'Italija', category:'gondole', categoryLabel:'Gondole i panorame', img:'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=70&auto=format&fit=crop', price:45, q:'Venice gondola'},
+  {id:'a2', name:'Koncert u Bečkoj filharmoniji', city:'Beč', country:'Austrija', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=70&auto=format&fit=crop', price:69, q:'Vienna concert'},
+  {id:'a3', name:'Ulaznica za Koloseum sa vodičem', city:'Rim', country:'Italija', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=70&auto=format&fit=crop', price:39, q:'Colosseum tour'},
+  {id:'a4', name:'Utakmica na Santiago Bernabeu', city:'Madrid', country:'Španija', category:'arene', categoryLabel:'Arene i sport', img:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=70&auto=format&fit=crop', price:120, q:'Bernabeu tour'},
+  {id:'a5', name:'Ronjenje na Velikom koralnom grebenu', city:'Kerns', country:'Australija', category:'voda', categoryLabel:'Vodene aktivnosti', img:'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&q=70&auto=format&fit=crop', price:159, q:'Great Barrier Reef diving'},
+  {id:'a6', name:'Noćna tura po Montmartru', city:'Pariz', country:'Francuska', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=70&auto=format&fit=crop', price:35, q:'Montmartre night tour'},
+  {id:'a7', name:'Paragliding iznad Interlakena', city:'Interlaken', country:'Švajcarska', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70&auto=format&fit=crop', price:189, q:'Interlaken paragliding'},
+  {id:'a8', name:'Degustacija tapasa u Trijani', city:'Sevilja', country:'Španija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=70&auto=format&fit=crop', price:55, q:'Seville tapas tour'},
+  {id:'a9', name:'Panoramski točak London Eye', city:'London', country:'Velika Britanija', category:'gondole', categoryLabel:'Gondole i panorame', img:'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=70&auto=format&fit=crop', price:32, q:'London Eye'},
+  {id:'a10', name:'DJ set na krovnom baru', city:'Barselona', country:'Španija', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=70&auto=format&fit=crop', price:25, q:'Barcelona rooftop bar'},
+  {id:'a11', name:'Muzej Akropolja — brza ulaznica', city:'Atina', country:'Grčka', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&q=70&auto=format&fit=crop', price:28, q:'Acropolis museum'},
+  {id:'a12', name:'Rafting na reci Soči', city:'Bovec', country:'Slovenija', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1530866495561-507c9faab8c9?w=800&q=70&auto=format&fit=crop', price:65, q:'Soca rafting'},
+  {id:'a13', name:'Jazz klub u podrumu', city:'Njujork', country:'SAD', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=70&auto=format&fit=crop', price:48, q:'New York jazz club'},
+  {id:'a14', name:'Vinska tura kroz Toskanu', city:'Firenca', country:'Italija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=70&auto=format&fit=crop', price:79, q:'Tuscany wine tour'}
 ];
 // Oznake kategorija dolaze iz I18N (attr_cat_<key>); ovde ostaju samo ključ i emoji.
 const ATTRACTIONS_CATEGORIES = [
@@ -7285,10 +7298,12 @@ function attractionCategoryLabel(key){ return t('attr_cat_' + key); }
 let attractionsActiveCategories = new Set();
 let attractionsActiveCountry = '';
 
+// Viator pretraga za atrakciju; affiliate ID dolazi iz config.js (isti builder kao ostale aktivnosti).
+function attractionLink(a){ return buildAffiliateLink('activity', {dest: a.q}); }
 function attractionCardHtml(a){
   // Naziv iz I18N (attr_<id>), grad/država kroz rečnike; a.name ostaje srpski izvor.
   const name = t('attr_' + a.id);
-  return `<a class="attraction-card" href="${a.link}" target="_blank" rel="noopener sponsored">
+  return `<a class="attraction-card" href="${escapeHtml(attractionLink(a))}" target="_blank" rel="noopener sponsored">
     <div class="ac-photo">
       <img src="${a.img}" alt="${escapeHtml(name)}" loading="lazy">
       <span class="ac-badge">${escapeHtml(attractionCategoryLabel(a.category))}</span>
@@ -7297,6 +7312,7 @@ function attractionCardHtml(a){
       <span class="ac-name">${escapeHtml(name)}</span>
       <span class="ac-loc">${escapeHtml(cityLabel(a.city))}, ${escapeHtml(countryLabel(a.country))}</span>
       <span class="ac-price"><span>${escapeHtml(t('attr_from'))}</span> €${a.price}</span>
+      ${affBadgeHtml({plain:true})}
     </div>
   </a>`;
 }
@@ -7742,8 +7758,7 @@ function destPartnerLink(kind, dest, rowKey){
     if (iso.test(from) && iso.test(to) && to > from){
       return buildAffiliateLink('hotel', {dest, from, to, adults: Number(val('adults')) || 2, hotelStars: 4});
     }
-    return 'https://www.booking.com/searchresults.html?ss=' + encodeURIComponent(dest) +
-      '&nflt=class%3D4&aid=' + encodeURIComponent(affId('hotel'));
+    return buildAffiliateLink('hotel', {dest, hotelStars: 4});
   }
   const en = DEST_EN_NAMES[dest] || dest;
   const kw = DEST_VIATOR_KEYWORD[rowKey] || '';
@@ -7758,7 +7773,7 @@ function destOfferHtml(it, kind){
       <div class="item-name">${escapeHtml(h.name)}</div>
       <div class="item-sub">${escapeHtml(h.sub)}</div>
       <div class="item-price tabular">${fmtEUR(h.price)} <span class="dc-per">${escapeHtml(dtx('per_night'))}</span></div>
-      <div class="dc-actions"><a class="item-btn hotel dc-book" href="${escapeHtml(destPartnerLink('hotel', it.dest, it.row))}" target="_blank" rel="noopener sponsored" data-kind="hotel" data-price="${h.price}" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(t('btn_book_booking'))}</a></div>
+      <div class="dc-actions"><a class="item-btn hotel dc-book" href="${escapeHtml(destPartnerLink('hotel', it.dest, it.row))}" target="_blank" rel="noopener sponsored" data-kind="hotel" data-price="${h.price}" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(t('btn_book_booking'))}</a>${affBadgeHtml()}</div>
     </div>`;
   }
   const nameKey = it.row === 'nature' ? 'act_nature' : 'act_city';
@@ -7766,7 +7781,7 @@ function destOfferHtml(it, kind){
       <div class="item-label"><span>${escapeHtml(dtx('label_activity'))}</span><span class="item-provider">${escapeHtml(provider)}</span></div>
       <div class="item-name">${escapeHtml(dtx(nameKey))}</div>
       <div class="item-sub">${escapeHtml(dtx('act_sub'))}</div>
-      <div class="dc-actions"><a class="item-btn activity dc-book" href="${escapeHtml(destPartnerLink('activity', it.dest, it.row))}" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="0" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(dtx('btn_viator'))}</a></div>
+      <div class="dc-actions"><a class="item-btn activity dc-book" href="${escapeHtml(destPartnerLink('activity', it.dest, it.row))}" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="0" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(dtx('btn_viator'))}</a>${affBadgeHtml()}</div>
     </div>`;
 }
 

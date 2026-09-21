@@ -11,16 +11,21 @@ window.SKLOPI_ALERT_WORKER_URL = 'https://sklopi.rs';
 // pre produkcije. Dok je ovo 'G-XXXXXXXXXX', cookies.js NEĆE učitati GA
 // (vidi loadGA() tamo) — nema slanja događaja na nepostojeći nalog.
 window.SKLOPI_GA_ID = 'G-XXXXXXXXXX';
-// TODO PRE PRODUKCIJE: zameni SVAKI 'SKLOPI' pravim affiliate/tracking
-// ID-jem tog partnera, tek kad partnerski program bude odobren. Dok god
-// ovde stoji 'SKLOPI', link vodi na partnera ali NE PRATI proviziju.
-// Detaljan status po partneru (šta je potvrđeno, šta je pretpostavka,
-// šta uopšte nije spremno za produkciju) je u app.js, odmah iznad
+// ==== AFFILIATE ID-JEVI — JEDINO MESTO GDE SE MENJAJU ====
+// Kad partnerski program bude odobren, upiši ID ovde i to je sve: app.js,
+// destinacija.html i transport.js čitaju ovo preko affiliate.js.
+// Dok stoji 'SKLOPI' (ili prazno), link vodi na partnera ali NE PRATI
+// proviziju. Provera: otvori sajt sa ?affcheck u adresi (ili u konzoli
+// SKLOPI_AFF.status()). Detaljan status po partneru (šta je potvrđeno,
+// šta je pretpostavka, šta nije spremno) je u app.js, odmah iznad
 // buildAffiliateLink() — "AFFILIATE DEEP LINKS — STATUS PRE PRODUKCIJE".
 window.SKLOPI_AFF_IDS = {
-  kayak: 'SKLOPI',        // ref= parametar
+  kayak: 'SKLOPI',        // a= parametar
   booking: 'SKLOPI',      // aid= parametar (hotel i auto)
-  viator: 'SKLOPI',       // pid= parametar
+  viator: 'SKLOPI',       // pid= parametar (pretraga aktivnosti + slajder atrakcija)
   airalo: 'SKLOPI',       // ref= parametar
-  worldnomads: 'SKLOPI'   // ref= parametar — ❌ vidi TODO u app.js, link možda uopšte ne ide u produkciju
+  worldnomads: 'SKLOPI',  // ref= parametar — ❌ vidi TODO u app.js, program ide preko CJ, ovaj format verovatno ne prati proviziju
+  omio: ''                // CEO tracking link iz Travelpayouts panela (https://...), ne samo ID.
+                          // Prazno = običan omio.com link bez oznake "partnerski".
+                          // Kad upišeš link, dugme dobija oznaku + sponsored, a napomena o proviziji dobija i Omio.
 };
