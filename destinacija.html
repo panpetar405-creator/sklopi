@@ -725,15 +725,13 @@ function flightCard(o, adults, c){
 let flightReq = 0, flightAbort = null;
 function loadFlights(c){
   const list = $('dpFlightList'), count = $('dpFlightCount');
-  const kayak = '<a class="dp-linkbtn dp-primary" href="' + esc(linkFlights(c)) + '" ' + ext + '>Uporedi letove na KAYAK</a>';
   const bar = $('dpTotalBar');
   bar.hidden = true;
 
   function showSimulated(){
     const offers = SIM.flights(c).slice(0, 6);
     count.textContent = countLabel(offers.length);
-    list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => offerCard(o, 'KAYAK', ''))) +
-      '<div class="dp-links dp-links-after">' + kayak + '</div>';
+    list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => offerCard(o, 'KAYAK', '')));
     initSlider('dpFlightTrack');
     fillPhotos('dpFlightTrack');
     const cheapest = offers[0];
@@ -768,8 +766,7 @@ function loadFlights(c){
         .sort((a,b) => parseFloat(a.total_amount) - parseFloat(b.total_amount)).slice(0, 6);
       if (!offers.length) throw new Error('empty');
       count.textContent = countLabel(offers.length);
-      list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => flightCard(o, c.P.adults, c))) +
-        '<div class="dp-links dp-links-after">' + kayak + '</div>';
+      list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => flightCard(o, c.P.adults, c)));
       initSlider('dpFlightTrack');
       fillPhotos('dpFlightTrack');
       const cheapest = offers[0];
