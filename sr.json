@@ -147,7 +147,7 @@
   "faq_q4": "Da li SKLOPI naplaćuje rezervaciju?",
   "faq_a4": "Ne. SKLOPI ne naplaćuje ništa direktno — klikom na „Rezerviši\" ili „Pretraži\" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.",
   "faq_q5": "Imaš pitanje koje nije ovde?",
-  "faq_a5": "Piši na <a href=\"mailto:panpetar405@gmail.com\">panpetar405@gmail.com</a> — rado odgovaramo.",
+  "faq_a5": "Piši na <a href=\"#\" data-contact=\"mail\" data-show=\"1\">✉ e-mail</a> — rado odgovaramo.",
   "whatsapp_aria": "Piši nam na WhatsApp",
   "stat_searches": "pretraga",
   "stat_clicks": "klikova na ponude",

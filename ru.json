@@ -147,7 +147,7 @@
   "faq_q4": "Взимает ли SKLOPI плату за бронирование?",
   "faq_a4": "Нет. SKLOPI не берёт плату напрямую — нажатие «Забронировать» или «Искать» переносит тебя на сайт партнёра (KAYAK, Booking.com или Viator), где происходит бронирование и оплата.",
   "faq_q5": "Есть вопрос, которого здесь нет?",
-  "faq_a5": "Напиши на <a href=\"mailto:panpetar405@gmail.com\">panpetar405@gmail.com</a> — мы с радостью поможем.",
+  "faq_a5": "Напиши на <a href=\"#\" data-contact=\"mail\" data-show=\"1\">✉ e-mail</a> — мы с радостью поможем.",
   "whatsapp_aria": "Напиши нам в WhatsApp",
   "stat_searches": "поисков",
   "stat_clicks": "кликов по предложениям",
