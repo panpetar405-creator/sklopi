@@ -7467,6 +7467,7 @@ const DEST_VIATOR_KEYWORD = {city:'museums', nature:'nature tours'};
 // (isti izraz kao u Viator linku na kartici, a za "More i plaža" — plaža).
 const DEST_IMG_KEYWORD = Object.assign({sea:'beach'}, DEST_VIATOR_KEYWORD);
 const DEST_ROW_LIMIT = 8;
+const DEST_SPARE_LIMIT = 6; // rezervne destinacije po slajderu, za zamenu kad ponuđena nema sliku
 // prio = redosled kojim slajderi "biraju" gradove (da se nijedan ne ponovi); redosled prikaza je redosled niza.
 const DEST_ROW_DEFS = [
   {key:'near',   prio:1, test: d => d.distance === 'near'},
@@ -7505,13 +7506,22 @@ function dtx(key){
   return v === undefined ? '' : v;
 }
 function destMockRows(){
-  const used = new Set(), byKey = {};
-  DEST_ROW_DEFS.slice().sort((a, b) => a.prio - b.prio).forEach(def => {
+  const used = new Set(), byKey = {}, spareKey = {};
+  const defsByPrio = DEST_ROW_DEFS.slice().sort((a, b) => a.prio - b.prio);
+  // Prvi prolaz: glavnih 8 po slajderu (kao ranije).
+  defsByPrio.forEach(def => {
     const picks = MATCH_DESTINATIONS.filter(d => def.test(d) && !used.has(d.name)).slice(0, DEST_ROW_LIMIT);
     picks.forEach(d => used.add(d.name));
     byKey[def.key] = picks.map(d => ({dest:d.name, country:d.extra, row:def.key}));
   });
-  return DEST_ROW_DEFS.map(def => ({key:def.key, items:byKey[def.key]}));
+  // Drugi prolaz (tek kad su svi glavni izbori poznati): rezervne destinacije za zamenu
+  // onih kojima slika ne stigne — bez preklapanja sa glavnim izborom bilo kog slajdera.
+  defsByPrio.forEach(def => {
+    const spares = MATCH_DESTINATIONS.filter(d => def.test(d) && !used.has(d.name)).slice(0, DEST_SPARE_LIMIT);
+    spares.forEach(d => used.add(d.name));
+    spareKey[def.key] = spares.map(d => ({dest:d.name, country:d.extra, row:def.key}));
+  });
+  return DEST_ROW_DEFS.map(def => ({key:def.key, items:byKey[def.key], spares:spareKey[def.key]}));
 }
 async function loadDestinationRows(){
   if (DEST_API_URL){
@@ -7602,28 +7612,78 @@ async function destLoadImagesWiki(rows){
   destWriteImgCache(WIKI_IMG_CACHE_KEY, cache);
   destApplyImages();
 }
+// Traži sliku za JEDNU destinaciju (Viator ako je Worker podešen, inače/uz to Wikipedia) —
+// koristi se pri zameni kartice koja nije dobila sliku.
+async function destFetchOneImage(it){
+  const endpoint = destImgEndpoint();
+  if (endpoint){
+    try {
+      const r = await fetch(endpoint, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({items:[{d: it.dest, q: destViatorQuery(it)}]})
+      });
+      if (r.ok){
+        const got = ((await r.json()) || {}).images || {};
+        if (got[it.dest]) return got[it.dest];
+      }
+    } catch(e){ /* padamo na Wikipedia ispod */ }
+  }
+  return fetchWikiImage(destWikiTitle(it));
+}
+// Ako kartica na poziciji idx u redu nema sliku, zameni je sledećom rezervnom destinacijom
+// (do 2 pokušaja — ako ni rezerva nema sliku, probaj sledeću rezervu pa odustani).
+async function destTryReplacement(row, idx, triesLeft){
+  if (!row.spares || !row.spares.length || triesLeft <= 0) return;
+  const oldItem = row.items[idx];
+  const spare = row.spares.shift();
+  const oldEl = document.querySelector('#destRows .dest-card[data-dest="' + CSS.escape(oldItem.dest) + '"]');
+  row.items[idx] = spare;
+  if (oldEl) oldEl.outerHTML = destCardHtml(spare);
+  const url = await destFetchOneImage(spare);
+  if (url){
+    _destImgMap[spare.dest] = url;
+    destApplyImages();
+  } else {
+    await destTryReplacement(row, idx, triesLeft - 1);
+  }
+}
+// Prolazi kroz sve redove i menja kartice bez slike rezervnim destinacijama (ako ih ima).
+async function destFillMissingImages(rows){
+  for (const row of rows){
+    if (!row.items || !row.items.length) continue;
+    for (let i = 0; i < row.items.length; i++){
+      const it = row.items[i];
+      if (it.img || DEST_IMG_OVERRIDES[it.dest] || _destImgMap[it.dest]) continue;
+      await destTryReplacement(row, i, 2);
+    }
+  }
+}
 async function destLoadImages(rows){
   const endpoint = destImgEndpoint();
-  if (!endpoint) return destLoadImagesWiki(rows);   // Viator Worker još nije podešen — koristi Wikipedia
-  const items = rows.flatMap(r => r.items || []).filter(it => !it.img && !DEST_IMG_OVERRIDES[it.dest]);
-  if (!items.length) return;
-  const cache = destReadImgCache(DEST_IMG_CACHE_KEY, DEST_IMG_TTL);
-  const need = [];
-  items.forEach(it => { if (cache.m[it.dest]) _destImgMap[it.dest] = cache.m[it.dest]; else need.push(it); });
-  destApplyImages();
-  if (!need.length) return destLoadImagesWiki(rows);
-  try {
-    const r = await fetch(endpoint, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({items: need.map(it => ({d: it.dest, q: destViatorQuery(it)}))})
-    });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const got = ((await r.json()) || {}).images || {};
-    Object.keys(got).forEach(k => { if (got[k]){ cache.m[k] = got[k]; _destImgMap[k] = got[k]; } });
-    destWriteImgCache(DEST_IMG_CACHE_KEY, cache);
-  } catch(e){ console.warn('[sklopi] destinacije: slike sa Viator-a nisu stigle.', e); }
-  destApplyImages();
-  return destLoadImagesWiki(rows); // popuni Wikipedia slikom sve što Viator nije pokrio
+  if (endpoint){
+    const items = rows.flatMap(r => r.items || []).filter(it => !it.img && !DEST_IMG_OVERRIDES[it.dest]);
+    if (items.length){
+      const cache = destReadImgCache(DEST_IMG_CACHE_KEY, DEST_IMG_TTL);
+      const need = [];
+      items.forEach(it => { if (cache.m[it.dest]) _destImgMap[it.dest] = cache.m[it.dest]; else need.push(it); });
+      destApplyImages();
+      if (need.length){
+        try {
+          const r = await fetch(endpoint, {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({items: need.map(it => ({d: it.dest, q: destViatorQuery(it)}))})
+          });
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          const got = ((await r.json()) || {}).images || {};
+          Object.keys(got).forEach(k => { if (got[k]){ cache.m[k] = got[k]; _destImgMap[k] = got[k]; } });
+          destWriteImgCache(DEST_IMG_CACHE_KEY, cache);
+        } catch(e){ console.warn('[sklopi] destinacije: slike sa Viator-a nisu stigle.', e); }
+        destApplyImages();
+      }
+    }
+  }
+  await destLoadImagesWiki(rows); // popuni Wikipedia slikom sve što Viator nije pokrio (ili sve, ako Viator još nije podešen)
+  await destFillMissingImages(rows); // ono što ni Wikipedia nije pokrila — zameni rezervnom destinacijom
 }
 // Slike se traže tek kad je sekcija blizu vidnog polja (ne opterećuje početno učitavanje).
 function destStartImages(rows){
