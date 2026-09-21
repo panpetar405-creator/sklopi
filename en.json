@@ -147,7 +147,7 @@
   "faq_q4": "Does SKLOPI charge for booking?",
   "faq_a4": "No. SKLOPI doesn’t charge anything directly — clicking “Book” or “Search” takes you to the partner’s site (KAYAK, Booking.com or Viator) where the booking and payment happen.",
   "faq_q5": "Have a question that’s not here?",
-  "faq_a5": "Write to <a href=\"mailto:panpetar405@gmail.com\">panpetar405@gmail.com</a> — we’re happy to help.",
+  "faq_a5": "Write to <a href=\"#\" data-contact=\"mail\" data-show=\"1\">✉ e-mail</a> — we’re happy to help.",
   "whatsapp_aria": "Message us on WhatsApp",
   "stat_searches": "searches",
   "stat_clicks": "clicks on offers",
