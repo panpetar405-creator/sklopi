@@ -1136,6 +1136,8 @@ a{color:inherit;}
     background:rgba(120,120,120,0.12);border-radius:5px;
     padding:2px 7px;margin-top:6px;white-space:nowrap;cursor:help;
 }
+.attraction-card .aff-badge{align-self:flex-start;margin-top:4px;cursor:inherit;}
+.dest-card .dc-actions .aff-badge{margin-top:6px;}
 .item-btn.flight{background:var(--deep);}
 .item-btn.hotel{background:var(--gold);color:var(--on-gold);}
 .item-btn.car{background:var(--coral);}
