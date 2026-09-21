@@ -4274,7 +4274,7 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
     destPageNote,
     unknownNote ? `<div class="plan-note">🔎 ${escapeHtml(unknownNote)}</div>` : '',
     altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
-    destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom sležeš</b><br>${escapeHtml(destNote)}</div>` : ''
+    destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom slećeš</b><br>${escapeHtml(destNote)}</div>` : ''
   ].filter(Boolean).join('');
   head.innerHTML = notes ? `<div class="plan-notes">${notes}</div>` : '';
 

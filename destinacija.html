@@ -210,7 +210,7 @@ const API_BASE = window.SKLOPI_API_BASE || '';
    COUNTRY_SLUG_SR/airaloCountrySlug). Preneto ovde jer stranica
    destinacije nema pristup app.js globalima (drugi HTML dokument).
 ========================================================== */
-/* "Pazi na koji aerodrom sležeš" — isti tekst i isti gradovi kao na
+/* "Pazi na koji aerodrom slećeš" — isti tekst i isti gradovi kao na
    glavnoj stranici, sad iskorišćeno i u sekciji Transferi. */
 const DEST_AIRPORT_NOTES = {
   'london': 'London ima više aerodroma — Hitrou je najbliži centru, ali low-cost kompanije često slede na Stansted ili Luton, 45-75 minuta dalje od grada. Proveri tačan aerodrom pre nego što planiraš prevoz do centra.',
@@ -758,7 +758,7 @@ function renderResults(P){
   const transferTips = [];
   if (c.dVia) transferTips.push(['🛬', 'Nema sopstveni aerodrom',
     dest.name + ' nema svoj aerodrom — najbliži je ' + c.dVia + '. Transfer do konačnog odredišta računaj kao poseban trošak i vreme, ne kao deo cene leta.']);
-  if (airportNote) transferTips.push(['✈️', 'Pazi na koji aerodrom sležeš', airportNote]);
+  if (airportNote) transferTips.push(['✈️', 'Pazi na koji aerodrom slećeš', airportNote]);
   transferTips.push(['💡', 'Kako uštedeti',
     'Javni prevoz od aerodroma je u većini evropskih gradova 5–10x jeftiniji od taksija, uz razliku od 20–30 minuta u vremenu. Deljeni šatl je kompromis, a privatni transfer rezervisan unapred (fiksna cena) skoro je uvek jeftiniji i sigurniji od pregovaranja sa taksistom na licu mesta.']);
   transferTips.push(['⚠️', 'Zamka na koju paziti',
