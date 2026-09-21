@@ -204,6 +204,42 @@ const AFF_IDS = window.SKLOPI_AFF_IDS || {};
 const aff = provider => AFF_IDS[provider] || 'SKLOPI';
 const API_BASE = window.SKLOPI_API_BASE || '';
 
+/* ==========================================================
+   OSIGURANJE / TRANSFERI / eSIM / AUTOBUS — isti izvor uredničkog
+   znanja kao na glavnoj stranici (app.js: DEST_AIRPORT_NOTES,
+   COUNTRY_SLUG_SR/airaloCountrySlug). Preneto ovde jer stranica
+   destinacije nema pristup app.js globalima (drugi HTML dokument).
+========================================================== */
+/* "Pazi na koji aerodrom sležeš" — isti tekst i isti gradovi kao na
+   glavnoj stranici, sad iskorišćeno i u sekciji Transferi. */
+const DEST_AIRPORT_NOTES = {
+  'london': 'London ima više aerodroma — Hitrou je najbliži centru, ali low-cost kompanije često slede na Stansted ili Luton, 45-75 minuta dalje od grada. Proveri tačan aerodrom pre nego što planiraš prevoz do centra.',
+  'pariz': 'Pariz ima tri aerodroma — Šarl de Gol i Orli su blizu grada, ali Ryanair i slične kompanije često koriste Bove (Beauvais), oko 85km severno, sa transferom od preko sat vremena do centra.',
+  'brisel': 'Brisel ima glavni aerodrom blizu grada, ali low-cost letovi često slede u Šarlroa, oko 50km južnije — računaj dodatni sat vožnje i trošak prevoza do centra.',
+  'frankfurt': 'Frankfurt ima dva aerodroma pod sličnim imenom — glavni je blizu grada, dok je Han (Hahn) oko 120km zapadno, bliže Luksemburgu nego Frankfurtu. Ryanair često leti baš tamo, sa transferom i do 2h.',
+  'milano': 'Milano ima tri aerodroma — Malpensa i Linate su praktični, ali Ryanair često leti u Bergamo, oko 45km od centra, sa transferom od preko sat vremena.',
+  'barselona': 'Barselona ima glavni aerodrom blizu grada (El Prat), ali neki low-cost letovi slede u Đironu ili Reus, stotinak kilometara dalje, sa transferom od preko sat vremena.',
+  'rim': 'Rim ima dva aerodroma — Fjumičino (glavni, malo dalji od centra) i Čampino (bliži centru, manji, koriste ga neke low-cost kompanije).',
+  'stokholm': 'Stokholm ima glavni aerodrom Arlanda, ali Ryanair često leti u Skavstu, oko 100km južnije — transfer do centra traje i do sat i po.',
+  'oslo': 'Oslo ima glavni aerodrom Gardermoen, ali neki low-cost letovi ka "Oslu" slede u Torp kod Sandefjorda, oko 110km južnije — transfer je i do 2h.',
+  'kopenhagen': 'Neki letovi oglašeni ka "Kopenhagenu" zapravo slede u Malme, u Švedskoj, s druge strane mosta — računaj dodatno vreme za prelazak i eventualnu graničnu kontrolu.'
+};
+/* Airalo prodaje eSIM po DRŽAVI (npr. airalo.com/greece-esim) — mapa
+   nazivi država na srpskom → engleski URL slug, ista lista kao u app.js. */
+const COUNTRY_SLUG_SR = {
+  'Srbija':'serbia', 'Crna Gora':'montenegro', 'Bosna i Hercegovina':'bosnia-and-herzegovina',
+  'Hrvatska':'croatia', 'Severna Makedonija':'north-macedonia', 'Kosovo':'kosovo',
+  'Slovenija':'slovenia', 'Albanija':'albania', 'Rumunija':'romania', 'Bugarska':'bulgaria',
+  'Grčka':'greece', 'Italija':'italy', 'Španija':'spain', 'Portugalija':'portugal',
+  'Francuska':'france', 'Velika Britanija':'united-kingdom', 'Holandija':'netherlands',
+  'Nemačka':'germany', 'Austrija':'austria', 'Češka':'czech-republic', 'Mađarska':'hungary',
+  'Slovačka':'slovakia', 'Poljska':'poland', 'Švedska':'sweden', 'Norveška':'norway',
+  'Danska':'denmark', 'Finska':'finland', 'Irska':'ireland', 'Belgija':'belgium',
+  'Švajcarska':'switzerland', 'Turska':'turkey', 'Izrael':'israel', 'UAE':'united-arab-emirates',
+  'Egipat':'egypt', 'Maroko':'morocco', 'SAD':'united-states', 'Tajland':'thailand',
+  'Japan':'japan', 'Indonezija':'indonesia', 'Singapur':'singapore'
+};
+
 /* Država → ISO kod (za zastavicu) i valuta */
 const COUNTRY = {
   'Srbija':['RS','Srpski dinar (RSD)'],'Crna Gora':['ME','Evro (€)'],'Bosna i Hercegovina':['BA','Konvertibilna marka (BAM)'],
@@ -716,6 +752,69 @@ function renderResults(P){
     html += '<div class="dp-card"><p class="dp-note">Do ove destinacije se ne stiže automobilom iz Srbije, pa auto iznajmljuješ na licu mesta.</p></div>';
   }
   html += '</div>';
+
+  /* --- transferi (aerodrom/pristanište → smeštaj) --- */
+  const airportNote = DEST_AIRPORT_NOTES[norm(dest.name)] || null;
+  const transferTips = [];
+  if (c.dVia) transferTips.push(['🛬', 'Nema sopstveni aerodrom',
+    dest.name + ' nema svoj aerodrom — najbliži je ' + c.dVia + '. Transfer do konačnog odredišta računaj kao poseban trošak i vreme, ne kao deo cene leta.']);
+  if (airportNote) transferTips.push(['✈️', 'Pazi na koji aerodrom sležeš', airportNote]);
+  transferTips.push(['💡', 'Kako uštedeti',
+    'Javni prevoz od aerodroma je u većini evropskih gradova 5–10x jeftiniji od taksija, uz razliku od 20–30 minuta u vremenu. Deljeni šatl je kompromis, a privatni transfer rezervisan unapred (fiksna cena) skoro je uvek jeftiniji i sigurniji od pregovaranja sa taksistom na licu mesta.']);
+  transferTips.push(['⚠️', 'Zamka na koju paziti',
+    'Taksi bez taksimetra ili sa „specijalnom turističkom cenom" na aerodromu je čest trik na mnogim destinacijama — unapred rezervisan transfer ili proverena aplikacija (gde je dostupna) eliminišu taj rizik.']);
+  html += '<div class="dp-section" id="transferi">' + sectionHead('🚕', 'Transferi', '') + '<div class="dp-card">' +
+    transferTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
+
+  /* --- autobus (kopnena alternativa letu) --- */
+  const busTips = [];
+  if (canDrive){
+    busTips.push(['🚌', 'Autobus kao alternativa',
+      'Za ovu destinaciju autobus je sporija, ali obično znatno jeftinija alternativa letu. Međugradski i međunarodni prevoznici (npr. FlixBus i regionalne linije) često voze direktno iz Beograda ili obližnjih gradova.']);
+    busTips.push(['💡', 'Kada se isplati',
+      'Autobus najviše ima smisla za putovanja do 8–10h vožnje, ili kad je razlika u ceni prema letu velika — za duže rute vreme provedeno na putu obično nadmaši uštedu.']);
+  } else if (isIsland){
+    busTips.push(['🚌', 'Nije realna opcija iz Srbije',
+      'Do ovog ostrva se ne stiže autobusom iz Srbije — do najbližeg kopna ili luke ideš avionom ili trajektom, a autobus dolazi u obzir tek na samom ostrvu.']);
+  } else {
+    busTips.push(['🚌', 'Nije realna opcija iz Srbije',
+      'Do ove destinacije se ne stiže autobusom iz Srbije zbog udaljenosti — let je jedina praktična opcija.']);
+  }
+  html += '<div class="dp-section" id="autobus">' + sectionHead('🚌', 'Autobus', '') + '<div class="dp-card">' +
+    busTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
+
+  /* --- osiguranje --- */
+  const insuranceLink = 'https://www.worldnomads.com/travel-insurance?ref=' + enc(aff('worldnomads'));
+  const insTips = [['🛡️', 'Zašto je važno',
+    'Zdravstveni tretman u inostranstvu bez osiguranja može koštati hiljade evra za ozbiljniji slučaj — ovo je stavka gde ušteda od par evra nosi nesrazmeran rizik.']];
+  if (DATA.visa[dest.country]) insTips.push(['🛂', 'Uz vizu',
+    'Ambasada zna da traži dokaz o putnom zdravstvenom osiguranju kao deo vizne prijave za ' + dest.country + ' — proveri pre podnošenja dokumenata.']);
+  insTips.push(['💳', 'Pre kupovine nove polise',
+    'Neke bankovne kartice (premium paketi) uključuju putno osiguranje besplatno — proveri to pre nego što platiš novu polisu.']);
+  html += '<div class="dp-section" id="osiguranje">' + sectionHead('🛡️', 'Osiguranje', '') + '<div class="dp-card">' +
+    insTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') +
+    '<div class="dp-links dp-links-after"><a class="dp-linkbtn dp-primary" href="' + esc(insuranceLink) + '" ' + ext + '>Uporedi ponude na World Nomads</a></div>' +
+    '</div></div>';
+
+  /* --- eSIM --- */
+  const esimSlug = COUNTRY_SLUG_SR[dest.country] || null;
+  const esimLink = esimSlug
+    ? 'https://www.airalo.com/' + esimSlug + '-esim?ref=' + enc(aff('airalo'))
+    : 'https://www.airalo.com/esim?ref=' + enc(aff('airalo'));
+  const esimTips = [['📶', 'Zašto je važno',
+    'Roming van paketa operatera (van EU ili van regiona) može biti i desetine puta skuplji od lokalnog interneta. eSIM se kupuje unapred i aktivira tek po sletanju.']];
+  if (!esimSlug) esimTips.push(['ℹ️', 'Napomena',
+    'Ne znamo tačno u kojoj je državi ova destinacija, pa link vodi na opštu Airalo prodavnicu — potraži tamo „' + dest.name + '“ ili državu u kojoj se nalazi.']);
+  else esimTips.push(['📱', 'Pre kupovine proveri',
+    'Da li telefon podržava eSIM (uglavnom noviji modeli od 2019+), i da li ti je za ovu dužinu putovanja isplativiji fiksni paket (npr. 10GB/10 dana) od dnevnog.']);
+  html += '<div class="dp-section" id="esim">' + sectionHead('📶', 'eSIM', '') + '<div class="dp-card">' +
+    esimTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') +
+    '<div class="dp-links dp-links-after"><a class="dp-linkbtn dp-primary" href="' + esc(esimLink) + '" ' + ext + '>Pogledaj pakete na Airalo</a></div>' +
+    '</div></div>';
 
   /* --- saveti --- */
   const tips = [];
