@@ -1884,7 +1884,7 @@ treba prvo da padne, tekst ostaje u drugom planu. */
 /* ---------- footer / mini dashboard ---------- */
 .stats{
     background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-    padding:8px 0;
+    padding:8px 0;margin-bottom:56px;
 }
 .stats-inner{
     max-width:640px;margin:0 auto;padding:0 40px;
