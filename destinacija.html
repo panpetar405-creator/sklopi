@@ -487,125 +487,13 @@ function slider(id, label, cards){
     cards.join('') + '</div></div>';
 }
 /* ---- fotografije u karticama ----
-   Prava fotografija koja odgovara kartici (engleska Wikipedija / Wikimedia Commons):
-   • smeštaj i atrakcije: fotografije odredišta (članak o gradu) — različita slika na svakoj kartici,
-   • rent a car: fotografija tačnog modela iz naziva kartice (Fiat Panda, Dacia Duster…),
-   • letovi: fotografija aviokompanije.
-   NEMA nasumičnih slika: ako fotografija ne stigne, kartica ostaje kao pre (kompaktan baner).
-   Prava ponuda može doneti sopstveni o.img — ima prednost i prikazuje se odmah.
-   Slike se traže posle iscrtavanja kartica (ne usporavaju prikaz) i keširaju 7 dana u localStorage. */
-const WIKI_API = 'https://en.wikipedia.org/w/api.php';
-const WIKI_CACHE_KEY = 'sklopi_wiki_v1', WIKI_TTL = 7 * 24 * 3600 * 1000;
-// Srpski naziv → naslov članka (gde se razlikuje od srpskog). Ostalo se traži pod istim imenom.
-const DP_WIKI_TITLES = {
-  'Beograd':'Belgrade','Budimpešta':'Budapest','Beč':'Vienna','Sofija':'Sofia','Solun':'Thessaloniki','Skoplje':'Skopje',
-  'Sarande':'Sarandë','Split':'Split, Croatia','Bukurešt':'Bucharest','Prag':'Prague','Krf':'Corfu','Atina':'Athens',
-  'Mikonos':'Mykonos','Rodos':'Rhodes','Krit':'Crete','Rim':'Rome','Milano':'Milan','Venecija':'Venice','Firenca':'Florence',
-  'Barselona':'Barcelona','Malaga':'Málaga','Ibica':'Ibiza','Lisabon':'Lisbon','Pariz':'Paris','Nica':'Nice','Minhen':'Munich',
-  'Cirih':'Zürich','Antalija':'Antalya','Kapadokija':'Cappadocia','Kairo':'Cairo','Šarm El Šeik':'Sharm El Sheikh',
-  'Marakeš':'Marrakesh','Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
-  'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town','Priština':'Pristina','Napulj':'Naples','Bolonja':'Bologna',
-  'Đenova':'Genoa','Trst':'Trieste','Sevilja':'Seville','Valensija':'Valencia','Majorka':'Majorca','Sicilija':'Sicily',
-  'Sardinija':'Sardinia','Salcburg':'Salzburg','Zalcburg':'Salzburg','Insbruk':'Innsbruck','Varšava':'Warsaw','Krakov':'Kraków',
-  'Keln':'Cologne','Drezden':'Dresden','Štutgart':'Stuttgart','Nirnberg':'Nuremberg','Ženeva':'Geneva','Lucern':'Lucerne',
-  'Edinburg':'Edinburgh','Mančester':'Manchester','Roterdam':'Rotterdam','Hag':'The Hague','Kopenhagen':'Copenhagen',
-  'Stokholm':'Stockholm','Dablin':'Dublin','Brisel':'Brussels','Briž':'Bruges','Talin':'Tallinn','Viljnus':'Vilnius',
-  'Valeta':'Valletta','Larnaka':'Larnaca','Pafos':'Paphos','Peking':'Beijing','Šangaj':'Shanghai','Seul':'Seoul','Kjoto':'Kyoto',
-  'Hanoj':'Hanoi','Vašington':'Washington, D.C.','Čikago':'Chicago','San Francisko':'San Francisco','Meksiko Siti':'Mexico City',
-  'Kankun':'Cancún','Rio de Žaneiro':'Rio de Janeiro','Buenos Ajres':'Buenos Aires','Abu Dabi':'Abu Dhabi','Hurgada':'Hurghada',
-  'Luksor':'Luxor','Kazablanka':'Casablanca','Melburn':'Melbourne','Hongkong':'Hong Kong','Nju Delhi':'New Delhi',
-  'Mumbaj':'Mumbai','Džakarta':'Jakarta','Ho Ši Min':'Ho Chi Minh City','Plitvička Jezera':'Plitvice Lakes National Park',
-  'Kotor':'Kotor','Kluž':'Cluj-Napoca','Brašov':'Brașov','Temišvar':'Timișoara','Jaši':'Iași','Segedin':'Szeged',
-  'Pečuj':'Pécs','Đer':'Győr','Gdanjsk':'Gdańsk','Vroclav':'Wrocław','Poznanj':'Poznań','Lođ':'Łódź','Šibenik':'Šibenik',
-  'Poreč':'Poreč','Korčula':'Korčula','Halštat':'Hallstatt','Interlaken':'Interlaken','Cermat':'Zermatt','Bečej':'Bečej',
-  'Kopaonik':'Kopaonik','Zlatibor':'Zlatibor','Niš':'Niš','Novi Sad':'Novi Sad'
-};
-function wikiCacheRead(){
-  try {
-    const c = JSON.parse(localStorage.getItem(WIKI_CACHE_KEY) || 'null');
-    if (c && c.thumbs && c.gal && Date.now() - c.ts < WIKI_TTL) return c;
-  } catch(e){}
-  return {ts: Date.now(), thumbs:{}, gal:{}};
-}
-function wikiCacheWrite(c){ try { localStorage.setItem(WIKI_CACHE_KEY, JSON.stringify(c)); } catch(e){} }
-async function wikiQuery(params){
-  const r = await fetch(WIKI_API + '?action=query&format=json&formatversion=2&origin=*&redirects=1&' + params);
-  if (!r.ok) throw new Error('wiki ' + r.status);
-  return (await r.json()).query || {};
-}
-// Glavna fotografija članka: {naslov: URL}. Jedan upit za sve naslove.
-async function wikiThumbs(titles){
-  const cache = wikiCacheRead(), out = {}, need = [];
-  titles.forEach(t => { if (cache.thumbs[t]) out[t] = cache.thumbs[t]; else need.push(t); });
-  for (let i = 0; i < need.length; i += 40){
-    const chunk = need.slice(i, i + 40);
-    const q = await wikiQuery('prop=pageimages&piprop=thumbnail&pithumbsize=500&titles=' + enc(chunk.join('|')));
-    const norm = {}, red = {}, th = {};
-    (q.normalized || []).forEach(n => { norm[n.from] = n.to; });
-    (q.redirects || []).forEach(n => { red[n.from] = n.to; });
-    (q.pages || []).forEach(pg => { if (pg.thumbnail && pg.thumbnail.source) th[pg.title] = pg.thumbnail.source; });
-    chunk.forEach(t => { let k = norm[t] || t; k = red[k] || k; if (th[k]){ out[t] = th[k]; cache.thumbs[t] = th[k]; } });
-  }
-  if (need.length) wikiCacheWrite(cache);
-  return out;
-}
-// Više fotografija odredišta: glavna slika + fotografije iz članka (bez mapa, zastava, grbova, dijagrama).
-const GAL_BAD = /map|flag|coat|logo|locator|seal|icon|diagram|chart|graph|plan\b|location|blank|montage|collage|symbol|banner|portrait|signature/i;
-const _galPromises = {};
-function wikiGallery(title){
-  if (!_galPromises[title]) _galPromises[title] = (async () => {
-    const cache = wikiCacheRead();
-    if (cache.gal[title]) return cache.gal[title];
-    const [lead, q] = await Promise.all([
-      wikiThumbs([title]).catch(() => ({})),
-      wikiQuery('generator=images&gimlimit=80&prop=imageinfo&iiprop=url|mime|size&iiurlwidth=500&titles=' + enc(title)).catch(() => ({}))
-    ]);
-    const urls = [];
-    if (lead[title]) urls.push(lead[title]);
-    (q.pages || []).forEach(pg => {
-      const i = pg.imageinfo && pg.imageinfo[0];
-      if (!i || i.mime !== 'image/jpeg' || !i.thumburl || GAL_BAD.test(pg.title)) return;
-      const ratio = i.width / i.height;
-      if (i.width >= 900 && i.height >= 500 && ratio >= 1.2 && ratio <= 2.2 && !urls.includes(i.thumburl)) urls.push(i.thumburl);
-    });
-    if (urls.length){ const c2 = wikiCacheRead(); c2.gal[title] = urls.slice(0, 16); wikiCacheWrite(c2); }
-    return urls.slice(0, 16);
-  })();
-  return _galPromises[title];
-}
-function attachPhoto(block, url){
-  if (!block || block.querySelector('img')) return;
-  if (!url){ block.classList.add('no-photo'); return; }
-  const img = document.createElement('img');
-  img.alt = ''; img.decoding = 'async'; img.loading = 'lazy';
-  img.addEventListener('error', () => { img.remove(); block.classList.add('no-photo'); });
-  img.src = url;
-  block.insertBefore(img, block.firstChild);
-}
-/* mode: 'titles' (data-pt = naslov članka), 'gallery' (slike odredišta redom), 'gallery-rev' (obrnutim redom,
-   da smeštaj i atrakcije ne prikazuju istu sliku na istom mestu). */
-async function fillPhotos(trackId, c, mode){
+   Kartice nemaju fotografije iz stranih izvora (Wikipedija je uklonjena). Ponuda može doneti
+   sopstveni o.img (npr. iz pravog Booking.com / Viator feed-a preko window.SKLOPI_FEEDS) —
+   prikazuje se odmah. Bez njega kartica ostaje kompaktan baner (klasa no-photo). */
+function fillPhotos(trackId){
   const track = $(trackId);
   if (!track) return;
-  const blocks = Array.from(track.querySelectorAll('.dp-sl-photo')).filter(b => !b.querySelector('img'));
-  if (!blocks.length) return;
-  try {
-    if (mode === 'titles'){
-      const titles = [...new Set(blocks.map(b => b.getAttribute('data-pt')).filter(Boolean))];
-      const map = titles.length ? await wikiThumbs(titles) : {};
-      if (!document.body.contains(track)) return;
-      blocks.forEach(b => attachPhoto(b, map[b.getAttribute('data-pt')]));
-    } else {
-      const g = await wikiGallery(DP_WIKI_TITLES[c.dest.name] || c.dest.name);
-      if (!document.body.contains(track)) return;
-      blocks.forEach((b, i) => {
-        const idx = mode === 'gallery-rev' ? g.length - 1 - i : i;
-        attachPhoto(b, g.length ? g[((idx % g.length) + g.length) % g.length] : '');
-      });
-    }
-  } catch(e){
-    blocks.forEach(b => attachPhoto(b, ''));
-  }
+  track.querySelectorAll('.dp-sl-photo').forEach(b => { if (!b.querySelector('img')) b.classList.add('no-photo'); });
 }
 function photoBlock(o, attrs, bannerRow){
   const img = o.img ? '<img src="' + esc(o.img) + '" alt="" loading="lazy" decoding="async">' : '';
@@ -614,7 +502,7 @@ function photoBlock(o, attrs, bannerRow){
 function offerCard(o, partner, bannerCls){
   const badge = o.simulated ? '<span class="dp-badge">primer</span>' : (o.badge ? '<span class="dp-badge dp-partner">' + esc(o.badge) + '</span>' : '');
   const bannerRow = o.banner ? '<div class="dp-sl-banner on-photo ' + (bannerCls || '') + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
-  const banner = photoBlock(o, o.photoTitle ? ' data-pt="' + esc(o.photoTitle) + '"' : ' data-pg="1"', bannerRow);
+  const banner = photoBlock(o, '', bannerRow);
   return '<article class="dp-sl-card">' + banner + '<div class="dp-sl-body">' +
     (o.banner ? '' : badge) +
     '<div class="dp-sl-title">' + esc(o.title) + '</div>' +
@@ -713,16 +601,16 @@ function simHotels(c){
   }).sort((a, b) => a.price - b.price);
 }
 const CAR_SPECS = [
-  {name:'Mini · Fiat Panda ili slično',        base:27, gear:'manuelni menjač', wiki:'Fiat Panda'},
-  {name:'Ekonomik · Kia Picanto ili slično',   base:31, gear:'manuelni menjač', wiki:'Kia Picanto'},
-  {name:'Kompakt · VW Golf ili slično',        base:36, gear:'manuelni menjač', wiki:'Volkswagen Golf'},
-  {name:'Kompakt automatik · Toyota Corolla ili slično', base:44, gear:'automatski menjač', wiki:'Toyota Corolla'},
-  {name:'Kombi · Škoda Octavia Combi ili slično', base:42, gear:'manuelni menjač', wiki:'Škoda Octavia'},
-  {name:'Porodični · VW Touran ili slično',    base:50, gear:'manuelni menjač', wiki:'Volkswagen Touran'},
-  {name:'Mali SUV · Dacia Duster ili slično',  base:51, gear:'manuelni menjač', wiki:'Dacia Duster'},
-  {name:'SUV · VW Tiguan ili slično',          base:57, gear:'automatski menjač', wiki:'Volkswagen Tiguan'},
-  {name:'Kabriolet · Mini Cabrio ili slično',  base:72, gear:'automatski menjač', wiki:'Mini Convertible'},
-  {name:'Premium · BMW serije 3 ili slično',   base:78, gear:'automatski menjač', wiki:'BMW 3 Series'}
+  {name:'Mini · Fiat Panda ili slično',        base:27, gear:'manuelni menjač'},
+  {name:'Ekonomik · Kia Picanto ili slično',   base:31, gear:'manuelni menjač'},
+  {name:'Kompakt · VW Golf ili slično',        base:36, gear:'manuelni menjač'},
+  {name:'Kompakt automatik · Toyota Corolla ili slično', base:44, gear:'automatski menjač'},
+  {name:'Kombi · Škoda Octavia Combi ili slično', base:42, gear:'manuelni menjač'},
+  {name:'Porodični · VW Touran ili slično',    base:50, gear:'manuelni menjač'},
+  {name:'Mali SUV · Dacia Duster ili slično',  base:51, gear:'manuelni menjač'},
+  {name:'SUV · VW Tiguan ili slično',          base:57, gear:'automatski menjač'},
+  {name:'Kabriolet · Mini Cabrio ili slično',  base:72, gear:'automatski menjač'},
+  {name:'Premium · BMW serije 3 ili slično',   base:78, gear:'automatski menjač'}
 ];
 function simCars(c){
   const x = simContext(c);
@@ -732,7 +620,7 @@ function simCars(c){
     return {
       title:k.name, sub:x.nights + (x.nights === 1 ? ' dan' : ' dana') + ' · ' + k.gear,
       price:price, priceNote:'ukupno · ≈ ' + money(Math.round(price / x.nights), 'EUR') + ' dnevno',
-      banner:'🚗', url:linkCars(c), simulated:true, photoTitle:k.wiki
+      banner:'🚗', url:linkCars(c), simulated:true
     };
   }).sort((a, b) => a.price - b.price);
 }
@@ -759,7 +647,46 @@ function simActivities(c){
     };
   }).sort((a, b) => a.price - b.price);
 }
-const SIM = {hotels:simHotels, cars:simCars, activities:simActivities};
+const SIM = {hotels:simHotels, cars:simCars, activities:simActivities, flights:simFlights};
+/* ==========================================================
+   LETOVI (simulacija) — realan broj poletanja po ruti je mali
+   (obično 3–6 dnevno za rute koje ova aplikacija pokriva), pa se
+   generiše baš toliko kartica, raspoređenih tokom dana, sa cenom
+   koja zavisi od doba poletanja (rano ujutru/kasno uveče jeftinije,
+   sredina dana skuplje) — isti seed/faktor pristup kao simHotels
+   itd., tako da se brojevi ne menjaju osvežavanjem stranice za isti
+   upit, a menjaju se čim se promeni destinacija ili datum. */
+const FLIGHT_CARRIERS = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
+function simFlights(c){
+  const x = simContext(c);
+  const rng = seededRandom(hashSeed('flight|' + c.dest.name.toLowerCase() + '|' + c.org.name.toLowerCase() + '|' + c.P.start));
+  const depCount = 3 + Math.floor(rng() * 4); // 3–6 poletanja, nikad više
+  const base = 45 + rng() * 130;
+  const rows = [];
+  for (let i = 0; i < depCount; i++){
+    const hour = Math.floor(6 + rng() * 16); // 06:00–22:00
+    const minute = Math.floor(rng() * 12) * 5;
+    const carrier = FLIGHT_CARRIERS[Math.floor(rng() * FLIGHT_CARRIERS.length)];
+    const durationMin = 60 + Math.floor(rng() * 180); // 1h–4h
+    const timeMult = (hour < 8 || hour >= 20) ? 0.85 : (hour >= 11 && hour <= 15) ? 1.15 : 1.0;
+    const price = Math.round(base * timeMult * (0.85 + rng() * 0.3) * x.factor * x.season * x.adults);
+    const depTotal = hour * 60 + minute, arrTotal = depTotal + durationMin;
+    const arrHour = Math.floor(arrTotal / 60) % 24, arrMinute = arrTotal % 60, nextDay = arrTotal >= 24 * 60;
+    rows.push({
+      dep: pad(hour) + ':' + pad(minute),
+      arr: pad(arrHour) + ':' + pad(arrMinute) + (nextDay ? ' (+1d)' : ''),
+      carrier, durationMin, price, sortKey: depTotal
+    });
+  }
+  rows.sort((a, b) => a.sortKey - b.sortKey);
+  return rows.map(r => ({
+    title: r.carrier + ' · ' + r.dep + ' – ' + r.arr,
+    sub: c.org.name + ' → ' + c.dest.name + ' · ' + Math.floor(r.durationMin / 60) + 'h ' + (r.durationMin % 60) + 'min · direktan let',
+    price: r.price,
+    priceNote: x.adults > 1 ? 'ukupno za ' + x.adults + ' putnika' : 'ukupno, povratna karta',
+    banner: '✈️', url: linkFlights(c), simulated: true
+  })).sort((a, b) => a.price - b.price);
+}
 let renderToken = 0;
 /* Vraća Promise<offers[]>: pravi izvor (SKLOPI_FEEDS) ako postoji, inače procena. */
 function getOffers(kind, c){
@@ -775,7 +702,7 @@ function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls
     $(boxId).innerHTML = slider(sliderId, label, list.map(o => offerCard(o, partner, bannerCls)));
     $(countId).textContent = countLabel(list.length);
     initSlider(sliderId);
-    fillPhotos(sliderId, c, kind === 'cars' ? 'titles' : (kind === 'activities' ? 'gallery-rev' : 'gallery'));
+    fillPhotos(sliderId);
   });
 }
 
@@ -786,7 +713,7 @@ function flightCard(o, adults, c){
     '<div class="dp-leg"><div class="dp-fl-route">' + esc(s.origin) + ' <div class="dp-fl-line"></div> ' + esc(s.destination) + '</div>' +
     '<div class="dp-fl-times"><span>' + esc(fmtDT(s.departing_at)) + '</span><span>' + esc(fmtDT(s.arriving_at)) + '</span></div></div>'
   ).join('');
-  return '<article class="dp-sl-card">' + photoBlock(o, o.airline ? ' data-pt="' + esc(o.airline) + '"' : '', '') + '<div class="dp-sl-body">' +
+  return '<article class="dp-sl-card">' + photoBlock(o, '', '') + '<div class="dp-sl-body">' +
     '<div class="dp-flight-row"><div class="dp-fl-logo">' + esc(o.airline_iata || '✈') + '</div>' +
     '<div class="dp-fl-mid"><div class="dp-fl-airline">' + esc(o.airline || 'Aviokompanija') + '</div>' + test + '</div></div>' +
     legs +
@@ -801,14 +728,30 @@ function loadFlights(c){
   const kayak = '<a class="dp-linkbtn dp-primary" href="' + esc(linkFlights(c)) + '" ' + ext + '>Uporedi letove na KAYAK</a>';
   const bar = $('dpTotalBar');
   bar.hidden = true;
-  if (!c.oCode || !c.dCode){
-    list.innerHTML = '<div class="dp-card"><p class="dp-note">Aerodrom za „' + esc(!c.dCode ? c.dest.name : c.org.name) +
-      '“ nije u našoj bazi, pa ponude ne prikazujemo ovde. Letove za tvoje datume možeš da uporediš na KAYAK-u.</p><div class="dp-links">' + kayak + '</div></div>';
-    count.textContent = '';
-    return;
+
+  function showSimulated(){
+    const offers = SIM.flights(c).slice(0, 6);
+    count.textContent = countLabel(offers.length);
+    list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => offerCard(o, 'KAYAK', ''))) +
+      '<div class="dp-links dp-links-after">' + kayak + '</div>';
+    initSlider('dpFlightTrack');
+    fillPhotos('dpFlightTrack');
+    const cheapest = offers[0];
+    if (cheapest){
+      $('dpTbPrice').innerHTML = money(cheapest.price, 'EUR') + ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>';
+      $('dpTbLink').href = linkFlights(c);
+      bar.hidden = false;
+    }
   }
+
   const my = ++flightReq;
   if (flightAbort) flightAbort.abort();
+  if (!c.oCode || !c.dCode){
+    // Aerodrom nije u našoj bazi za tačnu KAYAK rutu, ali destinaciju i
+    // dalje znamo po imenu — ilustrativna procena i dalje ima smisla.
+    showSimulated();
+    return;
+  }
   flightAbort = new AbortController();
   const timer = setTimeout(() => flightAbort.abort(), 25000);
   list.innerHTML = '<div class="dp-card"><p class="dp-note">Tražimo letove za tvoje datume…</p></div>';
@@ -822,16 +765,13 @@ function loadFlights(c){
       clearTimeout(timer);
       if (!res.ok) throw new Error('api');
       const offers = ((res.j && res.j.offers) || []).slice()
-        .sort((a,b) => parseFloat(a.total_amount) - parseFloat(b.total_amount)).slice(0,10);
-      if (!offers.length){
-        list.innerHTML = '<div class="dp-card"><p class="dp-note">Za ove datume nema ponuda na ovoj ruti. Probaj druge datume ili uporedi na KAYAK-u.</p><div class="dp-links">' + kayak + '</div></div>';
-        return;
-      }
+        .sort((a,b) => parseFloat(a.total_amount) - parseFloat(b.total_amount)).slice(0, 6);
+      if (!offers.length) throw new Error('empty');
       count.textContent = countLabel(offers.length);
       list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => flightCard(o, c.P.adults, c))) +
         '<div class="dp-links dp-links-after">' + kayak + '</div>';
       initSlider('dpFlightTrack');
-      fillPhotos('dpFlightTrack', c, 'titles');
+      fillPhotos('dpFlightTrack');
       const cheapest = offers[0];
       $('dpTbPrice').innerHTML = money(cheapest.total_amount, cheapest.total_currency) +
         ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>';
@@ -842,7 +782,7 @@ function loadFlights(c){
     .catch(() => {
       if (my !== flightReq) return;
       clearTimeout(timer);
-      list.innerHTML = '<div class="dp-card"><p class="dp-note">Trenutno ne možemo da učitamo ponude letova. Uporedi ih direktno na KAYAK-u.</p><div class="dp-links">' + kayak + '</div></div>';
+      showSimulated();
     });
 }
 
@@ -864,16 +804,16 @@ function renderResults(P){
     '<div class="dp-hero-fact">✈️ Polazak: <b>' + esc(org.name) + '</b></div>';
 
   /* --- letovi (sadržaj se puni asinhrono) --- */
+  const simNote = '<p class="dp-note dp-note-top">Primeri ponuda sa ilustrativnim cenama. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
   const viaNote = (c.oVia || c.dVia)
     ? '<p class="dp-note dp-note-top">' +
       (c.oVia ? esc(org.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.oVia) + '. ' : '') +
       (c.dVia ? esc(dest.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.dVia) + '. ' : '') + '</p>'
     : '';
   let html = '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
-    viaNote + '<div id="dpFlightList" aria-live="polite"></div></div>';
+    simNote + viaNote + '<div id="dpFlightList" aria-live="polite"></div></div>';
 
   /* --- smeštaj --- */
-  const simNote = '<p class="dp-note dp-note-top">Primeri ponuda sa ilustrativnim cenama. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
   html += '<div class="dp-section" id="smestaj">' + sectionHead('🛏️', 'Smeštaj', '', 'dpHotelCount', 'dpHotelTrack') + simNote +
     '<div id="dpHotelBox"></div></div>';
 
@@ -981,7 +921,7 @@ function renderResults(P){
     tips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
       '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
 
-  html += '<p class="dp-disclosure">Linkovi ka KAYAK-u, Booking.com-u i Viator-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera. Fotografije: Wikimedia Commons (licence prema autorima).</p>';
+  html += '<p class="dp-disclosure">Linkovi ka KAYAK-u, Booking.com-u i Viator-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.</p>';
 
   $('dpResults').innerHTML = html;
   $('dpResults').hidden = false;
