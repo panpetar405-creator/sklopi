@@ -292,6 +292,7 @@ function applyStaticI18n(){
   document.querySelectorAll('[data-i18n-aria-label]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label'))); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.setAttribute('title', t(el.getAttribute('data-i18n-title'))); });
   document.querySelectorAll('[data-i18n-alt]').forEach(el => { el.setAttribute('alt', t(el.getAttribute('data-i18n-alt'))); });
+  document.querySelectorAll('[data-aff-disclosure]').forEach(el => { el.textContent = affDisc(); });
   renderLangSwitch(lang);
   const titleEl = document.querySelector('title');
   if (titleEl) titleEl.textContent = t('meta_title');
@@ -1443,6 +1444,19 @@ function flightRouteMult(originRaw, destRaw){
         (uklonjeno sa kartica — vidi pkgHtml), tako da ovaj link
         još nije user-facing.
 ========================================================== */
+/* Obaveštenje o partnerskim linkovima (builder + rezultati). Isti obrazac kao
+   DEST_TXT: tekst živi ovde (sr/en/ru), pada na srpski ako jezika nema.
+   Pokriva partnere čiji se linkovi stvarno prikazuju: KAYAK (let),
+   Booking.com (hotel/auto), Viator (aktivnosti). Ako se Airalo ili osiguranje
+   ikad prikažu u UI-ju, dodaj ih i ovde. */
+function affDisc(){
+  const D = {
+    sr:'Linkovi ka KAYAK-u, Booking.com-u i Viator-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.',
+    en:'Links to KAYAK, Booking.com and Viator are affiliate links: SKLOPI may earn a commission at no extra cost to you. Confirm prices and availability on the partner\'s site.',
+    ru:'Ссылки на KAYAK, Booking.com и Viator партнёрские: SKLOPI может получить комиссию, а цена для вас не меняется. Цены и наличие проверяйте на сайте партнёра.'
+  };
+  return D[getLang()] || D.sr;
+}
 const AFF_IDS = window.SKLOPI_AFF_IDS || {};
 function affId(kind){ return AFF_IDS[PARTNERS[kind].provider] || 'SKLOPI'; }
 
@@ -4332,7 +4346,7 @@ function itemCardHtml(item, kind, pkg){
       <div class="item-sub">${escapeHtml(item.sub)}</div>
       ${item.perks && item.perks.length ? `<ul class="item-perks">${item.perks.map(pk => `<li class="perk ${pk.pos === true ? 'pos' : pk.pos === false ? 'neg' : 'neu'}" data-i18n="${pk.k}">${escapeHtml(t(pk.k))}</li>`).join('')}</ul>` : ''}
       <div class="item-price tabular">${fmtEUR(item.price)}</div>
-      <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" data-dest="${escapeHtml(pkg&&pkg.dest||'')}" data-tier="${escapeHtml(pkg&&pkg.tier||'')}" onclick="bookItem(this)" data-i18n="${btnKey[kind]}">${escapeHtml(t(btnKey[kind]))}</a>
+      <a class="item-btn ${kind}" href="${escapeHtml(item.bookUrl||'#')}" target="_blank" rel="noopener sponsored" data-kind="${kind}" data-price="${item.price}" data-url="${escapeHtml(item.bookUrl||'')}" data-dest="${escapeHtml(pkg&&pkg.dest||'')}" data-tier="${escapeHtml(pkg&&pkg.tier||'')}" onclick="bookItem(this)" data-i18n="${btnKey[kind]}">${escapeHtml(t(btnKey[kind]))}</a>
       ${affBadgeHtml()}
     </div>
   </div>`;
@@ -4372,7 +4386,7 @@ function pkgHtml(pkg){
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     ${(() => {
       const extraTiles = [
-        pkg.activity ? `<div class="extra activity-extra">${iconSvg('activity')}<div><div class="lab">${escapeHtml(pkg.activity.name.split(' — ')[0])}</div><div class="val tabular">${fmtEUR(pkg.activity.price)}</div></div><a class="extra-btn" href="${escapeHtml(pkg.activity.bookUrl||'#')}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(pkg.activity.bookUrl||'')}" data-dest="${escapeHtml(pkg.dest||'')}" data-tier="${escapeHtml(pkg.tier||'')}" onclick="bookItem(this)">Viator</a>${affBadgeHtml()}</div>` : '',
+        pkg.activity ? `<div class="extra activity-extra">${iconSvg('activity')}<div><div class="lab">${escapeHtml(pkg.activity.name.split(' — ')[0])}</div><div class="val tabular">${fmtEUR(pkg.activity.price)}</div></div><a class="extra-btn" href="${escapeHtml(pkg.activity.bookUrl||'#')}" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(pkg.activity.bookUrl||'')}" data-dest="${escapeHtml(pkg.dest||'')}" data-tier="${escapeHtml(pkg.tier||'')}" onclick="bookItem(this)">Viator</a>${affBadgeHtml()}</div>` : '',
         pkg.car ? `<div class="extra fuel-extra">${iconSvg('fuel')}<div><div class="lab">${t('fuel_estimate')}</div><div class="val tabular">${fmtEUR(pkg.fuel)}</div></div></div>` : '',
         pkg.car ? `<div class="extra tolls-extra">${iconSvg('tolls')}<div><div class="lab">${t('tolls_estimate')}</div><div class="val tabular">${fmtEUR(pkg.tolls)}</div></div></div>` : ''
         // Osiguranje i eSIM dodaci su uklonjeni sa ovih kartica — sad se
@@ -5208,20 +5222,21 @@ function renderBuilder(){
   });
   const bookBtns = [];
   if (builderState.includeFlight){
-    bookBtns.push(`<span class="bbl-item"><a class="item-btn flight" href="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" target="_blank" rel="noopener" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">✈️ KAYAK</a>${affBadgeHtml()}</span>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn flight" href="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" target="_blank" rel="noopener sponsored" data-kind="flight" data-price="${pkg.flight.price}" data-url="${escapeHtml(buildAffiliateLink('flight', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">✈️ KAYAK</a>${affBadgeHtml()}</span>`);
   }
   if (builderState.includeHotel){
-    bookBtns.push(`<span class="bbl-item"><a class="item-btn hotel" href="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🏨 Booking.com</a>${affBadgeHtml()}</span>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn hotel" href="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" target="_blank" rel="noopener sponsored" data-kind="hotel" data-price="${pkg.hotel.price}" data-url="${escapeHtml(buildAffiliateLink('hotel', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🏨 Booking.com</a>${affBadgeHtml()}</span>`);
   }
   if (builderState.carPref !== 'none'){
-    bookBtns.push(`<span class="bbl-item"><a class="item-btn car" href="${escapeHtml(buildAffiliateLink('car', linkCtx))}" target="_blank" rel="noopener" data-kind="car" data-price="${pkg.car.price}" data-url="${escapeHtml(buildAffiliateLink('car', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🚗 Booking.com</a>${affBadgeHtml()}</span>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn car" href="${escapeHtml(buildAffiliateLink('car', linkCtx))}" target="_blank" rel="noopener sponsored" data-kind="car" data-price="${pkg.car.price}" data-url="${escapeHtml(buildAffiliateLink('car', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🚗 Booking.com</a>${affBadgeHtml()}</span>`);
   }
   if (builderState.activityCount > 0){
-    bookBtns.push(`<span class="bbl-item"><a class="item-btn" style="background:var(--aqua);" href="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" target="_blank" rel="noopener" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🎟️ Viator</a>${affBadgeHtml()}</span>`);
+    bookBtns.push(`<span class="bbl-item"><a class="item-btn" style="background:var(--aqua);" href="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="${pkg.activity.price}" data-url="${escapeHtml(buildAffiliateLink('activity', linkCtx))}" data-dest="${escapeHtml(linkCtx.dest||'')}" data-tier="builder" onclick="bookItem(this)">🎟️ Viator</a>${affBadgeHtml()}</span>`);
   }
   document.getElementById('builderBookLinks').innerHTML =
     '<div class="bbl-label">Rezerviši svaku stavku direktno kod partnera:</div>' +
-    '<div class="builder-book-row">' + bookBtns.join('') + '</div>';
+    '<div class="builder-book-row">' + bookBtns.join('') + '</div>' +
+    '<p class="disclaimer" style="margin-top:10px;">' + escapeHtml(affDisc()) + '</p>';
 }
 
 function wireChipGroup(groupName, onChange){
@@ -7743,7 +7758,7 @@ function destOfferHtml(it, kind){
       <div class="item-name">${escapeHtml(h.name)}</div>
       <div class="item-sub">${escapeHtml(h.sub)}</div>
       <div class="item-price tabular">${fmtEUR(h.price)} <span class="dc-per">${escapeHtml(dtx('per_night'))}</span></div>
-      <div class="dc-actions"><a class="item-btn hotel dc-book" href="${escapeHtml(destPartnerLink('hotel', it.dest, it.row))}" target="_blank" rel="noopener" data-kind="hotel" data-price="${h.price}" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(t('btn_book_booking'))}</a></div>
+      <div class="dc-actions"><a class="item-btn hotel dc-book" href="${escapeHtml(destPartnerLink('hotel', it.dest, it.row))}" target="_blank" rel="noopener sponsored" data-kind="hotel" data-price="${h.price}" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(t('btn_book_booking'))}</a></div>
     </div>`;
   }
   const nameKey = it.row === 'nature' ? 'act_nature' : 'act_city';
@@ -7751,7 +7766,7 @@ function destOfferHtml(it, kind){
       <div class="item-label"><span>${escapeHtml(dtx('label_activity'))}</span><span class="item-provider">${escapeHtml(provider)}</span></div>
       <div class="item-name">${escapeHtml(dtx(nameKey))}</div>
       <div class="item-sub">${escapeHtml(dtx('act_sub'))}</div>
-      <div class="dc-actions"><a class="item-btn activity dc-book" href="${escapeHtml(destPartnerLink('activity', it.dest, it.row))}" target="_blank" rel="noopener" data-kind="activity" data-price="0" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(dtx('btn_viator'))}</a></div>
+      <div class="dc-actions"><a class="item-btn activity dc-book" href="${escapeHtml(destPartnerLink('activity', it.dest, it.row))}" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="0" data-url="" data-dest="${escapeHtml(it.dest)}" data-tier="destinacije" onclick="bookItem(this)">${escapeHtml(dtx('btn_viator'))}</a></div>
     </div>`;
 }
 
