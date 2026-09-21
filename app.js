@@ -3872,7 +3872,7 @@ const MATCH_DESTINATIONS = [
   {name:'Sidnej', extra:'Australija', vibes:['city','sea'], months:[10,11,12,1,2,3], distance:'far', family:true, nightlife:false},
   {name:'Kejptaun', extra:'Južnoafrička Republika', vibes:['nature','sea'], months:[10,11,12,1,2,3], distance:'far', family:true, nightlife:false},
   // Skijaški centri — najpoznatije skijalište po zemlji (koristi ih red "Skijaški centri", zamena za "Blizu Srbije").
-  {name:'Kolašin 1450', extra:'Crna Gora', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
+  {name:'Žabljak', extra:'Crna Gora', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
   {name:'Kitzbühel', extra:'Austrija', vibes:['ski'], months:[12,1,2,3], distance:'near', family:true, nightlife:true},
   {name:'Garmisch-Partenkirchen', extra:'Nemačka', vibes:['ski','nature'], months:[12,1,2,3], distance:'medium', family:true, nightlife:false},
   {name:'Kopaonik', extra:'Srbija', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
@@ -7466,7 +7466,7 @@ const DEST_EN_NAMES = {
   'Kapadokija':'Cappadocia','Kairo':'Cairo','Šarm El Šeik':'Sharm El Sheikh','Marakeš':'Marrakesh',
   'Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
   'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town',
-  'Kolašin 1450':'Kolašin','St. Anton am Arlberg':'St. Anton am Arlberg'
+  'St. Anton am Arlberg':'St. Anton am Arlberg'
 };
 // Šta kartica nudi po vrsti slajdera: 'hotel' (Booking.com) ili 'activity' (Viator).
 const DEST_ROW_PARTNER = {ski:'hotel', sea:'hotel', city:'activity', nature:'activity'};
