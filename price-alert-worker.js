@@ -433,6 +433,36 @@ async function handleSendConfirmation(request, env) {
     );
   }
 
+  /*
+   * Zaštita od zloupotrebe (email bombing): pre slanja "rezervišemo"
+   * slanje u bazi. claim_confirmation_send (vidi
+   * 20260918100006_price_alerts_hardening.sql) atomično proverava
+   * cooldown (10 min) i maksimum (3 mejla po alertu). Neuspelo slanje
+   * takođe troši jedan pokušaj — namerno, radi jednostavnosti.
+   */
+  const claim = await sbFetch(env, 'rpc/claim_confirmation_send', {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({ p_id: rows[0].id })
+  });
+
+  if (!claim.ok) {
+    console.error(
+      '[price-alert-worker] claim_confirmation_send nije uspeo:',
+      await safeResponseText(claim)
+    );
+    return new Response('Greška servera.', { status: 500, headers: cors });
+  }
+
+  const allowed = await claim.json().catch(() => null);
+
+  if (allowed !== true) {
+    return new Response(
+      'Potvrdni mejl je već poslat — proveri inbox (i spam) ili pokušaj kasnije.',
+      { status: 429, headers: { ...cors, 'Retry-After': '600' } }
+    );
+  }
+
   const sent = await sendConfirmationEmail(rows[0], env);
 
   if (!sent) {
