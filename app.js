@@ -3871,6 +3871,15 @@ const MATCH_DESTINATIONS = [
   {name:'Singapur', extra:'Singapur', vibes:['city'], months:[1,2,3,4,11,12], distance:'far', family:true, nightlife:true},
   {name:'Sidnej', extra:'Australija', vibes:['city','sea'], months:[10,11,12,1,2,3], distance:'far', family:true, nightlife:false},
   {name:'Kejptaun', extra:'Južnoafrička Republika', vibes:['nature','sea'], months:[10,11,12,1,2,3], distance:'far', family:true, nightlife:false},
+  // Skijaški centri — najpoznatije skijalište po zemlji (koristi ih red "Skijaški centri", zamena za "Blizu Srbije").
+  {name:'Kolašin 1450', extra:'Crna Gora', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
+  {name:'Kitzbühel', extra:'Austrija', vibes:['ski'], months:[12,1,2,3], distance:'near', family:true, nightlife:true},
+  {name:'Garmisch-Partenkirchen', extra:'Nemačka', vibes:['ski','nature'], months:[12,1,2,3], distance:'medium', family:true, nightlife:false},
+  {name:'Kopaonik', extra:'Srbija', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
+  {name:'Chamonix', extra:'Francuska', vibes:['ski','nature'], months:[12,1,2,3], distance:'medium', family:true, nightlife:true},
+  {name:'St. Anton am Arlberg', extra:'Austrija', vibes:['ski'], months:[12,1,2,3], distance:'near', family:false, nightlife:true},
+  {name:'Kranjska Gora', extra:'Slovenija', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
+  {name:'Jahorina', extra:'Bosna i Hercegovina', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
 ];
 
 // Getteri, pa oznake prate trenutni jezik (koristi ih matchReasonSentence i naslov rezultata).
@@ -7456,45 +7465,47 @@ const DEST_EN_NAMES = {
   'Lisabon':'Lisbon','Pariz':'Paris','Nica':'Nice','Minhen':'Munich','Cirih':'Zürich','Antalija':'Antalya',
   'Kapadokija':'Cappadocia','Kairo':'Cairo','Šarm El Šeik':'Sharm El Sheikh','Marakeš':'Marrakesh',
   'Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
-  'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town'
+  'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town',
+  'Kolašin 1450':'Kolašin','St. Anton am Arlberg':'St. Anton am Arlberg'
 };
 // Šta kartica nudi po vrsti slajdera: 'hotel' (Booking.com) ili 'activity' (Viator).
-const DEST_ROW_PARTNER = {near:'hotel', sea:'hotel', city:'activity', nature:'activity'};
-const DEST_ROW_ICON = {near:'🧭', sea:'🏖️', city:'🏛️', nature:'🌲'};
+const DEST_ROW_PARTNER = {ski:'hotel', sea:'hotel', city:'activity', nature:'activity'};
+const DEST_ROW_ICON = {ski:'⛷️', sea:'🏖️', city:'🏛️', nature:'🌲'};
 // Ključna reč koja se dodaje nazivu grada u Viator pretrazi.
 const DEST_VIATOR_KEYWORD = {city:'museums', nature:'nature tours'};
 // Viator pretraga za sliku kartice = engleski naziv grada + ključna reč vrste odmora
 // (isti izraz kao u Viator linku na kartici, a za "More i plaža" — plaža).
-const DEST_IMG_KEYWORD = Object.assign({sea:'beach'}, DEST_VIATOR_KEYWORD);
+const DEST_IMG_KEYWORD = Object.assign({sea:'beach', ski:'ski resort'}, DEST_VIATOR_KEYWORD);
 const DEST_ROW_LIMIT = 8;
 const DEST_SPARE_LIMIT = 6; // rezervne destinacije po slajderu, za zamenu kad ponuđena nema sliku
 // prio = redosled kojim slajderi "biraju" gradove (da se nijedan ne ponovi); redosled prikaza je redosled niza.
+// "ski" (Skijaški centri) je zamenio raniji "near" (Blizu Srbije) red — prvi u prikazu.
 const DEST_ROW_DEFS = [
-  {key:'near',   prio:1, test: d => d.distance === 'near'},
+  {key:'ski',    prio:1, test: d => d.vibes.includes('ski')},
   {key:'sea',    prio:2, test: d => d.vibes.includes('sea')},
   {key:'city',   prio:3, test: d => d.vibes.includes('city')},
-  {key:'nature', prio:0, test: d => d.vibes.includes('nature') && !d.vibes.includes('city')}
+  {key:'nature', prio:0, test: d => d.vibes.includes('nature') && !d.vibes.includes('city') && !d.vibes.includes('ski')}
 ];
 // Tekstovi sekcije žive ovde (ne u i18n-data.js) da sekcija radi bez izmene prevoda;
 // ako nedostaje jezik, pada na srpski kao i t().
 const DEST_TXT = {
   sr:{eyebrow:'Odaberi pravac', title:'Destinacije',
       sub:'Prelistaj ideje po vrsti odmora. Klikni na naziv grada i upisujemo ga u pretragu, ili otvori ponudu partnera — datume biraš ti.',
-      row_near:'Blizu Srbije', row_sea:'More i plaža', row_city:'Gradovi i kultura', row_nature:'Priroda i planina',
+      row_ski:'Skijaški centri', row_sea:'More i plaža', row_city:'Gradovi i kultura', row_nature:'Priroda i planina',
       prev:'Prethodne destinacije', next:'Sledeće destinacije', pick_aria:'Upiši u pretragu: ',
       per_night:'po noći', label_activity:'Atrakcije', btn_viator:'Pogledaj na Viator-u',
       act_city:'Muzeji, pozorišta i galerije', act_nature:'Priroda, parkovi i izleti', act_sub:'Ulaznice i organizovane ture',
       credit:'Cene su ilustrativna procena; tačnu cenu i dostupnost proveri kod partnera. Linkovi ka Booking.com-u i Viator-u su partnerski — SKLOPI može da dobije proviziju, a tebi cena ostaje ista.'},
   en:{eyebrow:'Pick a direction', title:'Destinations',
       sub:'Browse ideas by kind of trip. Tap a city name and we fill it into the search, or open the partner offer — you pick the dates.',
-      row_near:'Close to Serbia', row_sea:'Sea and beaches', row_city:'Cities and culture', row_nature:'Nature and mountains',
+      row_ski:'Ski resorts', row_sea:'Sea and beaches', row_city:'Cities and culture', row_nature:'Nature and mountains',
       prev:'Previous destinations', next:'Next destinations', pick_aria:'Fill into search: ',
       per_night:'per night', label_activity:'Attractions', btn_viator:'View on Viator',
       act_city:'Museums, theatres and galleries', act_nature:'Nature, parks and day trips', act_sub:'Tickets and guided tours',
       credit:'Prices are an illustrative estimate; check the exact price and availability with the partner. Links to Booking.com and Viator are affiliate links — SKLOPI may earn a commission at no extra cost to you.'},
   ru:{eyebrow:'Выбери направление', title:'Направления',
       sub:'Листай идеи по типу отдыха. Нажми на название города — мы подставим его в поиск, или открой предложение партнёра — даты выбираешь ты.',
-      row_near:'Недалеко от Сербии', row_sea:'Море и пляжи', row_city:'Города и культура', row_nature:'Природа и горы',
+      row_ski:'Горнолыжные курорты', row_sea:'Море и пляжи', row_city:'Города и культура', row_nature:'Природа и горы',
       prev:'Предыдущие направления', next:'Следующие направления', pick_aria:'Подставить в поиск: ',
       per_night:'за ночь', label_activity:'Впечатления', btn_viator:'Смотреть на Viator',
       act_city:'Музеи, театры и галереи', act_nature:'Природа, парки и экскурсии', act_sub:'Билеты и экскурсии с гидом',
