@@ -112,7 +112,7 @@ function breakdown(pkg){
     insurance: n(pkg.insuranceCost),
     tolls: n(pkg.tolls),
     esim: n(pkg.esimCost),
-    transfer: 0
+    transfer: n(pkg.transferCost)
   };
 }
 /* Procenti koji se uvek sabiraju na 100 (metod najvećeg ostatka) */
@@ -145,7 +145,6 @@ function buildShell(){
   host.innerHTML =
     '<div class="price-chart">' +
       '<div class="price-chart-head"><h3>' + esc(tr('pc_title')) + '</h3><p>' + esc(tr('pc_sub')) + '</p></div>' +
-      '<p class="price-chart-scn" id="pmScn"></p>' +
       '<div class="price-hbar-list" id="pmList" role="img">' + rows + '</div>' +
       '<p class="price-chart-empty" id="pmEmpty" hidden style="margin:0;font-size:14px;color:var(--ink-soft);">' + esc(tx('empty')) + '</p>' +
       '<p class="price-chart-updated" id="pmUpdated" aria-live="off"></p>' +
@@ -153,13 +152,6 @@ function buildShell(){
     '</div>';
   if (REDUCED) host.querySelectorAll('.phr-fill').forEach(el => el.style.transition = 'none');
   return host;
-}
-
-function scenarioText(ctx){
-  let s = '';
-  try { s = (typeof cityLabel === 'function' ? cityLabel(ctx.dest) : ctx.dest); } catch(e){ s = ctx.dest; }
-  try { s += ' · ' + fmtDate(ctx.from) + ' – ' + fmtDate(ctx.to); } catch(e){}
-  return s + ' · ' + tx('per');
 }
 
 function updateAgo(){
@@ -178,7 +170,6 @@ function render(src){
 
   $('pmEmpty').hidden = calc.total > 0;
   list.hidden = calc.total === 0;
-  $('pmScn').textContent = scenarioText(src.ctx);
 
   ROWS.forEach(r => {
     const row = list.querySelector('[data-key="' + r.key + '"]');

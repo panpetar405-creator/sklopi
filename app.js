@@ -2624,9 +2624,9 @@ function buildPriceSeeds(rng){
 
 
 const EXTRA_COSTS = {
-  best:    {fuel:45, tolls:28, insurance:22, esim:12},
-  comfort: {fuel:58, tolls:34, insurance:34, esim:18},
-  budget:  {fuel:28, tolls:14, insurance:14, esim:8}
+  best:    {fuel:45, tolls:28, insurance:22, esim:12, transfer:25},
+  comfort: {fuel:58, tolls:34, insurance:34, esim:18, transfer:32},
+  budget:  {fuel:28, tolls:14, insurance:14, esim:8,  transfer:18}
 };
 
 /* ==========================================================
@@ -2689,6 +2689,10 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
   // sabira u `total` dok ih korisnik svesno ne uključi (vidi toggleAddon).
   const insuranceCost = extras.insurance;
   const esimCost = extras.esim;
+  // Transferi (aerodrom–smeštaj) — isti princip kao osiguranje/eSIM: fiksan
+  // dodatak po tier-u, uvek dostupan (za prikaz, npr. u price-mix grafikonu),
+  // ali se ne sabira u `total` dok ga korisnik svesno ne uključi.
+  const transferCost = extras.transfer;
 
   const total = (flight?flight.price:0) + (hotel?hotel.price:0) + (car?car.price:0)
               + (activity?activity.price:0) + fuel + tolls;
@@ -2705,7 +2709,7 @@ function buildPackage(rng, dest, nights, days, adults, tier, flags, factor, orig
   // a ne iz fiksne konstante po tier-u.
   const qualityScore = qualityFromPerks([flight, hotel, car], tier);
 
-  return {tier, flight, hotel, car, activity, fuel, tolls, insuranceCost, esimCost, total, qualityScore,
+  return {tier, flight, hotel, car, activity, fuel, tolls, insuranceCost, esimCost, transferCost, total, qualityScore,
     // Stvarno tražene kategorije (isti izbor za sve tri kartice — vidi
     // komentar uz `flags` u runSearch) — pkgDescText ih koristi umesto da
     // nagađa tip leta/auta iz tier-a, jer tier više ne menja KATEGORIJU
