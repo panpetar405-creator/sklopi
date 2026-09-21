@@ -46,15 +46,20 @@
      srpski tekst iz ovog fajla. Napomene (note) i nazivi prevoznika
      ostaju na srpskom u svim jezicima.
 
-   PARTNER LINK — ❌ NIJE SPREMNO ZA PROVIZIJU: dugme vodi na početnu
-   Omio-a bez tracking parametara. Omio affiliate program radi preko
-   Travelpayouts-a; kad se nalog odobri, zameni TRANSPORT_PARTNER_URL
-   pravim tracking linkom iz njihovog panela i tek tada dodaj
-   affBadgeHtml() pored dugmeta (bez tracking-a se NE sme označavati
-   kao partnerski link).
+   PARTNER LINK — ❌ NIJE SPREMNO ZA PROVIZIJU: dok u config.js
+   (SKLOPI_AFF_IDS.omio) nema linka, dugme vodi na početnu Omio-a bez
+   tracking parametara i NIJE označeno kao partnerski (bez tracking-a se
+   NE sme označavati kao partnerski link). Omio affiliate program radi
+   preko Travelpayouts-a; kad se nalog odobri, nalepi CEO tracking link
+   iz njihovog panela u config.js → SKLOPI_AFF_IDS.omio. Tada dugme
+   automatski dobija rel="sponsored" + oznaku, a napomena o proviziji
+   (affDisc u app.js) dobija i Omio. Nema izmena u ovom fajlu.
 ========================================================== */
 const TRANSPORT_DATA_CHECKED = 'septembar 2026';
-const TRANSPORT_PARTNER_URL = 'https://www.omio.com/';
+const TRANSPORT_PLAIN_URL = 'https://www.omio.com/';
+// Pravi tracking link dolazi iz config.js preko affiliate.js; bez njega običan link.
+function _tcPartnerLive(){ return !!(window.SKLOPI_AFF && window.SKLOPI_AFF.isLive('omio') && window.SKLOPI_AFF.url('omio', '')); }
+function _tcPartnerUrl(){ return _tcPartnerLive() ? window.SKLOPI_AFF.url('omio', TRANSPORT_PLAIN_URL) : TRANSPORT_PLAIN_URL; }
 const TRANSPORT_NEAR_KM = 650;
 
 /* ---- AUTO: razdaljina, trajanje i gorivo za bilo koja dva mesta ----
@@ -269,8 +274,10 @@ function _tcRowHtml(kind, m, adults){
 }
 
 function _tcCtaHtml(){
-  return '<a class="tc-cta" href="' + TRANSPORT_PARTNER_URL + '" target="_blank" rel="noopener">' +
-    escapeHtml(_tt('transport_cta', 'Uporedi na Omio-u')) + ' →</a>';
+  const live = _tcPartnerLive();
+  return '<a class="tc-cta" href="' + escapeHtml(_tcPartnerUrl()) + '" target="_blank" rel="noopener' + (live ? ' sponsored' : '') + '">' +
+    escapeHtml(_tt('transport_cta', 'Uporedi na Omio-u')) + ' →</a>' +
+    (live && typeof affBadgeHtml === 'function' ? affBadgeHtml() : '');
 }
 // Zvanični red vožnje i prodaja karata za polaske iz Beograda (Beogradska autobuska stanica).
 function _tcBasLinkHtml(){
