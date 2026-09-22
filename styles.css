@@ -2909,7 +2909,7 @@ footer{padding:28px 20px;}
 .dest-card{
     flex:0 0 72%;max-width:270px;scroll-snap-align:start;position:relative;
     display:flex;flex-direction:column;
-    background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;
+    background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden;
     transition:transform .15s ease,box-shadow .15s ease;
 }
 @media (min-width:600px){.dest-card{flex:0 0 250px;}}
@@ -2919,7 +2919,7 @@ footer{padding:28px 20px;}
 }
 .dest-card .dc-pick:focus-visible{outline:2px solid var(--gold);outline-offset:-3px;}
 .dest-card .dc-photo{
-    display:block;position:relative;aspect-ratio:16/10;overflow:hidden;
+    display:block;position:relative;aspect-ratio:4/3;overflow:hidden;
     background:linear-gradient(160deg,var(--deep) 0%,var(--aqua) 100%);
 }
 .dest-card--activity .dc-photo{background:linear-gradient(160deg,var(--deep2) 0%,var(--deep) 100%);}
@@ -2927,26 +2927,22 @@ footer{padding:28px 20px;}
 .dest-card .dc-photo img.is-broken{visibility:hidden;}
 .dest-card .dc-photo img:not(.is-broken) + .dc-ico{display:none;}
 .dest-card .dc-ico{
-    position:absolute;left:0;right:0;top:0;bottom:42%;display:flex;align-items:center;justify-content:center;
+    position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;
     font-size:40px;line-height:1;opacity:.92;
 }
 .dest-card .dc-pill{
     position:absolute;left:10px;top:10px;z-index:2;
     font-family:'Sora',sans-serif;font-size:12px;font-weight:700;
-    color:var(--ink);background:rgba(250,246,238,0.88);
-    padding:5px 11px;border-radius:999px;backdrop-filter:blur(3px);
-}
-.dest-card .dc-photo::after{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(to top,rgba(12,34,41,0.8) 0%,rgba(12,34,41,0) 60%);
+    color:var(--ink);background:rgba(250,246,238,0.92);
+    padding:6px 12px;border-radius:999px;backdrop-filter:blur(3px);
 }
 .dest-card .dc-cap{
-    position:absolute;left:0;right:0;bottom:0;z-index:1;padding:12px 14px 12px;
-    display:flex;flex-direction:column;gap:1px;color:var(--on-dark-strong);
+    position:static;z-index:auto;padding:16px 14px 0;
+    display:flex;flex-direction:column;gap:2px;color:var(--ink);
 }
-.dest-card .dc-name{font-family:'Sora',sans-serif;font-size:20px;font-weight:600;line-height:1.2;}
-.dest-card .dc-country{font-size:13.5px;color:var(--on-dark);}
-.dest-card .dc-offer{display:flex;flex-direction:column;flex:1;padding:12px 14px 14px;}
+.dest-card .dc-name{font-family:'Sora',sans-serif;font-size:19px;font-weight:800;line-height:1.2;}
+.dest-card .dc-country{font-size:13.5px;color:var(--ink-soft);}
+.dest-card .dc-offer{display:flex;flex-direction:column;flex:1;padding:12px 14px 16px;margin-top:6px;border-top:1px dashed var(--line-warm,var(--line));}
 .dest-card--hotel .item-label{color:var(--gold-text);}
 .dest-card--activity .item-label{color:var(--deep);}
 .dest-card .dc-offer .item-name{font-size:17px;}
