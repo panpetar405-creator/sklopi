@@ -138,6 +138,56 @@ a{color:inherit;}
 .hamburger.open{background:var(--deep);border-color:var(--deep);color:var(--gold-soft);}
 .hamburger svg{width:18px;height:18px;}
 .topbar-right{display:flex;align-items:center;gap:10px;}
+/* ---- Redizajn 2026: novi navbar logo + "Sastavi put" dugme ---- */
+.logo-v2{display:flex;align-items:center;gap:10px;font-family:'Sora',sans-serif;font-weight:800;font-size:22px;color:var(--ink);}
+.logo-v2 .mark-v2{width:38px;height:38px;border-radius:11px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
+.logo-v2 .mark-v2 svg{width:20px;height:20px;}
+.logo-v2 em{font-style:normal;color:var(--coral);margin-left:2px;}
+.cta-sastavi{
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--ink);color:var(--on-dark-strong);
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;
+    padding:12px 22px;border-radius:999px;border:none;cursor:pointer;
+    text-decoration:none;white-space:nowrap;transition:opacity .15s ease;
+}
+.cta-sastavi:hover{opacity:0.88;}
+/* ---- Redizajn 2026: novi marketing hero ---- */
+.hero-v2{
+    background:radial-gradient(120% 100% at 15% 0%, var(--deep) 0%, var(--deep2) 65%, #08181D 100%);
+    padding:56px 20px 64px;color:var(--on-dark-strong);
+}
+.hero-v2-inner{max-width:640px;margin:0 auto;}
+.hero-v2-eyebrow{display:flex;align-items:center;gap:10px;color:var(--gold);font-weight:700;font-size:15px;margin:0 0 18px;}
+.hero-v2-eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--coral);flex:none;}
+.hero-v2 h1{
+    font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(34px,7vw,52px);
+    line-height:1.12;margin:0 0 20px;color:var(--on-dark-strong);
+}
+.hero-v2 h1 .accent-coral{color:var(--coral);}
+.hero-v2 .hero-v2-lede{
+    font-family:'Inter',sans-serif;font-size:17px;line-height:1.55;
+    color:var(--on-dark-soft);margin:0 0 32px;max-width:520px;
+}
+.hero-v2-actions{display:flex;flex-direction:column;gap:14px;align-items:flex-start;margin-bottom:40px;}
+.hero-v2-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--coral);color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:16px;
+    padding:16px 30px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;
+    box-shadow:0 18px 34px -14px rgba(255,90,56,0.55);transition:transform .15s ease;
+}
+.hero-v2-cta:hover{transform:translateY(-1px);}
+.hero-v2-secondary{
+    display:inline-flex;align-items:center;gap:10px;
+    background:transparent;color:var(--on-dark-strong);font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;
+    padding:13px 24px;border-radius:999px;border:1px solid var(--line-deep);cursor:pointer;text-decoration:none;
+}
+.hero-v2-stats{display:flex;gap:40px;flex-wrap:wrap;}
+.hero-v2-stat b{display:block;font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--on-dark-strong);}
+.hero-v2-stat span{font-family:'Inter',sans-serif;font-size:13px;color:var(--on-dark-soft);}
+.hero-v2-formlink{
+    display:block;margin-top:36px;text-align:center;color:var(--on-dark-soft);
+    font-family:'Inter',sans-serif;font-size:13.5px;text-decoration:underline;text-underline-offset:3px;
+}
 .lang-switch{
     border:1px solid var(--line);border-radius:999px;background:var(--paper);
     color:var(--ink);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
