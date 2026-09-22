@@ -1034,5 +1034,15 @@
   "airport_note.kijev": "Kyiv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Warsaw (about 8 h by car); it is more realistic to consider a train or bus via Poland.",
   "airport_note.lavov": "Lviv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Rzeszów in Poland (about 2 h by car).",
   "airport_note.odesa": "Odesa has no active airport — Ukrainian airspace has been closed to civil traffic since 2022. The nearest active airport is Chișinău in Moldova (about 3 h by car).",
-  "airport_note.harkov": "Kharkiv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022, and the city is close to the war zone."
+  "airport_note.harkov": "Kharkiv has no active airport — Ukrainian airspace has been closed to civil traffic since 2022, and the city is close to the war zone.",
+  "hero_v2_cta_short": "Build a trip",
+  "hero_v2_eyebrow": "Trip planning, done differently",
+  "hero_v2_title": "Flights, hotels, cars and experiences — <span class=\"accent-coral\">bundled</span> into one price.",
+  "hero_v2_lede": "Instead of ten open tabs and manual adding-up, SKLOPI merges every part of your trip into one clear number — before you even pick your dates.",
+  "hero_v2_cta": "Build your trip",
+  "hero_v2_secondary": "▶ How the price add-up works",
+  "hero_v2_stat1_num": "700+",
+  "hero_v2_stat1_label": "destinations available",
+  "hero_v2_stat2_num": "5",
+  "hero_v2_stat2_label": "booking partners"
 }

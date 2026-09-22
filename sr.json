@@ -1034,5 +1034,15 @@
   "airport_note.kijev": "Kijev nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Varšava (oko 8h vožnje), realnije je razmotriti voz/autobus preko Poljske.",
   "airport_note.lavov": "Lavov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Žešuv u Poljskoj (oko 2h vožnje).",
   "airport_note.odesa": "Odesa nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022. Najbliži aktivan aerodrom je Kišinjev u Moldaviji (oko 3h vožnje).",
-  "airport_note.harkov": "Harkov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022, a grad je blizu ratne zone."
+  "airport_note.harkov": "Harkov nema aktivan aerodrom — vazdušni prostor Ukrajine je zatvoren za civilni saobraćaj od 2022, a grad je blizu ratne zone.",
+  "hero_v2_cta_short": "Sastavi put",
+  "hero_v2_eyebrow": "Sastavljanje putovanja, drugačije",
+  "hero_v2_title": "Let, hotel, auto i doživljaji — <span class=\"accent-coral\">sklopljeni</span> u jednu cenu.",
+  "hero_v2_lede": "Umesto deset otvorenih kartica i ručnog sabiranja, SKLOPI spaja sve delove putovanja u jedan pregledan broj — pre nego što uopšte izabereš datume.",
+  "hero_v2_cta": "Sastavi svoj put",
+  "hero_v2_secondary": "▶ Kako radi sabiranje cene",
+  "hero_v2_stat1_num": "700+",
+  "hero_v2_stat1_label": "lokacija u ponudi",
+  "hero_v2_stat2_num": "5",
+  "hero_v2_stat2_label": "partnera za rezervaciju"
 }
