@@ -38,12 +38,15 @@ const TIER = 'best';   // procenti se računaju iz paketa Best Value
    ne treba menjati prevode i regenerisati i18n-data.js. */
 const TXT = {
   sr: {now:'Ažurirano upravo sada', sec:'Ažurirano pre {n} sek', min:'Ažurirano pre {n} min', per:'po 1 osobi',
+       badge:'Cena bez iznenađenja',
        foot:'⚠️ Ilustrativna procena za jednu osobu (tipičan paket: let, smeštaj, auto i aktivnosti). Računa se istim izvorom kao kartice ponuda i osvežava se čim izmeniš destinaciju ili datume. Stvarna raspodela zavisi od sezone i tvojih izbora.',
        empty:'Nema podataka za prikaz raspodele.'},
   en: {now:'Updated just now', sec:'Updated {n} sec ago', min:'Updated {n} min ago', per:'per person',
+       badge:'No-surprise pricing',
        foot:'⚠️ Illustrative estimate for one person (typical package: flight, stay, car and activities). It uses the same source as the offer cards and refreshes as soon as you change the destination or dates. The actual breakdown depends on the season and your choices.',
        empty:'No data to show the breakdown.'},
   ru: {now:'Обновлено только что', sec:'Обновлено {n} сек. назад', min:'Обновлено {n} мин. назад', per:'на 1 человека',
+       badge:'Цена без сюрпризов',
        foot:'⚠️ Ориентировочная оценка для одного человека (типовой пакет: перелёт, проживание, авто и активности). Считается из того же источника, что и карточки предложений, и обновляется при смене направления или дат. Фактическая структура зависит от сезона и ваших выборов.',
        empty:'Нет данных для отображения структуры.'}
 };
@@ -144,7 +147,7 @@ function buildShell(){
     '</div>').join('');
   host.innerHTML =
     '<div class="price-chart">' +
-      '<div class="price-chart-head"><h3>' + esc(tr('pc_title')) + '</h3><p>' + esc(tr('pc_sub')) + '</p></div>' +
+      '<div class="price-chart-head"><span class="pc-badge">' + esc(tx('badge')) + '</span><h3>' + esc(tr('pc_title')) + '</h3><p>' + esc(tr('pc_sub')) + '</p></div>' +
       '<div class="price-hbar-list" id="pmList" role="img">' + rows + '</div>' +
       '<p class="price-chart-empty" id="pmEmpty" hidden style="margin:0;font-size:14px;color:var(--ink-soft);">' + esc(tx('empty')) + '</p>' +
       '<p class="price-chart-updated" id="pmUpdated" aria-live="off"></p>' +

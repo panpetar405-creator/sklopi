@@ -7679,8 +7679,9 @@ async function destTryReplacement(row, idx, triesLeft){
   const oldItem = row.items[idx];
   const spare = row.spares.shift();
   const oldEl = document.querySelector('#destRows .dest-card[data-dest="' + CSS.escape(oldItem.dest) + '"]');
+  const rowTitle = oldEl ? (oldEl.closest('.dest-row')?.querySelector('.dest-row-title')?.textContent || '') : (row.title || '');
   row.items[idx] = spare;
-  if (oldEl) oldEl.outerHTML = destCardHtml(spare);
+  if (oldEl) oldEl.outerHTML = destCardHtml(spare, rowTitle);
   const url = await destFetchOneImage(spare);
   if (url){
     _destImgMap[spare.dest] = url;
@@ -7787,7 +7788,7 @@ function destOfferHtml(it, kind){
 
 /* ---- prikaz ---- */
 let _destRowsPromise = null;
-function destCardHtml(it){
+function destCardHtml(it, rowTitle){
   const name = cityLabel(it.dest);
   const country = it.country ? countryLabel(it.country) : '';
   const url = destPhotoFor(it);
@@ -7795,7 +7796,7 @@ function destCardHtml(it){
   const icon = DEST_ROW_ICON[it.row] || (kind === 'hotel' ? '🏨' : '🎟️');
   return `<div class="dest-card dest-card--${kind}" data-dest="${escapeHtml(it.dest)}" data-kind="${kind}" data-row="${escapeHtml(it.row || '')}">
     <button type="button" class="dc-pick" aria-label="${escapeHtml(dtx('pick_aria') + name)}">
-      <span class="dc-photo">${url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" decoding="async">` : `<span class="dc-ico" aria-hidden="true">${icon}</span>`}</span>
+      <span class="dc-photo">${url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" decoding="async">` : `<span class="dc-ico" aria-hidden="true">${icon}</span>`}${rowTitle ? `<span class="dc-pill">${escapeHtml(rowTitle)}</span>` : ''}</span>
       <span class="dc-cap"><span class="dc-name">${escapeHtml(name)}</span>${country ? `<span class="dc-country">${escapeHtml(country)}</span>` : ''}</span>
     </button>
     ${destOfferHtml(it, kind)}
@@ -7811,7 +7812,7 @@ function destRowHtml(row, idx){
     <h3 class="dest-row-title" id="destRowTitle${idx}">${escapeHtml(title)}</h3>
     <div class="attractions-slider-wrap">
       ${arrow(-1, 'M15 18l-6-6 6-6')}
-      <div class="attractions-slider dest-slider" role="group" aria-labelledby="destRowTitle${idx}">${items.map(destCardHtml).join('')}</div>
+      <div class="attractions-slider dest-slider" role="group" aria-labelledby="destRowTitle${idx}">${items.map(it => destCardHtml(it, title)).join('')}</div>
       ${arrow(1, 'M9 18l6-6-6-6')}
     </div>
   </div>`;
