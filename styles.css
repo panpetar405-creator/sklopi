@@ -2985,3 +2985,24 @@ footer{padding:28px 20px;}
   .moods{gap:6px;}
   .mood-pill{padding:9px 14px;font-size:13.5px;}
 }
+
+/* ===================================================================
+   REDIZAJN 2026 — spajanje dva hero-a u jedan
+   Ranije: .hero-v2 (uvodni tekst) i .hero (ticket pretraga) su bila
+   DVA odvojena, puna ekrana jedan ispod drugog. Sada je hero-v2-eyebrow/
+   title/lede/moods premešten UNUTAR .hero, iznad tiketa — jedan hero,
+   kao u wireframe-u. Specifičnost namerno viša od stare ".hero h1" da
+   je pouzdano nadjača (stara pravila ostaju, ali više ne dobijaju
+   element da im se poklopi osim ovde). */
+.hero .hero-v2-title{
+    font-family:'Sora',sans-serif;font-weight:800;
+    font-size:clamp(32px,6vw,48px);
+    line-height:1.14;margin:0 0 18px;color:var(--on-dark-strong);
+    max-width:15em;
+}
+.hero .hero-v2-title .accent-coral{color:var(--coral);}
+.hero-v2-lede{
+    font-family:'Inter',sans-serif;font-size:17px;line-height:1.55;
+    color:var(--on-dark-soft);margin:0 0 26px;max-width:520px;
+}
+.hero-howto-link{margin:22px 0 0;}
