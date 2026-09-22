@@ -730,51 +730,39 @@ a{color:inherit;}
 .section-head h2{font-size:31.5px;margin-top:6px;}
 .section-head .section-sub{margin:10px 0 0;max-width:52ch;font-size:16.5px;line-height:1.55;color:var(--ink-soft);}
 /* ---------- Promo banner ---------- */
-.promo-banner{max-width:1180px;margin:96px auto;padding:0 40px;}
-.promo-banner-card{
-    background:var(--paper);border:1px solid var(--line);border-radius:20px;
-    padding:20px;
+/* ---- Redizajn: "Trenutak za sebe" traka (kao .testi-band u wireframe-u) ----
+   Ranije foto-kartica sa tekstom preko slike; sad pun-širinski tamni pojas
+   sa centriranim citatom i SVG talasom na dnu, kao u sklopi-redesign.html.
+   Markup/klase (promo-banner-kicker/quote) nepromenjene, nema JS kuka. */
+.promo-banner{
+    position:relative;
+    max-width:none;margin:96px 0 0;padding:70px 24px 90px;
+    background:var(--deep2);color:var(--on-dark-strong);
+    text-align:center;overflow:hidden;
 }
-.promo-banner-photo{position:relative;border-radius:14px;overflow:hidden;line-height:0;box-shadow:0 18px 40px -12px rgba(12,34,41,.28);}
-.promo-banner-photo img{display:block;width:100%;height:auto;filter:saturate(.7) brightness(.97) contrast(.92) sepia(.12);}
-.promo-banner-photo::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    mix-blend-mode:multiply;
-    opacity:.18;
-    pointer-events:none;
-}
-.promo-banner-photo::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:radial-gradient(ellipse at center, transparent 55%, rgba(60,45,25,.22) 100%);
-    pointer-events:none;
-}
-.promo-banner-cap{padding:18px 6px 4px;}
 .promo-banner-kicker{
-    display:flex;align-items:center;gap:12px;margin:0 0 10px;
-    font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;
-    letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-text);
+    display:inline-flex;align-items:center;justify-content:center;gap:0;
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:700;
+    letter-spacing:0.3px;text-transform:none;color:var(--gold);
+    margin:0 0 16px;
 }
-.promo-banner-kicker::before{content:"";width:30px;height:1px;flex:none;background:var(--gold);}
+.promo-banner-kicker::before{content:none;}
 .promo-banner-quote{
-    font-family:'Inter',serif;font-weight:500;font-style:italic;
-    font-size:26px;line-height:1.3;margin:0;color:var(--deep);max-width:520px;
+    font-family:'Sora',sans-serif;font-weight:600;font-style:italic;
+    font-size:clamp(24px,5.5vw,36px);line-height:1.3;
+    max-width:14ch;margin:0 auto;color:var(--on-dark-strong);
 }
+.promo-banner-wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0;}
+.promo-banner-wave svg{display:block;width:100%;height:60px;}
+.promo-banner-wave path{fill:var(--paper);}
 @media (max-width:900px){
-    .promo-banner{margin:56px auto;padding:0 20px;}
-    .promo-banner-card{padding:14px;border-radius:16px;}
-    .promo-banner-photo{border-radius:12px;}
-    .promo-banner-quote{font-size:23px;}
+    .promo-banner{margin-top:56px;padding:56px 20px 76px;}
 }
 /* ---------- FAQ ---------- */
-.faq-wrap{max-width:760px;margin:0;display:flex;flex-direction:column;gap:10px;}
-.faq-item{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:4px 20px;}
+.faq-wrap{max-width:760px;margin:0;display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);}
+.faq-item{background:transparent;border:none;border-bottom:1px solid var(--line);border-radius:0;padding:0;}
 .faq-item summary{
-    cursor:pointer;list-style:none;padding:16px 0;font-family:'Sora',sans-serif;font-size:18px;
+    cursor:pointer;list-style:none;padding:20px 0;font-family:'Sora',sans-serif;font-weight:700;font-size:16px;
     display:flex;align-items:center;justify-content:space-between;gap:12px;
 }
 .faq-item summary::-webkit-details-marker{display:none;}
@@ -785,7 +773,7 @@ a{color:inherit;}
     font-size:16px;line-height:1;color:var(--ink);
 }
 .faq-item[open] summary::after{content:"–";background:var(--ink);color:var(--paper);border-color:var(--ink);}
-.faq-item p{margin:0 0 18px;font-size:16px;line-height:1.6;color:var(--ink-soft);}
+.faq-item p{margin:0 0 20px;max-width:56ch;font-size:14.5px;line-height:1.65;color:var(--ink-soft);}
 .faq-item p a{color:var(--gold-text);font-weight:600;}
 /* ---------- Feature strip (what a trip includes) — listing, poslovni-alat stil ---------- */
 .feature-strip{
@@ -2301,40 +2289,36 @@ footer{padding:28px 20px;}
 /* ---------- Business strip: partners trust row + price breakdown chart ---------- */
 .price-chart-section{padding-top:40px;}
 .business-strip{padding-bottom:8px;}
+/* ---- Redizajn: partneri kao neutralne outline pilule (kao .partner-pill
+   u wireframe-u), umesto ranijih brend-obojenih znački. Klase/markup
+   nepromenjeni gde je moguće, nema JS kuka na ovoj sekciji. ---- */
 .partners-row{
-    display:flex;flex-direction:column;gap:14px;
-    padding-bottom:30px;margin-bottom:30px;border-bottom:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;gap:20px;
+    padding-bottom:0;margin-bottom:0;border-bottom:none;
+    text-align:center;max-width:760px;margin-left:auto;margin-right:auto;
 }
 .partners-card{
-    background:var(--paper);border:1px solid var(--line);border-radius:18px;
-    padding:26px 28px;display:flex;flex-direction:column;gap:26px;
+    background:transparent;border:none;border-radius:0;
+    padding:0;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
 }
-.partners-line{display:flex;align-items:center;justify-content:space-between;}
-.partners-label{
-    display:flex;align-items:center;gap:10px;width:100%;
-    font-size:14px;font-weight:700;color:var(--ink-soft);
-    text-transform:uppercase;letter-spacing:0.06em;margin-right:8px;margin-bottom:6px;
-}
-.partners-label::before{content:"";width:22px;height:1px;flex:none;background:var(--gold);}
 .partner-badge{
-    display:inline-flex;align-items:center;gap:8px;
-    font-family:'Sora',sans-serif;font-weight:700;font-size:20px;
-    color:var(--ink);
+    display:inline-flex;align-items:center;
+    border:1px solid var(--line);border-radius:999px;
+    padding:11px 20px;
+    font-family:'Sora',sans-serif;font-weight:700;font-size:14px;
+    color:var(--ink-soft);
     transition:opacity .2s ease;
 }
-
-.partner-badge::before{content:"";width:9px;height:9px;border-radius:50%;flex:none;}
-.partner-badge--kayak{color:#E85D04;}
-.partner-badge--kayak::before{background:#FF690F;}
-.partner-badge--booking{color:#003580;}
-.partner-badge--booking::before{background:#003580;}
-.partner-badge--booking .pb-dotcom{color:#009FE3;}
-.partner-badge--viator{color:#0E8F62;}
-.partner-badge--viator::before{background:#0E8F62;}
-.partner-badge--airalo{color:#E4472B;text-transform:lowercase;}
-.partner-badge--airalo::before{background:#E4472B;}
-.partner-badge--worldnomads{color:#EE6C2A;}
-.partner-badge--worldnomads::before{background:#EE6C2A;}
+.partner-badge::before{content:none;}
+.partner-badge--kayak,.partner-badge--booking,.partner-badge--viator,
+.partner-badge--airalo,.partner-badge--worldnomads{color:var(--ink-soft);}
+.partner-badge--booking .pb-dotcom{color:var(--ink-soft);}
+.partners-label{
+    font-size:13.5px;font-weight:400;color:var(--ink-soft);
+    text-transform:none;letter-spacing:normal;margin:0;
+    max-width:44ch;line-height:1.55;
+}
+.partners-label::before{content:none;}
 .price-chart{
     background:var(--paper);border:1px solid var(--line);border-radius:22px;
     padding:30px 28px 26px;
@@ -2348,6 +2332,22 @@ footer{padding:28px 20px;}
 .price-chart-head h3{font-size:21px;margin:0;}
 .price-chart-head p{margin:6px 0 20px;font-size:16px;color:var(--ink-soft);line-height:1.55;max-width:60ch;}
 .price-hbar-list{display:flex;flex-direction:column;gap:16px;}
+/* ---- Redizajn: segmentirana traka na vrhu (kao .price-bar u wireframe-u),
+   iznad postojeće liste stavki — iste boje kao .phr-fill--*, ništa u
+   izračunu nije dirano, samo dodatni vizuelni prikaz istih procenata. ---- */
+.price-stack{
+    display:flex;height:14px;border-radius:8px;overflow:hidden;
+    margin:0 0 22px;background:var(--line);gap:2px;
+}
+.ps-seg{height:100%;}
+.ps-seg--flight{background:var(--deep);}
+.ps-seg--hotel{background:var(--gold);}
+.ps-seg--car{background:var(--coral);}
+.ps-seg--activity{background:var(--aqua);}
+.ps-seg--insurance{background:var(--burgundy);}
+.ps-seg--tolls{background:#3F7387;}
+.ps-seg--esim{background:#6E7A45;}
+.ps-seg--transfer{background:#7C8894;}
 .phr-row{display:grid;grid-template-columns:132px 1fr 78px;align-items:center;gap:16px;}
 .phr-label{
     display:flex;align-items:center;gap:9px;
