@@ -148,6 +148,7 @@ function buildShell(){
   host.innerHTML =
     '<div class="price-chart">' +
       '<div class="price-chart-head"><span class="pc-badge">' + esc(tx('badge')) + '</span><h3>' + esc(tr('pc_title')) + '</h3><p>' + esc(tr('pc_sub')) + '</p></div>' +
+      '<div class="price-stack" id="pmStack" aria-hidden="true"></div>' +
       '<div class="price-hbar-list" id="pmList" role="img">' + rows + '</div>' +
       '<p class="price-chart-empty" id="pmEmpty" hidden style="margin:0;font-size:14px;color:var(--ink-soft);">' + esc(tx('empty')) + '</p>' +
       '<p class="price-chart-updated" id="pmUpdated" aria-live="off"></p>' +
@@ -169,11 +170,14 @@ function render(src){
   if (!pkg) return;
   const calc = percents(breakdown(pkg));
   const list = $('pmList');
+  const stack = $('pmStack');
   const parts = [];
 
   $('pmEmpty').hidden = calc.total > 0;
   list.hidden = calc.total === 0;
+  if (stack) stack.hidden = calc.total === 0;
 
+  let stackHtml = '';
   ROWS.forEach(r => {
     const row = list.querySelector('[data-key="' + r.key + '"]');
     const p = calc.pct[r.key];
@@ -183,7 +187,9 @@ function render(src){
     row.querySelector('.phr-fill').style.width = Math.max(p, 1) + '%';
     row.querySelector('.phr-pct').textContent = p < 1 ? '<1%' : p + '%';
     parts.push(tr(r.label) + ' ' + (p < 1 ? '<1' : p) + '%');
+    stackHtml += '<span class="ps-seg ps-seg--' + r.cls + '" style="flex:' + Math.max(p, 0.6) + ' 0 0"></span>';
   });
+  if (stack) stack.innerHTML = stackHtml;
   list.setAttribute('aria-label', parts.join(', '));
   state.updatedAt = Date.now();
   updateAgo();
