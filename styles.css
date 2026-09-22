@@ -16,7 +16,7 @@
        "premium"/isticanje, tirkiz (aqua) za sekundarne akcente. Nazivi
        promenljivih su namerno nepromenjeni da sva pravila ispod i dalje
        rade — menjaju se samo HEX vrednosti. */
-    --bg:#F0E8D6;
+    --bg:#FAF6EE;
     --paper:#FAF6EE;         /* topla hartija */
     --ink:#0C2229;           /* duboko tirkizno-crna */
     --ink-soft:#4B6067;
@@ -743,6 +743,11 @@ a{color:inherit;}
 #faq{margin-top:64px;}
 .section.action-cards-wrap{margin-top:64px;margin-bottom:64px;}
 .section-head{margin:0 0 40px;}
+.section-head.mood-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.section-head .underline{display:inline-block;width:64px;height:3px;background:var(--gold);border-radius:2px;margin-bottom:10px;}
+.surprise{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:14px;background:none;border:none;font-family:'Inter',sans-serif;cursor:pointer;padding:0;}
+.dice{width:46px;height:46px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--ink);box-shadow:0 6px 16px rgba(231,169,62,.35);flex:none;}
+.dice svg{width:22px;height:22px;}
 .section-head h2{margin-top:10px;}
 .section-head .eyebrow{
     display:inline-flex;align-items:center;
