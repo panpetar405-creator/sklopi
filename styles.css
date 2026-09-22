@@ -350,39 +350,44 @@ a{color:inherit;}
     line-height:1.6;
     color:var(--on-dark-soft);
 }
-/* ---------- Search "boarding pass" ---------- */
+/* ---------- Search "builder" card (redizajn: kao .builder u wireframe-u) ---------- */
 .ticket{
     margin:44px 0 -70px;
-    background:rgba(18,58,68,0.22);
+    background:rgba(10,27,32,0.88);
     backdrop-filter:blur(8px);
     -webkit-backdrop-filter:blur(8px);
     color:var(--ink);
-    border-radius:14px;
+    border-radius:22px;
     border:1px solid var(--line);
     box-shadow:0 28px 64px -24px rgba(12,34,41,0.45);
     position:relative;
     z-index:3;
-    display:grid;
-    grid-template-columns:0.7fr 1fr 1fr 1fr 1.3fr;
-    align-items:end;
+    max-width:640px;
+    padding:16px;
 }
 .ticket::after{
     content:none;
 }
-.ticket::before{
-    content:"";
-    position:absolute;top:0;left:0;right:0;height:3px;
-    border-radius:14px 14px 0 0;
-    background:linear-gradient(90deg,var(--gold) 0%,#EAD9AE 50%,var(--gold) 100%);
-    z-index:1;
+/* Polja pretrage (Polazak/Destinacija/Datum/Putnika) u 2x2 mreži, kao
+   .builder-grid u wireframe-u: tanka linija (gap + pozadina) razdvaja
+   polja umesto starih border-right/border-bottom trikova. */
+.ticket-fields{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2px;
+    background:var(--line-form);
+    border-radius:16px;
+    overflow:hidden;
 }
 .ticket .stub{
-    padding:26px 24px;
-    border-right:1px solid var(--line-form);
+    padding:14px 16px;
+    background:var(--deep);
     position:relative;
     overflow:clip;
-    border-radius:6px;
     isolation:isolate;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
 }
 .ticket .stub::before{
     content:"";
@@ -395,14 +400,16 @@ a{color:inherit;}
     pointer-events:none;
 }
 .ticket .stub:focus-within::before{opacity:1;}
-.ticket .stub:last-of-type{border-right:none;}
+.stub-ic{width:18px;height:18px;flex:none;margin-top:3px;color:var(--gold-text);}
+.stub-ic svg{width:100%;height:100%;display:block;}
+.stub-body{flex:1;min-width:0;}
 .ticket .stub label{
-    display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.08em;
-    color:var(--ink-soft);margin-bottom:8px;
+    display:block;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;
+    color:var(--ink-soft);margin-bottom:6px;
     text-shadow:0 1px 6px rgba(12,34,41,0.55);
 }
 .ticket .stub input, .ticket .stub select{
-    width:100%;border:none;font-family:'Sora',sans-serif;font-size:21.5px;
+    width:100%;border:none;font-family:'Sora',sans-serif;font-size:16.5px;
     background:transparent;color:var(--ink);padding:0;outline:none;
     text-shadow:0 1px 6px rgba(12,34,41,0.55);
 }
@@ -448,8 +455,13 @@ a{color:inherit;}
 .ticket .stub .subrow input{font-family:'Inter',sans-serif;font-size:17.5px;width:auto;flex:1;color:var(--ink-soft);line-height:1.4;padding:2px 0;display:block;}
 .ticket .stub .subrow input::-webkit-calendar-picker-indicator{margin-left:2px;opacity:0.65;transform:translateY(1px);}
 .ticket .go{
-    padding:18px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    padding:14px 4px 2px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+}
+/* Rukom pisana "flag" etiketa iznad builder kartice, kao u wireframe-u */
+.hero-builder-flag{
+    display:block;
+    margin:30px 0 8px 4px;
 }
 .btn-primary{
     position:relative;display:inline-flex;align-items:center;justify-content:center;gap:14px;
@@ -484,8 +496,8 @@ a{color:inherit;}
     width:100%;border:none;background:transparent;padding:0;margin:0;
     text-align:left;cursor:pointer;display:block;font:inherit;color:inherit;
 }
-.date-display .dd-range{display:block;font-family:'Sora',sans-serif;font-size:21.5px;color:var(--ink);transition:color .15s ease;}
-.date-display .dd-meta{display:block;margin-top:6px;font-size:17px;color:var(--ink-soft);}
+.date-display .dd-range{display:block;font-family:'Sora',sans-serif;font-size:16.5px;color:var(--ink);transition:color .15s ease;}
+.date-display .dd-meta{display:block;margin-top:4px;font-size:13px;color:var(--ink-soft);}
 .date-display[aria-expanded="true"] .dd-range{color:var(--gold-text);}
 /* placeholder stanje ("— – —") — ink-soft bez dodatne opacity (koja je nosila
    kontrast do ~2:1, ispod WCAG 4.5:1 minimuma za normalan tekst) */
@@ -587,7 +599,7 @@ a{color:inherit;}
 .pax-display{
     width:100%;border:none;background:transparent;padding:0;margin:0;
     text-align:left;cursor:pointer;display:block;font:inherit;
-    font-family:'Sora',sans-serif;font-size:21.5px;color:var(--ink);
+    font-family:'Sora',sans-serif;font-size:16.5px;color:var(--ink);
     transition:color .15s ease;
 }
 .pax-display[aria-expanded="true"]{color:var(--gold-text);}
@@ -2091,9 +2103,9 @@ footer{
 .hero-inner > .hero-spacer{order:6;}
 .ticket-submit-row{margin:2px 0 8px;}
 .btn-search-main{max-width:none;}
-.ticket{grid-template-columns:1fr;margin-top:14px;margin-bottom:8px;}
-.ticket .stub{padding:20px 16px;border-right:none;border-bottom:1px solid var(--line-form);}
-.ticket .stub:last-of-type{border-bottom:none;}
+.ticket{margin-top:14px;margin-bottom:8px;padding:12px;}
+.ticket-fields{grid-template-columns:1fr;}
+.ticket .stub{padding:14px 14px;}
 .ticket .stub label{margin-bottom:4px;}
 .ticket .stub input,.ticket .stub select{font-size:17.5px;}
 .ticket .go{padding:18px 16px 22px;}

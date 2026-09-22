@@ -186,20 +186,30 @@ SKLOPI<em>.</em>
 <button type="button" class="mood-pill" data-mood-dest="Ibica">🎉 Provod</button>
 </div>
 <a href="#faq" class="hero-v2-secondary hero-howto-link" data-i18n="hero_v2_secondary">▶ Kako radi sabiranje cene</a>
+<span class="script-tag hero-builder-flag" aria-hidden="true">Sklopi mi putovanje</span>
 <form class="ticket" id="searchForm">
+<div class="ticket-fields">
 <div class="stub" id="originStub">
+<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.2 7-11.5S16.4 2 12 2 5 4.6 5 9.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg></span>
+<div class="stub-body">
 <label for="origin" data-i18n="label_origin">Polazak</label>
 <input id="origin" type="text" value="" data-i18n-placeholder="placeholder_origin" placeholder="npr. Beograd, Niš, Podgorica" required maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="originSuggestions">
 <div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
 <div id="originAirportWarning"></div>
 </div>
+</div>
 <div class="stub">
+<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.2 7-11.5S16.4 2 12 2 5 4.6 5 9.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg></span>
+<div class="stub-body">
 <label for="dest" data-i18n="label_dest">Destinacija</label>
 <input id="dest" type="text" value="" data-i18n-placeholder="placeholder_dest" placeholder="npr. Atina, Rim, Barselona" required maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="destSuggestions">
 <div class="loc-dropdown" id="destSuggestions" role="listbox"></div>
 <div id="destAirportWarning"></div>
 </div>
+</div>
 <div class="stub stub-dates" id="dateStub">
+<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+<div class="stub-body">
 <label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
 <button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
 <span class="dd-range" id="dateDisplayText">— – —</span>
@@ -234,7 +244,10 @@ SKLOPI<em>.</em>
 </div>
 </div>
 </div>
+</div>
 <div class="stub stub-pax" id="paxStub">
+<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.3"/><path d="M2.5 20c1.2-3.6 3.4-5.2 6.5-5.2s5.3 1.6 6.5 5.2"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 14.9c2.6.3 4.1 1.8 5 4.9"/></svg></span>
+<div class="stub-body">
 <label id="paxStubLabel" for="paxDisplayBtn" data-i18n="label_passengers">Putnika</label>
 <button type="button" class="pax-display is-empty" id="paxDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="paxCard" aria-labelledby="paxStubLabel paxDisplayText">
 <span id="paxDisplayText" data-i18n="placeholder_passengers">Putnika</span>
@@ -247,6 +260,8 @@ SKLOPI<em>.</em>
 <div class="pax-list" id="paxList" role="listbox" data-i18n-aria-label="aria_pax_dialog" aria-label="Broj putnika"></div>
 <div class="cal-foot" style="justify-content:flex-end">
 <button type="button" class="btn-primary cal-apply" id="paxApply" data-i18n="btn_done">Gotovo</button>
+</div>
+</div>
 </div>
 </div>
 </div>
