@@ -432,6 +432,15 @@ a{color:inherit;}
 }
 .ticket .stub select:invalid{color:var(--ink-soft);opacity:0.7;}
 .ticket .stub input::placeholder{color:var(--ink-soft);opacity:0.7;}
+/* Polje "Vibe" (select) i "Budžet" (input sa € prefiksom) u hero pretrazi —
+   ista tipografija/ponašanje kao ostala .stub polja, bez native select strelice
+   (dosledno vizuelnom jeziku wireframe-a). */
+#heroVibe{-webkit-appearance:none;appearance:none;cursor:pointer;background:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23AFC3C5' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") right center/16px no-repeat;
+  padding-right:20px;}
+.budget-row{display:flex;align-items:baseline;gap:4px;}
+.budget-currency{font-family:'Sora',sans-serif;font-size:16.5px;color:var(--ink-soft);flex:none;}
+.budget-row input{width:auto;flex:1;min-width:0;}
 #dest::placeholder{opacity:0.45;}
 .stub.is-loading input{padding-right:22px;}
 .stub.is-loading::after{

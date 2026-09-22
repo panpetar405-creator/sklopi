@@ -4936,6 +4936,11 @@ function focusSearchField(which){
 async function runSearch(shouldScroll, autoReveal){
   const check = validateSearchInputs();
   if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
+  const heroBudgetEl = document.getElementById('heroBudget');
+  const heroBudgetVal = heroBudgetEl ? Number(heroBudgetEl.value) : 0;
+  if (heroBudgetVal > 0) builderState.budget = heroBudgetVal;
+  const heroVibeEl = document.getElementById('heroVibe');
+  if (heroVibeEl) builderState.vibe = heroVibeEl.value;
   const dest = document.getElementById('dest').value.trim();
   const originCode = document.getElementById('origin').value.trim();
   const from = document.getElementById('dateFrom').value;
