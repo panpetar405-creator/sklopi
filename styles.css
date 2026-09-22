@@ -157,8 +157,8 @@ a{color:inherit;}
     padding:56px 20px 64px;color:var(--on-dark-strong);
 }
 .hero-v2-inner{max-width:640px;margin:0 auto;}
-.hero-v2-eyebrow{display:flex;align-items:center;gap:10px;color:var(--gold);font-weight:700;font-size:15px;margin:0 0 18px;}
-.hero-v2-eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--coral);flex:none;}
+.hero-v2-eyebrow{display:flex;align-items:center;gap:10px;color:var(--gold-soft);font-weight:600;font-size:12.5px;letter-spacing:0.4px;margin:0 0 18px;}
+.hero-v2-eyebrow::before{content:"";width:26px;height:1px;border-radius:0;background:var(--gold);flex:none;}
 .hero-v2 h1{
     font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(34px,7vw,52px);
     line-height:1.12;margin:0 0 20px;color:var(--on-dark-strong);
@@ -406,9 +406,21 @@ a{color:inherit;}
 .stub-ic svg{width:100%;height:100%;display:block;}
 .stub-body{flex:1;min-width:0;}
 .ticket .stub label{
-    display:block;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;
+    display:block;font-size:12px;text-transform:none;letter-spacing:normal;
     color:var(--ink-soft);margin-bottom:6px;
     text-shadow:0 1px 6px rgba(12,34,41,0.55);
+}
+/* Sakriveni "extra" elementi u hero-u da bi izgled 1:1 pratio wireframe
+   (funkcionalnost ostaje dostupna preko action-card kartice niže na strani) */
+.hero .mood-pill[data-action="match"],
+.hero .hero-howto-link{
+    display:none;
+}
+.hero #documentsCheckBtn{
+    display:none;
+}
+.hero .ticket .go{
+    display:none;
 }
 .ticket .stub input, .ticket .stub select{
     width:100%;border:none;font-family:'Sora',sans-serif;font-size:16.5px;
