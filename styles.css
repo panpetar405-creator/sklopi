@@ -3097,7 +3097,13 @@ footer{padding:28px 20px;}
 .vibe-dest-card{
     background:var(--paper);border:1px solid var(--line);
     border-radius:18px;overflow:hidden;
+    display:block;width:100%;padding:0;margin:0;text-align:left;
+    font:inherit;color:inherit;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:transform .15s ease, box-shadow .15s ease;
 }
+.vibe-dest-card:hover{transform:translateY(-2px);box-shadow:0 14px 28px -18px rgba(12,34,41,0.35);}
+.vibe-dest-card:focus-visible{outline:2px solid var(--gold-text);outline-offset:2px;}
 .vibe-dest-art{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--deep);}
 .vibe-dest-art svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
 .vibe-dest-pill{
