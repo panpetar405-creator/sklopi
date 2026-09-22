@@ -2996,6 +2996,7 @@ footer{padding:28px 20px;}
 .mood-pill.active,.mood-pill:hover{
   background:var(--aqua);border-color:var(--aqua);color:#fff;transform:translateY(-1px);
 }
+.mood-pill svg{width:16px;height:16px;flex:none;}
 
 .script-tag{
   font-family:'Caveat',cursive;font-size:21px;font-weight:600;
