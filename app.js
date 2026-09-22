@@ -7303,7 +7303,7 @@ function attractionLink(a){ return buildAffiliateLink('activity', {dest: a.q}); 
 function attractionCardHtml(a){
   // Naziv iz I18N (attr_<id>), grad/država kroz rečnike; a.name ostaje srpski izvor.
   const name = t('attr_' + a.id);
-  return `<a class="attraction-card" href="${escapeHtml(attractionLink(a))}" target="_blank" rel="noopener sponsored">
+  return `<a class="attraction-card" data-category="${escapeHtml(a.category)}" href="${escapeHtml(attractionLink(a))}" target="_blank" rel="noopener sponsored">
     <div class="ac-photo">
       <img src="${a.img}" alt="${escapeHtml(name)}" loading="lazy">
       <span class="ac-badge">${escapeHtml(attractionCategoryLabel(a.category))}</span>
@@ -7807,7 +7807,7 @@ function destRowHtml(row, idx){
   const title = row.title || dtx('row_' + row.key) || row.key || '';
   const arrow = (dir, path) => `<button type="button" class="attractions-arrow attractions-arrow--${dir < 0 ? 'prev' : 'next'}" data-dir="${dir}" aria-label="${escapeHtml(dtx(dir < 0 ? 'prev' : 'next'))}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${path}"/></svg></button>`;
-  return `<div class="dest-row">
+  return `<div class="dest-row" data-row="${escapeHtml(row.key || '')}">
     <h3 class="dest-row-title" id="destRowTitle${idx}">${escapeHtml(title)}</h3>
     <div class="attractions-slider-wrap">
       ${arrow(-1, 'M15 18l-6-6 6-6')}

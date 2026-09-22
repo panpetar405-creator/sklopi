@@ -694,7 +694,15 @@ a{color:inherit;}
 .section.action-cards-wrap{margin-top:64px;margin-bottom:64px;}
 .section-head{margin:0 0 40px;}
 .section-head h2{margin-top:10px;}
-.section-head .eyebrow{font-size:14.5px;color:var(--gold-text);font-weight:600;}
+.section-head .eyebrow{
+    display:inline-flex;align-items:center;
+    font-size:13px;font-weight:700;
+    padding:7px 16px;border-radius:999px;
+    background:var(--aqua-soft);color:var(--aqua);
+}
+.section-head .eyebrow--coral{background:var(--coral-soft);color:var(--coral-text);}
+.section-head .eyebrow--gold{background:rgba(231,169,62,0.16);color:var(--gold);}
+#attractionsEyebrow{background:rgba(231,169,62,0.16);color:var(--gold);}
 .section-head h2{font-size:31.5px;margin-top:6px;}
 .section-head .section-sub{margin:10px 0 0;max-width:52ch;font-size:16.5px;line-height:1.55;color:var(--ink-soft);}
 /* ---------- Promo banner ---------- */
@@ -746,8 +754,13 @@ a{color:inherit;}
     display:flex;align-items:center;justify-content:space-between;gap:12px;
 }
 .faq-item summary::-webkit-details-marker{display:none;}
-.faq-item summary::after{content:"+";font-size:22.5px;color:var(--gold-text);flex:none;}
-.faq-item[open] summary::after{content:"–";}
+.faq-item summary::after{
+    content:"+";flex:none;
+    width:26px;height:26px;border-radius:50%;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;line-height:1;color:var(--ink);
+}
+.faq-item[open] summary::after{content:"–";background:var(--ink);color:var(--paper);border-color:var(--ink);}
 .faq-item p{margin:0 0 18px;font-size:16px;line-height:1.6;color:var(--ink-soft);}
 .faq-item p a{color:var(--gold-text);font-weight:600;}
 /* ---------- Feature strip (what a trip includes) — listing, poslovni-alat stil ---------- */
@@ -860,8 +873,18 @@ a{color:inherit;}
 .attraction-card .ac-badge{
     position:absolute;top:10px;left:10px;background:rgba(12,34,41,0.72);color:var(--on-dark-strong);
     font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:999px;
+    /* podrazumevana tamna pilula je fallback; boja po kategoriji ispod je jača */
     backdrop-filter:blur(2px);
 }
+/* Boja bedža po kategoriji doživljaja — dosledan vizuelni kod kroz sajt */
+.attraction-card[data-category="kultura"] .ac-badge{background:var(--royal-plum);}
+.attraction-card[data-category="muzika"] .ac-badge{background:var(--burgundy);}
+.attraction-card[data-category="gondole"] .ac-badge{background:var(--aqua);}
+.attraction-card[data-category="arene"] .ac-badge{background:var(--gold);color:var(--on-gold);}
+.attraction-card[data-category="avantura"] .ac-badge{background:var(--emerald);}
+.attraction-card[data-category="voda"] .ac-badge{background:var(--aqua);}
+.attraction-card[data-category="gastro"] .ac-badge{background:var(--coral);}
+.attraction-card[data-category="noc"] .ac-badge{background:var(--dusty-rose);}
 .attraction-card .ac-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:5px;flex:1;}
 .attraction-card .ac-name{font-family:'Sora',sans-serif;font-size:18.5px;font-weight:600;color:var(--ink);line-height:1.3;}
 .attraction-card .ac-loc{font-size:15px;color:var(--ink-soft);}
@@ -2372,16 +2395,24 @@ footer{padding:28px 20px;}
 .match-trigger .ac-title{color:var(--paper);}
 .match-trigger .ac-sub{color:#D8C7CE;} /* svetla dusty-rose nijansa za čitljivost na tamnom */
 .match-preview-row{
-    display:flex;flex-wrap:wrap;gap:7px;position:relative;z-index:1;margin-top:-2px;
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;z-index:1;
+    margin-top:4px;width:100%;
 }
 .match-preview-chip{
-    font-size:12px;font-weight:600;color:var(--paper);
-    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);
-    border-radius:20px;padding:4px 11px;white-space:nowrap;
+    font-family:'Sora',sans-serif;font-size:13.5px;font-weight:700;color:var(--paper);
+    background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.16);
+    border-radius:12px;padding:10px 12px;white-space:nowrap;text-align:left;
 }
-.match-trigger .ac-cta{border-top-color:rgba(255,255,255,0.14);}
-.match-trigger .ac-cta-label{color:var(--gold);}
-.match-trigger .ac-arrow{background:var(--gold);color:var(--on-gold);}
+.match-trigger .ac-cta{
+    border-top-color:transparent;margin-top:6px;padding-top:4px;
+    background:var(--gold);color:var(--on-gold);border-radius:12px;padding:14px 18px;
+}
+.match-trigger .ac-cta-label{color:var(--on-gold);font-weight:800;}
+.match-trigger .ac-arrow{background:rgba(12,34,41,0.14);color:var(--on-gold);}
+.match-trigger:hover .ac-cta{background:#F0C56B;}
+@media (max-width:400px){
+    .match-preview-chip{font-size:12.5px;padding:9px 10px;}
+}
 
 @media (max-width:560px){
     .match-preview-chip{font-size:11px;padding:3px 9px;}
@@ -2833,7 +2864,12 @@ footer{padding:28px 20px;}
    u istom izgledu kao kartice ponude (.item-*): hotel na Booking.com ili atrakcije na Viator-u. */
 #destinacije{scroll-margin-top:calc(var(--topbar-h) + 12px);}
 .dest-rows{display:flex;flex-direction:column;gap:34px;}
-.dest-row-title{font-size:20px;font-weight:600;color:var(--ink);margin:0 0 14px;}
+.dest-row-title{font-size:20px;font-weight:600;color:var(--ink);margin:0 0 14px;display:flex;align-items:center;gap:10px;}
+.dest-row-title::before{content:"";width:10px;height:10px;border-radius:3px;flex:none;background:var(--aqua);}
+.dest-row[data-row="sea"] .dest-row-title::before{background:var(--aqua);}
+.dest-row[data-row="city"] .dest-row-title::before{background:var(--burgundy);}
+.dest-row[data-row="nature"] .dest-row-title::before{background:var(--emerald);}
+.dest-row[data-row="ski"] .dest-row-title::before{background:var(--gold);}
 .dest-card{
     flex:0 0 72%;max-width:270px;scroll-snap-align:start;position:relative;
     display:flex;flex-direction:column;
