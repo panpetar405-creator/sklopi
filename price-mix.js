@@ -143,13 +143,14 @@ function buildShell(){
     '<div class="phr-row" data-key="' + r.key + '" hidden>' +
       '<div class="phr-label"><span class="phr-ic phr-ic--' + r.cls + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' + r.svg + '</svg></span><span>' + esc(tr(r.label)) + '</span></div>' +
       '<div class="phr-track"><div class="phr-fill phr-fill--' + r.cls + '" style="width:0%"></div></div>' +
-      '<div class="phr-nums"><span class="phr-pct tabular">0%</span></div>' +
+      '<div class="phr-nums"><span class="phr-pct tabular">0%</span><span class="phr-eur tabular"></span></div>' +
     '</div>').join('');
   host.innerHTML =
     '<div class="price-chart">' +
       '<div class="price-chart-head"><span class="pc-badge">' + esc(tx('badge')) + '</span><h3>' + esc(tr('pc_title')) + '</h3><p>' + esc(tr('pc_sub')) + '</p></div>' +
       '<div class="price-stack" id="pmStack" aria-hidden="true"></div>' +
       '<div class="price-hbar-list" id="pmList" role="img">' + rows + '</div>' +
+      '<div class="price-total-banner" id="pmTotal" hidden><span class="pt-label">' + esc(tx('per')) + '</span><span class="pt-value" id="pmTotalValue"></span></div>' +
       '<p class="price-chart-empty" id="pmEmpty" hidden style="margin:0;font-size:14px;color:var(--ink-soft);">' + esc(tx('empty')) + '</p>' +
       '<p class="price-chart-updated" id="pmUpdated" aria-live="off"></p>' +
       '<p class="price-chart-foot">' + esc(tx('foot')) + '</p>' +
@@ -157,6 +158,7 @@ function buildShell(){
   if (REDUCED) host.querySelectorAll('.phr-fill').forEach(el => el.style.transition = 'none');
   return host;
 }
+function money(n){ try { return typeof fmtEUR === 'function' ? fmtEUR(n) : ('€' + n); } catch(e){ return '€' + n; } }
 
 function updateAgo(){
   const el = $('pmUpdated'); if (!el || !state.updatedAt) return;
@@ -171,11 +173,13 @@ function render(src){
   const calc = percents(breakdown(pkg));
   const list = $('pmList');
   const stack = $('pmStack');
+  const totalEl = $('pmTotal');
   const parts = [];
 
   $('pmEmpty').hidden = calc.total > 0;
   list.hidden = calc.total === 0;
   if (stack) stack.hidden = calc.total === 0;
+  if (totalEl) totalEl.hidden = calc.total === 0;
 
   let stackHtml = '';
   ROWS.forEach(r => {
@@ -186,10 +190,13 @@ function render(src){
     if (!has) return;
     row.querySelector('.phr-fill').style.width = Math.max(p, 1) + '%';
     row.querySelector('.phr-pct').textContent = p < 1 ? '<1%' : p + '%';
+    const eurEl = row.querySelector('.phr-eur');
+    if (eurEl) eurEl.textContent = money(calc.raw[r.key]);
     parts.push(tr(r.label) + ' ' + (p < 1 ? '<1' : p) + '%');
     stackHtml += '<span class="ps-seg ps-seg--' + r.cls + '" style="flex:' + Math.max(p, 0.6) + ' 0 0"></span>';
   });
   if (stack) stack.innerHTML = stackHtml;
+  if (totalEl && calc.total > 0) $('pmTotalValue').textContent = money(calc.total);
   list.setAttribute('aria-label', parts.join(', '));
   state.updatedAt = Date.now();
   updateAgo();
