@@ -248,24 +248,14 @@ SKLOPI<em>.</em>
 </div>
 </div>
 </div>
-<div class="stub" id="budgetStub">
-<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1.4 1.1-2 2.5-2s2.5.7 2.5 2-1 1.6-2.5 2-2.5.7-2.5 2 1.1 2 2.5 2 2.5-.6 2.5-2"/></svg></span>
+<div class="stub stub-pax" id="paxStub">
+<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.3c2.6.4 4.5 2.2 4.5 4.7"/></svg></span>
 <div class="stub-body">
-<label for="heroBudget">Budžet</label>
-<div class="budget-row"><span class="budget-currency">€</span><input id="heroBudget" type="text" inputmode="numeric" placeholder="Bilo koji" maxlength="6" autocomplete="off"></div>
-</div>
-</div>
-</div>
-<div class="hero-hidden-fields" style="display:none" aria-hidden="true">
-<label for="origin" data-i18n="label_origin">Polazak</label>
-<input id="origin" type="text" value="" data-i18n-placeholder="placeholder_origin" placeholder="npr. Beograd, Niš, Podgorica" maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="originSuggestions" tabindex="-1">
-<div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
-<div id="originAirportWarning"></div>
 <label id="paxStubLabel" for="paxDisplayBtn" data-i18n="label_passengers">Putnika</label>
-<button type="button" class="pax-display is-empty" id="paxDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="paxCard" aria-labelledby="paxStubLabel paxDisplayText" tabindex="-1">
+<button type="button" class="pax-display" id="paxDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="paxCard" aria-labelledby="paxStubLabel paxDisplayText">
 <span id="paxDisplayText" data-i18n="placeholder_passengers">Putnika</span>
 </button>
-<input type="hidden" id="adults" value="">
+<input type="hidden" id="adults" value="2">
 <div class="cal-backdrop" id="paxBackdrop"></div>
 <div class="pax-card" id="paxCard" role="dialog" aria-modal="true" data-i18n-aria-label="aria_pax_dialog" aria-label="Izbor broja putnika">
 <div class="cal-inner">
@@ -276,6 +266,13 @@ SKLOPI<em>.</em>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="hero-hidden-fields" style="display:none" aria-hidden="true">
+<label for="origin" data-i18n="label_origin">Polazak</label>
+<input id="origin" type="text" value="" data-i18n-placeholder="placeholder_origin" placeholder="npr. Beograd, Niš, Podgorica" maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="originSuggestions" tabindex="-1">
+<div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
+<div id="originAirportWarning"></div>
 </div>
 <div class="go">
 <button type="button" class="passport-check-btn" id="documentsCheckBtn" data-i18n="documents_check_link">🧳 Proveri dokumenta za put</button>
