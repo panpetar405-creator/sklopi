@@ -295,7 +295,9 @@ a{color:inherit;}
     --on-dark-strong:#FAF6EE;    /* topla hartija — naslov na tamnoj pozadini */
     --on-dark:#E4DCC8;
     --on-dark-soft:#AFC3C5;      /* prigušeno hladno-tirkizno — lede tekst na tamnom */
-    background:radial-gradient(120% 100% at 15% 0%, var(--deep) 0%, var(--deep2) 65%, #08181D 100%);
+    background:
+      radial-gradient(120% 70% at 82% 8%, rgba(231,169,62,0.35), transparent 60%),
+      linear-gradient(185deg, #1a4f5c 0%, var(--deep) 42%, var(--deep2) 100%);
     color:var(--on-dark);
     padding:64px 40px 0;
     position:relative;
