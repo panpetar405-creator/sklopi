@@ -112,7 +112,7 @@
 <meta name="apple-mobile-web-app-title" content="SKLOPI">
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=21">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
@@ -157,6 +157,13 @@ SKLOPI<em>.</em>
 <div class="hero-v2-actions">
 <a href="#searchForm" class="hero-v2-cta" data-i18n="hero_v2_cta">Sastavi svoj put</a>
 <a href="#faq" class="hero-v2-secondary" data-i18n="hero_v2_secondary">▶ Kako radi sabiranje cene</a>
+</div>
+<div class="moods" id="heroMoods" role="group" aria-label="Brzi izbor raspoloženja">
+<button type="button" class="mood-pill" data-action="match">✨ Iznenadi me</button>
+<button type="button" class="mood-pill" data-mood-dest="Krf">🌊 More</button>
+<button type="button" class="mood-pill" data-mood-dest="Barselona">🏙️ Grad</button>
+<button type="button" class="mood-pill" data-mood-dest="Durmitor">🌲 Priroda</button>
+<button type="button" class="mood-pill" data-mood-dest="Ibica">🎉 Provod</button>
 </div>
 <div class="hero-v2-stats">
 <div class="hero-v2-stat"><b data-i18n="hero_v2_stat1_num">700+</b><span data-i18n="hero_v2_stat1_label">lokacija u ponudi</span></div>
@@ -323,6 +330,32 @@ SKLOPI<em>.</em>
 <div class="stat"><div class="val">8</div><div class="lab" data-i18n="stat_items">stavki sabranih u jednu cenu</div></div>
 <div class="stat"><div class="val">5</div><div class="lab" data-i18n="stat_partners">partnera za rezervaciju</div></div>
 <div class="stat"><div class="val">700+</div><div class="lab" data-i18n="stat_cities">lokacija u ponudi</div></div>
+</div>
+</div>
+<div class="section">
+<span class="script-tag">baš danas mi se ide...</span>
+<div class="section-head">
+<div class="eyebrow">Brzi izbor</div>
+<h2>Gde bi ti danas?</h2>
+<p class="section-sub">Pet raspoloženja, bezbroj mogućnosti. Klikni šta ti danas prija — ili prepusti nama da te iznenadi.</p>
+</div>
+<div class="mood-grid">
+<button type="button" class="mood-card" data-mood-dest="Krf" style="background:linear-gradient(160deg,#1E8F92,#0A2830);">
+<span class="veil"></span>
+<span class="label"><span>Bežim<br>na more</span><span class="go">→</span></span>
+</button>
+<button type="button" class="mood-card" data-mood-dest="Barselona" style="background:linear-gradient(160deg,#8A6423,#123A44);">
+<span class="veil"></span>
+<span class="label"><span>Hoću vikend<br>u gradu</span><span class="go">→</span></span>
+</button>
+<button type="button" class="mood-card" data-action="match" style="background:linear-gradient(160deg,#4B2354,#0C2229);">
+<span class="veil"></span>
+<span class="label"><span>Daj mi<br>nešto novo</span><span class="go">→</span></span>
+</button>
+<button type="button" class="mood-card" data-mood-dest="Ibica" style="background:linear-gradient(160deg,#C93F22,#123A44);">
+<span class="veil"></span>
+<span class="label"><span>Fine<br>fajronte</span><span class="go">→</span></span>
+</button>
 </div>
 </div>
 <div class="section" id="destinacije">
@@ -956,6 +989,42 @@ SKLOPI<em>.</em>
 <a href="#" data-contact="wa" rel="noopener" class="whatsapp-fab" id="whatsappFab" data-i18n-aria-label="whatsapp_aria" aria-label="Piši nam na WhatsApp">
 <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"/></svg>
 </a>
+<script>
+/* Redizajn 2026 — mood pills (hero) i mood grid ("Gde bi ti danas?").
+   Samostalno, ne dira app.js: postavlja #dest i skroluje do pretrage,
+   ili otvara postojeći match-kviz preko #matchTriggerBtn. */
+(function(){
+  function goToTicket(){
+    var el = document.getElementById('searchForm-wrap') || document.getElementById('searchForm');
+    if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function applyMoodDest(dest){
+    var input = document.getElementById('dest');
+    if (!input) return;
+    input.value = dest;
+    input.dispatchEvent(new Event('input', {bubbles:true}));
+  }
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('.mood-pill, .mood-card');
+    if (!el) return;
+    document.querySelectorAll('.mood-pill').forEach(function(p){ p.classList.remove('active'); });
+    if (el.classList.contains('mood-pill')) el.classList.add('active');
+    if (el.dataset.action === 'match'){
+      var trigger = document.getElementById('matchTriggerBtn');
+      if (trigger) trigger.click();
+      return;
+    }
+    var dest = el.dataset.moodDest;
+    if (dest){
+      applyMoodDest(dest);
+      goToTicket();
+    } else {
+      var destSection = document.getElementById('destinacije');
+      if (destSection) destSection.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+})();
+</script>
 <script src="config.js"></script>
 <script src="affiliate.js?v=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
