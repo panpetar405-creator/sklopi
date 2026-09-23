@@ -3798,3 +3798,54 @@ footer>*{position:relative;z-index:1;}
     .dest-plan-arrow svg{width:15px;height:15px;}
     .dest-plan-body h3{padding-right:34px;}
 }
+
+/* ---- Gornja traka: dizajn usklađen sa hero sekcijom i ostatkom sajta ----
+   Ista paleta kao .hero-reference (tirkizni ink #0b4855, aqua #0f8193, zlato #f0bd4f),
+   ista pozadina kao vrh hero sekcije (nema više krem trake iznad plavičaste sekcije)
+   i sadržaj poravnat sa ivicama hero kartice. */
+.topbar-wrap{
+    background:rgba(237,248,249,.9);
+    -webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);
+    border-bottom:1px solid rgba(11,72,85,.07);
+}
+.topbar{max-width:1228px;padding:14px 24px;gap:12px;}
+.topbar .logo-v2{
+    font-family:'Sora',sans-serif;font-weight:800;font-size:22px;
+    letter-spacing:-.02em;color:#0b4855;gap:10px;
+}
+.topbar .logo-v2 .mark-v2{
+    width:40px;height:40px;border-radius:12px;
+    background:linear-gradient(135deg,#0b4855 0%,#0f8193 100%);
+    box-shadow:0 6px 14px rgba(11,72,85,.22);
+}
+.topbar .logo-v2 .mark-v2 svg{width:21px;height:21px;stroke:#f0bd4f;}
+.topbar .logo-v2 em{color:#e7a93e;margin-left:1px;}
+.topbar-right{gap:8px;}
+.topbar-right .lang-switch{
+    height:40px;padding:0 14px;border-radius:12px;
+    background:#fff;border:1px solid #dcebed;color:#0b4855;
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:.02em;
+    box-shadow:0 2px 6px rgba(9,54,64,.05);
+    transition:border-color .15s ease,background .15s ease,box-shadow .15s ease,transform .15s ease;
+}
+.topbar-right .lang-switch:hover{
+    background:#e9f5f5;border-color:rgba(15,129,147,.4);
+    box-shadow:0 6px 14px rgba(9,54,64,.09);
+}
+.topbar-right .lang-switch:active{transform:scale(.97);}
+.topbar-right .lang-switch:focus-visible{outline:2px solid #0f8193;outline-offset:2px;}
+.topbar-right .lang-switch .ls-sep{color:#718b91;opacity:.7;}
+.topbar-right .lang-switch .ls-item,
+.topbar-right .currency-switch .cs-eur,
+.topbar-right .currency-switch .cs-rsd{opacity:.42;}
+.topbar-right .lang-switch .ls-item.is-active,
+.currency-switch[data-currency="EUR"] .cs-eur,
+.currency-switch[data-currency="RSD"] .cs-rsd{opacity:1;color:#0f8193;}
+@media (max-width:760px){
+    .topbar{padding:10px 12px;}
+    .topbar .logo-v2{font-size:19px;gap:8px;}
+    .topbar .logo-v2 .mark-v2{width:36px;height:36px;border-radius:11px;}
+    .topbar .logo-v2 .mark-v2 svg{width:19px;height:19px;}
+    .topbar-right{gap:6px;}
+    .topbar-right .lang-switch{height:36px;padding:0 11px;font-size:12px;border-radius:11px;}
+}
