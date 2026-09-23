@@ -1,0 +1,43 @@
+name: Automatski prevodi
+
+# Kad promeniš srpski tekst (locales/sr.json) ili dodaš jezik (locales/languages.json),
+# ovo samo prevede šta fali i commituje rezultat. Cloudflare posle toga objavi sajt.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'locales/sr.json'
+      - 'locales/languages.json'
+      - 'locales/_notes.json'
+      - 'locales/_glossary.json'
+  workflow_dispatch:        # ručno pokretanje: Actions → Automatski prevodi → Run workflow
+
+permissions:
+  contents: write
+
+concurrency:
+  group: translate
+  cancel-in-progress: false
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Prevedi šta fali
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/translate.mjs
+      - name: Provera (placeholderi, HTML tagovi, brendovi)
+        run: node scripts/translate.mjs --check
+      - name: Commit
+        run: |
+          git config user.name  "sklopi-translate-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add locales i18n-data.js index.html
+          git diff --cached --quiet && echo "Nema promena." && exit 0
+          git commit -m "i18n: automatski prevodi"
+          git push

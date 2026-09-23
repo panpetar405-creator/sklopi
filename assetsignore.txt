@@ -1,0 +1,34 @@
+# Fajlovi koji NE smeju da se objave na sajtu.
+# wrangler.toml ima [assets] directory = ".", pa se bez ovoga objavljuje ceo repo.
+# Sintaksa je kao u .gitignore. Stavi ovaj fajl u koren repoa (pored wrangler.toml).
+# Posle deploy-a proveri da /wrangler.toml i /price-alert-worker.js vraćaju 404.
+
+# Worker i konfiguracija
+wrangler.toml
+price-alert-worker.js
+pricing-core.js
+destination-images.js
+package.json
+package-lock.json
+.gitignore
+.dev.vars
+.env
+
+# SQL i dokumentacija
+*.sql
+*.md
+
+# Alati za prevode i provere, i njihovi ulazni fajlovi
+*.mjs
+sr.json
+en.json
+ru.json
+languages.json
+_glossary.json
+_notes.json
+transport-sr-keys.json
+
+# Novo: folder sa prevodima (ulaz za skriptu, ne objavljuje se)
+locales/
+scripts/
+.github/
