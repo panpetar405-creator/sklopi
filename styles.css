@@ -1009,6 +1009,34 @@ a{color:inherit;}
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
 }
 .plan-note b{color:var(--ink);}
+/* ---------- "Da li si sve pokrio?" — putni checklist ---------- */
+.travel-checklist{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;
+    padding:16px 16px 8px;
+}
+.tc-head{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin-bottom:10px;
+}
+.tc-title{font-family:'Sora',sans-serif;font-weight:700;font-size:15.5px;color:var(--ink);}
+.tc-score{
+    font-family:'Sora',sans-serif;font-weight:800;font-size:13px;
+    background:var(--aqua-soft);color:var(--aqua);padding:4px 11px;border-radius:999px;flex:none;
+}
+.tc-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+.tc-item{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:10px 0;border-top:1px solid var(--line);
+}
+.tc-item:first-child{border-top:none;}
+.tc-ic{font-size:15px;flex:none;line-height:1.4;}
+.tc-item b{display:block;font-family:'Sora',sans-serif;font-size:14px;color:var(--ink);margin-bottom:2px;}
+.tc-item p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-soft);}
+.tc-item.tc-todo p{color:var(--ink-soft);}
+@media (max-width:560px){
+    .travel-checklist{padding:14px 14px 6px;}
+    .tc-title{font-size:14.5px;}
+}
 .plan-continue-btn{
     margin-top:22px;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;
     background:linear-gradient(100deg,var(--deep) 0%,var(--deep2) 100%);

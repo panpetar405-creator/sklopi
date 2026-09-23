@@ -158,6 +158,7 @@ Nazad na pretragu
 <p class="hero-kicker"><span class="dash" style="width:20px;height:2px;background:var(--gold-soft);display:inline-block;margin-right:8px;"></span>PAŽLJIVO OSMIŠLJENA PUTOVANJA</p>
 <h1 id="dpHeroTitle">Kuda putuješ?</h1>
 <div class="dp-hero-facts" id="dpHeroFacts"></div>
+<div id="dpHeroChecklist"></div>
 <button type="button" class="dp-hero-edit" id="dpEdit" aria-expanded="false" aria-controls="dpSearch">✎ Izmeni pretragu</button>
 </div>
 </div>
@@ -463,6 +464,34 @@ function greenCard(country){
     return {tone:'ok', text:c + ': zelena karta nije potrebna za vozila registrovana u Srbiji.'};
   if (DATA.greenNeeded[c]) return {tone:'needed', text:DATA.greenNeeded[c]};
   return {tone:'unknown', text:'Nemamo potvrđeno pravilo za „' + c + '“ — proveri kod osiguravača da li ti treba zelena karta.'};
+}
+/* ---------- "Da li si sve pokrio?" — isti checklist kao na naslovnoj (app.js),
+   ovde nad lokalnim passportText/greenCard/DATA.visa jer ova stranica ne
+   učitava app.js. Namerno konzervativno: samo prikazuje postojeća pravila. ---------- */
+function travelChecklistHtml(country, includeCar){
+  const items = [];
+  const c = country || '';
+  const passportConfident = !!c && (DATA.regional.includes(c) || DATA.schengen.includes(c) ||
+    c === 'Turska' || c === 'Egipat' || c === 'Tunis' || c === 'Kina' || !!DATA.visa[c]);
+  items.push({ok:passportConfident, icon:passportConfident ? '✅' : '◻️', title:'Pasoš', text:passportText(c)});
+  if (DATA.visa[c]){
+    items.push({ok:false, icon:'⚠️', title:'Viza', text:DATA.visa[c]});
+  } else if (c){
+    items.push({ok:true, icon:'✅', title:'Viza',
+      text:'Nije potrebna viza za ' + c + ' — proveri ipak tik pred put ako se pravila u međuvremenu promene.'});
+  }
+  if (includeCar){
+    const g = greenCard(c);
+    items.push({ok:g.tone === 'ok', icon:g.tone === 'ok' ? '✅' : (g.tone === 'needed' ? '⚠️' : '◻️'), title:'Zelena karta', text:g.text});
+  }
+  items.push({ok:false, icon:'◻️', title:'Putno osiguranje',
+    text:'Preporučeno za svaki put van zemlje — proveri ponudu World Nomads ili sličnog partnera pre polaska.'});
+  const doneCount = items.filter(i => i.ok).length;
+  const rows = items.map(i =>
+    '<li class="tc-item ' + (i.ok ? 'tc-ok' : 'tc-todo') + '"><span class="tc-ic">' + i.icon + '</span><div><b>' + esc(i.title) + '</b><p>' + esc(i.text) + '</p></div></li>'
+  ).join('');
+  return '<div class="travel-checklist"><div class="tc-head"><span class="tc-title">🧳 Da li si sve pokrio?</span><span class="tc-score">' +
+    doneCount + '/' + items.length + '</span></div><ul class="tc-list">' + rows + '</ul></div>';
 }
 
 /* ---------- prikaz ---------- */
@@ -808,6 +837,9 @@ function renderResults(P){
     '<div class="dp-hero-fact">📅 <b>' + esc(fmtRange(s, e)) + '</b> · ' + nights + (nights === 1 ? ' noćenje' : ' noćenja') + '</div>' +
     '<div class="dp-hero-fact">👥 <b>' + P.adults + '</b> ' + (P.adults === 1 ? 'putnik' : 'putnika') + '</div>' +
     '<div class="dp-hero-fact">✈️ Polazak: <b>' + esc(org.name) + '</b></div>';
+  const isIsland = ISLANDS.has(norm(dest.name));
+  const canDrive = (!dest.country || DRIVABLE.has(dest.country)) && !isIsland;
+  $('dpHeroChecklist').innerHTML = dest.country ? travelChecklistHtml(dest.country, canDrive) : '';
 
   /* --- letovi (sadržaj se puni asinhrono) --- */
   const simNote = '<p class="dp-note dp-note-top">Primeri ponuda sa ilustrativnim cenama. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
@@ -828,8 +860,6 @@ function renderResults(P){
     '<div id="dpActBox"></div></div>';
 
   /* --- auto i ruta --- */
-  const isIsland = ISLANDS.has(norm(dest.name));
-  const canDrive = (!dest.country || DRIVABLE.has(dest.country)) && !isIsland;
   const gc = greenCard(dest.country);
   html += '<div class="dp-section" id="rentacar">' + sectionHead('🚗', 'Rent a car', '', 'dpCarCount', 'dpCarTrack') + simNote +
     '<div id="dpCarBox"></div>' +

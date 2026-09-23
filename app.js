@@ -3460,6 +3460,51 @@ function getGreenCardRule(country){
   return {status:'unknown', label:c, confident:false,
     why:'Nemamo potvrđeno pravilo za „' + c + '“ — proveri kod svog osiguravača da li ti treba zelena karta pre polaska.'};
 }
+/* ---------- "Da li si sve pokrio?" — putni checklist ----------
+   Sabira već postojeća pravila (pasoš, viza, zelena karta) u jedan
+   vizuelni indikator koji se prikazuje UZ rezultate/paket, umesto da
+   ostane skriven dok korisnik sam ne otvori documentsModal. Ovo je
+   svesno konzervativno: ne izmišlja nova pravila, samo prikazuje ono
+   što getPassportRule/getGreenCardRule već znaju, plus generičku
+   stavku za putno osiguranje koja uvek ostaje "za proveriti" jer
+   nemamo podatke o polisama. */
+function travelChecklistHtml(country, includeCar){
+  const items = [];
+  const p = getPassportRule(country, country);
+  items.push({
+    ok: !!p.confident,
+    icon: p.confident ? '✅' : '◻️',
+    title: 'Pasoš',
+    text: p.why
+  });
+  if (p.visaNote){
+    items.push({ok:false, icon:'⚠️', title:'Viza', text:p.visaNote});
+  } else if (country){
+    items.push({ok:true, icon:'✅', title:'Viza',
+      text:'Nije potrebna viza za ' + country + ' — proveri ipak tik pred put ako se pravila u međuvremenu promene.'});
+  }
+  if (includeCar){
+    const g = getGreenCardRule(country);
+    items.push({
+      ok: g.status === 'ok',
+      icon: g.status === 'ok' ? '✅' : (g.status === 'needed' ? '⚠️' : '◻️'),
+      title: 'Zelena karta',
+      text: g.why
+    });
+  }
+  items.push({
+    ok:false, icon:'◻️', title:'Putno osiguranje',
+    text:'Preporučeno za svaki put van zemlje — proveri ponudu World Nomads ili sličnog partnera pre polaska.'
+  });
+  const doneCount = items.filter(i => i.ok).length;
+  const rows = items.map(i =>
+    `<li class="tc-item ${i.ok ? 'tc-ok' : 'tc-todo'}"><span class="tc-ic">${i.icon}</span><div><b>${escapeHtml(i.title)}</b><p>${escapeHtml(i.text)}</p></div></li>`
+  ).join('');
+  return `<div class="travel-checklist">
+    <div class="tc-head"><span class="tc-title">🧳 Da li si sve pokrio?</span><span class="tc-score">${doneCount}/${items.length}</span></div>
+    <ul class="tc-list">${rows}</ul>
+  </div>`;
+}
 function resolveCountryForDestination(destValue){
   if (!destValue || !destValue.trim()) return '';
   const matches = matchPopularDestinations(destValue);
@@ -4304,7 +4349,10 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
     od: originCode || 'Beograd', do: dest, polazak: from, povratak: to, putnika: String(adults)
   }).toString();
   const destPageNote = `<div class="plan-note">🧭 <b>Sve o putu na jednom mestu</b><br>Letovi, smeštaj, atrakcije, ruta i saveti za tvoje datume. <a href="${escapeHtml(destPageUrl)}" style="color:var(--deep);font-weight:600;">Otvori stranicu destinacije</a></div>`;
+  const checklistCountry = resolveCountryForDestination(dest);
+  const checklistNote = checklistCountry ? travelChecklistHtml(checklistCountry, !!flags.car) : '';
   const notes = [
+    checklistNote,
     destPageNote,
     unknownNote ? `<div class="plan-note">🔎 ${escapeHtml(unknownNote)}</div>` : '',
     altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
