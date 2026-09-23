@@ -199,6 +199,8 @@
     ["x_37b927","Početna","Home","Главная"],
     ["x_e8c2d9","Destinacije","Destinations","Направления"],
     ["x_4c8fc4","Vodiči","Guides","Путеводители"],
+    ["x_ds0001","Nema rezultata za","No results for","Нет результатов для"],
+    ["x_ds0002","Pretraži ovu destinaciju","Search this destination","Искать это направление"],
   ];
   var BY_SR = {};
   ROWS.forEach(function(r){

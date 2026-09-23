@@ -6519,12 +6519,50 @@ function applyPopularDestFilters(){
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     const hay = normalizeSr(card.textContent || '');
     const category = card.dataset.category || 'all';
-    const matchesQuery = !query || hay.includes(query);
+    const matchesQuery = !query || card.dataset.search === '1' || hay.includes(query);
     const matchesFilter = active === 'all' || category === active;
     card.hidden = !(matchesQuery && matchesFilter);
   });
 }
-popularDestSearch?.addEventListener('input', applyPopularDestFilters);
+/* Pretraga destinacija: traži kroz CELU listu (POPULAR_DESTINATIONS), a ne samo
+   kroz 5 kartica koje su trenutno prikazane. Prazno polje vraća regionalni/podrazumevani prikaz. */
+function renderPopularSearchResults(rawQuery){
+  const grid = document.getElementById('popularDestGrid');
+  if (!grid) return;
+  const q = (rawQuery || '').trim();
+  if (!q){
+    renderRegionalPopularDestinations((document.getElementById('origin') || {}).value || '');
+    return;
+  }
+  popularDestFilters.forEach(b => b.classList.toggle('is-active', b.dataset.popularFilter === 'all'));
+  const matches = matchPopularDestinations(q).slice(0, 8);
+  if (!matches.length){
+    grid.innerHTML = '<div class="popular-empty"><p>' + escapeHtml(tx('Nema rezultata za') + ' „' + q + '“') + '</p>'
+      + '<button type="button" class="btn-secondary" id="popularEmptySearchBtn">' + escapeHtml(tx('Pretraži ovu destinaciju')) + '</button></div>';
+    document.getElementById('popularEmptySearchBtn')?.addEventListener('click', () => {
+      document.getElementById('dest').value = q;
+      if (!isMobileResults()) document.getElementById('results')?.scrollIntoView({behavior:'smooth', block:'start'});
+      runSearch(false);
+    });
+    return;
+  }
+  grid.innerHTML = matches.map(d => {
+    const meta = POPULAR_DEST_META[normalizeSr(d.name)];
+    return popularCardHtml({dest:d.name, name:d.name, meta: meta ? meta[0] : (d.extra || ''), price: meta ? meta[1] : '', category: meta ? meta[2] : 'all'});
+  }).join('');
+  grid.querySelectorAll('.popular-dest-card').forEach(c => { c.dataset.search = '1'; });
+  attachPopularDestCardHandlers(grid);
+}
+popularDestSearch?.addEventListener('input', () => renderPopularSearchResults(popularDestSearch.value));
+popularDestSearch?.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const grid = document.getElementById('popularDestGrid');
+  const first = grid && grid.querySelector('.popular-dest-card:not([hidden])');
+  if (first) first.click();
+  else document.getElementById('popularEmptySearchBtn')?.click();
+  popularDestSearch.blur();
+});
 popularDestFilters.forEach(btn => btn.addEventListener('click', () => {
   popularDestFilters.forEach(b => b.classList.toggle('is-active', b === btn));
   applyPopularDestFilters();
