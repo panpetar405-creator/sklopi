@@ -3849,3 +3849,67 @@ footer>*{position:relative;z-index:1;}
     .topbar-right{gap:6px;}
     .topbar-right .lang-switch{height:36px;padding:0 11px;font-size:12px;border-radius:11px;}
 }
+
+/* ---- Hero forma: dugmad usklađena sa sajtom ----
+   Uzrok kvara: unutar .hero promenljive --paper / --on-dark-* su prepisane za tamnu pozadinu,
+   pa su ikonice toggle-a ispale tamni blokovi, a natpisi (Letovi/Smeštaj/...) skoro nevidljivi
+   na beloj kartici. Ovde se vraćaju na svetlu hero paletu. */
+.hero-reference .toggle{
+    position:relative;
+    justify-content:center;gap:5px;
+    min-height:64px;padding:10px 4px 9px;
+    border:1px solid var(--hero-line);border-radius:14px;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(9,54,64,.04);
+    transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease;
+}
+.hero-reference .toggle .tt-icon{
+    width:auto;height:auto;border-radius:0;
+    background:none;box-shadow:none;
+    color:var(--hero-aqua);
+}
+.hero-reference .toggle .tt-icon svg{width:22px;height:22px;}
+.hero-reference .toggle .tt-label{
+    font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.01em;
+    color:var(--hero-muted);
+}
+.hero-reference .toggle:hover{
+    transform:translateY(-1px);
+    border-color:rgba(15,129,147,.35);
+    box-shadow:0 10px 20px rgba(9,54,64,.08);
+}
+.hero-reference .toggle:hover .tt-icon{transform:none;}
+.hero-reference .toggle:active{transform:scale(.98);}
+.hero-reference .toggle:focus-within{outline:2px solid var(--hero-aqua);outline-offset:2px;}
+.hero-reference .toggle.on{
+    background:var(--hero-aqua-soft);
+    border-color:rgba(15,129,147,.5);
+    box-shadow:inset 0 0 0 1px rgba(15,129,147,.08);
+}
+.hero-reference .toggle.on .tt-icon{background:none;box-shadow:none;color:var(--hero-aqua);}
+.hero-reference .toggle.on .tt-label{color:var(--hero-ink);}
+.hero-reference .toggle.on::after{
+    content:"";position:absolute;top:6px;right:6px;
+    width:16px;height:16px;border-radius:50%;
+    background:var(--hero-gold) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a2705' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12.5l4.5 4.5L19 7'/></svg>") center/10px no-repeat;
+}
+
+/* Glavno dugme "Sklopi moj put": beo tekst na tirkiznoj pozadini (bio je tamni ink) */
+.hero-reference .btn-search-main{
+    color:#fff;
+    font-family:'Sora',sans-serif;font-weight:700;letter-spacing:.005em;
+    gap:10px;
+}
+.hero-reference .btn-search-main .btn-search-icon{stroke:var(--hero-gold);}
+.hero-reference .btn-search-main:hover{filter:brightness(1.08);}
+.hero-reference .btn-search-main:focus-visible{outline:2px solid var(--hero-gold);outline-offset:3px;}
+
+@media (max-width:760px){
+    .hero-reference .transport-row{gap:6px;margin-top:10px;}
+    .hero-reference .toggle{min-height:62px;padding:9px 2px 8px;border-radius:12px;gap:4px;}
+    .hero-reference .toggle .tt-icon svg{width:21px;height:21px;}
+    .hero-reference .toggle .tt-label{font-size:11px;}
+    .hero-reference .toggle.on::after{top:4px;right:4px;width:14px;height:14px;background-size:9px;}
+    .hero-reference .btn-search-main{justify-content:flex-start;padding-left:20px;font-size:15px;}
+    .hero-reference .btn-search-main::after{margin-left:auto;}
+}
