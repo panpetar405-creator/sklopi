@@ -5739,9 +5739,363 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   // ta sekcija bude dodata (#planBreakdown); do tada samo obaveštenje.
   document.getElementById('planDetailMore')?.addEventListener('click', () => {
     const more = document.getElementById('planBreakdown');
-    if (more) more.scrollIntoView({behavior:'smooth', block:'start'});
+    if (more){
+      more.hidden = false;
+      document.dispatchEvent(new Event('sklopi:plan-breakdown'));
+      more.scrollIntoView({behavior:'smooth', block:'start'});
+    }
     else if (typeof showToast === 'function') showToast('Detalji leta, hotela i aktivnosti stižu u sledećoj sekciji.');
   });
+})();
+
+/* ==========================================================
+   SASTAVI SVOJ PAKET (#customPlanner) — čip izbori (6. ekran sa slike).
+   Upisuje izbor u builderState (isti izvor istine kao stari upitnik),
+   pa "Sklopi moj put" otvara postojeći builder sa procenom cene.
+   Budžet/Balans/Komfor su samo prečice: postave zvezdice hotela i tip
+   leta, a korisnik ih posle može da promeni ostalim čipovima.
+   Broj aktivnosti: 1-2 → 2, 3-4 → 3, 5+ → 5 (predstavnička vrednost).
+========================================================== */
+(function initCustomPlanner(){
+  const root = document.getElementById('customPlanner');
+  const btn = document.getElementById('customPlannerBtn');
+  if (!root || !btn) return;
+  const TIER_PRESETS = {
+    budget:  {stars:'3', flight:'cheapest'},
+    balance: {stars:'4', flight:'direct'},
+    comfort: {stars:'5', flight:'direct'}
+  };
+  function setChip(group, value){
+    root.querySelectorAll('.cp-group[data-group="' + group + '"] .cp-chip').forEach(c => {
+      const on = c.dataset.value === String(value);
+      c.classList.toggle('is-on', on);
+      c.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  function getChip(group){
+    const on = root.querySelector('.cp-group[data-group="' + group + '"] .cp-chip.is-on');
+    return on ? on.dataset.value : null;
+  }
+  root.querySelectorAll('.cp-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const group = chip.closest('.cp-group').dataset.group;
+      setChip(group, chip.dataset.value);
+      if (group === 'tier'){
+        const p = TIER_PRESETS[chip.dataset.value];
+        if (p){ setChip('stars', p.stars); setChip('flight', p.flight); }
+      }
+    });
+  });
+  btn.addEventListener('click', () => {
+    const destEl = document.getElementById('dest');
+    if (!destEl || !destEl.value.trim()){
+      showToast('Prvo izaberi destinaciju, pa sklopi put.');
+      focusSearchField('dest');
+      return;
+    }
+    builderState.includeFlight = true;
+    builderState.includeHotel = true;
+    builderState.flightPref = getChip('flight') === 'cheapest' ? 'cheapest' : 'direct';
+    builderState.hotelStars = Number(getChip('stars')) || 4;
+    builderState.carPref = getChip('car') || 'none';
+    builderState.activityCount = Number(getChip('acts')) || 2;
+    renderFormUI();
+    // Rezultat je "Tvoj personalizovani plan" (#personalPlans); builder se
+    // otvara tek klikom na "Pogledaj detalje" na nekom od planova.
+    document.dispatchEvent(new CustomEvent('sklopi:custom-plan', {detail:{
+      tier: getChip('tier'),
+      sel: {flightPref: builderState.flightPref, hotelStars: builderState.hotelStars,
+            carPref: builderState.carPref, activityCount: builderState.activityCount}
+    }}));
+    const target = document.getElementById('personalPlans') || document.getElementById('builderPanel');
+    if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+})();
+
+/* ==========================================================
+   TVOJ PERSONALIZOVANI PLAN (#personalPlans) — 7. ekran sa slike.
+   Iz izbora u "Sastavi svoj paket" pravi 3 plana: Najbolji izbor (tvoj
+   izbor), Više komfora i Najviše za novac. Osnovnu cenu daje
+   computeCustomPackage; Plan 2 i 3 se izvode iz nje istim konstantama
+   (množioci leta, cene zvezdica, cena auta), da redosled cena uvek
+   bude Najviše za novac < Najbolji izbor < Više komfora.
+========================================================== */
+(function initPersonalPlans(){
+  const section = document.getElementById('personalPlans');
+  const list = document.getElementById('ppList');
+  const tags = document.getElementById('ppTags');
+  if (!section || !list || !tags) return;
+  const TIER_LABEL = {budget:'Budžet', balance:'Balans', comfort:'Komfor'};
+  const ATHENS_PHOTOS = [
+    'https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=400&q=80',
+    'https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=400&q=80',
+    'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=400&q=80'
+  ];
+  let last = null;
+
+  function fmtPrice(n){
+    return currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  }
+  function photosFor(dest){
+    if (normalizeSr(dest) === 'atina') return ATHENS_PHOTOS;
+    const card = Array.from(document.querySelectorAll('.popular-dest-card'))
+      .find(c => normalizeSr(c.dataset.dest || '') === normalizeSr(dest));
+    const src = card && card.querySelector('img') ? card.querySelector('img').src : ATHENS_PHOTOS[1];
+    return [src, src, src];
+  }
+  // Procena po osobi za izbor `x`, izvedena iz osnovnog paketa `pkg` (izbor `a`).
+  function derivePerPerson(pkg, a, x, ctx){
+    const f = marketFactor(ctx.dest, todayStr()) * seasonFactor(ctx.dest, ctx.from);
+    const flight = pkg.flight.price * FLIGHT_PREF_PRICE_MULT[x.flightPref] / FLIGHT_PREF_PRICE_MULT[a.flightPref];
+    const hotel = pkg.hotel.price * HOTEL_STAR_BASE_PRICE[x.hotelStars] / HOTEL_STAR_BASE_PRICE[a.hotelStars];
+    const perAct = a.activityCount > 0 ? pkg.activity.price / a.activityCount : 30 * marketFactor(ctx.dest, todayStr());
+    const acts = perAct * x.activityCount;
+    let car = 0;
+    if (x.carPref !== 'none'){
+      car = x.carPref === a.carPref
+        ? pkg.car.price + pkg.carExtras.price
+        : (CAR_TYPE_BASE_PRICE[x.carPref] + 5.5) * ctx.days * f + 27 * marketFactor(ctx.dest, todayStr());
+    }
+    return Math.round((flight + hotel + acts + car) / ctx.adults);
+  }
+  function flightText(x, ctx, comfortFlex){
+    if (x.flightPref === 'cheapest') return 'Let sa presedanjem';
+    if (comfortFlex) return 'Fleksibilan let';
+    const o = iataFor(realDepartureAirportFor(ctx.originCode));
+    const d = iataFor(realArrivalAirportFor(ctx.dest));
+    return 'Direktan let' + (ctx.originCode && o && d ? ' (' + o + '\u2013' + d + ')' : '');
+  }
+  function carText(p){ return p === 'suv' ? 'Auto (SUV)' : p === 'small' ? 'Auto (mali)' : 'Bez auta'; }
+
+  function render(){
+    if (!last) return;
+    const ctx = builderCtx();
+    const a = Object.assign({}, builderState, last.sel, {includeFlight:true, includeHotel:true});
+    const pkg = computeCustomPackage(a, ctx);
+    const plans = [
+      {title:'Plan 1 \u2013 Najbolji izbor', sel:a, flex:false},
+      {title:'Plan 2 \u2013 Više komfora', flex:true, sel:Object.assign({}, a, {
+        flightPref:'direct', hotelStars:Math.min(5, a.hotelStars + 1),
+        carPref: a.carPref === 'none' ? 'small' : a.carPref,
+        activityCount:Math.min(10, a.activityCount + 1)})},
+      {title:'Plan 3 \u2013 Najviše za novac', flex:false, sel:Object.assign({}, a, {
+        flightPref:'cheapest', hotelStars:Math.max(3, a.hotelStars - 1),
+        carPref:'none', activityCount:Math.max(1, a.activityCount - 1)})}
+    ];
+    const photos = photosFor(ctx.dest);
+    tags.innerHTML = '<span class="pp-tag">' + escapeHtml(TIER_LABEL[last.tier] || 'Balans') + '</span>'
+      + '<span class="pp-tag pp-tag--stars">' + a.hotelStars + '\u2605 hotel +</span>';
+    list.innerHTML = plans.map((p, i) => {
+      const price = i === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
+      return '<article class="pp-card" data-plan="' + i + '"><div class="pp-card-top"><div class="pp-card-info">'
+        + '<h3>' + p.title + '</h3>'
+        + '<p class="pp-price">' + fmtPrice(price) + ' <span>/ osoba</span></p>'
+        + '<ul class="pp-feats">'
+        + '<li><span class="dpf-ic" aria-hidden="true">\u2708</span>' + escapeHtml(flightText(p.sel, ctx, p.flex)) + '</li>'
+        + '<li><span class="dpf-ic" aria-hidden="true">\u25a3</span>' + p.sel.hotelStars + '\u2605 hotel (' + nightsLabel(ctx.nights) + ')</li>'
+        + '<li><span class="dpf-ic" aria-hidden="true">\u25c7</span>' + activitiesLabel(p.sel.activityCount) + '</li>'
+        + '<li><span class="dpf-ic" aria-hidden="true">\u25b1</span>' + carText(p.sel.carPref) + '</li>'
+        + '</ul></div><div class="pp-photo"><img src="' + photos[i] + '" alt="" loading="lazy"></div></div>'
+        + '<button type="button" class="btn-primary pp-more" data-plan="' + i + '">Pogledaj detalje</button></article>';
+    }).join('');
+    list.querySelectorAll('.pp-more').forEach(btn => btn.addEventListener('click', () => {
+      Object.assign(builderState, plans[Number(btn.dataset.plan)].sel, {includeFlight:true, includeHotel:true});
+      renderFormUI();
+      openControlPanel();
+      document.getElementById('makeBuilderBtn').click();
+      const panel = document.getElementById('builderPanel');
+      if (panel) panel.scrollIntoView({behavior:'smooth', block:'start'});
+    }));
+    section.hidden = false;
+  }
+  document.addEventListener('sklopi:custom-plan', e => { last = e.detail; render(); });
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!section.hidden) render(); }, 0));
+})();
+
+/* ==========================================================
+   LET BEOGRAD → ATINA (#flightDetail) — 8. ekran sa slike.
+   Otvara se iz "Pogledaj detalje" na paketu (#planBreakdown). Ruta,
+   putnici i datumi dolaze iz forme za pretragu (polazak podrazumevano
+   Beograd, destinacija Atina); cena po osobi je ilustrativna procena
+   iz computeCustomPackage (direktan let). Nema "live cene" ni tačnog
+   vremena polaska — nemamo pravi izvor; trajanje je procena iz
+   udaljenosti aerodroma. Dugme vodi na KAYAK preko buildAffiliateLink.
+========================================================== */
+(function initFlightDetail(){
+  const box = document.getElementById('planBreakdown');
+  const btn = document.getElementById('fdKayakBtn');
+  if (!box || !btn) return;
+  const $ = id => document.getElementById(id);
+  function render(){
+    const ctx = builderCtx();
+    const originName = ctx.originCode || 'Beograd';
+    const destName = ctx.dest;
+    const c = Object.assign({}, ctx, {originCode: originName});
+    const sel = Object.assign({}, builderState, {flightPref:'direct', includeFlight:true});
+    const pkg = computeCustomPackage(sel, c);
+    const perPerson = Math.round(pkg.flight.price / c.adults);
+    const o = iataFor(realDepartureAirportFor(originName));
+    const d = iataFor(realArrivalAirportFor(destName));
+    let dur = '';
+    if (o && d && AIRPORT_COORDS[o] && AIRPORT_COORDS[d] && o !== d){
+      const mins = Math.round((haversineKm(AIRPORT_COORDS[o], AIRPORT_COORDS[d]) / 620 * 60 + 35) / 5) * 5;
+      dur = 'oko ' + Math.floor(mins / 60) + 'h ' + String(mins % 60).padStart(2, '0') + 'm';
+    }
+    const carrier = FLIGHT_CARRIERS.find(n => pkg.flight.name.indexOf(n) === 0) || '';
+    $('flightDetailTitle').textContent = 'Let ' + cityLabel(originName) + ' \u2192 ' + cityLabel(destName);
+    $('fdMeta').textContent = 'Direktan let \u2022 KAYAK';
+    $('fdPrice').innerHTML = (currentCurrency === 'RSD' ? escapeHtml(fmtEUR(perPerson)) : perPerson.toLocaleString('de-DE') + ' \u20ac') + ' <span>/ osoba</span>';
+    $('fdFrom').textContent = o || '\u2014';
+    $('fdTo').textContent = d || '\u2014';
+    $('fdFromName').textContent = cityLabel(originName);
+    $('fdToName').textContent = cityLabel(destName);
+    $('fdDur').textContent = dur ? dur + ' \u2022 Direktan let' : 'Direktan let';
+    $('fdCarrier').textContent = carrier ? 'Prevoznik (procena): ' + carrier : '';
+    const url = buildAffiliateLink('flight', {
+      dest: destName, originCode: originName, from: c.from, to: c.to, adults: c.adults, flightPref: 'direct'
+    });
+    btn.href = url;
+    btn.dataset.url = url;
+    btn.dataset.price = String(pkg.flight.price);
+    btn.dataset.dest = destName;
+  }
+  document.addEventListener('sklopi:plan-breakdown', render);
+  document.getElementById('flightDetailBack')?.addEventListener('click', () => {
+    box.hidden = true;
+    document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
+})();
+
+/* ==========================================================
+   HOTEL U ATINI (#hotelDetail) — 9. ekran sa slike. Isti obrazac kao
+   #flightDetail: otvara se sa #planBreakdown, podaci iz forme. Hotel je
+   3★ blizu centra (kao paket "Najviše za novac"); cena po noći i ukupno
+   su ilustrativna procena iz computeCustomPackage. Namerno bez izmišljenog
+   naziva hotela, broja recenzija i liste sadržaja (WiFi/bazen) — nemamo
+   te podatke; umesto toga prikazujemo šta procena stvarno pokriva
+   (blizu centra, sobe, noći). Dugme vodi na Booking.com (affiliate link).
+========================================================== */
+(function initHotelDetail(){
+  const box = document.getElementById('planBreakdown');
+  const btn = document.getElementById('hdBookingBtn');
+  if (!box || !btn) return;
+  const $ = id => document.getElementById(id);
+  const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  function render(){
+    const ctx = builderCtx();
+    const stars = 3;
+    const sel = Object.assign({}, builderState, {includeHotel:true, hotelStars:stars, prioritizeLocation:true});
+    const pkg = computeCustomPackage(sel, ctx);
+    const rooms = Math.max(1, Math.ceil(ctx.adults / 2));
+    const perNight = Math.round(pkg.hotel.price / (ctx.nights * rooms));
+    $('hotelDetailTitle').textContent = 'Hotel u ' + cityLabel(ctx.dest);
+    $('hdMeta').textContent = stars + '\u2605 \u2022 blizu centra';
+    $('hdPrice').innerHTML = escapeHtml(money(perNight)) + ' <span>/ no\u0107</span>';
+    $('hdTotal').textContent = '(ukupno ' + money(pkg.hotel.price) + ') \u2022 ilustrativna procena';
+    $('hdChips').innerHTML = [
+      '\ud83d\udccd Blizu centra',
+      '\ud83d\udecf ' + roomsLabel(rooms),
+      '\ud83c\udf19 ' + nightsLabel(ctx.nights)
+    ].map(s => '<span class="hd-chip">' + s + '</span>').join('');
+    const url = buildAffiliateLink('hotel', {
+      dest: ctx.dest, from: ctx.from, to: ctx.to, adults: ctx.adults,
+      hotelStars: stars, prioritizeLocation: true, prioritizeRating: false
+    });
+    btn.href = url;
+    btn.dataset.url = url;
+    btn.dataset.price = String(pkg.hotel.price);
+    btn.dataset.dest = ctx.dest;
+  }
+  document.addEventListener('sklopi:plan-breakdown', render);
+  $('hotelDetailBack')?.addEventListener('click', () => {
+    box.hidden = true;
+    document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
+})();
+
+/* ==========================================================
+   NAJPOPULARNIJE AKTIVNOSTI (#activitiesDetail) — 10. ekran sa slike.
+   Za Atinu: 3 ručno odabrane aktivnosti (ilustrativne "od" cene).
+   Za ostale destinacije: 3 opšte aktivnosti sa cenom izvedenom iz
+   computeCustomPackage. Bez ocena i broja recenzija (nemamo podatke).
+   "Rezerviši" vodi na Viator pretragu (affiliate), "Pogledaj sve
+   aktivnosti" otvara postojeći spisak atrakcija.
+========================================================== */
+(function initActivitiesDetail(){
+  const box = document.getElementById('planBreakdown');
+  const list = document.getElementById('adList');
+  if (!box || !list) return;
+  const ATHENS = [
+    {name:'Akropolj i muzej Akropolja', price:35, q:'Acropolis Athens tour', img:'https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=300&q=80'},
+    {name:'Obilazak starog grada', price:28, q:'Athens old town walking tour', img:'https://images.unsplash.com/photo-1555993539-1732b0258235?w=300&q=70&auto=format&fit=crop'},
+    {name:'Krstarenje zalivom', price:42, q:'Athens bay cruise', img:'https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=300&q=80'}
+  ];
+  const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  function render(){
+    const ctx = builderCtx();
+    let items;
+    if (normalizeSr(ctx.dest) === 'atina'){
+      items = ATHENS;
+    } else {
+      const pkg = computeCustomPackage(Object.assign({}, builderState, {activityCount:2}), ctx);
+      const base = Math.max(10, Math.round(pkg.activity.price / 2));
+      const card = Array.from(document.querySelectorAll('.popular-dest-card'))
+        .find(c => normalizeSr(c.dataset.dest || '') === normalizeSr(ctx.dest));
+      const img = card && card.querySelector('img') ? card.querySelector('img').src : ATHENS[2].img;
+      items = [
+        {name:'Ulaznice za glavne znamenitosti', price:Math.round(base * 1.1), q:ctx.dest + ' top attractions tickets', img},
+        {name:'Obilazak starog grada', price:Math.round(base * 0.85), q:ctx.dest + ' old town walking tour', img},
+        {name:'Vođena tura po gradu', price:Math.round(base * 1.3), q:ctx.dest + ' guided city tour', img}
+      ];
+    }
+    list.innerHTML = items.map(it => {
+      const url = buildAffiliateLink('activity', {dest: it.q});
+      return '<article class="ad-card"><div class="ad-photo"><img src="' + escapeHtml(it.img) + '" alt="" loading="lazy"></div>'
+        + '<div class="ad-info"><h3>' + escapeHtml(it.name) + '</h3><p class="ad-price">od ' + escapeHtml(money(it.price)) + '</p>'
+        + '<span class="partner-badge partner-badge--viator">Viator</span></div>'
+        + '<a class="ad-book" href="' + escapeHtml(url) + '" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="' + it.price
+        + '" data-url="' + escapeHtml(url) + '" data-dest="' + escapeHtml(ctx.dest) + '" data-tier="plan" onclick="bookItem(this)">Rezerviši</a></article>';
+    }).join('');
+  }
+  document.addEventListener('sklopi:plan-breakdown', render);
+  document.getElementById('adAllBtn')?.addEventListener('click', () => openAttractionsSheet());
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
+})();
+
+/* ==========================================================
+   DODATNE USLUGE (#extrasDetail) — 11. ekran sa slike.
+   eSIM: "Dodaj" uključuje eSIM u procenu (builderState.esim, isti
+   izvor istine kao builder). Putno osiguranje: samo informacija dok
+   nema partnerskog linka (World Nomads ide preko CJ). Price Alert:
+   postojeći openAlertModal za trenutni izbor (builderState).
+========================================================== */
+(function initExtrasDetail(){
+  const box = document.getElementById('planBreakdown');
+  const esimBtn = document.getElementById('exEsimBtn');
+  const alertBtn = document.getElementById('exAlertBtn');
+  if (!box || !esimBtn || !alertBtn) return;
+  const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  function render(){
+    document.getElementById('exEsimPrice').textContent = 'od ' + money(BUILDER_ADDON_RATES.esim);
+    document.getElementById('exInsPrice').textContent = 'od ' + money(BUILDER_ADDON_RATES.insurance);
+    esimBtn.textContent = builderState.esim ? 'Dodato \u2713' : 'Dodaj';
+    esimBtn.setAttribute('aria-pressed', builderState.esim ? 'true' : 'false');
+  }
+  esimBtn.addEventListener('click', () => {
+    builderState.esim = !builderState.esim;
+    renderFormUI();
+    renderBuilder();
+    render();
+    showToast(builderState.esim ? 'eSIM dodat u procenu paketa.' : 'eSIM uklonjen iz procene.');
+  });
+  alertBtn.addEventListener('click', () => {
+    const pkg = computeCustomPackage(builderState, builderCtx());
+    openAlertModal('builder', null, pkg.total);
+  });
+  document.addEventListener('sklopi:plan-breakdown', render);
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
 })();
 
 /* ==========================================================

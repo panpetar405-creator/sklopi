@@ -113,7 +113,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@600;700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=25">
+<link rel="stylesheet" href="styles.css?v=31">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
 <body>
@@ -434,6 +434,129 @@ SKLOPI<em>.</em>
     </div>
   </article>
 </section>
+<section class="section custom-planner-section" id="customPlanner" aria-labelledby="customPlannerTitle">
+  <div class="custom-planner-card">
+    <h2 id="customPlannerTitle">Sastavi svoj paket</h2>
+    <p class="cp-sub">Izaberi šta ti je bitno i mi ćemo ti složiti idealnu kombinaciju.</p>
+    <div class="cp-group" data-group="tier">
+      <p class="cp-label" id="cpl-tier">Budžet</p>
+      <div class="cp-chips cp-cols-3" role="group" aria-labelledby="cpl-tier"><button type="button" class="cp-chip" data-value="budget" aria-pressed="false">Budžet</button><button type="button" class="cp-chip is-on" data-value="balance" aria-pressed="true">Balans</button><button type="button" class="cp-chip" data-value="comfort" aria-pressed="false">Komfor</button></div>
+    </div>
+    <div class="cp-group" data-group="flight">
+      <p class="cp-label" id="cpl-flight">Tip leta</p>
+      <div class="cp-chips cp-cols-2" role="group" aria-labelledby="cpl-flight"><button type="button" class="cp-chip is-on" data-value="direct" aria-pressed="true">Direktan</button><button type="button" class="cp-chip" data-value="cheapest" aria-pressed="false">Sa presedanjem</button></div>
+    </div>
+    <div class="cp-group" data-group="stars">
+      <p class="cp-label" id="cpl-stars">Zvezdice hotela</p>
+      <div class="cp-chips cp-cols-3" role="group" aria-labelledby="cpl-stars"><button type="button" class="cp-chip" data-value="3" aria-pressed="false">3★</button><button type="button" class="cp-chip is-on" data-value="4" aria-pressed="true">4★</button><button type="button" class="cp-chip" data-value="5" aria-pressed="false">5★</button></div>
+    </div>
+    <div class="cp-group" data-group="car">
+      <p class="cp-label" id="cpl-car">Tip auta</p>
+      <div class="cp-chips cp-cols-3" role="group" aria-labelledby="cpl-car"><button type="button" class="cp-chip is-on" data-value="none" aria-pressed="true">Bez auta</button><button type="button" class="cp-chip" data-value="small" aria-pressed="false">Mali</button><button type="button" class="cp-chip" data-value="suv" aria-pressed="false">SUV</button></div>
+    </div>
+    <div class="cp-group" data-group="acts">
+      <p class="cp-label" id="cpl-acts">Broj aktivnosti</p>
+      <div class="cp-chips cp-cols-3" role="group" aria-labelledby="cpl-acts"><button type="button" class="cp-chip is-on" data-value="2" aria-pressed="true">1-2</button><button type="button" class="cp-chip" data-value="3" aria-pressed="false">3-4</button><button type="button" class="cp-chip" data-value="5" aria-pressed="false">5+</button></div>
+    </div>
+    <button type="button" class="btn-primary cp-submit" id="customPlannerBtn">Sklopi moj put <span aria-hidden="true">&rarr;</span></button>
+  </div>
+</section>
+<section class="section personal-plans-section" id="personalPlans" aria-labelledby="personalPlansTitle" hidden>
+  <div class="pp-head">
+    <h2 id="personalPlansTitle">Tvoj personalizovani plan</h2>
+    <p>Na osnovu tvojih preferenci, ovo su 3 najbolje kombinacije.</p>
+    <div class="pp-tags" id="ppTags"></div>
+  </div>
+  <div class="pp-list" id="ppList"></div>
+  <p class="pp-note">Ilustrativna procena po osobi; tačnu cenu proveri kod partnera pre rezervacije.</p>
+</section>
+<div class="plan-breakdown" id="planBreakdown" hidden>
+<section class="section flight-detail-section" id="flightDetail" aria-labelledby="flightDetailTitle">
+  <article class="flight-detail-card">
+    <div class="fd-top">
+      <button type="button" class="fd-back" id="flightDetailBack" aria-label="Nazad na paket">&#8592; Paket</button>
+    </div>
+    <div class="fd-body">
+      <h2 id="flightDetailTitle">Let Beograd &rarr; Atina</h2>
+      <p class="fd-meta" id="fdMeta">Direktan let &bull; KAYAK</p>
+      <p class="fd-price" id="fdPrice">142 &euro; <span>/ osoba</span></p>
+      <p class="fd-est">Ilustrativna procena</p>
+      <div class="fd-visual" aria-hidden="true">
+        <svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="fdSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fc4d6"/><stop offset="1" stop-color="#e6f4f7"/></linearGradient></defs><rect width="320" height="120" fill="url(#fdSky)"/><ellipse cx="60" cy="88" rx="46" ry="9" fill="#fff" opacity=".85"/><ellipse cx="250" cy="96" rx="58" ry="10" fill="#fff" opacity=".9"/><g transform="translate(112 34) rotate(-8)"><path d="M0 24h84l22-6c6-2 6 6 0 8l-22 6H0z" fill="#fff" stroke="#123A44" stroke-width="2" stroke-linejoin="round"/><path d="M34 26L18 4h10l28 22zM34 32L18 54h10l28-22z" fill="#c9dde2" stroke="#123A44" stroke-width="2" stroke-linejoin="round"/></g></svg>
+      </div>
+      <div class="fd-route">
+        <div><b id="fdFrom">BEG</b><small id="fdFromName">Beograd</small></div>
+        <div class="fd-line"><span></span><em id="fdDur">oko 1h 55m</em></div>
+        <div><b id="fdTo">ATH</b><small id="fdToName">Atina</small></div>
+      </div>
+      <p class="fd-carrier" id="fdCarrier"></p>
+      <a class="btn-primary fd-cta" id="fdKayakBtn" href="#" target="_blank" rel="noopener sponsored" data-kind="flight" data-price="0" data-url="" data-dest="" data-tier="plan" onclick="bookItem(this)">Idi na KAYAK <span aria-hidden="true">&#8599;</span></a>
+      <p class="fd-note">Cene se mogu promeniti. Preporučujemo proveru na partnerovom sajtu.</p>
+      <p class="fd-note" data-aff-disclosure></p>
+      <span class="partner-badge partner-badge--kayak fd-logo">KAYAK</span>
+    </div>
+  </article>
+</section>
+<section class="section flight-detail-section hotel-detail-section" id="hotelDetail" aria-labelledby="hotelDetailTitle">
+  <article class="flight-detail-card">
+    <div class="fd-top">
+      <button type="button" class="fd-back" id="hotelDetailBack" aria-label="Nazad na paket">&#8592; Paket</button>
+    </div>
+    <div class="fd-body">
+      <h2 id="hotelDetailTitle">Hotel u Atini</h2>
+      <p class="fd-meta" id="hdMeta">3&#9733; &bull; blizu centra</p>
+      <div class="fd-visual" aria-hidden="true">
+        <svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="hdSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ed3df"/><stop offset="1" stop-color="#f3f8f8"/></linearGradient></defs><rect width="320" height="120" fill="url(#hdSky)"/><rect x="0" y="100" width="320" height="20" fill="#cfe3e6"/><rect x="96" y="26" width="128" height="76" rx="4" fill="#fff" stroke="#123A44" stroke-width="2"/><g fill="#8fc4cf" stroke="#123A44" stroke-width="1.5"><rect x="108" y="38" width="20" height="16"/><rect x="150" y="38" width="20" height="16"/><rect x="192" y="38" width="20" height="16"/><rect x="108" y="64" width="20" height="16"/><rect x="192" y="64" width="20" height="16"/></g><rect x="148" y="70" width="24" height="32" fill="#e7a93e" stroke="#123A44" stroke-width="1.5"/></svg>
+      </div>
+      <p class="fd-price" id="hdPrice">284 &euro; <span>/ noć</span></p>
+      <p class="fd-est" id="hdTotal">Ilustrativna procena</p>
+      <div class="hd-chips" id="hdChips"></div>
+      <a class="btn-primary fd-cta" id="hdBookingBtn" href="#" target="_blank" rel="noopener sponsored" data-kind="hotel" data-price="0" data-url="" data-dest="" data-tier="plan" onclick="bookItem(this)">Idi na Booking.com <span aria-hidden="true">&#8599;</span></a>
+      <span class="partner-badge partner-badge--booking fd-logo">Booking<span class="pb-dotcom">.com</span></span>
+      <p class="fd-note">Cene se mogu promeniti. Preporučujemo proveru na partnerovom sajtu.</p>
+      <p class="fd-note" data-aff-disclosure></p>
+    </div>
+  </article>
+</section>
+<section class="section flight-detail-section activities-detail-section" id="activitiesDetail" aria-labelledby="activitiesDetailTitle">
+  <div class="ad-head">
+    <h2 id="activitiesDetailTitle">Najpopularnije aktivnosti</h2>
+    <p id="adSub">Doživi najbolje od destinacije.</p>
+  </div>
+  <div class="ad-list" id="adList"></div>
+  <button type="button" class="btn-primary ad-all" id="adAllBtn">Pogledaj sve aktivnosti</button>
+  <p class="fd-note">Cene su ilustrativna procena; tačnu cenu i dostupnost proveri kod partnera (Viator).</p>
+  <p class="fd-note" data-aff-disclosure></p>
+</section>
+<section class="section flight-detail-section extras-detail-section" id="extrasDetail" aria-labelledby="extrasDetailTitle">
+  <div class="ad-head">
+    <h2 id="extrasDetailTitle">Dodatne usluge za tvoj put</h2>
+    <p>Dodaj korisne detalje i sve saberi na jednom mestu.</p>
+  </div>
+  <div class="ex-list">
+    <div class="ex-card">
+      <span class="ex-ic" aria-hidden="true">&#128241;</span>
+      <div class="ex-info"><h3>eSIM internet</h3><p id="exEsimPrice">od 9 &euro;</p></div>
+      <button type="button" class="ex-btn" id="exEsimBtn" aria-pressed="false">Dodaj</button>
+    </div>
+    <div class="ex-card">
+      <span class="ex-ic" aria-hidden="true">&#128737;</span>
+      <div class="ex-info"><h3>Putno osiguranje</h3><p id="exInsPrice">od 18 &euro;</p></div>
+      <button type="button" class="ex-btn" disabled>Uskoro</button>
+    </div>
+    <div class="ex-card">
+      <span class="ex-ic" aria-hidden="true">&#128276;</span>
+      <div class="ex-info"><h3>Price Alert</h3><p>Prati promene cena i budi prvi koji zna!</p></div>
+      <button type="button" class="ex-btn" id="exAlertBtn">Aktiviraj</button>
+    </div>
+  </div>
+  <div class="ex-banner">
+    <svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true" fill="none" stroke="#123A44" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="16" width="30" height="22" rx="4" fill="#fff"/><path d="M18 16v-4a3 3 0 013-3h6a3 3 0 013 3v4M9 26h30"/><path d="M22 26v4h4v-4" fill="#e7a93e"/></svg>
+    <p>Putovanje je lakše kada imaš sve na jednom mestu.<b>SKLOPI</b></p>
+  </div>
+  <p class="fd-note">Cene dodataka su ilustrativna procena po osobi. Partnerski link za putno osiguranje stiže uskoro.</p>
+</section>
+</div>
 <div class="section action-cards-wrap">
 <div class="action-cards">
 <button type="button" class="action-card match-trigger" id="matchTriggerBtn" data-i18n-html="match_trigger">
@@ -1059,7 +1182,7 @@ SKLOPI<em>.</em>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 <script src="i18n-data.js?v=180"></script>
-<script src="app.js?v=24"></script>
+<script src="app.js?v=30"></script>
 <script src="price-mix.js?v=2"></script>
 <script src="transport.js?v=9"></script>
 <script src="transport-i18n.js?v=1"></script>

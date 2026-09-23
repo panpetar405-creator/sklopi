@@ -3475,3 +3475,113 @@ footer{padding:28px 20px;}
   .plan-detail-photo{height:160px;}
   .plan-detail-body h2{font-size:23px;}
 }
+
+/* ---------- Sastavi svoj paket — izbor preferenci (6. ekran sa slike) ---------- */
+.custom-planner-section{max-width:520px;padding:8px 28px 28px;margin:0 auto!important;}
+.custom-planner-card{background:#fff;border:1px solid #d9e7ea;border-radius:18px;padding:22px 20px 22px;box-shadow:0 14px 34px rgba(15,68,78,.10);}
+.custom-planner-card h2{margin:0;color:var(--deep);font:800 24px/1.15 'Manrope',sans-serif;letter-spacing:-.02em;}
+.cp-sub{margin:8px 0 6px;color:#5b757c;font:600 14px/1.5 'DM Sans',sans-serif;}
+.cp-group{margin-top:18px;}
+.cp-label{margin:0 0 8px;color:var(--deep);font:800 13px/1.2 'Manrope',sans-serif;}
+.cp-chips{display:grid;gap:8px;}
+.cp-cols-2{grid-template-columns:repeat(2,1fr);}
+.cp-cols-3{grid-template-columns:repeat(3,1fr);}
+.cp-chip{min-height:44px;padding:0 8px;border:1px solid #d3e3e6;border-radius:999px;background:#fff;color:#3d565c;font:700 13px/1 'DM Sans',sans-serif;cursor:pointer;transition:.15s ease;}
+.cp-chip:hover{border-color:#8fc0c7;background:#f2f9fa;}
+.cp-chip.is-on{background:var(--deep);border-color:var(--deep);color:#fff;box-shadow:0 6px 14px rgba(15,68,78,.18);}
+.cp-submit{width:100%;min-height:50px;margin-top:24px;border-radius:12px;font-size:14px;}
+@media (max-width:700px){
+  .custom-planner-section{padding:4px 18px 20px;}
+  .custom-planner-card{padding:18px 16px;}
+}
+
+/* ---------- Tvoj personalizovani plan (7. ekran sa slike) ---------- */
+.personal-plans-section{max-width:520px;padding:8px 28px 28px;margin:0 auto!important;}
+.personal-plans-section[hidden]{display:none;}
+.pp-head h2{margin:0;color:var(--deep);font:800 24px/1.15 'Manrope',sans-serif;letter-spacing:-.02em;}
+.pp-head p{margin:8px 0 0;color:#5b757c;font:600 14px/1.5 'DM Sans',sans-serif;}
+.pp-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.pp-tag{padding:7px 12px;border-radius:999px;background:#fff1dc;color:#8a5a12;font:800 12px/1 'DM Sans',sans-serif;}
+.pp-tag--stars{background:#e6f1fb;color:#15558c;}
+.pp-list{display:flex;flex-direction:column;gap:16px;margin-top:18px;}
+.pp-card{background:#fff;border:1px solid #d9e7ea;border-radius:16px;padding:14px;box-shadow:0 10px 26px rgba(15,68,78,.08);}
+.pp-card-top{display:flex;gap:14px;}
+.pp-card-info{flex:1;min-width:0;}
+.pp-card-info h3{margin:0;color:#0d6872;font:800 13px/1.2 'DM Sans',sans-serif;}
+.pp-price{margin:6px 0 10px;color:var(--deep);font:800 26px/1 'Manrope',sans-serif;}
+.pp-price span{font:600 12px/1 'DM Sans',sans-serif;color:#7b8d93;}
+.pp-feats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+.pp-feats li{display:flex;align-items:center;gap:8px;color:#3d565c;font:600 12.5px/1.3 'DM Sans',sans-serif;}
+.pp-photo{flex:none;width:104px;border-radius:11px;overflow:hidden;background:#dcebed;}
+.pp-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+.pp-more{width:100%;min-height:46px;margin-top:14px;border-radius:11px;font-size:13.5px;}
+.pp-note{margin:14px 0 0;text-align:center;color:#8b9a9e;font:600 11.5px/1.4 'DM Sans',sans-serif;}
+@media (max-width:700px){
+  .personal-plans-section{padding:4px 18px 20px;}
+  .pp-photo{width:92px;}
+}
+
+/* ---------- Let Beograd → Atina (8. ekran sa slike) ---------- */
+.plan-breakdown[hidden]{display:none;}
+.flight-detail-section{max-width:520px;padding:8px 28px 28px;margin:0 auto!important;}
+.flight-detail-card{background:#fff;border:1px solid #d9e7ea;border-radius:18px;box-shadow:0 14px 34px rgba(15,68,78,.10);overflow:hidden;}
+.fd-top{padding:14px 16px 0;}
+.fd-back{border:0;border-radius:999px;padding:8px 13px;background:#eef7f8;color:var(--deep);font:800 12px/1 'DM Sans',sans-serif;cursor:pointer;}
+.fd-body{padding:14px 20px 22px;}
+.fd-body h2{margin:0;color:var(--deep);font:800 24px/1.15 'Manrope',sans-serif;letter-spacing:-.02em;}
+.fd-meta{margin:6px 0 0;color:#5b757c;font:600 13.5px/1.3 'DM Sans',sans-serif;}
+.fd-price{margin:14px 0 0;color:var(--deep);font:800 32px/1 'Manrope',sans-serif;}
+.fd-price span{font:600 14px/1 'DM Sans',sans-serif;color:#7b8d93;}
+.fd-est{margin:6px 0 14px;color:#7b8d93;font:600 12.5px/1.3 'DM Sans',sans-serif;}
+.fd-visual{height:120px;border-radius:14px;overflow:hidden;background:#dcebed;}
+.fd-visual svg{display:block;width:100%;height:100%;}
+.fd-route{display:flex;align-items:center;gap:12px;margin:18px 0 6px;}
+.fd-route b{display:block;color:var(--deep);font:800 20px/1 'Manrope',sans-serif;}
+.fd-route small{display:block;margin-top:4px;color:#7b8d93;font:600 12px/1.2 'DM Sans',sans-serif;}
+.fd-route > div:last-child{text-align:right;}
+.fd-line{flex:1;text-align:center;}
+.fd-line span{display:block;border-top:2px dashed #b9d3d8;margin-bottom:6px;}
+.fd-line em{font:700 12px/1 'DM Sans',sans-serif;font-style:normal;color:#3d565c;}
+.fd-carrier{margin:10px 0 18px;color:#5b757c;font:600 13px/1.3 'DM Sans',sans-serif;}
+.fd-cta{width:100%;min-height:50px;border-radius:12px;font-size:14px;text-decoration:none;}
+.fd-note{margin:12px 0 0;text-align:center;color:#8b9a9e;font:600 11.5px/1.45 'DM Sans',sans-serif;}
+.fd-logo{display:block;width:max-content;margin:14px auto 0;}
+@media (max-width:700px){.flight-detail-section{padding:4px 18px 20px;}}
+
+/* ---------- Hotel u Atini (9. ekran sa slike) — koristi .fd-* stilove leta ---------- */
+.hotel-detail-section{padding-top:0;}
+.hd-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;}
+.hd-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #d3e3e6;border-radius:999px;background:#fff;color:#3d565c;font:700 12px/1 'DM Sans',sans-serif;}
+.hotel-detail-section .fd-visual{margin-top:14px;}
+
+/* ---------- Najpopularnije aktivnosti (10. ekran sa slike) ---------- */
+.activities-detail-section{padding-top:0;}
+.ad-head h2{margin:0;color:var(--deep);font:800 24px/1.15 'Manrope',sans-serif;letter-spacing:-.02em;}
+.ad-head p{margin:8px 0 0;color:#5b757c;font:600 14px/1.5 'DM Sans',sans-serif;}
+.ad-list{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+.ad-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #d9e7ea;border-radius:14px;padding:10px;box-shadow:0 8px 22px rgba(15,68,78,.07);}
+.ad-photo{flex:none;width:84px;height:84px;border-radius:10px;overflow:hidden;background:#dcebed;}
+.ad-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+.ad-info{flex:1;min-width:0;}
+.ad-info h3{margin:0;color:var(--deep);font:800 14px/1.25 'Manrope',sans-serif;}
+.ad-price{margin:5px 0 0;color:#3d565c;font:700 13px/1 'DM Sans',sans-serif;}
+.ad-info .partner-badge{margin-top:8px;font-size:10px;}
+.ad-book{flex:none;align-self:flex-end;padding:9px 14px;border-radius:9px;background:var(--deep);color:#fff;font:800 12px/1 'DM Sans',sans-serif;text-decoration:none;}
+.ad-book:hover{background:var(--deep2);}
+.ad-all{width:100%;min-height:48px;margin-top:16px;border-radius:12px;font-size:14px;}
+
+/* ---------- Dodatne usluge za tvoj put (11. ekran sa slike) ---------- */
+.extras-detail-section{padding-top:0;}
+.ex-list{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+.ex-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #d9e7ea;border-radius:14px;padding:14px;box-shadow:0 8px 22px rgba(15,68,78,.07);}
+.ex-ic{flex:none;width:42px;height:42px;border-radius:12px;background:#eef7f8;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.ex-info{flex:1;min-width:0;}
+.ex-info h3{margin:0;color:var(--deep);font:800 14.5px/1.2 'Manrope',sans-serif;}
+.ex-info p{margin:4px 0 0;color:#5b757c;font:600 12.5px/1.35 'DM Sans',sans-serif;}
+.ex-btn{flex:none;min-width:84px;padding:10px 14px;border:0;border-radius:9px;background:var(--deep);color:#fff;font:800 12px/1 'DM Sans',sans-serif;cursor:pointer;}
+.ex-btn:hover:not(:disabled){background:var(--deep2);}
+.ex-btn[aria-pressed="true"]{background:#1f9d6b;}
+.ex-btn:disabled{background:#e3ecee;color:#8b9a9e;cursor:not-allowed;}
+.ex-banner{display:flex;align-items:center;gap:14px;margin-top:16px;padding:16px;border-radius:14px;background:linear-gradient(120deg,#dff0f2,#f3f8f8);}
+.ex-banner p{margin:0;color:#3d565c;font:600 13px/1.4 'DM Sans',sans-serif;}
+.ex-banner b{display:block;margin-top:6px;color:var(--deep);font:800 15px/1 'Sora','Manrope',sans-serif;letter-spacing:.06em;}
