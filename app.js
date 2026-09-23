@@ -4331,6 +4331,14 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
   });
   if (seq !== undefined && seq !== window._searchSeq) return; // stigla je novija pretraga
   const pkgs = backendPkgs || computePackagesLocally(dest, from, to, nights, days, adults, flags, originCode);
+  // Ako je korisnik na početnoj izabrao Budžet / Balans / Komfor, taj paket ide prvi i nosi oznaku "Preporučeno".
+  if (window.SKLOPI_tierChosen && Array.isArray(pkgs)){
+    const want = {budget:'budget', balance:'best', comfort:'comfort'}[window.SKLOPI_tier];
+    if (want && pkgs.some(p => p.tier === want)){
+      pkgs.sort((x, y) => (y.tier === want) - (x.tier === want));
+      pkgs.forEach(p => { p.recommended = (p.tier === want); });
+    }
+  }
 
   // Global kontekst za "Sačuvaj ovu ponudu" dugme na svakoj kartici —
   // isti obrazac kao window._lastBuilderPkg za builder.
@@ -8561,3 +8569,58 @@ refreshDisplayedPrices = function(){
   _prevRefreshPricesDest();
   renderDestinations();
 };
+
+
+/* ==========================================================
+   HERO: Budžet / Balans / Komfor
+   Izbor postavlja preset (zvezdice hotela + tip leta) u builderState,
+   sinhronizuje se sa čipovima u "Sastavi svoj paket" i određuje koji
+   paket u rezultatima ide prvi (Budžet -> budget, Balans -> best,
+   Komfor -> comfort). Izbor se pamti u localStorage.
+========================================================== */
+(function initHeroTier(){
+  const wrap = document.querySelector('.hero-benefits');
+  if (!wrap) return;
+  const btns = Array.from(wrap.querySelectorAll('.hero-benefit[data-tier]'));
+  if (!btns.length) return;
+  const PRESETS = {budget:{stars:3, flight:'cheapest'}, balance:{stars:4, flight:'direct'}, comfort:{stars:5, flight:'direct'}};
+  const LABEL = {budget:'Budžet', balance:'Balans', comfort:'Komfor'};
+  const KEY = 'sklopi_tier';
+  let syncing = false;
+
+  function paint(tier){
+    btns.forEach(b => {
+      const on = b.dataset.tier === tier;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  function apply(tier, opts){
+    opts = opts || {};
+    if (!PRESETS[tier]) return;
+    window.SKLOPI_tier = tier;
+    window.SKLOPI_tierChosen = true;
+    paint(tier);
+    const p = PRESETS[tier];
+    builderState.hotelStars = p.stars;
+    builderState.flightPref = p.flight;
+    try { renderFormUI(); } catch (e) {}
+    if (!opts.fromPlanner){
+      const chip = document.querySelector('#customPlanner .cp-group[data-group="tier"] .cp-chip[data-value="' + tier + '"]');
+      if (chip){ syncing = true; try { chip.click(); } finally { syncing = false; } }
+    }
+    try { localStorage.setItem(KEY, tier); } catch (e) {}
+    if (opts.toast && typeof showToast === 'function') showToast('Stil putovanja: ' + LABEL[tier]);
+  }
+
+  btns.forEach(b => b.addEventListener('click', () => apply(b.dataset.tier, {toast:true})));
+
+  // Klik na Budžet/Balans/Komfor u "Sastavi svoj paket" pomera i hero izbor.
+  document.querySelectorAll('#customPlanner .cp-group[data-group="tier"] .cp-chip').forEach(chip => {
+    chip.addEventListener('click', () => { if (!syncing) apply(chip.dataset.value, {fromPlanner:true}); });
+  });
+
+  let saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if (saved && PRESETS[saved]) apply(saved);
+})();

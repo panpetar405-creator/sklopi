@@ -3722,3 +3722,7 @@ footer>*{position:relative;z-index:1;}
 .topbar .logo-v2 .mark-v2{width:34px;height:34px;border-radius:10px;}
 .topbar-right .lang-switch{height:34px;padding:0 10px;font-size:12px;}
 }
+
+/* Hero izbor Budžet/Balans/Komfor: dugmad su sada funkcionalna */
+.hero-benefit{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease;}
+.hero-benefit:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
