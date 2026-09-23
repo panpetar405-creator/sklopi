@@ -3971,3 +3971,84 @@ footer>*{position:relative;z-index:1;}
     .destination-reference-primary,.destination-reference-secondary{font-size:14.5px;}
     .destination-reference-tab{min-height:60px;font-size:11.5px;border-radius:12px;}
 }
+
+/* ==========================================================
+   SVA DUGMAD — isti izgled kao "Sklopi moj put"
+   (tirkizni gradijent, beo Sora tekst, zlatna kružica sa strelicom;
+   izabrani čipovi/tabovi u istom tirkiznom gradijentu)
+   ========================================================== */
+:root{
+    --btn-teal:linear-gradient(135deg,#0d7b8b,#073c48);
+    --btn-teal-shadow:0 14px 28px -14px rgba(7,60,72,.45);
+}
+
+/* Glavno dugme — svuda (Rezerviši paket, Izaberi plan, Pogledaj detalje, Sklopi moj put...) */
+.btn-primary{
+    justify-content:flex-start;gap:10px;text-align:left;
+    min-height:52px;padding:6px 7px 6px 22px;border-radius:12px;
+    background:var(--btn-teal);color:#fff;
+    font-family:'Sora',sans-serif;font-weight:700;letter-spacing:.005em;
+    box-shadow:var(--btn-teal-shadow);
+}
+.btn-primary::after{
+    width:40px;height:40px;margin-left:auto;
+    background:#f0bd4f;color:#3a2705;font-size:17px;font-weight:600;
+}
+.btn-primary:hover{filter:brightness(1.08);}
+.btn-primary:focus-visible{outline:2px solid #f0bd4f;outline-offset:3px;}
+
+/* Sporedno dugme — svetla varijanta istog oblika */
+.btn-secondary{
+    position:relative;display:flex;align-items:center;justify-content:flex-start;gap:10px;
+    min-height:52px;padding:6px 7px 6px 22px;border-radius:12px;
+    background:#fff;color:#0b4855;border:1.5px solid rgba(15,129,147,.4);
+    font-family:'Sora',sans-serif;font-size:14.5px;font-weight:700;letter-spacing:.005em;
+    text-align:left;white-space:nowrap;cursor:pointer;
+    box-shadow:0 8px 20px -14px rgba(7,60,72,.25);
+    transition:background .16s ease,border-color .16s ease,transform .16s ease;
+}
+.btn-secondary::after{
+    content:"→";flex:none;margin-left:auto;
+    display:flex;align-items:center;justify-content:center;
+    width:40px;height:40px;border-radius:50%;font-size:17px;font-weight:600;
+    background:#e9f5f5;color:#0f8193;transition:background .16s ease,color .16s ease;
+}
+.btn-secondary:hover{background:#f2f9fa;border-color:#0f8193;}
+.btn-secondary:hover::after{background:#0f8193;color:#fff;}
+.btn-secondary:active{transform:scale(.985);}
+.btn-secondary:focus-visible{outline:2px solid #f0bd4f;outline-offset:3px;}
+
+/* Izabrani čipovi i tabovi (Zvezdice hotela, Tip auta, Broj aktivnosti, Aktivni/Završeni, More/City break...) */
+.cp-chip.is-on,
+.chip.on,
+.mt-tab.is-on,
+.popular-ref-chip.is-active,
+.popular-ref-chip:hover{
+    background:var(--btn-teal);border-color:transparent;color:#fff;
+    box-shadow:0 8px 18px -10px rgba(7,60,72,.5);
+}
+.mt-tabs{background:#e9f5f5;}
+.cp-chip,.mt-tab{font-family:'Inter',sans-serif;}
+
+/* Mala dugmad (Rezerviši, Dodaj, Prijavi se...) */
+.ad-book,.ex-btn,.item-btn.flight,.auth-btn,.plan-continue-btn{
+    background:var(--btn-teal);color:#fff;
+}
+.ad-book,.ex-btn{border-radius:10px;font-family:'Sora',sans-serif;}
+.ad-book:hover,.ex-btn:hover,.item-btn.flight:hover,.auth-btn:hover,.plan-continue-btn:hover{filter:brightness(1.08);}
+
+/* Prijava (kartica u gornjem uglu hero fotografije i sekcija Sačuvani aranžmani) */
+.auth-dropdown-inner .btn-primary,
+.auth-dropdown-inner #dropdownLoginBtn{
+    background:var(--btn-teal);color:#fff;border:none;
+    min-height:48px;padding:6px 7px 6px 18px;border-radius:12px;
+    font-family:'Sora',sans-serif;font-size:14px;font-weight:700;
+}
+.auth-dropdown-inner #dropdownLoginBtn{padding:0 18px;text-align:center;}
+.auth-dropdown-inner .btn-primary::after{width:36px;height:36px;}
+.auth-bar .btn-alert{
+    background:var(--btn-teal);color:#fff;border:none;border-radius:12px;
+    min-height:48px;font-family:'Sora',sans-serif;font-weight:700;
+    box-shadow:var(--btn-teal-shadow);
+}
+.auth-bar .btn-alert:hover{filter:brightness(1.08);}
