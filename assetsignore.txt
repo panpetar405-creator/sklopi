@@ -32,3 +32,5 @@ transport-sr-keys.json
 locales/
 scripts/
 .github/
+de.json
+_state.json

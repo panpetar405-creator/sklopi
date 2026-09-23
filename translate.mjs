@@ -34,8 +34,10 @@ const argv = process.argv.slice(2);
 const flag = (n) => argv.includes('--' + n);
 const opt = (n) => { const i = argv.indexOf('--' + n); return i >= 0 ? argv[i + 1] : undefined; };
 
-const ROOT = path.resolve(opt('root') || path.join(path.dirname(fileURLToPath(import.meta.url)), '..'));
-const LOC = path.join(ROOT, 'locales');
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+/* Radi u oba rasporeda: skripta u scripts/ + locales/ (kao u PREVODI.md), ili sve u korenu repoa. */
+const ROOT = path.resolve(opt('root') || (path.basename(HERE) === 'scripts' ? path.join(HERE, '..') : HERE));
+const LOC = fs.existsSync(path.join(ROOT, 'locales')) ? path.join(ROOT, 'locales') : ROOT;
 const F = {
   langs: path.join(LOC, 'languages.json'),
   state: path.join(LOC, '_state.json'),
