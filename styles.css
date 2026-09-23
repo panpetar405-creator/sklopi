@@ -3010,3 +3010,327 @@ footer{padding:28px 20px;}
 }
 .dest-credit{margin:18px 0 0;font-size:12.5px;color:var(--ink-soft);}
 .dest-credit a{color:inherit;text-decoration:underline;}
+
+/* ==========================================================
+   HERO — implementacija referentne SKLOPI makete
+   ----------------------------------------------------------
+   Namerno ide na kraj fajla kao izolovani override: postojeći
+   search/calendar/transport JS ostaje netaknut, dok se samo vizuelni
+   sloj hero sekcije prebacuje na izgled sa referentne slike.
+   ========================================================== */
+.hero-reference{
+    --hero-ink:#0b4855;
+    --hero-ink-2:#083843;
+    --hero-paper:#f9fcfb;
+    --hero-line:#dcebed;
+    --hero-muted:#718b91;
+    --hero-aqua:#0f8193;
+    --hero-aqua-soft:#e9f5f5;
+    --hero-gold:#f0bd4f;
+    --hero-shadow:0 28px 70px rgba(9,54,64,.18);
+    background:linear-gradient(180deg,#edf8f9 0%,#f7fbfa 100%);
+    color:var(--hero-ink);
+    padding:34px 24px 56px;
+    overflow:visible;
+}
+.hero-reference-shell{
+    width:min(1180px,100%);
+    margin:0 auto;
+    background:var(--hero-paper);
+    border:1px solid rgba(12,72,84,.08);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:var(--hero-shadow);
+}
+.hero-reference-visual{
+    position:relative;
+    min-height:470px;
+    overflow:hidden;
+    isolation:isolate;
+}
+.hero-reference-visual img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 55%;
+    display:block;
+    transform:scale(1.01);
+}
+.hero-reference-visual-overlay{
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg,rgba(3,35,42,.60) 0%,rgba(3,35,42,.16) 34%,rgba(3,35,42,.30) 100%),
+      linear-gradient(90deg,rgba(3,35,42,.38) 0%,transparent 65%);
+    z-index:1;
+}
+.hero-reference-brandbar{
+    position:absolute;
+    top:0;left:0;right:0;
+    height:72px;
+    padding:0 34px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    color:#fff;
+    z-index:2;
+    background:linear-gradient(180deg,rgba(3,35,42,.42),transparent);
+}
+.hero-reference-logo{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:20px;
+    letter-spacing:.02em;
+}
+.hero-reference-logo-mark{
+    width:30px;height:30px;
+    display:grid;place-items:center;
+    border:1px solid rgba(255,255,255,.65);
+    border-radius:8px;
+    font-size:18px;
+    line-height:1;
+}
+.hero-reference-menu{font-size:22px;line-height:1;opacity:.9;}
+.hero-reference-copy{
+    position:relative;
+    z-index:2;
+    width:min(650px,90%);
+    padding:145px 44px 58px;
+    color:#fff;
+}
+.hero-reference-eyebrow{
+    margin:0 0 16px;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.16em;
+    color:#e7f6f5;
+}
+.hero-reference-copy h1{
+    margin:0;
+    max-width:680px;
+    font-family:'Sora',sans-serif;
+    font-size:clamp(42px,6vw,74px);
+    line-height:1.03;
+    font-weight:700;
+    letter-spacing:-.045em;
+    color:#fff;
+    text-wrap:balance;
+}
+.hero-reference-copy p:last-child{
+    margin:22px 0 0;
+    max-width:470px;
+    color:rgba(255,255,255,.90);
+    font-size:18px;
+    line-height:1.5;
+}
+.hero-reference-body{
+    padding:28px 30px 34px;
+    background:linear-gradient(180deg,#fbfdfc 0%,#f5fbfa 100%);
+}
+.hero-benefits{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:22px;
+}
+.hero-benefit{
+    min-height:112px;
+    border:1px solid var(--hero-line);
+    border-radius:16px;
+    background:#fff;
+    color:var(--hero-ink);
+    padding:16px 16px 14px;
+    text-align:left;
+    cursor:pointer;
+    display:grid;
+    grid-template-columns:28px 1fr;
+    grid-template-rows:auto auto;
+    column-gap:10px;
+    align-content:center;
+    transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.hero-benefit:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(9,54,64,.08);}
+.hero-benefit.is-active{
+    border-color:rgba(15,129,147,.35);
+    background:var(--hero-aqua-soft);
+    box-shadow:inset 0 0 0 1px rgba(15,129,147,.05);
+}
+.hero-benefit-icon{
+    grid-row:1 / span 2;
+    width:28px;height:28px;
+    display:grid;place-items:center;
+    border-radius:9px;
+    background:#e8f5f5;
+    color:var(--hero-aqua);
+    font-size:17px;
+    font-weight:700;
+}
+.hero-benefit strong{font-size:15px;line-height:1.2;}
+.hero-benefit small{margin-top:5px;color:var(--hero-muted);font-size:11.5px;line-height:1.35;}
+.hero-reference-formhead{
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:18px;
+    margin:4px 4px 12px;
+}
+.hero-reference-formtitle{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:22px;
+    color:var(--hero-ink);
+}
+.hero-reference-formhint{font-size:12px;color:var(--hero-muted);}
+.hero-reference-form{position:relative;}
+.hero-reference .ticket{
+    display:grid;
+    grid-template-columns:1.1fr 1.2fr 1fr .8fr;
+    margin:0;
+    background:#fff;
+    border:1px solid var(--hero-line);
+    border-radius:18px;
+    overflow:visible;
+    box-shadow:0 12px 30px rgba(8,55,67,.06);
+}
+.hero-reference .ticket .stub{
+    position:relative;
+    min-width:0;
+    padding:20px 22px;
+    background:#fff;
+    border-right:1px solid var(--hero-line);
+    border-bottom:0;
+}
+.hero-reference .ticket .stub:last-of-type{border-right:0;}
+.hero-reference .ticket .stub label{
+    display:block;
+    margin:0 0 8px;
+    color:var(--hero-muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    text-shadow:none;
+}
+.hero-reference .ticket .stub input,
+.hero-reference .ticket .stub select,
+.hero-reference .ticket .date-display,
+.hero-reference .ticket .pax-display{
+    color:var(--hero-ink);
+    text-shadow:none;
+}
+.hero-reference .ticket .stub input{
+    font-family:'Sora',sans-serif;
+    font-size:17px;
+    font-weight:600;
+}
+.hero-reference .ticket .stub input::placeholder{color:#9aaeb2;opacity:1;}
+.hero-reference .ticket .date-display .dd-range,
+.hero-reference .ticket .pax-display{
+    font-family:'Sora',sans-serif;
+    font-size:17px;
+    font-weight:600;
+    color:var(--hero-ink);
+}
+.hero-reference .ticket .date-display .dd-meta{font-size:12px;color:var(--hero-muted);margin-top:4px;}
+.hero-reference .ticket .go{display:none;}
+.hero-reference .passport-check-btn{display:none;}
+.hero-reference .ticket-submit-row{
+    display:flex;
+    justify-content:flex-end;
+    margin:12px 0 0;
+}
+.hero-reference .btn-search-main{
+    min-width:210px;
+    max-width:none;
+    background:linear-gradient(135deg,#0d7b8b,#073c48);
+    border-radius:12px;
+    padding:6px 7px 6px 22px;
+    box-shadow:0 14px 28px -14px rgba(7,60,72,.45);
+}
+.hero-reference .btn-search-main::after{
+    width:40px;height:40px;
+    background:var(--hero-gold);
+}
+.hero-reference .transport-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-top:14px;
+    padding:0;
+    transform:none;
+}
+.hero-reference .toggle{
+    width:auto;
+    min-height:54px;
+    border:1px solid var(--hero-line);
+    border-radius:12px;
+    background:#fff;
+    color:var(--hero-muted);
+}
+.hero-reference .toggle.on{
+    border-color:rgba(15,129,147,.25);
+    background:var(--hero-aqua-soft);
+    color:var(--hero-ink);
+}
+.hero-reference .toggle .tt-icon{color:var(--hero-aqua);}
+.hero-reference .toggle .tt-label{font-size:12px;}
+.hero-reference .hero-spacer{display:none;}
+.hero-reference .cal-card,
+.hero-reference .pax-card{
+    --paper:#fff;
+    --ink:var(--hero-ink);
+    --ink-soft:var(--hero-muted);
+    --line:var(--hero-line);
+    --gold:#e7b84b;
+    --gold-soft:#f8edcf;
+    --gold-text:#9a7627;
+}
+.hero-reference .loc-dropdown{border-color:var(--hero-line);}
+
+@media (max-width:760px){
+    .hero-reference{padding:12px 12px 30px;}
+    .hero-reference-shell{border-radius:20px;}
+    .hero-reference-visual{min-height:385px;}
+    .hero-reference-brandbar{height:58px;padding:0 18px;}
+    .hero-reference-logo{font-size:16px;gap:8px;}
+    .hero-reference-logo-mark{width:25px;height:25px;border-radius:7px;font-size:15px;}
+    .hero-reference-menu{font-size:18px;}
+    .hero-reference-copy{width:100%;padding:112px 22px 34px;}
+    .hero-reference-eyebrow{font-size:9px;letter-spacing:.14em;margin-bottom:12px;}
+    .hero-reference-copy h1{font-size:clamp(38px,12vw,56px);line-height:1.02;}
+    .hero-reference-copy p:last-child{font-size:14px;line-height:1.4;margin-top:14px;max-width:300px;}
+    .hero-reference-body{padding:14px 12px 18px;}
+    .hero-benefits{gap:6px;margin-bottom:14px;}
+    .hero-benefit{min-height:94px;padding:10px 8px;border-radius:12px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;}
+    .hero-benefit-icon{width:25px;height:25px;border-radius:8px;font-size:15px;}
+    .hero-benefit strong{font-size:12px;}
+    .hero-benefit small{font-size:9.5px;line-height:1.2;margin:0;}
+    .hero-reference-formhead{margin:2px 2px 9px;align-items:flex-start;flex-direction:column;gap:2px;}
+    .hero-reference-formtitle{font-size:18px;}
+    .hero-reference-formhint{font-size:10.5px;}
+    .hero-reference .ticket{grid-template-columns:1fr;margin-top:0;border-radius:14px;}
+    .hero-reference .ticket .stub{padding:15px 14px;border-right:0;border-bottom:1px solid var(--hero-line);}
+    .hero-reference .ticket .stub:last-of-type{border-bottom:0;}
+    .hero-reference .ticket .stub label{font-size:9.5px;margin-bottom:5px;}
+    .hero-reference .ticket .stub input,
+    .hero-reference .ticket .date-display .dd-range,
+    .hero-reference .ticket .pax-display{font-size:15px;}
+    .hero-reference .ticket .date-display .dd-meta{font-size:10.5px;margin-top:3px;}
+    .hero-reference .ticket .go{display:none;}
+    .hero-reference .ticket-submit-row{margin-top:9px;}
+    .hero-reference .btn-search-main{width:100%;min-width:0;font-size:14px;padding-left:18px;}
+    .hero-reference .transport-row{grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px;}
+    .hero-reference .toggle{min-height:47px;border-radius:10px;flex-direction:column;gap:2px;padding:5px 2px;}
+    .hero-reference .toggle .tt-icon svg{width:18px;height:18px;}
+    .hero-reference .toggle .tt-label{font-size:9.5px;}
+}
+
+@media (min-width:761px){
+    .hero-reference .ticket-submit-row{position:absolute;right:18px;bottom:18px;margin:0;z-index:3;}
+    .hero-reference .transport-row{padding-right:232px;}
+}

@@ -113,7 +113,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=21">
+<link rel="stylesheet" href="styles.css?v=22">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
 <body>
@@ -149,85 +149,35 @@ SKLOPI<em>.</em>
 </div>
 <div class="auth-dropdown" id="authDropdown"></div>
 </div>
-<div class="hero" id="searchForm-wrap">
-<div class="hero-photo">
-<svg class="hero-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-<defs>
-<radialGradient id="heroArtGlow" cx="80%" cy="46%" r="62%">
-<stop offset="0%" stop-color="#1E8F92" stop-opacity="0.5"/>
-<stop offset="100%" stop-color="#123A44" stop-opacity="0"/>
-</radialGradient>
-<radialGradient id="heroArtGlowPurple" cx="10%" cy="86%" r="60%">
-<stop offset="0%" stop-color="#FF6A4A" stop-opacity="0.40"/>
-<stop offset="55%" stop-color="#FF5A38" stop-opacity="0.14"/>
-<stop offset="100%" stop-color="#FF5A38" stop-opacity="0"/>
-</radialGradient>
-<pattern id="heroArtDots" width="36" height="36" patternUnits="userSpaceOnUse">
-<circle cx="1.3" cy="1.3" r="1.3" fill="#F3EFE3" opacity="0.16"/>
-</pattern>
-</defs>
-<rect width="1600" height="900" fill="url(#heroArtGlow)"/>
-<rect width="1600" height="900" fill="url(#heroArtGlowPurple)"/>
-<rect width="1600" height="900" fill="url(#heroArtDots)"/>
-<circle cx="90" cy="120" r="360" fill="none" stroke="#F3EFE3" stroke-width="1" opacity="0.08"/>
-<circle cx="1560" cy="840" r="420" fill="none" stroke="#F3EFE3" stroke-width="1" opacity="0.08"/>
-<circle cx="120" cy="790" r="230" fill="none" stroke="#FF6A4A" stroke-width="1.1" opacity="0.24"/>
-<circle cx="120" cy="790" r="150" fill="none" stroke="#FF6A4A" stroke-width="1" opacity="0.16"/>
-<g transform="translate(1290,430)" stroke="#E7A93E" stroke-width="1.1" fill="none" opacity="0.55">
-<circle r="92"/>
-<circle r="62"/>
-<path d="M0 -92v16M0 76v16M-92 0h16M76 0h16"/>
-<path d="M0 -62L15 0L0 62L-15 0Z" fill="#E7A93E" fill-opacity="0.3" stroke="none"/>
-</g>
-<g class="hero-orbit" aria-hidden="true">
-<path class="hero-orbit-trail" d="M900 100 A180 180 0 1 1 900 460 A180 180 0 1 1 900 100" pathLength="100" fill="none" stroke="#F3EFE3" stroke-width="2.2" stroke-linecap="round"/>
-<g class="hero-orbit-plane">
-<path d="M0 -9L3 -1L16 2.5L16 5.5L3 4.5L0 13L-3 4.5L-16 5.5L-16 2.5L-3 -1Z" fill="#F3EFE3"/>
-<animateMotion dur="9s" repeatCount="indefinite" rotate="auto" path="M900 100 A180 180 0 1 1 900 460 A180 180 0 1 1 900 100"/>
-</g>
-</g>
-</svg>
-</div>
-<div class="hero-inner">
-<div class="hero-v2-inner">
-<p class="hero-v2-eyebrow" data-i18n="hero_v2_eyebrow">Sastavljanje putovanja, drugačije</p>
-<h1 data-i18n-html="hero_v2_title">Let, hotel, auto i doživljaji — <span class="accent-coral">sklopljeni</span> u jednu cenu.</h1>
-<p class="hero-v2-trust"><svg class="hvt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></svg>Ne uzimamo tvoj novac. Plaćaš uvek direktno kod proverenog partnera — mi samo sklapamo ponudu.</p>
-<p class="hero-v2-lede" data-i18n="hero_v2_lede">Umesto deset otvorenih kartica i ručnog sabiranja, SKLOPI spaja sve delove putovanja u jedan pregledan broj — pre nego što uopšte izabereš datume.</p>
-<div class="hero-v2-actions">
-<a href="#faq" class="hero-v2-secondary" data-i18n="hero_v2_secondary">▶ Kako radi sabiranje cene</a>
-</div>
-<div class="hero-v2-stats">
-<div class="hero-v2-stat"><b data-i18n="hero_v2_stat1_num">700+</b><span data-i18n="hero_v2_stat1_label">lokacija u ponudi</span></div>
-<div class="hero-v2-stat"><b data-i18n="hero_v2_stat2_num">5</b><span data-i18n="hero_v2_stat2_label">partnera za rezervaciju</span></div>
-</div>
-</div>
-<div class="hero-moods" id="heroMoods" role="group" aria-label="Brzi filter po raspoloženju">
-<button type="button" class="hero-mood-pill is-active" data-mood="all">Sve</button>
-<button type="button" class="hero-mood-pill" data-mood="sea">🌊 More</button>
-<button type="button" class="hero-mood-pill" data-mood="city">🏙️ Grad</button>
-<button type="button" class="hero-mood-pill" data-mood="nature">🌲 Priroda</button>
-<button type="button" class="hero-mood-pill" data-mood="ski">⛷️ Skijanje</button>
-</div>
-<script>
-(function(){
-  var wrap = document.getElementById('heroMoods');
-  if(!wrap) return;
-  wrap.addEventListener('click', function(e){
-    var btn = e.target.closest('.hero-mood-pill');
-    if(!btn) return;
-    wrap.querySelectorAll('.hero-mood-pill').forEach(function(b){ b.classList.toggle('is-active', b === btn); });
-    var mood = btn.getAttribute('data-mood');
-    var rows = document.querySelectorAll('#destRows .dest-row');
-    rows.forEach(function(row){
-      var match = mood === 'all' || row.getAttribute('data-row') === mood;
-      row.style.display = match ? '' : 'none';
-    });
-    var target = document.getElementById('destinacije');
-    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-  });
-})();
-</script>
+<div class="hero hero-reference" id="searchForm-wrap">
+<div class="hero-reference-shell">
+  <div class="hero-reference-visual">
+    <img src="https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?auto=format&fit=crop&w=1800&q=88" alt="Mediteranska obala i grad uz more" loading="eager">
+    <div class="hero-reference-visual-overlay"></div>
+    <div class="hero-reference-brandbar">
+      <span class="hero-reference-logo"><span class="hero-reference-logo-mark">⌁</span> SKLOPI</span>
+      <span class="hero-reference-menu" aria-hidden="true">☰</span>
+    </div>
+    <div class="hero-reference-copy">
+      <p class="hero-reference-eyebrow">PUTOVANJE PO TVOM UKUSU</p>
+      <h1>Sklopi put<br>koji ti odgovara.</h1>
+      <p>Reći nam gde ideš, koliko imaš i kakav put želiš.</p>
+    </div>
+  </div>
+
+  <div class="hero-reference-body">
+    <div class="hero-benefits" aria-label="Način sklapanja putovanja">
+      <button type="button" class="hero-benefit is-active"><span class="hero-benefit-icon">♡</span><strong>Budžet</strong><small>Hoću da prođem što povoljnije</small></button>
+      <button type="button" class="hero-benefit"><span class="hero-benefit-icon">♧</span><strong>Balans</strong><small>Dobro za novac i komfor</small></button>
+      <button type="button" class="hero-benefit"><span class="hero-benefit-icon">◇</span><strong>Komfor</strong><small>Hoću da uživam, cena nije glavna</small></button>
+    </div>
+
+    <div class="hero-reference-formhead">
+      <span class="hero-reference-formtitle">Sastavi svoj put</span>
+      <span class="hero-reference-formhint">Jedan pregled. Jedna procenjena cena.</span>
+    </div>
+
+    <div class="hero-reference-form">
 <form class="ticket" id="searchForm">
 <div class="stub" id="originStub">
 <label for="origin" data-i18n="label_origin">Polazak</label>
@@ -298,7 +248,7 @@ SKLOPI<em>.</em>
 </div>
 </form>
 <div class="ticket-submit-row">
-<button type="submit" form="searchForm" class="btn-primary btn-search-main" data-i18n-html="btn_search_html"><svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Start</button>
+<button type="submit" form="searchForm" class="btn-primary btn-search-main" ><svg class="btn-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>Sklopi moj put</button>
 </div>
 <div class="transport-row">
 <label class="toggle" data-t="flight">
@@ -324,6 +274,9 @@ SKLOPI<em>.</em>
 </div>
 </div>
 <div class="hero-spacer"></div>
+    </div>
+  </div>
+</div>
 </div>
 <div class="section why-not-agency-wrap">
 <div class="why-not-agency">
