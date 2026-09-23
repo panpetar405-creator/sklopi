@@ -5768,23 +5768,23 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const p = window.SKLOPI_ACTIVE_PLAN;
     if (!p || !detail) return;
     const lo = Math.round(p.price * 0.935 / 10) * 10, hi = Math.round(p.price * 1.07 / 10) * 10;
-    $('planDetailTitle').textContent = p.title;
+    $('planDetailTitle').textContent = tx(p.title);
     const pctx = builderCtx();
-    $('planDetailMeta').textContent = p.keepDest ? cityLabel(pctx.dest) + ' \u2022 ' + daysLabel(pctx.days) : 'Atina \u2022 4 dana';
-    $('planDetailPrice').innerHTML = escapeHtml(priceText(p.price)) + ' <span>/ osoba</span>';
-    $('planDetailEst').textContent = 'Procena: ~' + priceText(lo).replace(' \u20ac','') + '\u2013' + priceText(hi);
+    $('planDetailMeta').textContent = p.keepDest ? cityLabel(pctx.dest) + ' \u2022 ' + daysLabel(pctx.days) : tx('Atina \u2022 4 dana');
+    $('planDetailPrice').innerHTML = escapeHtml(priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span>';
+    $('planDetailEst').textContent = tx('Procena: ~') + priceText(lo).replace(' \u20ac','') + '\u2013' + priceText(hi);
     $('planDetailImg').src = p.photo;
-    $('planDetailImg').alt = p.alt;
+    $('planDetailImg').alt = tx(p.alt);
     const badge = $('planDetailBadge');
-    badge.textContent = p.badge;
+    badge.textContent = tx(p.badge);
     badge.className = 'plan-detail-badge ' + p.badgeCls;
-    $('planDetailFor').textContent = p.forWho;
+    $('planDetailFor').textContent = tx(p.forWho);
     const row = (ic, t1, t2) => '<li><span class="pdl-ic" aria-hidden="true">' + ic + '</span><div><b>' + t1 + '</b><small>' + t2 + '</small></div></li>';
     $('planDetailList').innerHTML =
-      row('\u2708', escapeHtml(p.flightT), escapeHtml(p.flightS)) +
-      row('\u25a3', 'Hotel', escapeHtml(p.hotelS)) +
-      row('\u25c7', 'Aktivnosti', escapeHtml(p.actS)) +
-      row('\u25b1', 'Prevoz', escapeHtml(p.carS));
+      row('\u2708', escapeHtml(tx(p.flightT)), escapeHtml(tx(p.flightS))) +
+      row('\u25a3', tx('Hotel'), escapeHtml(tx(p.hotelS))) +
+      row('\u25c7', tx('Aktivnosti'), escapeHtml(tx(p.actS))) +
+      row('\u25b1', tx('Prevoz'), escapeHtml(tx(p.carS)));
   }
 
   function openPlan(key){
@@ -5808,6 +5808,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     card.addEventListener('click', () => openPlan(card.dataset.plan));
   });
   window.SKLOPI_openPlan = openPlan;   // koristi ga i "Tvoj personalizovani plan"
+  document.addEventListener('sklopi:lang', () => { if (detail && !detail.hidden) renderPlanDetail(); });
 
   $('planDetailBack')?.addEventListener('click', () => {
     if (detail) detail.hidden = true;
@@ -5866,7 +5867,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   btn.addEventListener('click', () => {
     const destEl = document.getElementById('dest');
     if (!destEl || !destEl.value.trim()){
-      showToast('Prvo izaberi destinaciju, pa sklopi put.');
+      showToast(tx('Prvo izaberi destinaciju, pa sklopi put.'));
       focusSearchField('dest');
       return;
     }
@@ -5960,24 +5961,24 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
         carPref:'none', activityCount:Math.max(1, a.activityCount - 1)})}
     ];
     const photos = photosFor(ctx.dest);
-    tags.innerHTML = '<span class="pp-tag">' + escapeHtml(TIER_LABEL[last.tier] || 'Balans') + '</span>'
-      + '<span class="pp-tag pp-tag--stars">' + a.hotelStars + '\u2605 hotel +</span>';
+    tags.innerHTML = '<span class="pp-tag">' + escapeHtml(tx(TIER_LABEL[last.tier] || 'Balans')) + '</span>'
+      + '<span class="pp-tag pp-tag--stars">' + a.hotelStars + '\u2605 ' + tx('hotel') + ' +</span>';
     list.innerHTML = plans.map((p, i) => {
       const price = p.price = i === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
       return '<article class="pp-card" data-plan="' + i + '"><div class="pp-card-top"><div class="pp-card-info">'
-        + '<h3>' + p.title + '</h3>'
-        + '<p class="pp-price">' + fmtPrice(price) + ' <span>/ osoba</span></p>'
+        + '<h3>' + escapeHtml(tx(p.title)) + '</h3>'
+        + '<p class="pp-price">' + fmtPrice(price) + ' <span>' + tx('/ osoba') + '</span></p>'
         + '<ul class="pp-feats">'
-        + '<li><span class="dpf-ic" aria-hidden="true">\u2708</span>' + escapeHtml(flightText(p.sel, ctx, p.flex)) + '</li>'
-        + '<li><span class="dpf-ic" aria-hidden="true">\u25a3</span>' + p.sel.hotelStars + '\u2605 hotel (' + nightsLabel(ctx.nights) + ')</li>'
+        + '<li><span class="dpf-ic" aria-hidden="true">\u2708</span>' + escapeHtml(tx(flightText(p.sel, ctx, p.flex))) + '</li>'
+        + '<li><span class="dpf-ic" aria-hidden="true">\u25a3</span>' + p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(ctx.nights) + ')</li>'
         + '<li><span class="dpf-ic" aria-hidden="true">\u25c7</span>' + activitiesLabel(p.sel.activityCount) + '</li>'
-        + '<li><span class="dpf-ic" aria-hidden="true">\u25b1</span>' + carText(p.sel.carPref) + '</li>'
+        + '<li><span class="dpf-ic" aria-hidden="true">\u25b1</span>' + escapeHtml(tx(carText(p.sel.carPref))) + '</li>'
         + '</ul></div><div class="pp-photo"><img src="' + photos[i] + '" alt="" loading="lazy"></div></div>'
-        + '<button type="button" class="btn-primary pp-more" data-plan="' + i + '">Pogledaj detalje</button></article>';
+        + '<button type="button" class="btn-primary pp-more" data-plan="' + i + '">' + tx('Pogledaj detalje') + '</button></article>';
     }).join('');
     list.querySelectorAll('.pp-more').forEach(btn => btn.addEventListener('click', () => {
       const i = Number(btn.dataset.plan), p = plans[i], c = builderCtx();
-      const rooms = p.sel.hotelStars + '\u2605 hotel (' + nightsLabel(c.nights) + ')';
+      const rooms = p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(c.nights) + ')';
       if (typeof window.SKLOPI_openPlan !== 'function') return;
       window.SKLOPI_openPlan({
         title:p.title, price:p.price, badge:['Najbolji izbor','Više komfora','Najviše za novac'][i],
@@ -5994,6 +5995,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     section.hidden = false;
   }
   document.addEventListener('sklopi:custom-plan', e => { last = e.detail; render(); });
+  document.addEventListener('sklopi:lang', () => { if (last && !section.hidden) render(); });
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!section.hidden) render(); }, 0));
 })();
 
@@ -6025,19 +6027,19 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     let dur = '';
     if (o && d && AIRPORT_COORDS[o] && AIRPORT_COORDS[d] && o !== d){
       const mins = Math.round((haversineKm(AIRPORT_COORDS[o], AIRPORT_COORDS[d]) / 620 * 60 + 35) / 5) * 5;
-      dur = 'oko ' + Math.floor(mins / 60) + 'h ' + String(mins % 60).padStart(2, '0') + 'm';
+      dur = tx('oko ') + Math.floor(mins / 60) + 'h ' + String(mins % 60).padStart(2, '0') + 'm';
     }
     const carrier = FLIGHT_CARRIERS.find(n => pkg.flight.name.indexOf(n) === 0) || '';
-    $('flightDetailTitle').textContent = 'Let ' + cityLabel(originName) + ' \u2192 ' + cityLabel(destName);
-    $('fdMeta').textContent = (pref === 'cheapest' ? 'Najjeftinija kombinacija' : 'Direktan let') + ' \u2022 KAYAK';
-    $('fdPrice').innerHTML = (currentCurrency === 'RSD' ? escapeHtml(fmtEUR(perPerson)) : perPerson.toLocaleString('de-DE') + ' \u20ac') + ' <span>/ osoba</span>';
+    $('flightDetailTitle').textContent = tx('Let ') + cityLabel(originName) + ' \u2192 ' + cityLabel(destName);
+    $('fdMeta').textContent = tx(pref === 'cheapest' ? 'Najjeftinija kombinacija' : 'Direktan let') + ' \u2022 KAYAK';
+    $('fdPrice').innerHTML = (currentCurrency === 'RSD' ? escapeHtml(fmtEUR(perPerson)) : perPerson.toLocaleString('de-DE') + ' \u20ac') + ' <span>' + tx('/ osoba') + '</span>';
     $('fdFrom').textContent = o || '\u2014';
     $('fdTo').textContent = d || '\u2014';
     $('fdFromName').textContent = cityLabel(originName);
     $('fdToName').textContent = cityLabel(destName);
-    const stopTxt = pref === 'cheapest' ? 'Moguće presedanje' : 'Direktan let';
+    const stopTxt = tx(pref === 'cheapest' ? 'Moguće presedanje' : 'Direktan let');
     $('fdDur').textContent = dur ? dur + ' \u2022 ' + stopTxt : stopTxt;
-    $('fdCarrier').textContent = carrier ? 'Prevoznik (procena): ' + carrier : '';
+    $('fdCarrier').textContent = carrier ? tx('Prevoznik (procena): ') + carrier : '';
     const url = buildAffiliateLink('flight', {
       dest: destName, originCode: originName, from: c.from, to: c.to, adults: c.adults, flightPref: pref
     });
@@ -6047,6 +6049,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     btn.dataset.dest = destName;
   }
   document.addEventListener('sklopi:plan-breakdown', render);
+  document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   document.getElementById('flightDetailBack')?.addEventListener('click', () => {
     box.hidden = true;
     document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
@@ -6077,12 +6080,12 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const pkg = computeCustomPackage(sel, ctx);
     const rooms = Math.max(1, Math.ceil(ctx.adults / 2));
     const perNight = Math.round(pkg.hotel.price / (ctx.nights * rooms));
-    $('hotelDetailTitle').textContent = 'Hotel u ' + cityLabel(ctx.dest);
-    $('hdMeta').textContent = stars + '\u2605 \u2022 ' + (central ? 'blizu centra' : 'mirniji deo');
-    $('hdPrice').innerHTML = escapeHtml(money(perNight)) + ' <span>/ no\u0107</span>';
-    $('hdTotal').textContent = '(ukupno ' + money(pkg.hotel.price) + ') \u2022 ilustrativna procena';
+    $('hotelDetailTitle').textContent = tx('Hotel u ') + cityLabel(ctx.dest);
+    $('hdMeta').textContent = stars + '\u2605 \u2022 ' + tx(central ? 'blizu centra' : 'mirniji deo');
+    $('hdPrice').innerHTML = escapeHtml(money(perNight)) + ' <span>' + tx('/ no\u0107') + '</span>';
+    $('hdTotal').textContent = tx('(ukupno ') + money(pkg.hotel.price) + ') \u2022 ' + tx('ilustrativna procena');
     $('hdChips').innerHTML = [
-      (central ? '\ud83d\udccd Blizu centra' : '\ud83c\udf3f Mirniji deo'),
+      (central ? '\ud83d\udccd ' + tx('Blizu centra') : '\ud83c\udf3f ' + tx('Mirniji deo')),
       '\ud83d\udecf ' + roomsLabel(rooms),
       '\ud83c\udf19 ' + nightsLabel(ctx.nights)
     ].map(s => '<span class="hd-chip">' + s + '</span>').join('');
@@ -6096,6 +6099,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     btn.dataset.dest = ctx.dest;
   }
   document.addEventListener('sklopi:plan-breakdown', render);
+  document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   $('hotelDetailBack')?.addEventListener('click', () => {
     box.hidden = true;
     document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
@@ -6141,13 +6145,14 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     list.innerHTML = items.map(it => {
       const url = buildAffiliateLink('activity', {dest: it.q});
       return '<article class="ad-card"><div class="ad-photo"><img src="' + escapeHtml(it.img) + '" alt="" loading="lazy"></div>'
-        + '<div class="ad-info"><h3>' + escapeHtml(it.name) + '</h3><p class="ad-price">od ' + escapeHtml(money(it.price)) + '</p>'
+        + '<div class="ad-info"><h3>' + escapeHtml(tx(it.name)) + '</h3><p class="ad-price">' + tx('od ') + escapeHtml(money(it.price)) + '</p>'
         + '<span class="partner-badge partner-badge--viator">Viator</span></div>'
         + '<a class="ad-book" href="' + escapeHtml(url) + '" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="' + it.price
-        + '" data-url="' + escapeHtml(url) + '" data-dest="' + escapeHtml(ctx.dest) + '" data-tier="plan" onclick="bookItem(this)">Rezerviši</a></article>';
+        + '" data-url="' + escapeHtml(url) + '" data-dest="' + escapeHtml(ctx.dest) + '" data-tier="plan" onclick="bookItem(this)">' + tx('Rezerviši') + '</a></article>';
     }).join('');
   }
   document.addEventListener('sklopi:plan-breakdown', render);
+  document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   document.getElementById('adAllBtn')?.addEventListener('click', () => openAttractionsSheet());
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
 })();
@@ -6166,9 +6171,9 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   if (!box || !esimBtn || !alertBtn) return;
   const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
   function render(){
-    document.getElementById('exEsimPrice').textContent = 'od ' + money(BUILDER_ADDON_RATES.esim);
-    document.getElementById('exInsPrice').textContent = 'od ' + money(BUILDER_ADDON_RATES.insurance);
-    esimBtn.textContent = builderState.esim ? 'Dodato \u2713' : 'Dodaj';
+    document.getElementById('exEsimPrice').textContent = tx('od ') + money(BUILDER_ADDON_RATES.esim);
+    document.getElementById('exInsPrice').textContent = tx('od ') + money(BUILDER_ADDON_RATES.insurance);
+    esimBtn.textContent = tx(builderState.esim ? 'Dodato \u2713' : 'Dodaj');
     esimBtn.setAttribute('aria-pressed', builderState.esim ? 'true' : 'false');
   }
   esimBtn.addEventListener('click', () => {
@@ -6177,13 +6182,14 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     renderBuilder();
     render();
     document.dispatchEvent(new Event('sklopi:plan-changed'));
-    showToast(builderState.esim ? 'eSIM dodat u procenu paketa.' : 'eSIM uklonjen iz procene.');
+    showToast(tx(builderState.esim ? 'eSIM dodat u procenu paketa.' : 'eSIM uklonjen iz procene.'));
   });
   alertBtn.addEventListener('click', () => {
     const pkg = computeCustomPackage(builderState, builderCtx());
     openAlertModal('builder', null, pkg.total);
   });
   document.addEventListener('sklopi:plan-breakdown', render);
+  document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
 })();
 
@@ -6217,12 +6223,12 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       b.setAttribute('aria-selected', b.dataset.tab === tab ? 'true' : 'false');
     });
     if (tab === 'done'){
-      body.innerHTML = '<p class="mt-empty">Još nemaš završenih putovanja.</p>';
+      body.innerHTML = '<p class="mt-empty">' + tx('Još nemaš završenih putovanja.') + '</p>';
       return;
     }
     if (!ready){
-      body.innerHTML = '<p class="mt-empty">Još nisi sklopio put. Izaberi jedan od planova ili sastavi svoj paket.</p>'
-        + '<button type="button" class="btn-primary mt-btn" id="mtChoose">Izaberi plan</button>';
+      body.innerHTML = '<p class="mt-empty">' + tx('Još nisi sklopio put. Izaberi jedan od planova ili sastavi svoj paket.') + '</p>'
+        + '<button type="button" class="btn-primary mt-btn" id="mtChoose">' + tx('Izaberi plan') + '</button>';
       document.getElementById('mtChoose').addEventListener('click', () => {
         document.getElementById('destinationPlans')?.scrollIntoView({behavior:'smooth', block:'start'});
       });
@@ -6235,11 +6241,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       + (photo ? '<span class="mt-thumb"><img src="' + escapeHtml(photo) + '" alt="" loading="lazy"></span>' : '')
       + '<div><h3>' + escapeHtml(cityLabel(ctx.dest)) + ' \u2013 ' + daysLabel(ctx.days) + '</h3>'
       + '<p>' + escapeHtml(fmtDate(ctx.from) + ' \u2013 ' + fmtDate(ctx.to)) + ' \u2022 ' + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '</p></div></div>'
-      + '<ul class="mt-rows">' + rows.map(r => '<li><span aria-hidden="true">' + r[0] + '</span><b>' + r[1] + '</b><em>' + escapeHtml(money(r[2])) + '</em></li>').join('') + '</ul>'
-      + '<p class="mt-total">Ukupno: <b>' + escapeHtml(money(pkg.total)) + '</b></p>'
-      + '<p class="mt-fine">Ilustrativna procena za ' + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '.</p></article>'
-      + '<button type="button" class="btn-primary mt-btn" id="mtDetails">Pogledaj detalje</button>'
-      + '<button type="button" class="mt-link" id="mtDownload">Preuzmi plan puta</button>';
+      + '<ul class="mt-rows">' + rows.map(r => '<li><span aria-hidden="true">' + r[0] + '</span><b>' + escapeHtml(tx(r[1])) + '</b><em>' + escapeHtml(money(r[2])) + '</em></li>').join('') + '</ul>'
+      + '<p class="mt-total">' + tx('Ukupno: ') + '<b>' + escapeHtml(money(pkg.total)) + '</b></p>'
+      + '<p class="mt-fine">' + tx('Ilustrativna procena za ') + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '.</p></article>'
+      + '<button type="button" class="btn-primary mt-btn" id="mtDetails">' + tx('Pogledaj detalje') + '</button>'
+      + '<button type="button" class="mt-link" id="mtDownload">' + tx('Preuzmi plan puta') + '</button>';
     document.getElementById('mtDetails').addEventListener('click', () => {
       openControlPanel();
       document.getElementById('makeBuilderBtn').click();
@@ -6268,6 +6274,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   root.querySelectorAll('.mt-tab').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; render(); }));
+  document.addEventListener('sklopi:lang', render);
   ['sklopi:plan-changed', 'sklopi:custom-plan'].forEach(ev => document.addEventListener(ev, () => { ready = true; render(); }));
   ['dest', 'dateFrom', 'dateTo', 'adults'].forEach(id => document.getElementById(id)?.addEventListener('change', () => { if (ready) render(); }));
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(render, 0));
@@ -8610,7 +8617,7 @@ refreshDisplayedPrices = function(){
       if (chip){ syncing = true; try { chip.click(); } finally { syncing = false; } }
     }
     try { localStorage.setItem(KEY, tier); } catch (e) {}
-    if (opts.toast && typeof showToast === 'function') showToast('Stil putovanja: ' + LABEL[tier]);
+    if (opts.toast && typeof showToast === 'function') showToast(tx('Stil putovanja: ') + tx(LABEL[tier]));
   }
 
   btns.forEach(b => b.addEventListener('click', () => apply(b.dataset.tier, {toast:true})));
@@ -8623,4 +8630,15 @@ refreshDisplayedPrices = function(){
   let saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) {}
   if (saved && PRESETS[saved]) apply(saved);
+})();
+
+
+/* Promena jezika: osvežava delove koji se iscrtavaju iz JS-a (Tvoj personalizovani plan,
+   detalj plana, razrada, Moj put). Statički tekst prevodi applyStaticI18n(). */
+(function(){
+  const prev = window.onLangChange;
+  window.onLangChange = function(lang){
+    if (typeof prev === 'function') prev(lang);
+    document.dispatchEvent(new Event('sklopi:lang'));
+  };
 })();
