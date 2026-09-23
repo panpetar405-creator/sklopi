@@ -19,6 +19,12 @@
       "short": "RU",
       "name": "Русский",
       "locale": "ru-RU"
+    },
+    {
+      "code": "de",
+      "short": "DE",
+      "name": "Deutsch",
+      "locale": "de-DE"
     }
   ]
 }

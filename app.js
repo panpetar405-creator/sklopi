@@ -158,7 +158,7 @@ function t(key){
     if (I18N.sr[key] === undefined) _i18nWarn('unknown|' + key, 'nepoznat ključ t("' + key + '") — ne postoji ni u sr.');
     else if (lang !== 'sr') _i18nWarn(lang + '|' + key, 'nedostaje ' + lang.toUpperCase() + ' prevod za "' + key + '" — prikazuje se srpski.');
   }
-  return own ?? (I18N.sr[key] ?? key);
+  return own ?? ((lang !== 'sr' && I18N.en && I18N.en[key]) ?? I18N.sr[key] ?? key);  // nedostaje prevod → prvo engleski, pa srpski
 }
 function checkI18nCompleteness(){
   if (!_I18N_DEV) return;
