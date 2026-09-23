@@ -34,3 +34,6 @@ Napomena: linkovi "O nama" i "Kako funkcioniše" su hardkodovani (bez i18n) iz i
 NAPOMENA O SLIKAMA: sve nove fotografije su sa Unsplash-a (privremeni placeholderi, isti pristup kao ostatak sajta) — po želji zameniti finalnim/licenciranim fotografijama.
 
 SLEDECI KORACI (redom): 6) baner sa jezerom, 7) traka funkcija (Letovi/Smeštaj/Auto/Putarine...), 8) "Sačuvani aranžmani", 9) baner "Sledeća destinacija te čeka".
+
+KORAK 4 — TRAKA FUNKCIJA usklađena sa ostatkom sajta:
+Sekcija "šta uključuje put" (Letovi/Smeštaj/Auto/Putarine/Aktivnosti/Osiguranje/eSIM/Transferi, .feature-strip) je ranije bila u starijem "poslovnom" stilu — jedan uokviren kontejner pune bež boje sa tankim linijama razdvajanja. Sada je svaka stavka posebna bela zaobljena kartica sa senkom (isti jezik kartica kao FAQ/Vodiči/Moj put), a strelica je tanji chevron umesto bledog znaka. Isti tretman dobila je i "Rezervacija ide direktno preko partnera" kartica (.partners-card) ispod nje. Uklonjeno je i staro CSS pravilo koje je na hover menjalo pozadinu kartice u bež (konfliktovalo je sa novim belim kartica-stilom).
