@@ -4052,3 +4052,46 @@ footer>*{position:relative;z-index:1;}
     box-shadow:var(--btn-teal-shadow);
 }
 .auth-bar .btn-alert:hover{filter:brightness(1.08);}
+
+/* ---- Kartica sa slikom "Trenutak za sebe": usklađena sa ostalim karticama sajta ----
+   Bela kartica sa tirkiznom ivicom i istom senkom kao kartica destinacije, prirodne boje
+   fotografije (bez sepia/šuma/vinjete), Sora naslov umesto kurziva, aqua/zlatni akcenti. */
+.promo-banner{max-width:980px;margin:28px auto;padding:0 28px;}
+.promo-banner-card{
+    background:#fff;border:1px solid #d9e7ea;border-radius:20px;
+    padding:14px 14px 22px;
+    box-shadow:0 18px 44px rgba(15,68,78,.10);
+}
+.promo-banner-photo{
+    border-radius:14px;
+    box-shadow:none;
+    background:#dcebed;
+}
+.promo-banner-photo img{
+    width:100%;height:auto;aspect-ratio:5/2;object-fit:cover;
+    filter:none;
+}
+.promo-banner-photo::before{content:none;}
+.promo-banner-photo::after{
+    background:linear-gradient(180deg,rgba(7,48,54,0) 55%,rgba(7,48,54,.28) 100%);
+}
+.promo-banner-cap{padding:20px 12px 0;}
+.promo-banner-kicker{
+    gap:10px;margin:0 0 10px;
+    font-family:'Inter',sans-serif;font-size:11.5px;font-weight:800;
+    letter-spacing:.16em;color:#0f8193;
+}
+.promo-banner-kicker::before{width:26px;height:2px;border-radius:2px;background:#f0bd4f;}
+.promo-banner-quote{
+    font-family:'Sora',sans-serif;font-weight:700;font-style:normal;
+    font-size:26px;line-height:1.22;letter-spacing:-.025em;
+    color:#0b4855;max-width:520px;text-wrap:balance;
+}
+@media (max-width:900px){
+    .promo-banner{margin:22px auto;padding:0 18px;}
+    .promo-banner-card{padding:10px 10px 18px;border-radius:16px;}
+    .promo-banner-photo{border-radius:12px;}
+    .promo-banner-cap{padding:16px 8px 0;}
+    .promo-banner-kicker{font-size:10.5px;}
+    .promo-banner-quote{font-size:22px;}
+}
