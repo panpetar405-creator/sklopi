@@ -37,3 +37,6 @@ SLEDECI KORACI (redom): 6) baner sa jezerom, 7) traka funkcija (Letovi/Smeštaj/
 
 KORAK 4 — TRAKA FUNKCIJA usklađena sa ostatkom sajta:
 Sekcija "šta uključuje put" (Letovi/Smeštaj/Auto/Putarine/Aktivnosti/Osiguranje/eSIM/Transferi, .feature-strip) je ranije bila u starijem "poslovnom" stilu — jedan uokviren kontejner pune bež boje sa tankim linijama razdvajanja. Sada je svaka stavka posebna bela zaobljena kartica sa senkom (isti jezik kartica kao FAQ/Vodiči/Moj put), a strelica je tanji chevron umesto bledog znaka. Isti tretman dobila je i "Rezervacija ide direktno preko partnera" kartica (.partners-card) ispod nje. Uklonjeno je i staro CSS pravilo koje je na hover menjalo pozadinu kartice u bež (konfliktovalo je sa novim belim kartica-stilom).
+
+KORAK 5 — Pozadina celog sajta:
+Promenjena vrednost CSS promenljive --bg (styles.css, :root) sa tople bež/krem boje (#F0E8D6) na svetlu nebo-plavu (#E7F2FA), po uzoru na priloženi mockap. Pošto je --bg centralna promenljiva koju "body" koristi kao pozadinu čitavog sajta, ova jedna izmena preboji pozadinu svuda. Napomena: --paper (bela/krem boja kartica, ~#FAF6EE) i --line (boja tankih linija) nisu menjani — ostaju kao pre, jer je traženo samo da se promeni pozadina, ne i boja kartica. Ako se ispostavi da kartice/linije deluju "toplo" na novoj hladnijoj pozadini, javi pa uskladim i njih.

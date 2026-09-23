@@ -16,7 +16,7 @@
        "premium"/isticanje, tirkiz (aqua) za sekundarne akcente. Nazivi
        promenljivih su namerno nepromenjeni da sva pravila ispod i dalje
        rade — menjaju se samo HEX vrednosti. */
-    --bg:#F0E8D6;
+    --bg:#E7F2FA;            /* svetla nebo-plava pozadina sajta */
     --paper:#FAF6EE;         /* topla hartija */
     --ink:#0C2229;           /* duboko tirkizno-crna */
     --ink-soft:#4B6067;
