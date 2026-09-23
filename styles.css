@@ -3585,3 +3585,21 @@ footer{padding:28px 20px;}
 .ex-banner{display:flex;align-items:center;gap:14px;margin-top:16px;padding:16px;border-radius:14px;background:linear-gradient(120deg,#dff0f2,#f3f8f8);}
 .ex-banner p{margin:0;color:#3d565c;font:600 13px/1.4 'DM Sans',sans-serif;}
 .ex-banner b{display:block;margin-top:6px;color:var(--deep);font:800 15px/1 'Sora','Manrope',sans-serif;letter-spacing:.06em;}
+
+/* ---------- Vodiči i saveti (12. ekran sa slike) ---------- */
+.guides-teaser-section{max-width:520px;padding:8px 28px 28px;margin:0 auto!important;}
+.gd-list{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+.gd-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #d9e7ea;border-radius:14px;padding:10px;box-shadow:0 8px 22px rgba(15,68,78,.07);text-decoration:none;transition:.18s ease;}
+.gd-card:hover{border-color:#a9d6db;box-shadow:0 12px 28px rgba(15,68,78,.12);}
+.gd-thumb{flex:none;width:84px;height:72px;border-radius:10px;overflow:hidden;background:#dcebed;}
+.gd-thumb img{display:block;width:100%;height:100%;object-fit:cover;}
+.gd-thumb--ic{display:flex;align-items:center;justify-content:center;font-size:30px;background:linear-gradient(135deg,#dff0f2,#f6e2b8);}
+.gd-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.gd-info b{color:var(--deep);font:800 14px/1.25 'Manrope',sans-serif;}
+.gd-info small{color:#5b757c;font:600 12.5px/1.3 'DM Sans',sans-serif;}
+.gd-info em{font-style:normal;color:#0d6872;font:800 12px/1.2 'DM Sans',sans-serif;}
+@media (max-width:700px){.guides-teaser-section{padding:4px 18px 20px;}}
+
+.plan-detail-for{margin:0 0 14px;color:#8b9a9e;font:600 12px/1.4 'DM Sans',sans-serif;}
+.plan-detail-badge--popular{background:var(--gold)!important;color:#3a2705!important;}
+.plan-detail-badge--comfort{background:#4b6fb5!important;}
