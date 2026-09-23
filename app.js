@@ -5687,8 +5687,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }));
 
   planBtn?.addEventListener('click', () => {
-    const builder = document.getElementById('builder');
-    if (builder) builder.scrollIntoView({behavior:'smooth', block:'start'});
+    const plans = document.getElementById('destinationPlans');
+    if (plans) plans.scrollIntoView({behavior:'smooth', block:'start'});
   });
 
   buildBtn?.addEventListener('click', () => {
@@ -5700,6 +5700,20 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const search = document.getElementById('searchForm');
     if (search) search.scrollIntoView({behavior:'smooth', block:'center'});
     setTimeout(() => document.getElementById('origin')?.focus(), 500);
+  });
+
+  // Klik na paket-karticu — vodi na Sastavi svoj paket (builder) predpopunjen
+  // za Atinu; detaljna stranica pojedinačnog paketa dolazi u sledećoj fazi.
+  document.querySelectorAll('.dest-plan-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const dest = document.getElementById('dest');
+      if (dest) {
+        dest.value = 'Atina';
+        dest.dispatchEvent(new Event('input', {bubbles:true}));
+      }
+      const builder = document.getElementById('builder');
+      if (builder) builder.scrollIntoView({behavior:'smooth', block:'start'});
+    });
   });
 })();
 
