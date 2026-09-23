@@ -4861,9 +4861,12 @@ function showToast(msg){
 }
 
 function updateStats(){
-  document.getElementById('statSearches').textContent = Math.max(state.searches, STAT_DISPLAY_FLOOR.searches);
-  document.getElementById('statClicks').textContent = Math.max(state.clicks, STAT_DISPLAY_FLOOR.clicks);
-  document.getElementById('statLast').textContent = cityLabelWithPrefix(state.lastDest || STAT_LAST_DEST_FALLBACK);
+  const elSearches = document.getElementById('statSearches');
+  const elClicks = document.getElementById('statClicks');
+  const elLast = document.getElementById('statLast');
+  if (elSearches) elSearches.textContent = Math.max(state.searches, STAT_DISPLAY_FLOOR.searches);
+  if (elClicks) elClicks.textContent = Math.max(state.clicks, STAT_DISPLAY_FLOOR.clicks);
+  if (elLast) elLast.textContent = cityLabelWithPrefix(state.lastDest || STAT_LAST_DEST_FALLBACK);
   saveStats();
 }
 
