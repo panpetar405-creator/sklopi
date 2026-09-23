@@ -1,0 +1,31 @@
+
+/* ====== Tirkizna paleta dugmadi (referentni dizajn) — nalepi na SAM KRAJ styles.css ====== */
+
+/* Sva primarna dugmad ("3 plana za tvoju Atinu", "Sklopi moj put" u paketu...) */
+.btn-primary{
+    background:linear-gradient(135deg,#0d7b8b,#073c48);
+    box-shadow:0 14px 28px -14px rgba(7,60,72,.45);
+}
+.btn-primary:hover{box-shadow:0 20px 36px -14px rgba(7,60,72,.55);}
+
+/* Čipovi u "Sastavi svoj paket" */
+.cp-chip.is-on{
+    background:#0d6371;
+    border-color:#0d6371;
+    color:#fff;
+    box-shadow:0 6px 14px rgba(13,99,113,.18);
+}
+
+/* Kvadrati Letovi / Smeštaj / R a C / Aktivnost u hero pretrazi */
+.hero-reference .toggle .tt-icon{
+    background:var(--hero-aqua-soft);
+    color:var(--hero-aqua);
+    box-shadow:none;
+}
+.hero-reference .toggle .tt-label{color:var(--hero-muted);}
+.hero-reference .toggle.on .tt-icon{
+    background:linear-gradient(135deg,#0d7b8b,#073c48);
+    color:#fff;
+    box-shadow:0 8px 16px -10px rgba(7,60,72,.5);
+}
+.hero-reference .toggle.on .tt-label{color:var(--hero-ink);}
