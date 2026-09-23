@@ -113,7 +113,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=22">
+<link rel="stylesheet" href="styles.css?v=24">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
 <body>
@@ -297,33 +297,62 @@ SKLOPI<em>.</em>
 <button type="button" class="popular-ref-chip" data-popular-filter="weekend">Vikend</button>
 </div>
 <div class="popular-dest-grid popular-reference-grid" id="popularDestGrid">
-<button type="button" class="popular-dest-card" data-dest="Atina"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=500&q=82" alt="Atina" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Atina</span><span class="pd-meta">Grčka · 1h 20m</span><span class="pd-price">od 247 €</span></span><span class="pd-arrow">›</span></button>
-<button type="button" class="popular-dest-card" data-dest="Istanbul"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=500&q=82" alt="Istanbul" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Istanbul</span><span class="pd-meta">Turska · 2h</span><span class="pd-price">od 199 €</span></span><span class="pd-arrow">›</span></button>
-<button type="button" class="popular-dest-card" data-dest="Krf"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=500&q=82" alt="Krf" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Krf</span><span class="pd-meta">Grčka · 1h 20m</span><span class="pd-price">od 229 €</span></span><span class="pd-arrow">›</span></button>
-<button type="button" class="popular-dest-card" data-dest="Paris"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=500&q=82" alt="Pariz" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Paris</span><span class="pd-meta">Francuska · 2h 30m</span><span class="pd-price">od 349 €</span></span><span class="pd-arrow">›</span></button>
-<button type="button" class="popular-dest-card" data-dest="Lisabon"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=500&q=82" alt="Lisabon" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Lisabon</span><span class="pd-meta">Portugal · 3h</span><span class="pd-price">od 299 €</span></span><span class="pd-arrow">›</span></button>
+<button type="button" class="popular-dest-card" data-dest="Atina" data-category="city"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&amp;fit=crop&amp;w=500&amp;q=82" alt="Atina" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Atina</span><span class="pd-meta">Grčka · 1h 20m</span><span class="pd-price">od 247 €</span></span><span class="pd-arrow" aria-hidden="true">›</span></button>
+<button type="button" class="popular-dest-card" data-dest="Istanbul" data-category="city"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&amp;fit=crop&amp;w=500&amp;q=82" alt="Istanbul" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Istanbul</span><span class="pd-meta">Turska · 2h</span><span class="pd-price">od 199 €</span></span><span class="pd-arrow" aria-hidden="true">›</span></button>
+<button type="button" class="popular-dest-card" data-dest="Krf" data-category="nature"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&amp;fit=crop&amp;w=500&amp;q=82" alt="Krf" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Krf</span><span class="pd-meta">Grčka · 1h 20m</span><span class="pd-price">od 229 €</span></span><span class="pd-arrow" aria-hidden="true">›</span></button>
+<button type="button" class="popular-dest-card" data-dest="Pariz" data-category="city"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&amp;fit=crop&amp;w=500&amp;q=82" alt="Pariz" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Pariz</span><span class="pd-meta">Francuska · 2h 30m</span><span class="pd-price">od 349 €</span></span><span class="pd-arrow" aria-hidden="true">›</span></button>
+<button type="button" class="popular-dest-card" data-dest="Lisabon" data-category="city"><span class="pd-thumb"><img src="https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&amp;fit=crop&amp;w=500&amp;q=82" alt="Lisabon" loading="lazy"></span><span class="pd-copy"><span class="pd-name">Lisabon</span><span class="pd-meta">Portugal · 3h</span><span class="pd-price">od 299 €</span></span><span class="pd-arrow" aria-hidden="true">›</span></button>
 </div>
 </div>
-<div class="section why-not-agency-wrap">
-<div class="why-not-agency">
-<span class="wna-kicker">Zašto ne agencija?</span>
-<div class="wna-grid">
-<div class="wna-item">
-<span class="wna-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/><line x1="12" y1="14" x2="12" y2="16.5"/></svg></span>
-<span class="wna-text">Ne uzimamo tvoj novac.</span>
-</div>
-<div class="wna-item">
-<span class="wna-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a2 2 0 002-2 2 2 0 000-4 2 2 0 00-2-2H21a2 2 0 00-2 2 2 2 0 000 4 2 2 0 002 2 2 2 0 00-2 2 2 2 0 000 4 2 2 0 002 2H3a2 2 0 002-2 2 2 0 000-4 2 2 0 00-2-2z"/><line x1="12" y1="6" x2="12" y2="18" stroke-dasharray="1.6 2.4"/></svg></span>
-<span class="wna-text">Ne izdajemo vaučere.</span>
-</div>
-<div class="wna-item">
-<span class="wna-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.4 2.4 4.6-5.4"/></svg></span>
-<span class="wna-text">Ne možemo nestati sa tvojom uplatom.</span>
-</div>
-</div>
-<p class="wna-sub">Rezervaciju i plaćanje uvek završavaš direktno na sajtu partnera (KAYAK, Booking.com, Viator) — mi samo sabiramo ponudu u jednu cenu.</p>
-</div>
-</div>
+<section class="section destination-reference-section" id="destinationSpotlight" aria-labelledby="destinationSpotlightTitle">
+  <div class="destination-reference-card">
+    <div class="destination-reference-photo">
+      <img src="https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=1200&q=88" alt="Atina — Akropolj" loading="lazy">
+      <span class="destination-reference-location">Grčka</span>
+    </div>
+    <div class="destination-reference-body">
+      <div class="destination-reference-title-row">
+        <div>
+          <h2 id="destinationSpotlightTitle">Atina</h2>
+          <p>Grčka</p>
+        </div>
+        <div class="destination-reference-rating" aria-label="Ocena 4.7 od 5">
+          <span aria-hidden="true">★</span> 4.7 <small>(1.240 recenzija)</small>
+        </div>
+      </div>
+
+      <nav class="destination-reference-tabs" aria-label="Šta možeš uključiti u put">
+        <button type="button" class="destination-reference-tab is-active" data-destination-tab="flight">
+          <span class="destination-tab-icon" aria-hidden="true">✈</span><span>Let</span>
+        </button>
+        <button type="button" class="destination-reference-tab" data-destination-tab="hotel">
+          <span class="destination-tab-icon" aria-hidden="true">▣</span><span>Hotel</span>
+        </button>
+        <button type="button" class="destination-reference-tab" data-destination-tab="car">
+          <span class="destination-tab-icon" aria-hidden="true">▱</span><span>Auto</span>
+        </button>
+        <button type="button" class="destination-reference-tab" data-destination-tab="activity">
+          <span class="destination-tab-icon" aria-hidden="true">◇</span><span>Aktivnosti</span>
+        </button>
+      </nav>
+
+      <div class="destination-reference-reason">
+        <div class="eyebrow">Zašto Atina?</div>
+        <ul>
+          <li>Bogata istorija i kultura</li>
+          <li>Odlična mediteranska kuhinja</li>
+          <li>Provod i život i smeštaj</li>
+          <li>Idealna za vikend putovanja</li>
+        </ul>
+      </div>
+
+      <div class="destination-reference-actions">
+        <button type="button" class="btn-primary destination-reference-primary" id="destinationPlansBtn">3 plana za tvoju Atinu <span aria-hidden="true">→</span></button>
+        <button type="button" class="btn-secondary destination-reference-secondary" id="destinationBuildBtn">Sklopi svoj plan</button>
+      </div>
+    </div>
+  </div>
+</section>
 <div class="section action-cards-wrap">
 <div class="action-cards">
 <button type="button" class="action-card match-trigger" id="matchTriggerBtn" data-i18n-html="match_trigger">
@@ -949,7 +978,7 @@ SKLOPI<em>.</em>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 <script src="i18n-data.js?v=180"></script>
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 <script src="price-mix.js?v=2"></script>
 <script src="transport.js?v=9"></script>
 <script src="transport-i18n.js?v=1"></script>

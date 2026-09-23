@@ -787,6 +787,51 @@ a{color:inherit;}
 .faq-item[open] summary::after{content:"–";background:var(--ink);color:var(--paper);border-color:var(--ink);}
 .faq-item p{margin:0 0 18px;font-size:16px;line-height:1.6;color:var(--ink-soft);}
 .faq-item p a{color:var(--gold-text);font-weight:600;}
+/* ---------- Destination spotlight — reference screen 3 ---------- */
+.destination-reference-section{max-width:980px;padding:22px 28px 24px;margin:0 auto!important;}
+.destination-reference-card{border:1px solid #d9e7ea;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(15,68,78,.10);}
+.destination-reference-photo{position:relative;height:300px;background:#dcebed;overflow:hidden;}
+.destination-reference-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,48,54,.04) 45%,rgba(7,48,54,.48) 100%);pointer-events:none;}
+.destination-reference-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+.destination-reference-location{position:absolute;left:20px;bottom:18px;z-index:1;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.93);color:#0b5961;font:700 12px 'DM Sans',sans-serif;box-shadow:0 6px 16px rgba(0,0,0,.12);}
+.destination-reference-body{padding:24px 26px 26px;}
+.destination-reference-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;}
+.destination-reference-title-row h2{margin:0;color:var(--deep);font:800 34px/1 'Manrope',sans-serif;letter-spacing:-.04em;}
+.destination-reference-title-row p{margin:6px 0 0;color:#7b8d93;font:600 14px/1.2 'DM Sans',sans-serif;}
+.destination-reference-rating{white-space:nowrap;color:#61767c;font:700 13px/1.2 'DM Sans',sans-serif;padding-top:4px;}
+.destination-reference-rating span{color:#d4a94f;font-size:17px;margin-right:3px;}
+.destination-reference-rating small{font-weight:500;color:#91a0a5;}
+.destination-reference-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:22px 0 25px;}
+.destination-reference-tab{min-height:58px;border:1px solid #e0eaed;border-radius:12px;background:#f8fbfc;color:#547077;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:700 12px/1 'DM Sans',sans-serif;cursor:pointer;transition:.18s ease;}
+.destination-reference-tab:hover,.destination-reference-tab.is-active{background:#eef7f8;border-color:#bddde1;color:#0b5d67;box-shadow:0 5px 12px rgba(11,93,103,.08);}
+.destination-tab-icon{font-size:17px;line-height:1;color:#0c6873;}
+.destination-reference-reason{border-top:1px solid #e5edef;padding-top:20px;}
+.destination-reference-reason .eyebrow{color:#0d6872;font:800 12px/1 'DM Sans',sans-serif;text-transform:none;letter-spacing:.02em;margin-bottom:11px;}
+.destination-reference-reason ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:9px 24px;}
+.destination-reference-reason li{position:relative;padding-left:21px;color:#45636a;font:600 13px/1.35 'DM Sans',sans-serif;}
+.destination-reference-reason li::before{content:"✓";position:absolute;left:0;top:-1px;color:#0d8190;font-weight:900;}
+.destination-reference-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px;}
+.destination-reference-primary,.destination-reference-secondary{min-height:48px;width:100%;border-radius:11px;font-size:13px;}
+.destination-reference-primary{display:flex;align-items:center;justify-content:center;gap:12px;}
+.destination-reference-secondary{background:#fff;border:1px solid #9dc7cd;color:#0b5961;}
+.destination-reference-secondary:hover{background:#f2f9fa;border-color:#6faeb7;}
+@media (max-width:700px){
+  .destination-reference-section{padding:12px 18px 18px;}
+  .destination-reference-card{border-radius:16px;}
+  .destination-reference-photo{height:220px;}
+  .destination-reference-body{padding:18px 16px 18px;}
+  .destination-reference-title-row{gap:10px;}
+  .destination-reference-title-row h2{font-size:28px;}
+  .destination-reference-rating{font-size:11px;padding-top:2px;}
+  .destination-reference-rating small{font-size:9px;}
+  .destination-reference-tabs{gap:6px;margin:17px 0 20px;}
+  .destination-reference-tab{min-height:54px;font-size:10px;border-radius:10px;}
+  .destination-tab-icon{font-size:15px;}
+  .destination-reference-reason ul{grid-template-columns:1fr;gap:9px;}
+  .destination-reference-reason li{font-size:12.5px;}
+  .destination-reference-actions{grid-template-columns:1fr;gap:8px;margin-top:20px;}
+}
+
 /* ---------- Zašto ne agencija? — anti-prevara trust traka, odmah posle hero-a ---------- */
 .why-not-agency-wrap{padding-top:0;}
 .why-not-agency{

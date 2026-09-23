@@ -5675,6 +5675,35 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
 });
 
 /* ==========================================================
+   DESTINATION SPOTLIGHT — referentni ekran za Atinu
+========================================================== */
+(function initDestinationSpotlight(){
+  const planBtn = document.getElementById('destinationPlansBtn');
+  const buildBtn = document.getElementById('destinationBuildBtn');
+  const tabs = document.querySelectorAll('[data-destination-tab]');
+
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.toggle('is-active', t === tab));
+  }));
+
+  planBtn?.addEventListener('click', () => {
+    const builder = document.getElementById('builder');
+    if (builder) builder.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  buildBtn?.addEventListener('click', () => {
+    const dest = document.getElementById('dest');
+    if (dest) {
+      dest.value = 'Atina';
+      dest.dispatchEvent(new Event('input', {bubbles:true}));
+    }
+    const search = document.getElementById('searchForm');
+    if (search) search.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(() => document.getElementById('origin')?.focus(), 500);
+  });
+})();
+
+/* ==========================================================
    POPULARNE DESTINACIJE — statične kartice u HTML-u (SEO sadržaj
    vidljiv i bez JS-a); klik samo puni postojeću formu i pokreće
    isti runSearch() koji se koristi za "Pronađi najbolje putovanje".
@@ -5799,16 +5828,45 @@ const REGIONAL_POPULAR_DESTINATIONS = {
    Prevodi idu preko t()/I18N (pd_* ključevi), da poštuje SR/EN.
 ========================================================== */
 const DEFAULT_POPULAR_DEST_POOL = [
-  {dest:'Atina', nameKey:'pd_athens_name', descKey:'pd_athens_desc'},
-  {dest:'Rim', nameKey:'pd_rome_name', descKey:'pd_rome_desc'},
-  {dest:'Barselona', nameKey:'pd_barcelona_name', descKey:'pd_barcelona_desc'},
-  {dest:'Budva', nameKey:'pd_budva_name', descKey:'pd_budva_desc'},
-  {dest:'Istanbul', nameKey:'pd_istanbul_name', descKey:'pd_istanbul_desc'},
-  {dest:'Beč', nameKey:'pd_vienna_name', descKey:'pd_vienna_desc'},
-  {dest:'Solun', nameKey:'pd_thessaloniki_name', descKey:'pd_thessaloniki_desc'},
-  {dest:'Prag', nameKey:'pd_prague_name', descKey:'pd_prague_desc'},
-  {dest:'Budimpešta', nameKey:'pd_budapest_name', descKey:'pd_budapest_desc'}
+  {dest:'Atina', name:'Atina', desc:'Antika, kultura i more — idealan mediteranski city break.', meta:'Grčka · 1h 20m', price:'od 247 €', category:'city', image:'https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=500&q=82'},
+  {dest:'Istanbul', name:'Istanbul', desc:'Spoj Evrope i Azije, Bosfor i bogata gradska scena.', meta:'Turska · 2h', price:'od 199 €', category:'city', image:'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=500&q=82'},
+  {dest:'Krf', name:'Krf', desc:'Mirnije uvale, more i mediteranski ritam za odmor.', meta:'Grčka · 1h 20m', price:'od 229 €', category:'nature', image:'https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=500&q=82'},
+  {dest:'Pariz', name:'Pariz', desc:'Muzeji, arhitektura i gradske šetnje.', meta:'Francuska · 2h 30m', price:'od 349 €', category:'city', image:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=500&q=82'},
+  {dest:'Lisabon', name:'Lisabon', desc:'Vidikovci, tramvaji i Atlantski vazduh.', meta:'Portugal · 3h', price:'od 299 €', category:'city', image:'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=500&q=82'}
 ];
+const POPULAR_DEST_IMAGES = Object.fromEntries(DEFAULT_POPULAR_DEST_POOL.map(x => [normalizeSr(x.dest), x.image]));
+const POPULAR_DEST_META = {
+  'atina':['Grčka · 1h 20m','od 247 €','city'], 'istanbul':['Turska · 2h','od 199 €','city'],
+  'krf':['Grčka · 1h 20m','od 229 €','nature'], 'pariz':['Francuska · 2h 30m','od 349 €','city'],
+  'lisabon':['Portugal · 3h','od 299 €','city'], 'rim':['Italija · 1h 40m','od 239 €','city'],
+  'barselona':['Španija · 2h 40m','od 289 €','city'], 'budva':['Crna Gora · 1h 10m','od 159 €','weekend'],
+  'bec':['Austrija · 1h 25m','od 219 €','city'], 'beč':['Austrija · 1h 25m','od 219 €','city'],
+  'solun':['Grčka · 1h 15m','od 189 €','weekend'], 'budimpesta':['Mađarska · 1h 30m','od 179 €','city'],
+  'prag':['Češka · 1h 45m','od 259 €','city'], 'zagreb':['Hrvatska · 1h','od 169 €','weekend']
+};
+function popularCardData(card){
+  const key = normalizeSr(card.dest || '');
+  const meta = POPULAR_DEST_META[key] || [card.name || '', '', 'all'];
+  return {
+    dest: card.dest || '',
+    name: card.name || t(card.nameKey || '') || card.dest || '',
+    desc: card.desc || (card.descKey ? t(card.descKey) : ''),
+    meta: card.meta || meta[0],
+    price: card.price || meta[1],
+    category: card.category || meta[2] || 'all',
+    image: card.image || POPULAR_DEST_IMAGES[key] || 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=500&q=82'
+  };
+}
+function popularCardHtml(card){
+  const c = popularCardData(card);
+  return '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '" data-category="' + escapeHtml(c.category) + '">'
+    + '<span class="pd-thumb"><img src="' + escapeHtml(c.image) + '" alt="' + escapeHtml(c.name) + '" loading="lazy"></span>'
+    + '<span class="pd-copy"><span class="pd-name">' + escapeHtml(c.name) + '</span>'
+    + '<span class="pd-meta">' + escapeHtml(c.meta) + '</span>'
+    + '<span class="pd-price">' + escapeHtml(c.price) + '</span></span>'
+    + '<span class="pd-arrow" aria-hidden="true">›</span>'
+    + '</button>';
+}
 function attachPopularDestCardHandlers(grid){
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -5817,6 +5875,7 @@ function attachPopularDestCardHandlers(grid){
       runSearch(false);
     });
   });
+  applyPopularDestFilters();
 }
 function renderDefaultPopularDestinations(){
   const grid = document.getElementById('popularDestGrid');
@@ -5825,13 +5884,7 @@ function renderDefaultPopularDestinations(){
   if (!grid || !head) return;
   head.textContent = t('h2_popular_dest');
   if (eyebrow) eyebrow.textContent = t('eyebrow_ideas');
-  const picks = dailyPick(DEFAULT_POPULAR_DEST_POOL, 6, 'default');
-  grid.innerHTML = picks.map(c =>
-    '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '">'
-    + '<span class="pd-name">' + escapeHtml(t(c.nameKey)) + '</span>'
-    + '<span class="pd-desc">' + escapeHtml(t(c.descKey)) + '</span>'
-    + '</button>'
-  ).join('');
+  grid.innerHTML = DEFAULT_POPULAR_DEST_POOL.map(c => popularCardHtml(c)).join('');
   attachPopularDestCardHandlers(grid);
 }
 function renderRegionalPopularDestinations(originRaw){
@@ -5859,14 +5912,30 @@ function renderRegionalPopularDestinations(originRaw){
   head.textContent = 'Popularno kod putnika iz ' + bucket.genitiv;
   if (eyebrow) eyebrow.textContent = 'Predlozi prilagođeni tvom polasku';
   const picks = dailyPick(bucket.cards, bucket.show || bucket.cards.length, matchedKey);
-  grid.innerHTML = picks.map(c =>
-    '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '">'
-    + '<span class="pd-name">' + escapeHtml(c.name) + '</span>'
-    + '<span class="pd-desc">' + escapeHtml(c.desc) + '</span>'
-    + '</button>'
-  ).join('');
+  grid.innerHTML = picks.map(c => popularCardHtml(c)).join('');
   attachPopularDestCardHandlers(grid);
 }
+const popularDestSearch = document.getElementById('popularDestSearch');
+const popularDestFilters = document.querySelectorAll('[data-popular-filter]');
+function applyPopularDestFilters(){
+  const grid = document.getElementById('popularDestGrid');
+  if (!grid) return;
+  const query = normalizeSr((popularDestSearch?.value || '').trim());
+  const active = document.querySelector('[data-popular-filter].is-active')?.dataset.popularFilter || 'all';
+  grid.querySelectorAll('.popular-dest-card').forEach(card => {
+    const hay = normalizeSr(card.textContent || '');
+    const category = card.dataset.category || 'all';
+    const matchesQuery = !query || hay.includes(query);
+    const matchesFilter = active === 'all' || category === active;
+    card.hidden = !(matchesQuery && matchesFilter);
+  });
+}
+popularDestSearch?.addEventListener('input', applyPopularDestFilters);
+popularDestFilters.forEach(btn => btn.addEventListener('click', () => {
+  popularDestFilters.forEach(b => b.classList.toggle('is-active', b === btn));
+  applyPopularDestFilters();
+}));
+
 let _originRegionalTimer = null;
 const originInputForRegional = document.getElementById('origin');
 if (originInputForRegional){
