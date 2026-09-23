@@ -2253,16 +2253,22 @@ footer{
 .hero-spacer{height:4px;}
 .stub-dates{position:relative;}
 .cal-card{
-    position:fixed;top:calc(var(--topbar-h, 68px) + 10px);bottom:auto;
-    left:14px;right:14px;max-height:calc(100vh - var(--topbar-h, 68px) - 24px);
+    position:fixed;top:calc(var(--topbar-h, 68px) + 10px);
+    bottom:calc(64px + env(safe-area-inset-bottom,0px));
+    left:14px;right:14px;
     overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 .stub-pax{position:relative;}
 .pax-card{
-    position:fixed;top:calc(var(--topbar-h, 68px) + 10px);bottom:auto;
-    left:14px;right:14px;max-height:calc(100vh - var(--topbar-h, 68px) - 24px);
+    position:fixed;top:calc(var(--topbar-h, 68px) + 10px);
+    bottom:calc(64px + env(safe-area-inset-bottom,0px));
+    left:14px;right:14px;
     overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
+/* "Gotovo" dugme (cal-foot) uvek ostaje prikačeno na dnu vidljivog
+   dela panela dok se skroluje kroz kalendar/listu putnika — sprečava
+   da završi ispod fiksne donje navigacije (.bottom-nav, z-index:60). */
+.cal-foot{position:sticky;bottom:-1px;background:var(--paper);z-index:1;}
 .pax-list{max-height:none;}
 .cal-backdrop{
     display:none;position:fixed;inset:0;z-index:44;
