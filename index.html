@@ -82,6 +82,26 @@
 },
 {
 "@type": "Question",
+"name": "Kako funkcionišu partnerski (affiliate) linkovi?",
+"acceptedAnswer": {"@type": "Answer", "text": "Klikom na Rezerviši ili Pretraži otvara se sajt partnera (KAYAK, Booking.com ili Viator). Ako tamo rezervišeš, SKLOPI može da dobije proviziju od partnera, a tebi cena ostaje ista."}
+},
+{
+"@type": "Question",
+"name": "Da li mogu da promenim plan?",
+"acceptedAnswer": {"@type": "Answer", "text": "Da. Izaberi drugi od 3 plana ili u sekciji Sastavi svoj paket promeni tip leta, hotel, auto i broj aktivnosti — procena cene se osveži."}
+},
+{
+"@type": "Question",
+"name": "Koje su prednosti u odnosu na Booking ili Skyscanner?",
+"acceptedAnswer": {"@type": "Answer", "text": "SKLOPI ne zamenjuje te sajtove — rezervacija se obavlja kod partnera. Razlika je što na jednom mestu sabira let, smeštaj, aktivnosti i prevoz u jedan plan i jednu procenjenu cenu."}
+},
+{
+"@type": "Question",
+"name": "Da li postoji aplikacija?",
+"acceptedAnswer": {"@type": "Answer", "text": "Za sada ne postoji posebna aplikacija — SKLOPI radi u pregledaču na telefonu i računaru."}
+},
+{
+"@type": "Question",
 "name": "Imaš pitanje koje nije ovde?",
 "acceptedAnswer": {
 "@type": "Answer",
@@ -113,7 +133,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@600;700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=33">
+<link rel="stylesheet" href="styles.css?v=34">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
 <body>
@@ -820,7 +840,7 @@ SKLOPI<em>.</em>
 <div class="feature f-transfer" data-feature="transfer" role="button" tabindex="0" aria-haspopup="dialog"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 17.5L17 6.5" stroke-dasharray="2.2 2.6"/></svg></div><div class="feature-text"><div class="name" data-i18n="f_transfer_name">Transferi</div><div class="sub" data-i18n="f_transfer_sub">Od aerodroma do smeštaja</div></div></div>
 </div>
 </div>
-<div class="section business-strip">
+<div class="section business-strip" id="partners">
 <div class="partners-row">
 <span class="partners-label" data-i18n="partners_label">Rezervacija ide direktno preko partnera</span>
 <div class="partners-card">
@@ -857,6 +877,14 @@ SKLOPI<em>.</em>
     <a class="gd-card" href="vodici.html"><span class="gd-thumb gd-thumb--ic" aria-hidden="true">&#128182;</span><span class="gd-info"><b>Kako uštedeti na putovanju?</b><small>Praktični saveti</small><em>Čitaj više &rarr;</em></span></a>
   </div>
 </section>
+<section class="section my-trip-section" id="myTrip" aria-labelledby="myTripTitle">
+  <div class="ad-head"><h2 id="myTripTitle">Moj put</h2></div>
+  <div class="mt-tabs" role="tablist">
+    <button type="button" class="mt-tab is-on" data-tab="active" role="tab" aria-selected="true">Aktivni</button>
+    <button type="button" class="mt-tab" data-tab="done" role="tab" aria-selected="false">Završeni</button>
+  </div>
+  <div class="mt-body" id="mtBody"></div>
+</section>
 <div class="cta-banner">
 <div class="cta-photo">
 <img src="https://images.unsplash.com/photo-1595190613644-68ce8e2a9814?w=1600&q=70&auto=format&fit=crop" data-i18n-alt="alt_banner_europe" alt="Popularna evropska destinacija u sumrak" loading="lazy">
@@ -892,23 +920,42 @@ SKLOPI<em>.</em>
 <p data-i18n="faq_a4">Ne. SKLOPI ne naplaćuje ništa direktno — klikom na „Rezerviši" ili „Pretraži" odlaziš na sajt partnera (KAYAK, Booking.com ili Viator) gde se rezervacija i plaćanje obavljaju.</p>
 </details>
 <details class="faq-item">
+<summary>Kako funkcionišu partnerski (affiliate) linkovi?</summary>
+<p>Kad klikneš na „Rezerviši“ ili „Pretraži“, otvara se sajt partnera (KAYAK, Booking.com ili Viator). Ako tamo rezervišeš, SKLOPI može da dobije proviziju od partnera, a tebi cena ostaje ista.</p>
+</details>
+<details class="faq-item">
+<summary>Da li mogu da promenim plan?</summary>
+<p>Da. Izaberi drugi od 3 plana ili u sekciji „Sastavi svoj paket“ promeni tip leta, hotel, auto i broj aktivnosti — procena cene se osveži.</p>
+</details>
+<details class="faq-item">
+<summary>Koje su prednosti u odnosu na Booking ili Skyscanner?</summary>
+<p>SKLOPI ne zamenjuje te sajtove — rezervacija se i dalje obavlja kod partnera. Razlika je u tome što na jednom mestu sabira let, smeštaj, aktivnosti i prevoz u jedan plan i jednu procenjenu cenu, pa lakše uporediš celo putovanje.</p>
+</details>
+<details class="faq-item">
+<summary>Da li postoji aplikacija?</summary>
+<p>Za sada ne postoji posebna aplikacija — SKLOPI radi u pregledaču na telefonu i računaru.</p>
+</details>
+<details class="faq-item">
 <summary data-i18n="faq_q5">Imaš pitanje koje nije ovde?</summary>
 <p data-i18n-html="faq_a5">Piši na <a href="#" data-contact="mail" data-show="1">✉ e-mail</a> — rado odgovaramo.</p>
 </details>
 </div>
+<div class="faq-banner"><p>Nema savršenog putovanja. Samo dobro isplaniranog.</p><b>SKLOPI</b></div>
 </div>
 <footer id="about">
+<div class="footer-tagline"><b>Sklopi put koji ti odgovara.</b><span>Let + smeštaj + aktivnosti + prevoz. Jedan plan, prilagođen tebi.</span></div>
 <div class="footer-inner">
 <div class="footer-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><g transform="rotate(-18 12 12)"><rect x="4" y="5" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="7" r="1.4" fill="var(--deep)"/><circle cx="20" cy="7" r="1.4" fill="var(--deep)"/><line x1="12" y1="5" x2="12" y2="9" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="10.5" width="16" height="4" rx="2" fill="#fff"/><circle cx="4" cy="12.5" r="1.4" fill="var(--deep)"/><circle cx="20" cy="12.5" r="1.4" fill="var(--deep)"/><line x1="12" y1="10.5" x2="12" y2="14.5" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="var(--deep)"/><circle cx="20" cy="18" r="1.4" fill="var(--deep)"/><line x1="12" y1="16" x2="12" y2="20" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/></g></svg></div>SKLOPI<em>.</em></div>
-<div class="flinks"><a href="#faq" data-i18n="h2_faq">Pomoć i FAQ</a><a href="vodici.html" data-i18n="footer_guides">Vodiči</a><a href="#" data-contact="mail" data-i18n="footer_contact">Kontakt</a><a href="privatnost.html" data-i18n="footer_privacy">Privatnost</a><a href="uslovi-koriscenja.html" data-i18n="footer_terms">Uslovi</a><a href="kolacici.html" data-i18n="footer_cookies">Kolačići</a></div>
+<div class="flinks"><a href="#faq" data-i18n="h2_faq">Pomoć i FAQ</a><a href="#partners">Partneri</a><a href="vodici.html" data-i18n="footer_guides">Vodiči</a><a href="#" data-contact="mail" data-i18n="footer_contact">Kontakt</a><a href="privatnost.html" data-i18n="footer_privacy">Privatnost</a><a href="uslovi-koriscenja.html" data-i18n="footer_terms">Uslovi</a><a href="kolacici.html" data-i18n="footer_cookies">Kolačići</a></div>
 <div class="fsocial">
 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0022 12z"/></svg>
 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c2.7 0 3 0 4.1.06 1.1.05 1.8.22 2.2.36.5.2.9.44 1.3.84.4.4.63.8.84 1.3.14.4.31 1.1.36 2.2.06 1.1.06 1.4.06 4.1s0 3-.06 4.1c-.05 1.1-.22 1.8-.36 2.2-.2.5-.44.9-.84 1.3-.4.4-.8.63-1.3.84-.4.14-1.1.31-2.2.36-1.1.06-1.4.06-4.1.06s-3 0-4.1-.06c-1.1-.05-1.8-.22-2.2-.36-.5-.2-.9-.44-1.3-.84-.4-.4-.63-.8-.84-1.3-.14-.4-.31-1.1-.36-2.2C2.2 15 2.2 14.7 2.2 12s0-3 .06-4.1c.05-1.1.22-1.8.36-2.2.2-.5.44-.9.84-1.3.4-.4.8-.63 1.3-.84.4-.14 1.1-.31 2.2-.36C8.99 2.2 9.3 2.2 12 2.2zm0 1.8a4.4 4.4 0 100 8.8 4.4 4.4 0 000-8.8zm0 1.8a2.6 2.6 0 110 5.2 2.6 2.6 0 010-5.2zm4.6-2a1.03 1.03 0 110 2.06 1.03 1.03 0 010-2.06z"/></svg>
 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a8.5 8.5 0 01-2.45.67A4.3 4.3 0 0022.4 1.5a8.6 8.6 0 01-2.72 1.04A4.28 4.28 0 0016.1 1c-2.36 0-4.28 1.92-4.28 4.28 0 .34.04.66.11.98A12.13 12.13 0 013 2.1a4.28 4.28 0 001.33 5.71 4.24 4.24 0 01-1.94-.54v.05c0 2.07 1.47 3.8 3.43 4.19a4.3 4.3 0 01-1.93.07 4.29 4.29 0 004 2.98A8.6 8.6 0 011 17.54 12.1 12.1 0 007.55 19.5c7.86 0 12.16-6.51 12.16-12.16 0-.19 0-.37-.01-.55A8.7 8.7 0 0023 3z"/></svg>
 </div>
 </div>
+<div class="foot-note"><span id="footYear"></span> SKLOPI. Sva prava zadržana. · <a href="privatnost.html">Privatnost</a> · <a href="uslovi-koriscenja.html">Uslovi korišćenja</a> · <a href="#affDisclosure">Disclosure</a></div>
 <div class="foot-note" data-i18n-html="foot_note">SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu. · <a href="#" id="cookieSettingsLink">Podešavanja kolačića</a></div>
-<div class="foot-note" data-aff-disclosure>Linkovi ka KAYAK-u, Booking.com-u i Viator-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.</div>
+<div class="foot-note" id="affDisclosure" data-aff-disclosure>Linkovi ka KAYAK-u, Booking.com-u i Viator-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.</div>
 </footer>
 <div class="cookie-banner" id="cookieBanner">
 <div class="cookie-banner-inner">
@@ -1186,6 +1233,12 @@ SKLOPI<em>.</em>
 <div id="featureGuideBody"></div>
 </div>
 </div>
+<nav class="bottom-nav" id="bottomNav" aria-label="Glavna navigacija">
+<a href="#searchForm-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span>Početna</span></a>
+<a href="#popular-destinations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/></svg><span>Destinacije</span></a>
+<a href="#guidesTeaser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19V5M8 7h6"/></svg><span>Vodiči</span></a>
+<a href="#myTrip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.5-4 4.2-6 7-6s5.5 2 7 6"/></svg><span>Moj put</span></a>
+</nav>
 <div id="toast"><div class="dot"></div><span id="toastText"></span></div>
 <a href="#" data-contact="wa" rel="noopener" class="whatsapp-fab" id="whatsappFab" data-i18n-aria-label="whatsapp_aria" aria-label="Piši nam na WhatsApp">
 <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"/></svg>
@@ -1195,7 +1248,7 @@ SKLOPI<em>.</em>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 <script src="i18n-data.js?v=180"></script>
-<script src="app.js?v=31"></script>
+<script src="app.js?v=32"></script>
 <script src="price-mix.js?v=2"></script>
 <script src="transport.js?v=9"></script>
 <script src="transport-i18n.js?v=1"></script>

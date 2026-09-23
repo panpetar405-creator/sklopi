@@ -1,12 +1,11 @@
-SKLOPI — UPDATE: detalji za SVE 3 plana + razrada odmah ispod
+SKLOPI — UPDATE: završetak (personalizovani planovi → detalji, Moj put, FAQ, footer, donja navigacija)
 
-PATCH — menja index.html (styles.css?v=33, app.js?v=31), styles.css (par redova na kraju) i app.js (initDestinationSpotlight prepravljen; initFlightDetail i initHotelDetail čitaju izbor plana). Ostali fajlovi ostaju isti; paket sadrzi i sve prethodne izmene.
+PATCH — menja index.html (styles.css?v=34, app.js?v=32), styles.css (blok na kraju) i app.js. Ostali fajlovi ostaju isti; paket sadrzi sve prethodne izmene.
 
-STA JE PROMENJENO:
-- Klik na bilo koju od 3 kartice ("Gradski vikend", "Komforniji odmor", "Najviše za novac") otvara #planDetail sa podacima TOG plana: naslov, cena, procena, fotka, oznaka (Popularno / Više komfora / Najpovoljnije), "Šta je uključeno?" i "Za koga". Ranije je radila samo "Najviše za novac".
-- Klik na karticu upisuje Atinu u pretragu i izbor plana u builderState (tip leta, zvezdice, lokacija hotela, auto, aktivnosti), pa "Pogledaj detalje" otvara razradu (Let → Hotel → Aktivnosti → Dodatne usluge) za taj plan: Najviše za novac = najjeftinija kombinacija leta + 3★; Gradski vikend = direktan let + 4★ blizu centra; Komforniji odmor = 4★ u mirnijem delu + mali auto + 3 aktivnosti.
-- #planBreakdown je premešten ODMAH ISPOD #planDetail (ranije je bio posle "Tvoj personalizovani plan", daleko od mesta gde se otvara).
-- Cene u detaljima planova (529 / 689 / 449 €) su iste kao na karticama; cene leta/hotela u razradi su ilustrativna procena iz buildera.
-- Napomena: klik na karticu prepisuje izbor iz "Sastavi svoj paket" u builderState.
+1) "Tvoj personalizovani plan": "Pogledaj detalje" sada otvara isti detalj plana (#planDetail) i razradu (let → hotel → aktivnosti → dodatne usluge) za izabrani plan, umesto buildera. Detalj radi za bilo koju destinaciju iz forme; "← Planovi" vraća na personalizovane planove.
+2) "Moj put" (#myTrip, pre banera i FAQ-a): tabovi Aktivni/Završeni; kartica sa destinacijom, datumima, putnicima, stavkama (let, hotel, aktivnosti, prevoz, eSIM ako je dodat), Ukupno, "Pogledaj detalje" (builder) i "Preuzmi plan puta" (sklopi-plan-puta.txt sa procenom i partnerskim linkovima). Dok nema izabranog plana prikazuje poruku i dugme "Izaberi plan". "Završeni" je prazan.
+3) FAQ: dodata 4 pitanja (affiliate linkovi, promena plana, razlika u odnosu na Booking/Skyscanner, aplikacija) + baner "Nema savršenog putovanja. Samo dobro isplaniranog." Ista pitanja dodata i u FAQPage JSON-LD. (Pitanja o cenama i plaćanju već postoje.) Nova pitanja su na srpskom u HTML-u, van i18n.
+4) Footer: dodat slogan "Sklopi put koji ti odgovara. / Let + smeštaj + aktivnosti + prevoz. Jedan plan, prilagođen tebi.", link "Partneri", red "© <godina> SKLOPI. Sva prava zadržana. · Privatnost · Uslovi korišćenja · Disclosure".
+5) Donja navigacija (samo telefon ≤700px): Početna, Destinacije, Vodiči, Moj put. WhatsApp dugme je podignuto iznad nje.
 
-NIJE MENJANO: "Pogledaj detalje" u "Tvoj personalizovani plan" i dalje otvara builder.
+NAPOMENE: "Vodiči" kartice i dalje vode na vodici.html (nemam taj fajl). Sve ilustrativne cene su procene, kao na celom sajtu.

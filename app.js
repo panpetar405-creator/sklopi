@@ -5705,7 +5705,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   // Popuni "Atina" u pretragu i skroluj na formu (koristi se za "Rezerviši paket").
   function goToSearchForAthens(){
     const dest = document.getElementById('dest');
-    if (dest) {
+    const ap = window.SKLOPI_ACTIVE_PLAN;
+    if (dest && !(ap && ap.keepDest)) {
       dest.value = 'Atina';
       dest.dispatchEvent(new Event('input', {bubbles:true}));
     }
@@ -5757,7 +5758,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (!p || !detail) return;
     const lo = Math.round(p.price * 0.935 / 10) * 10, hi = Math.round(p.price * 1.07 / 10) * 10;
     $('planDetailTitle').textContent = p.title;
-    $('planDetailMeta').textContent = 'Atina \u2022 4 dana';
+    const pctx = builderCtx();
+    $('planDetailMeta').textContent = p.keepDest ? cityLabel(pctx.dest) + ' \u2022 ' + daysLabel(pctx.days) : 'Atina \u2022 4 dana';
     $('planDetailPrice').innerHTML = escapeHtml(priceText(p.price)) + ' <span>/ osoba</span>';
     $('planDetailEst').textContent = 'Procena: ~' + priceText(lo).replace(' \u20ac','') + '\u2013' + priceText(hi);
     $('planDetailImg').src = p.photo;
@@ -5775,16 +5777,17 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }
 
   function openPlan(key){
-    const p = PLANS[key];
+    const p = typeof key === 'string' ? PLANS[key] : key;
     if (!p || !detail) return;
     window.SKLOPI_ACTIVE_PLAN = p;
     const dest = $('dest');
-    if (dest){ dest.value = 'Atina'; dest.dispatchEvent(new Event('input', {bubbles:true})); }
+    if (dest && !p.keepDest){ dest.value = 'Atina'; dest.dispatchEvent(new Event('input', {bubbles:true})); }
     Object.assign(builderState, {
       includeFlight:true, includeHotel:true, flightPref:p.flightPref, hotelStars:p.hotelStars,
       prioritizeLocation:p.prioritizeLocation, carPref:p.carPref, activityCount:p.activityCount
     });
     renderFormUI();
+    document.dispatchEvent(new Event('sklopi:plan-changed'));
     if (breakdown) breakdown.hidden = true;   // razrada se otvara tek na "Pogledaj detalje"
     renderPlanDetail();
     detail.hidden = false;
@@ -5793,11 +5796,13 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   document.querySelectorAll('.dest-plan-card').forEach(card => {
     card.addEventListener('click', () => openPlan(card.dataset.plan));
   });
+  window.SKLOPI_openPlan = openPlan;   // koristi ga i "Tvoj personalizovani plan"
 
   $('planDetailBack')?.addEventListener('click', () => {
     if (detail) detail.hidden = true;
     if (breakdown) breakdown.hidden = true;
-    $('destinationPlans')?.scrollIntoView({behavior:'smooth', block:'start'});
+    const ap = window.SKLOPI_ACTIVE_PLAN;
+    $((ap && ap.backTo) || 'destinationPlans')?.scrollIntoView({behavior:'smooth', block:'start'});
   });
   $('planDetailBook')?.addEventListener('click', goToSearchForAthens);
   $('planDetailMore')?.addEventListener('click', () => {
@@ -5947,7 +5952,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     tags.innerHTML = '<span class="pp-tag">' + escapeHtml(TIER_LABEL[last.tier] || 'Balans') + '</span>'
       + '<span class="pp-tag pp-tag--stars">' + a.hotelStars + '\u2605 hotel +</span>';
     list.innerHTML = plans.map((p, i) => {
-      const price = i === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
+      const price = p.price = i === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
       return '<article class="pp-card" data-plan="' + i + '"><div class="pp-card-top"><div class="pp-card-info">'
         + '<h3>' + p.title + '</h3>'
         + '<p class="pp-price">' + fmtPrice(price) + ' <span>/ osoba</span></p>'
@@ -5960,12 +5965,20 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
         + '<button type="button" class="btn-primary pp-more" data-plan="' + i + '">Pogledaj detalje</button></article>';
     }).join('');
     list.querySelectorAll('.pp-more').forEach(btn => btn.addEventListener('click', () => {
-      Object.assign(builderState, plans[Number(btn.dataset.plan)].sel, {includeFlight:true, includeHotel:true});
-      renderFormUI();
-      openControlPanel();
-      document.getElementById('makeBuilderBtn').click();
-      const panel = document.getElementById('builderPanel');
-      if (panel) panel.scrollIntoView({behavior:'smooth', block:'start'});
+      const i = Number(btn.dataset.plan), p = plans[i], c = builderCtx();
+      const rooms = p.sel.hotelStars + '\u2605 hotel (' + nightsLabel(c.nights) + ')';
+      if (typeof window.SKLOPI_openPlan !== 'function') return;
+      window.SKLOPI_openPlan({
+        title:p.title, price:p.price, badge:['Najbolji izbor','Više komfora','Najviše za novac'][i],
+        badgeCls:i === 1 ? 'plan-detail-badge--comfort' : '',
+        photo:photos[i].replace('w=400', 'w=1200'), alt:p.title,
+        flightPref:p.sel.flightPref, hotelStars:p.sel.hotelStars, prioritizeLocation:!!builderState.prioritizeLocation,
+        carPref:p.sel.carPref, activityCount:p.sel.activityCount,
+        flightT:flightText(p.sel, c, p.flex), flightS:'Povratna karta',
+        hotelS:rooms, actS:activitiesLabel(p.sel.activityCount), carS:carText(p.sel.carPref),
+        forWho:'Izračunato prema tvojim izborima u \u201eSastavi svoj paket\u201c.',
+        keepDest:true, backTo:'personalPlans'
+      });
     }));
     section.hidden = false;
   }
@@ -6152,6 +6165,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     renderFormUI();
     renderBuilder();
     render();
+    document.dispatchEvent(new Event('sklopi:plan-changed'));
     showToast(builderState.esim ? 'eSIM dodat u procenu paketa.' : 'eSIM uklonjen iz procene.');
   });
   alertBtn.addEventListener('click', () => {
@@ -6160,6 +6174,98 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   });
   document.addEventListener('sklopi:plan-breakdown', render);
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
+})();
+
+/* ==========================================================
+   MOJ PUT (#myTrip) — 13. ekran sa slike. Pregled trenutno izabranog
+   plana (builderState + forma): stavke, ukupno, "Pogledaj detalje"
+   (otvara builder) i "Preuzmi plan puta" (tekstualni fajl sa procenom
+   i partnerskim linkovima). Dok korisnik ne izabere plan, prikazuje
+   poruku i dugme ka 3 plana. "Završeni" je prazan (nema istorije).
+========================================================== */
+(function initMyTrip(){
+  const root = document.getElementById('myTrip');
+  const body = document.getElementById('mtBody');
+  if (!root || !body) return;
+  let ready = false, tab = 'active';
+  const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  function summary(){
+    const ctx = builderCtx();
+    const pkg = computeCustomPackage(builderState, ctx);
+    const rows = [];
+    if (builderState.includeFlight) rows.push(['\u2708', 'Let', pkg.flight.price]);
+    if (builderState.includeHotel) rows.push(['\u25a3', 'Hotel', pkg.hotel.price]);
+    if (builderState.activityCount > 0) rows.push(['\u25c7', 'Aktivnosti', pkg.activity.price]);
+    rows.push(['\u25b1', 'Prevoz', builderState.carPref === 'none' ? 0 : pkg.car.price + pkg.carExtras.price]);
+    if (builderState.esim) rows.push(['\ud83d\udcf6', 'eSIM', pkg.esimCost]);
+    return {ctx, pkg, rows};
+  }
+  function render(){
+    root.querySelectorAll('.mt-tab').forEach(b => {
+      b.classList.toggle('is-on', b.dataset.tab === tab);
+      b.setAttribute('aria-selected', b.dataset.tab === tab ? 'true' : 'false');
+    });
+    if (tab === 'done'){
+      body.innerHTML = '<p class="mt-empty">Još nemaš završenih putovanja.</p>';
+      return;
+    }
+    if (!ready){
+      body.innerHTML = '<p class="mt-empty">Još nisi sklopio put. Izaberi jedan od planova ili sastavi svoj paket.</p>'
+        + '<button type="button" class="btn-primary mt-btn" id="mtChoose">Izaberi plan</button>';
+      document.getElementById('mtChoose').addEventListener('click', () => {
+        document.getElementById('destinationPlans')?.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+      return;
+    }
+    const {ctx, pkg, rows} = summary();
+    const ap = window.SKLOPI_ACTIVE_PLAN;
+    const photo = ap && ap.photo ? ap.photo.replace(/w=\d+/, 'w=300') : '';
+    body.innerHTML = '<article class="mt-card"><div class="mt-head">'
+      + (photo ? '<span class="mt-thumb"><img src="' + escapeHtml(photo) + '" alt="" loading="lazy"></span>' : '')
+      + '<div><h3>' + escapeHtml(cityLabel(ctx.dest)) + ' \u2013 ' + daysLabel(ctx.days) + '</h3>'
+      + '<p>' + escapeHtml(fmtDate(ctx.from) + ' \u2013 ' + fmtDate(ctx.to)) + ' \u2022 ' + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '</p></div></div>'
+      + '<ul class="mt-rows">' + rows.map(r => '<li><span aria-hidden="true">' + r[0] + '</span><b>' + r[1] + '</b><em>' + escapeHtml(money(r[2])) + '</em></li>').join('') + '</ul>'
+      + '<p class="mt-total">Ukupno: <b>' + escapeHtml(money(pkg.total)) + '</b></p>'
+      + '<p class="mt-fine">Ilustrativna procena za ' + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '.</p></article>'
+      + '<button type="button" class="btn-primary mt-btn" id="mtDetails">Pogledaj detalje</button>'
+      + '<button type="button" class="mt-link" id="mtDownload">Preuzmi plan puta</button>';
+    document.getElementById('mtDetails').addEventListener('click', () => {
+      openControlPanel();
+      document.getElementById('makeBuilderBtn').click();
+      document.getElementById('builderPanel')?.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    document.getElementById('mtDownload').addEventListener('click', download);
+  }
+  function download(){
+    const {ctx, pkg, rows} = summary();
+    const linkCtx = {dest:ctx.dest, originCode:ctx.originCode || 'Beograd', from:ctx.from, to:ctx.to, adults:ctx.adults,
+      flightPref:builderState.flightPref, hotelStars:builderState.hotelStars, prioritizeLocation:builderState.prioritizeLocation};
+    const lines = ['SKLOPI \u2014 plan puta', '',
+      cityLabel(ctx.dest) + ' \u2013 ' + daysLabel(ctx.days),
+      ctx.from + ' do ' + ctx.to + ', putnika: ' + ctx.adults, ''];
+    rows.forEach(r => lines.push(r[1] + ': ' + money(r[2])));
+    lines.push('', 'Ukupno (ilustrativna procena): ' + money(pkg.total), '',
+      'Rezervacija ide preko partnera (cena i dostupnost se proveravaju kod njih):');
+    if (builderState.includeFlight) lines.push('KAYAK (let): ' + buildAffiliateLink('flight', linkCtx));
+    if (builderState.includeHotel) lines.push('Booking.com (hotel): ' + buildAffiliateLink('hotel', linkCtx));
+    if (builderState.activityCount > 0) lines.push('Viator (aktivnosti): ' + buildAffiliateLink('activity', {dest:ctx.dest}));
+    lines.push('', affDisc());
+    const url = URL.createObjectURL(new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'}));
+    const link = document.createElement('a');
+    link.href = url; link.download = 'sklopi-plan-puta.txt';
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  root.querySelectorAll('.mt-tab').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; render(); }));
+  ['sklopi:plan-changed', 'sklopi:custom-plan'].forEach(ev => document.addEventListener(ev, () => { ready = true; render(); }));
+  ['dest', 'dateFrom', 'dateTo', 'adults'].forEach(id => document.getElementById(id)?.addEventListener('change', () => { if (ready) render(); }));
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(render, 0));
+  render();
+})();
+
+(function initFooterYear(){
+  const y = document.getElementById('footYear');
+  if (y) y.textContent = '\u00a9 ' + new Date().getFullYear();
 })();
 
 /* ==========================================================
