@@ -112,8 +112,8 @@
 <meta name="apple-mobile-web-app-title" content="SKLOPI">
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=22">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=21">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
 <body>
@@ -149,66 +149,105 @@ SKLOPI<em>.</em>
 </div>
 <div class="auth-dropdown" id="authDropdown"></div>
 </div>
+<div class="hero-v2">
+<div class="hero-v2-inner">
+<p class="hero-v2-eyebrow" data-i18n="hero_v2_eyebrow">Sastavljanje putovanja, drugačije</p>
+<h1 data-i18n-html="hero_v2_title">Let, hotel, auto i doživljaji — <span class="accent-coral">sklopljeni</span> u jednu cenu.</h1>
+<p class="hero-v2-lede" data-i18n="hero_v2_lede">Umesto deset otvorenih kartica i ručnog sabiranja, SKLOPI spaja sve delove putovanja u jedan pregledan broj — pre nego što uopšte izabereš datume.</p>
+<div class="hero-v2-actions">
+<a href="#searchForm" class="hero-v2-cta" data-i18n="hero_v2_cta">Sastavi svoj put</a>
+<a href="#faq" class="hero-v2-secondary" data-i18n="hero_v2_secondary">▶ Kako radi sabiranje cene</a>
+</div>
+<div class="hero-v2-stats">
+<div class="hero-v2-stat"><b data-i18n="hero_v2_stat1_num">700+</b><span data-i18n="hero_v2_stat1_label">lokacija u ponudi</span></div>
+<div class="hero-v2-stat"><b data-i18n="hero_v2_stat2_num">5</b><span data-i18n="hero_v2_stat2_label">partnera za rezervaciju</span></div>
+</div>
+</div>
+</div>
 <div class="hero" id="searchForm-wrap">
 <div class="hero-photo">
 <svg class="hero-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
 <defs>
-<radialGradient id="heroArtSun" cx="50%" cy="50%" r="50%">
-<stop offset="0%" stop-color="#F6E2B8" stop-opacity="0.95"/>
-<stop offset="100%" stop-color="#E7A93E" stop-opacity="0"/>
+<radialGradient id="heroArtGlow" cx="80%" cy="46%" r="62%">
+<stop offset="0%" stop-color="#1E8F92" stop-opacity="0.5"/>
+<stop offset="100%" stop-color="#123A44" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="heroArtGlowPurple" cx="10%" cy="86%" r="60%">
+<stop offset="0%" stop-color="#FF6A4A" stop-opacity="0.40"/>
+<stop offset="55%" stop-color="#FF5A38" stop-opacity="0.14"/>
+<stop offset="100%" stop-color="#FF5A38" stop-opacity="0"/>
 </radialGradient>
 <pattern id="heroArtDots" width="36" height="36" patternUnits="userSpaceOnUse">
-<circle cx="1.3" cy="1.3" r="1.3" fill="#F3EFE3" opacity="0.14"/>
+<circle cx="1.3" cy="1.3" r="1.3" fill="#F3EFE3" opacity="0.16"/>
 </pattern>
 </defs>
+<rect width="1600" height="900" fill="url(#heroArtGlow)"/>
+<rect width="1600" height="900" fill="url(#heroArtGlowPurple)"/>
 <rect width="1600" height="900" fill="url(#heroArtDots)"/>
-<!-- sunce -->
-<circle cx="1230" cy="210" r="340" fill="url(#heroArtSun)"/>
-<circle cx="1230" cy="210" r="86" fill="#F6E2B8" opacity="0.92"/>
-<!-- daleka brda -->
-<path d="M0,470 Q260,410 520,460 T1050,450 T1600,470 L1600,900 L0,900 Z" fill="#1E8F92" opacity="0.34"/>
-<!-- silueta grada -->
-<path d="M0,600 L60,600 L60,560 L90,560 L90,600 L140,600 L140,540 L155,540 L155,600 L210,600 L210,575 L240,545 L270,575 L270,600 L330,600 L330,520 L345,520 L345,600 L410,600 L410,565 L440,565 L440,600 L500,600 L500,545 L515,545 L515,600 L580,600 L580,555 L650,555 L650,600 L720,600 L720,530 L760,530 L760,600 L840,600 L840,570 L870,540 L900,570 L900,600 L970,600 L970,548 L985,548 L985,600 L1060,600 L1060,565 L1090,565 L1090,600 L1160,600 L1160,585 L1600,585 L1600,900 L0,900 Z" fill="#0A1B20"/>
-<!-- more -->
-<rect x="0" y="650" width="1600" height="250" fill="#0A1B20" opacity="0.85"/>
-<path d="M1230,650 L1450,650 L1600,760 L1600,900 L1000,900 Z" fill="#E7A93E" opacity="0.14"/>
+<circle cx="90" cy="120" r="360" fill="none" stroke="#F3EFE3" stroke-width="1" opacity="0.08"/>
+<circle cx="1560" cy="840" r="420" fill="none" stroke="#F3EFE3" stroke-width="1" opacity="0.08"/>
+<circle cx="120" cy="790" r="230" fill="none" stroke="#FF6A4A" stroke-width="1.1" opacity="0.24"/>
+<circle cx="120" cy="790" r="150" fill="none" stroke="#FF6A4A" stroke-width="1" opacity="0.16"/>
+<g transform="translate(1290,430)" stroke="#E7A93E" stroke-width="1.1" fill="none" opacity="0.55">
+<circle r="92"/>
+<circle r="62"/>
+<path d="M0 -92v16M0 76v16M-92 0h16M76 0h16"/>
+<path d="M0 -62L15 0L0 62L-15 0Z" fill="#E7A93E" fill-opacity="0.3" stroke="none"/>
+</g>
+<g class="hero-orbit" aria-hidden="true">
+<path class="hero-orbit-trail" d="M900 100 A180 180 0 1 1 900 460 A180 180 0 1 1 900 100" pathLength="100" fill="none" stroke="#F3EFE3" stroke-width="2.2" stroke-linecap="round"/>
+<g class="hero-orbit-plane">
+<path d="M0 -9L3 -1L16 2.5L16 5.5L3 4.5L0 13L-3 4.5L-16 5.5L-16 2.5L-3 -1Z" fill="#F3EFE3"/>
+<animateMotion dur="9s" repeatCount="indefinite" rotate="auto" path="M900 100 A180 180 0 1 1 900 460 A180 180 0 1 1 900 100"/>
+</g>
+</g>
 </svg>
 </div>
 <div class="hero-inner">
-<p class="hero-v2-eyebrow" data-i18n="hero_v2_eyebrow">Pažljivo osmišljena putovanja</p>
-<h1 class="hero-v2-title" data-i18n-html="hero_v2_title">Ne traži putovanje.<br><span class="accent-coral">Složi ga.</span></h1>
-<p class="hero-v2-lede" data-i18n="hero_v2_lede">Izaberi raspoloženje, dodaj detalje i otkrij paket — let, smeštaj, auto i aktivnosti — u jednoj ceni.</p>
-<div class="moods" id="heroMoods" role="group" aria-label="Brzi izbor raspoloženja">
-<button type="button" class="mood-pill" data-action="match"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 6.6L22 9l-5.4 4.6L18 22l-6-3.9L6 22l1.4-8.4L2 9l7.4-.4L12 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Iznenadi me</button>
-<button type="button" class="mood-pill active" data-mood-dest="Krf"><svg viewBox="0 0 24 24" fill="none"><path d="M2 17c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0" stroke="currentColor" stroke-width="1.6"/><path d="M2 12c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0" stroke="currentColor" stroke-width="1.6" opacity=".6"/></svg>More</button>
-<button type="button" class="mood-pill" data-mood-dest="Barselona"><svg viewBox="0 0 24 24" fill="none"><path d="M4 21V9l4-3 4 3v12M4 21h16M9 21v-5h4v5M14 21V6l3-2 3 2v15" stroke="currentColor" stroke-width="1.5"/></svg>Grad</button>
-<button type="button" class="mood-pill" data-mood-dest="Durmitor"><svg viewBox="0 0 24 24" fill="none"><path d="M3 20l6-11 4 6 2-3 6 8H3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Avantura</button>
-<button type="button" class="mood-pill" data-mood-dest="Ibica"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="2" height="9" stroke="currentColor" stroke-width="1.4"/><path d="M9 3v6a2 2 0 002 2M9 3v6a2 2 0 01-2 2M9 3v18" stroke="currentColor" stroke-width="1.4"/><path d="M17 3c-2 2-2 5 0 7v11" stroke="currentColor" stroke-width="1.4"/></svg>Provod</button>
+<p class="hero-kicker" data-i18n="hero_kicker">Pažljivo osmišljena putovanja</p>
+<h1 data-i18n-html="hero_title">SKLOPI</h1>
+<p class="lede" data-i18n="hero_lede">Sve u jednu cenu.</p>
+<div class="hero-moods" id="heroMoods" role="group" aria-label="Brzi filter po raspoloženju">
+<button type="button" class="hero-mood-pill is-active" data-mood="all">Sve</button>
+<button type="button" class="hero-mood-pill" data-mood="sea">🌊 More</button>
+<button type="button" class="hero-mood-pill" data-mood="city">🏙️ Grad</button>
+<button type="button" class="hero-mood-pill" data-mood="nature">🌲 Priroda</button>
+<button type="button" class="hero-mood-pill" data-mood="ski">⛷️ Skijanje</button>
 </div>
-<a href="#faq" class="hero-v2-secondary hero-howto-link" data-i18n="hero_v2_secondary">▶ Kako radi sabiranje cene</a>
-<span class="script-tag hero-builder-flag" aria-hidden="true">Sklopi mi putovanje</span>
+<script>
+(function(){
+  var wrap = document.getElementById('heroMoods');
+  if(!wrap) return;
+  wrap.addEventListener('click', function(e){
+    var btn = e.target.closest('.hero-mood-pill');
+    if(!btn) return;
+    wrap.querySelectorAll('.hero-mood-pill').forEach(function(b){ b.classList.toggle('is-active', b === btn); });
+    var mood = btn.getAttribute('data-mood');
+    var rows = document.querySelectorAll('#destRows .dest-row');
+    rows.forEach(function(row){
+      var match = mood === 'all' || row.getAttribute('data-row') === mood;
+      row.style.display = match ? '' : 'none';
+    });
+    var target = document.getElementById('destinacije');
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+})();
+</script>
 <form class="ticket" id="searchForm">
-<div class="ticket-fields">
+<div class="stub" id="originStub">
+<label for="origin" data-i18n="label_origin">Polazak</label>
+<input id="origin" type="text" value="" data-i18n-placeholder="placeholder_origin" placeholder="npr. Beograd, Niš, Podgorica" required maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="originSuggestions">
+<div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
+<div id="originAirportWarning"></div>
+</div>
 <div class="stub">
-<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-6.2 7-11.5S16.4 2 12 2 5 4.6 5 9.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg></span>
-<div class="stub-body">
 <label for="dest" data-i18n="label_dest">Destinacija</label>
-<input id="dest" type="text" value="" data-i18n-placeholder="placeholder_dest" placeholder="npr. Jadran, Atina, Rim" required maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="destSuggestions">
+<input id="dest" type="text" value="" data-i18n-placeholder="placeholder_dest" placeholder="npr. Atina, Rim, Barselona" required maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="destSuggestions">
 <div class="loc-dropdown" id="destSuggestions" role="listbox"></div>
 <div id="destAirportWarning"></div>
 </div>
-</div>
-<div class="stub" id="vibeStub">
-<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M12 2l2.6 6.6L22 9l-5.4 4.6L18 22l-6-3.9L6 22l1.4-8.4L2 9l7.4-.4L12 2z"/></svg></span>
-<div class="stub-body">
-<label for="heroVibe">Vibe</label>
-<input id="heroVibe" type="text" value="Opušteno" placeholder="npr. opušteno, uz more, malo avanture" required maxlength="60" autocomplete="off">
-</div>
-</div>
 <div class="stub stub-dates" id="dateStub">
-<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
-<div class="stub-body">
-<label id="dateStubLabel">Vreme</label>
+<label id="dateStubLabel" data-i18n="label_dates">Od — Do</label>
 <button type="button" class="date-display is-empty" id="dateDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="calCard" aria-labelledby="dateStubLabel dateDisplayText">
 <span class="dd-range" id="dateDisplayText">— – —</span>
 <span class="dd-meta" id="dateNightsText">— – —</span>
@@ -242,15 +281,12 @@ SKLOPI<em>.</em>
 </div>
 </div>
 </div>
-</div>
 <div class="stub stub-pax" id="paxStub">
-<span class="stub-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.3c2.6.4 4.5 2.2 4.5 4.7"/></svg></span>
-<div class="stub-body">
 <label id="paxStubLabel" for="paxDisplayBtn" data-i18n="label_passengers">Putnika</label>
-<button type="button" class="pax-display" id="paxDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="paxCard" aria-labelledby="paxStubLabel paxDisplayText">
+<button type="button" class="pax-display is-empty" id="paxDisplayBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="paxCard" aria-labelledby="paxStubLabel paxDisplayText">
 <span id="paxDisplayText" data-i18n="placeholder_passengers">Putnika</span>
 </button>
-<input type="hidden" id="adults" value="2">
+<input type="hidden" id="adults" value="">
 <div class="cal-backdrop" id="paxBackdrop"></div>
 <div class="pax-card" id="paxCard" role="dialog" aria-modal="true" data-i18n-aria-label="aria_pax_dialog" aria-label="Izbor broja putnika">
 <div class="cal-inner">
@@ -261,13 +297,6 @@ SKLOPI<em>.</em>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="hero-hidden-fields" style="display:none" aria-hidden="true">
-<label for="origin" data-i18n="label_origin">Polazak</label>
-<input id="origin" type="text" value="" data-i18n-placeholder="placeholder_origin" placeholder="npr. Beograd, Niš, Podgorica" maxlength="60" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="originSuggestions" tabindex="-1">
-<div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
-<div id="originAirportWarning"></div>
 </div>
 <div class="go">
 <button type="button" class="passport-check-btn" id="documentsCheckBtn" data-i18n="documents_check_link">🧳 Proveri dokumenta za put</button>
@@ -301,14 +330,6 @@ SKLOPI<em>.</em>
 </div>
 <div class="hero-spacer"></div>
 </div>
-<div class="feature-strip">
-<div class="feature-strip-inner">
-<div class="feature-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 16l20-7-7 20-3-8-8-3z"/></svg>Letovi</div>
-<div class="feature-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 18v-7a2 2 0 012-2h4a2 2 0 012 2v1h6a2 2 0 012 2v4M3 18h18M6 12a2 2 0 100-4 2 2 0 000 4z"/></svg>Smeštaj</div>
-<div class="feature-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 16l1.5-5A2 2 0 018.4 9.5h7.2A2 2 0 0117.5 11L19 16M4 16h16v3a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1H7v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-3z"/><circle cx="7.5" cy="16" r="1"/><circle cx="16.5" cy="16" r="1"/></svg>Rent-a-car</div>
-<div class="feature-strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="4.5"/><circle cx="16" cy="16" r="4.5"/><path d="M8 8l8 8"/></svg>Aktivnosti</div>
-</div>
-</div>
 <div class="section action-cards-wrap">
 <div class="action-cards">
 <button type="button" class="action-card match-trigger" id="matchTriggerBtn" data-i18n-html="match_trigger">
@@ -330,86 +351,14 @@ SKLOPI<em>.</em>
 <div class="stat"><div class="val">700+</div><div class="lab" data-i18n="stat_cities">lokacija u ponudi</div></div>
 </div>
 </div>
-<div class="section">
-<div class="section-head mood-section-head">
-<div>
-<div class="underline"></div>
-<h2>Gde bi ti danas?</h2>
-<p class="section-sub">Pet raspoloženja, bezbroj mogućnosti. Samo izaberi šta ti prija.</p>
-</div>
-<button type="button" class="surprise" data-action="match">Ili nas iznenadi<span class="dice"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="1.6"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="16" cy="8" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="8" cy="16" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/></svg></span></button>
-</div>
-<div class="mood-grid">
-<button type="button" class="mood-card" data-mood-dest="Krf" style="background:linear-gradient(160deg,#1E8F92,#0A2830);">
-<span class="veil"></span>
-<span class="label"><span>Bežim<br>na more</span><span class="go">→</span></span>
-</button>
-<button type="button" class="mood-card" data-mood-dest="Barselona" style="background:linear-gradient(160deg,#8A6423,#123A44);">
-<span class="veil"></span>
-<span class="label"><span>Hoću vikend<br>u gradu</span><span class="go">→</span></span>
-</button>
-<button type="button" class="mood-card" data-action="match" style="background:linear-gradient(160deg,#4B2354,#0C2229);">
-<span class="veil"></span>
-<span class="label"><span>Daj mi<br>nešto novo</span><span class="go">→</span></span>
-</button>
-<button type="button" class="mood-card" data-mood-dest="Ibica" style="background:linear-gradient(160deg,#C93F22,#123A44);">
-<span class="veil"></span>
-<span class="label"><span>Fine<br>fajronte</span><span class="go">→</span></span>
-</button>
-</div>
-</div>
 <div class="section" id="destinacije">
 <div class="section-head">
-<div class="eyebrow">Brzi pregled</div>
-<h2>Destinacije po vrsti odmora</h2>
-<p class="section-sub">Prelistaj ideje grupisane po tipu putovanja. Cena je procena za ceo paket, ne samo za smeštaj.</p>
+<div class="eyebrow" id="destSecEyebrow">Odaberi pravac</div>
+<h2 id="destSecTitle">Destinacije</h2>
+<p class="section-sub" id="destSecSub">Prelistaj ideje po vrsti odmora. Klikni na naziv grada i upisujemo ga u pretragu, ili otvori ponudu partnera — datume biraš ti.</p>
 </div>
-<div class="vibe-dest-grid">
-<button type="button" class="vibe-dest-card" data-mood-dest="Durmitor">
-<div class="vibe-dest-art">
-<svg viewBox="0 0 300 225" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect width="300" height="225" fill="#123A44"/><path d="M0,225 L60,90 L110,150 L150,60 L200,150 L230,110 L300,225 Z" fill="#087F5B" opacity=".9"/><path d="M60,90 L75,60 L90,90 Z" fill="#F6E2B8"/><path d="M150,60 L163,32 L176,60 Z" fill="#F6E2B8"/></svg>
-<span class="vibe-dest-pill">Priroda</span>
-</div>
-<div class="vibe-dest-body">
-<h3>Durmitor</h3>
-<p class="vibe-dest-country">Crna Gora</p>
-<div class="vibe-dest-foot"><span class="lbl">Ceo paket od</span><span class="val">€260</span></div>
-</div>
-</button>
-<button type="button" class="vibe-dest-card" data-mood-dest="Barselona">
-<div class="vibe-dest-art">
-<svg viewBox="0 0 300 225" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect width="300" height="225" fill="#0C2229"/><rect x="20" y="120" width="26" height="105" fill="#7B5CC4"/><rect x="55" y="90" width="26" height="135" fill="#7B5CC4"/><rect x="90" y="140" width="26" height="85" fill="#7B5CC4"/><rect x="125" y="70" width="26" height="155" fill="#7B5CC4"/><rect x="160" y="110" width="26" height="115" fill="#7B5CC4"/><rect x="195" y="85" width="26" height="140" fill="#7B5CC4"/><rect x="230" y="130" width="26" height="95" fill="#7B5CC4"/><circle cx="33" cy="150" r="3" fill="#E7A93E"/><circle cx="68" cy="115" r="3" fill="#E7A93E"/><circle cx="138" cy="100" r="3" fill="#E7A93E"/><circle cx="173" cy="140" r="3" fill="#E7A93E"/><circle cx="208" cy="115" r="3" fill="#E7A93E"/></svg>
-<span class="vibe-dest-pill">Noćni život</span>
-</div>
-<div class="vibe-dest-body">
-<h3>Barselona</h3>
-<p class="vibe-dest-country">Španija</p>
-<div class="vibe-dest-foot"><span class="lbl">Ceo paket od</span><span class="val">€610</span></div>
-</div>
-</button>
-<button type="button" class="vibe-dest-card" data-mood-dest="Krf">
-<div class="vibe-dest-art">
-<svg viewBox="0 0 300 225" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect width="300" height="225" fill="#1E8F92"/><circle cx="255" cy="45" r="20" fill="#F6E2B8"/><path d="M0,150 Q75,110 150,150 T300,150 L300,225 L0,225 Z" fill="#0A2830"/></svg>
-<span class="vibe-dest-pill">More</span>
-</div>
-<div class="vibe-dest-body">
-<h3>Krf</h3>
-<p class="vibe-dest-country">Grčka</p>
-<div class="vibe-dest-foot"><span class="lbl">Ceo paket od</span><span class="val">€430</span></div>
-</div>
-</button>
-<button type="button" class="vibe-dest-card" data-mood-dest="Prag">
-<div class="vibe-dest-art">
-<svg viewBox="0 0 300 225" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect width="300" height="225" fill="#4B2354"/><path d="M0,225 V120 H30 V90 H55 V130 H80 V70 H110 V140 H140 V100 H165 V160 H195 V80 H225 V145 H255 V110 H300 V225 Z" fill="#123A44"/></svg>
-<span class="vibe-dest-pill">Grad i kultura</span>
-</div>
-<div class="vibe-dest-body">
-<h3>Prag</h3>
-<p class="vibe-dest-country">Češka</p>
-<div class="vibe-dest-foot"><span class="lbl">Ceo paket od</span><span class="val">€390</span></div>
-</div>
-</button>
-</div>
+<div class="dest-rows" id="destRows"></div>
+<p class="dest-credit" id="destCreditText">Cene su ilustrativna procena; tačnu cenu i dostupnost proveri kod partnera. Linkovi ka Booking.com-u i Viator-u su partnerski — SKLOPI može da dobije proviziju, a tebi cena ostaje ista.</p>
 </div>
 <div class="section" id="attractions">
 <div class="section-head">
@@ -432,10 +381,14 @@ SKLOPI<em>.</em>
 </div>
 <div class="section price-chart-section" id="priceMixSection"></div>
 <div class="promo-banner">
+<div class="promo-banner-card">
+<div class="promo-banner-photo">
+<img src="banner-jezero-planina.jpg" data-i18n-alt="alt_banner_lake" alt="Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor" loading="lazy">
+</div>
+<div class="promo-banner-cap">
 <p class="promo-banner-kicker" data-i18n="promo_banner_kicker">Trenutak za sebe</p>
 <p class="promo-banner-quote" data-i18n="promo_banner_quote">Neka mesta jednostavno nemaju cenu.</p>
-<div class="promo-banner-wave" aria-hidden="true">
-<svg viewBox="0 0 800 60" preserveAspectRatio="none"><path d="M0,30 Q200,60 400,30 T800,30 V60 H0 Z"></path></svg>
+</div>
 </div>
 </div>
 <div class="results-backdrop" id="resultsBackdrop"></div>
@@ -641,14 +594,18 @@ SKLOPI<em>.</em>
 </div>
 <div class="section business-strip">
 <div class="partners-row">
+<span class="partners-label" data-i18n="partners_label">Rezervacija ide direktno preko partnera</span>
 <div class="partners-card">
+<div class="partners-line">
 <span class="partner-badge partner-badge--kayak">KAYAK</span>
-<span class="partner-badge partner-badge--booking">Booking<span class="pb-dotcom">.com</span></span>
 <span class="partner-badge partner-badge--viator">Viator</span>
-<span class="partner-badge partner-badge--airalo">Airalo</span>
+<span class="partner-badge partner-badge--airalo">airalo</span>
+</div>
+<div class="partners-line">
+<span class="partner-badge partner-badge--booking">Booking<span class="pb-dotcom">.com</span></span>
 <span class="partner-badge partner-badge--worldnomads">World Nomads</span>
 </div>
-<p class="partners-label" data-i18n="partners_label">Rezervaciju i plaćanje uvek obavljaš direktno kod partnera — SKLOPI ne naplaćuje ništa dodatno.</p>
+</div>
 </div>
 </div>
 <div class="section" id="popular-destinations">
@@ -1025,42 +982,6 @@ SKLOPI<em>.</em>
 <a href="#" data-contact="wa" rel="noopener" class="whatsapp-fab" id="whatsappFab" data-i18n-aria-label="whatsapp_aria" aria-label="Piši nam na WhatsApp">
 <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"/></svg>
 </a>
-<script>
-/* Redizajn 2026 — mood pills (hero) i mood grid ("Gde bi ti danas?").
-   Samostalno, ne dira app.js: postavlja #dest i skroluje do pretrage,
-   ili otvara postojeći match-kviz preko #matchTriggerBtn. */
-(function(){
-  function goToTicket(){
-    var el = document.getElementById('searchForm-wrap') || document.getElementById('searchForm');
-    if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-  }
-  function applyMoodDest(dest){
-    var input = document.getElementById('dest');
-    if (!input) return;
-    input.value = dest;
-    input.dispatchEvent(new Event('input', {bubbles:true}));
-  }
-  document.addEventListener('click', function(e){
-    var el = e.target.closest('.mood-pill, .mood-card, .vibe-dest-card');
-    if (!el) return;
-    document.querySelectorAll('.mood-pill').forEach(function(p){ p.classList.remove('active'); });
-    if (el.classList.contains('mood-pill')) el.classList.add('active');
-    if (el.dataset.action === 'match'){
-      var trigger = document.getElementById('matchTriggerBtn');
-      if (trigger) trigger.click();
-      return;
-    }
-    var dest = el.dataset.moodDest;
-    if (dest){
-      applyMoodDest(dest);
-      goToTicket();
-    } else {
-      var destSection = document.getElementById('destinacije');
-      if (destSection) destSection.scrollIntoView({behavior:'smooth', block:'start'});
-    }
-  });
-})();
-</script>
 <script src="config.js"></script>
 <script src="affiliate.js?v=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
