@@ -5806,6 +5806,9 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }
   document.querySelectorAll('.dest-plan-card').forEach(card => {
     card.addEventListener('click', () => openPlan(card.dataset.plan));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openPlan(card.dataset.plan); }
+    });
   });
   window.SKLOPI_openPlan = openPlan;   // koristi ga i "Tvoj personalizovani plan"
   document.addEventListener('sklopi:lang', () => { if (detail && !detail.hidden) renderPlanDetail(); });
@@ -7266,6 +7269,8 @@ function renderAccountMenu(){
     return;
   }
   getCurrentUser().then(user => {
+    const loginLabel = document.getElementById('topAvatarLabel');
+    if (loginLabel) loginLabel.textContent = user ? 'Moj nalog' : 'Prijavi se';
     if (user) {
       dropdown.innerHTML = `<div class="auth-dropdown-inner">
            <div class="auth-dropdown-email">${escapeHtml(user.email)}</div>
@@ -7329,28 +7334,43 @@ function renderAccountMenu(){
 
 const topAvatarBtn = document.getElementById('topAvatarBtn');
 const authDropdown = document.getElementById('authDropdown');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobilePanel = document.getElementById('mobilePanel');
+
+function closeHeroMenu(){
+  if (!mobilePanel) return;
+  mobilePanel.classList.remove('open');
+  if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'false');
+}
+function closeAuthDropdown(){
+  if (authDropdown) authDropdown.classList.remove('open');
+}
+
 if (topAvatarBtn && authDropdown){
   topAvatarBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+    closeHeroMenu();
     authDropdown.classList.toggle('open');
     if (authDropdown.classList.contains('open')) renderAccountMenu();
   });
-  document.addEventListener('click', () => authDropdown.classList.remove('open'));
   authDropdown.addEventListener('click', (e) => e.stopPropagation());
 }
 
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const mobilePanel = document.getElementById('mobilePanel');
 if (hamburgerBtn && mobilePanel){
   hamburgerBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    mobilePanel.classList.toggle('open');
+    closeAuthDropdown();
+    const open = mobilePanel.classList.toggle('open');
+    hamburgerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
-  mobilePanel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobilePanel.classList.remove('open')));
-  document.addEventListener('click', (e) => {
-    if (mobilePanel.classList.contains('open') && !mobilePanel.contains(e.target)) mobilePanel.classList.remove('open');
-  });
+  mobilePanel.querySelectorAll('a').forEach(a => a.addEventListener('click', closeHeroMenu));
+  mobilePanel.addEventListener('click', (e) => e.stopPropagation());
 }
+
+document.addEventListener('click', () => { closeAuthDropdown(); closeHeroMenu(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape'){ closeAuthDropdown(); closeHeroMenu(); }
+});
 
 /* ---- "Pronađi svoj izlet" dugme na stranici otvara kviz modal (koristi runMatchSearch iznad) ---- */
 const matchTriggerBtn = document.getElementById('matchTriggerBtn');
