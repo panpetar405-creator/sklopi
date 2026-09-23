@@ -5702,18 +5702,45 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     setTimeout(() => document.getElementById('origin')?.focus(), 500);
   });
 
-  // Klik na paket-karticu — vodi na Sastavi svoj paket (builder) predpopunjen
-  // za Atinu; detaljna stranica pojedinačnog paketa dolazi u sledećoj fazi.
+  // Popuni "Atina" u pretragu i skroluj na formu (koristi se za "Rezerviši paket"
+  // i za kartice čija detaljna stranica još nije gotova).
+  function goToSearchForAthens(){
+    const dest = document.getElementById('dest');
+    if (dest) {
+      dest.value = 'Atina';
+      dest.dispatchEvent(new Event('input', {bubbles:true}));
+    }
+    const search = document.getElementById('searchForm');
+    if (search) search.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(() => document.getElementById('origin')?.focus(), 500);
+  }
+
+  // Detalj paketa "Najviše za novac" (#planDetail) — otvara se klikom na
+  // istoimenu karticu; ostale dve kartice još vode na pretragu dok ne dobiju
+  // svoje detalje.
+  const detail = document.getElementById('planDetail');
   document.querySelectorAll('.dest-plan-card').forEach(card => {
     card.addEventListener('click', () => {
-      const dest = document.getElementById('dest');
-      if (dest) {
-        dest.value = 'Atina';
-        dest.dispatchEvent(new Event('input', {bubbles:true}));
+      if (card.dataset.plan === 'best-value' && detail) {
+        detail.hidden = false;
+        detail.scrollIntoView({behavior:'smooth', block:'start'});
+      } else {
+        goToSearchForAthens();
       }
-      const builder = document.getElementById('builder');
-      if (builder) builder.scrollIntoView({behavior:'smooth', block:'start'});
     });
+  });
+
+  document.getElementById('planDetailBack')?.addEventListener('click', () => {
+    if (detail) detail.hidden = true;
+    document.getElementById('destinationPlans')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  document.getElementById('planDetailBook')?.addEventListener('click', goToSearchForAthens);
+  // "Pogledaj detalje" vodi na razradu paketa (let/hotel/aktivnosti) čim
+  // ta sekcija bude dodata (#planBreakdown); do tada samo obaveštenje.
+  document.getElementById('planDetailMore')?.addEventListener('click', () => {
+    const more = document.getElementById('planBreakdown');
+    if (more) more.scrollIntoView({behavior:'smooth', block:'start'});
+    else if (typeof showToast === 'function') showToast('Detalji leta, hotela i aktivnosti stižu u sledećoj sekciji.');
   });
 })();
 

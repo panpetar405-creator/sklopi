@@ -3444,3 +3444,34 @@ footer{padding:28px 20px;}
   .popular-reference-grid .popular-dest-card{grid-template-columns:76px 1fr 20px;min-height:78px;gap:12px;padding:8px 10px 8px 8px;}
   .popular-reference-grid .pd-thumb{width:76px;height:60px;}
 }
+
+/* ---------- Detalj paketa "Najviše za novac" (5. ekran sa slike) ---------- */
+.plan-detail-section{max-width:520px;padding:8px 28px 28px;margin:0 auto!important;}
+.plan-detail-section[hidden]{display:none;}
+.plan-detail-card{background:#fff;border:1px solid #d9e7ea;border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgba(15,68,78,.10);}
+.plan-detail-photo{position:relative;height:190px;background:#dcebed;}
+.plan-detail-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+.plan-detail-back{position:absolute;top:12px;left:12px;border:0;border-radius:999px;padding:8px 13px;background:rgba(255,255,255,.92);color:var(--deep);font:800 12px/1 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.plan-detail-badge{position:absolute;left:14px;bottom:12px;padding:6px 11px;border-radius:999px;background:#1f9d6b;color:#fff;font:800 11px/1 'DM Sans',sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+.plan-detail-body{padding:20px 20px 22px;}
+.plan-detail-body h2{margin:0;color:var(--deep);font:800 26px/1.15 'Manrope',sans-serif;letter-spacing:-.02em;}
+.plan-detail-meta{margin:6px 0 0;color:#5b757c;font:600 14px/1.3 'DM Sans',sans-serif;}
+.plan-detail-price{margin:14px 0 0;color:var(--deep);font:800 32px/1 'Manrope',sans-serif;}
+.plan-detail-price span{font:600 14px/1 'DM Sans',sans-serif;color:#7b8d93;}
+.plan-detail-est{margin:6px 0 16px;color:#7b8d93;font:600 13px/1.3 'DM Sans',sans-serif;}
+.plan-detail-cta,.plan-detail-more{width:100%;min-height:48px;border-radius:11px;font-size:14px;}
+.plan-detail-sub{margin:24px 0 10px;color:var(--deep);font:800 16px/1.2 'Manrope',sans-serif;}
+.plan-detail-list{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;}
+.plan-detail-list li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #eef2f2;}
+.plan-detail-list li:last-child{border-bottom:0;}
+.pdl-ic{flex:none;width:34px;height:34px;border-radius:10px;background:#eef7f8;color:#0d6872;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.plan-detail-list b{display:block;color:var(--deep);font:800 14px/1.2 'Manrope',sans-serif;}
+.plan-detail-list small{display:block;margin-top:3px;color:#5b757c;font:600 12.5px/1.3 'DM Sans',sans-serif;}
+.plan-detail-more{background:#fff;border:1px solid #9dc7cd;color:#0b5961;cursor:pointer;font-weight:800;}
+.plan-detail-more:hover{background:#f2f9fa;border-color:#6faeb7;}
+.plan-detail-note{margin:14px 0 0;text-align:center;color:#8b9a9e;font:600 11.5px/1.4 'DM Sans',sans-serif;}
+@media (max-width:700px){
+  .plan-detail-section{padding:4px 18px 20px;}
+  .plan-detail-photo{height:160px;}
+  .plan-detail-body h2{font-size:23px;}
+}
