@@ -338,6 +338,8 @@ function applyStaticI18n(){
   document.querySelectorAll('[data-i18n-alt]').forEach(el => { el.setAttribute('alt', t(el.getAttribute('data-i18n-alt'))); });
   document.querySelectorAll('[data-aff-disclosure]').forEach(el => { el.textContent = affDisc(); });
   renderLangSwitch(lang);
+  const authDd = document.getElementById('authDropdown');
+  if (authDd) authDd.setAttribute('data-title', t('aria_account'));
   const titleEl = document.querySelector('title');
   if (titleEl) titleEl.textContent = t('meta_title');
   const metaDesc = document.querySelector('meta[name="description"]');
@@ -7431,6 +7433,7 @@ const authDropdown = document.getElementById('authDropdown');
 if (topAvatarBtn && authDropdown){
   topAvatarBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+    const mp = document.getElementById('mobilePanel'); if (mp) mp.classList.remove('open');
     authDropdown.classList.toggle('open');
     if (authDropdown.classList.contains('open')) renderAccountMenu();
   });
@@ -7443,6 +7446,7 @@ const mobilePanel = document.getElementById('mobilePanel');
 if (hamburgerBtn && mobilePanel){
   hamburgerBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+    const ad = document.getElementById('authDropdown'); if (ad) ad.classList.remove('open');
     mobilePanel.classList.toggle('open');
   });
   mobilePanel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobilePanel.classList.remove('open')));
