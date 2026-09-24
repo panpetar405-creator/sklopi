@@ -6,6 +6,20 @@
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#123A44">
 <title>Destinacija — SKLOPI</title>
+<meta name="description" content="Uporedi letove, smeštaj, rentakar i aktivnosti za svoju destinaciju na jednom mestu. Unesi grad i datume — SKLOPI sabira ilustrativnu procenu cene celog putovanja.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://sklopi.rs/destinacija.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SKLOPI">
+<meta property="og:title" content="Destinacija — SKLOPI">
+<meta property="og:description" content="Letovi, smeštaj, rentakar i aktivnosti za tvoju destinaciju — sve na jednom mestu, sa procenjenom ukupnom cenom.">
+<meta property="og:image" content="https://sklopi.rs/hero-photo.jpg?v=2">
+<meta property="og:locale" content="sr_RS">
+<meta property="og:url" content="https://sklopi.rs/destinacija.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Destinacija — SKLOPI">
+<meta name="twitter:description" content="Letovi, smeštaj, rentakar i aktivnosti za tvoju destinaciju — sve na jednom mestu, sa procenjenom ukupnom cenom.">
+<meta name="twitter:image" content="https://sklopi.rs/hero-photo.jpg?v=2">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -307,6 +321,23 @@ const MONTHS_FULL = ['januar','februar','mart','april','maj','jun','jul','avgust
 
 /* ---------- pomoćne ---------- */
 const $ = id => document.getElementById(id);
+/* ---------- SEO: title/description/canonical/OG se menjaju po destinaciji,
+   jer je destinacija.html jedna statička stranica sa ?do= parametrom.
+   setMeta ažurira postojeći tag (kreiran u <head>) po selektoru. ---------- */
+function setMeta(selector, attr, value){
+  const el = document.querySelector(selector);
+  if (el) el.setAttribute(attr, value);
+}
+function setSeo({title, description, canonicalUrl}){
+  document.title = title;
+  setMeta('meta[name="description"]', 'content', description);
+  setMeta('meta[property="og:title"]', 'content', title);
+  setMeta('meta[property="og:description"]', 'content', description);
+  setMeta('meta[property="og:url"]', 'content', canonicalUrl);
+  setMeta('meta[name="twitter:title"]', 'content', title);
+  setMeta('meta[name="twitter:description"]', 'content', description);
+  setMeta('link[rel="canonical"]', 'href', canonicalUrl);
+}
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const norm = s => String(s || '').replace(/đ/g,'dj').replace(/Đ/g,'Dj').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 const enc = encodeURIComponent;
@@ -831,7 +862,12 @@ function renderResults(P){
 
   const meta = COUNTRY[dest.country];
   const flag = meta ? flagEmoji(meta[0]) : '';
-  document.title = dest.name + ' — SKLOPI';
+  const destLabel = dest.name + (dest.country ? ', ' + dest.country : '');
+  const seoTitle = dest.name + ' — letovi, smeštaj i cena putovanja | SKLOPI';
+  const seoDesc = 'Kad ići u ' + destLabel + ', koliko traje let iz ' + org.name +
+    ' i šta ti treba za putovanje. SKLOPI sabira letove, smeštaj, rentakar i aktivnosti u jednu procenjenu cenu.';
+  const canonicalUrl = 'https://sklopi.rs/destinacija.html?' + new URLSearchParams({do: dest.name}).toString();
+  setSeo({title: seoTitle, description: seoDesc, canonicalUrl});
   $('dpHeroTitle').innerHTML = (flag ? '<span class="dp-flag">' + flag + '</span>' : '') + esc(dest.name);
   $('dpHeroFacts').innerHTML =
     '<div class="dp-hero-fact">📅 <b>' + esc(fmtRange(s, e)) + '</b> · ' + nights + (nights === 1 ? ' noćenje' : ' noćenja') + '</div>' +
@@ -970,7 +1006,11 @@ function renderResults(P){
 }
 
 function renderHome(msg){
-  document.title = 'Destinacija — SKLOPI';
+  setSeo({
+    title: 'Destinacija — SKLOPI',
+    description: 'Uporedi letove, smeštaj, rentakar i aktivnosti za svoju destinaciju na jednom mestu. Unesi grad i datume — SKLOPI sabira ilustrativnu procenu cene celog putovanja.',
+    canonicalUrl: 'https://sklopi.rs/destinacija.html'
+  });
   $('dpHeroTitle').textContent = 'Kuda putuješ?';
   $('dpHeroFacts').innerHTML = '';
   $('dpResults').hidden = true;
