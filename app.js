@@ -5765,11 +5765,85 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   const qs = s => document.querySelector(s);
   const ph = (id, w) => 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&w=' + w + '&q=82';
   const GENERIC_PHOTO = ph('1467269204594-9661b134dd2b', 1200);
-  let curCity = CFG.def, curPlans = [], shownCity = null;
+  let curCity = CFG.def, curEntry = CFG.cities[CFG.def], curPlans = [], shownCity = null;
 
   function cityKey(name){
     const n = normalizeSr(String(name || '').trim());
     return n ? (Object.keys(CFG.cities).find(k => normalizeSr(k) === n) || null) : null;
+  }
+  // Grad iz dest-plans.js -> uredničke stavke; bilo koji drugi grad (iz liste POPULAR_DESTINATIONS
+  // ili slobodan unos, o.loose) -> opšta stavka: isti šablon plana, cena iz builder-a, bez izmišljenih detalja.
+  function resolveDest(name, o){
+    o = o || {};
+    const raw = String(name || '').trim(), k = cityKey(raw);
+    if (k) return {k, c:CFG.cities[k]};
+    if (!o.generic || raw.length < 2) return null;
+    const n = normalizeSr(raw);
+    const md = MATCH_DESTINATIONS.find(d => normalizeSr(d.name) === n);
+    const hit = md || POPULAR_DESTINATIONS.find(d => normalizeSr(d.name) === n);
+    if (!hit && !o.loose) return null;
+    return {k: hit ? hit.name : raw.charAt(0).toUpperCase() + raw.slice(1),
+            c:{arch: archFor(md), country: hit ? (hit.extra || '') : '', reasons: reasonsFor(md), generic:true}};
+  }
+  // Šablon plana i "Zašto <grad>?" iz podataka koje sajt već ima (MATCH_DESTINATIONS: vibes, distance, family,
+  // nightlife) — samo ono što tamo piše, bez izmišljanja; gradovi bez tih podataka nemaju blok "Zašto".
+  function archFor(md){
+    const v = md ? md.vibes : [];
+    if (v.includes('sea') && !v.includes('city')) return 'sea';
+    if (v.includes('city') && !v.includes('ski')) return 'city';
+    return 'trip';
+  }
+  function reasonsFor(md){
+    if (!md) return [];
+    const v = md.vibes, out = [];
+    if (v.includes('sea')) out.push('More i plaže');
+    if (v.includes('city')) out.push('Kultura, muzeji i gradske šetnje');
+    if (v.includes('nature')) out.push('Priroda i izleti');
+    if (v.includes('ski')) out.push('Skijanje i zimski sportovi');
+    if (md.nightlife) out.push('Živ noćni život');
+    if (md.distance === 'near') out.push('Blizu — kratak let ili vožnja');
+    if (md.distance === 'far') out.push('Dalje putovanje — isplati se duži boravak');
+    if (md.family) out.push('Dobro za porodice');
+    return out.slice(0, 4);
+  }
+  // Slika grada za koji nemamo urednički Unsplash ID: Wikipedia (en, pa sh za srpska imena), keš 7 dana;
+  // dok ne stigne, koristi se slika sa kartice ili opšta slika.
+  const IMG_KEY = 'sklopi_spot_img_v1', IMG_TTL = 7 * 24 * 3600 * 1000;
+  const cityImg = {};
+  function readImgCache(){
+    try { const c = JSON.parse(localStorage.getItem(IMG_KEY) || 'null'); if (c && c.m && Date.now() - c.ts < IMG_TTL) return c; } catch(e){}
+    return {ts:Date.now(), m:{}};
+  }
+  async function wikiImg(host, title){
+    try {
+      const r = await fetch('https://' + host + '/api/rest_v1/page/summary/' + encodeURIComponent(title));
+      if (!r.ok) return '';
+      const d = await r.json();
+      if (d.type !== 'standard') return '';          // preskoči stranice za razdvajanje značenja
+      const th = d.thumbnail && d.thumbnail.source, o = d.originalimage;
+      if (th && o && o.width >= 960) return th.replace(/\/\d+px-/, '/960px-');
+      return (o && o.width && o.width <= 1400 && o.source) || th || '';
+    } catch(e){ return ''; }
+  }
+  async function loadCityPhoto(k){
+    if (cityImg[k] !== undefined) return;
+    cityImg[k] = '';
+    const cache = readImgCache();
+    let url = cache.m[k] || '';
+    if (!url){
+      let names = {}; try { names = DEST_EN_NAMES; } catch(e){}
+      url = await wikiImg('en.wikipedia.org', (names[k] || k).split(',')[0].trim()) || await wikiImg('sh.wikipedia.org', k);
+      if (url){ cache.m[k] = url; try { localStorage.setItem(IMG_KEY, JSON.stringify(cache)); } catch(e){} }
+    }
+    if (!url) return;
+    cityImg[k] = url;
+    if (curCity === k) render();
+    document.dispatchEvent(new Event('sklopi:city-photo'));
+  }
+  function heroFor(k, c){
+    if (c.photo) return ph(c.photo, 1200);
+    if (!cityImg[k]) loadCityPhoto(k);
+    return cityImg[k] || fallbackPhoto(k);
   }
   function fallbackPhoto(city){
     const card = Array.from(document.querySelectorAll('.popular-dest-card'))
@@ -5778,7 +5852,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     return im && im.src ? im.src.replace(/w=\d+/, 'w=1200') : GENERIC_PHOTO;
   }
   function plansTitle(k){
-    const c = CFG.cities[k], l = getLang(), n = cityLabel(k);
+    const c = curEntry, l = getLang(), n = cityLabel(k);
+    if (c.generic) return (l === 'sr' ? '3 plana' : l === 'ru' ? '3 плана' : l === 'de' ? '3 Pläne' : '3 plans') + ' \u2014 ' + n;
     if (l === 'sr') return '3 plana za ' + c.acc;
     if (l === 'ru') return '3 плана для вашей поездки ' + c.ru;
     if (l === 'de') return '3 Pläne für dein ' + n;
@@ -5792,8 +5867,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     carPref:p.carPref, activityCount:p.activityCount});
 
   function buildPlans(k){
-    const c = CFG.cities[k], tpl = CFG.arch[c.arch] || CFG.arch.city || [];
-    const hero = c.photo ? ph(c.photo, 1200) : fallbackPhoto(k);
+    const c = curEntry, tpl = CFG.arch[c.arch] || CFG.arch.city || [];
+    const hero = heroFor(k, c);
     const n = cityLabel(k);
     const plans = tpl.map((t, i) => Object.assign({}, t, {
       dest:k, alt:n + ' \u2014 ' + tx(t.title),
@@ -5829,18 +5904,23 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   managed.forEach(el => { el.removeAttribute('data-i18n'); el.removeAttribute('data-i18n-alt'); });
 
   function render(){
-    const k = curCity, c = CFG.cities[k];
+    const k = curCity, c = curEntry;
     if (!c || !$('destPlansList')) return;
     const n = cityLabel(k), img = qs('.destination-reference-photo img');
     if (img){
-      if (shownCity !== k) img.src = c.photo ? ph(c.photo, 1200) : fallbackPhoto(k);
+      const want = heroFor(k, c);
+      if (img.dataset.src !== want){ img.dataset.src = want; img.src = want; }
       img.alt = n;
     }
     const set = (sel, txt) => { const el = qs(sel); if (el) el.textContent = txt; };
-    set('.destination-reference-location', countryLabel(c.country));
-    set('.destination-reference-title-row p', countryLabel(c.country));
+    const cn = c.country ? countryLabel(c.country) : '';
+    set('.destination-reference-location', cn);
+    set('.destination-reference-title-row p', cn);
+    [qs('.destination-reference-location'), qs('.destination-reference-title-row p')].forEach(el => { if (el) el.hidden = !cn; });
+    const rb = qs('.destination-reference-reason');
+    if (rb) rb.hidden = !c.reasons.length;   // "Zašto <grad>?" samo za urednički pripremljene gradove
     set('#destinationSpotlightTitle', n);
-    set('.destination-reference-reason .eyebrow', whyTitle(k));
+    if (c.reasons.length) set('.destination-reference-reason .eyebrow', whyTitle(k));
     set('#destinationPlansBtn span', plansTitle(k));
     set('#destinationPlansTitle', plansTitle(k));
     const rating = qs('.destination-reference-rating');
@@ -5851,11 +5931,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     $('destPlansList').innerHTML = curPlans.map(cardHtml).join('');
     shownCity = k;
   }
-  function setCity(name){
-    const k = cityKey(name);
-    if (!k) return false;
-    if (k === curCity) return true;
-    curCity = k;
+  function setCity(name, o){
+    const r = resolveDest(name, o);
+    if (!r) return false;
+    if (r.k === curCity) return true;
+    curCity = r.k; curEntry = r.c;
     const plans = $('destinationPlans');
     if (plans) plans.hidden = true;          // stari planovi/detalji više ne važe za novi grad
     planBtn?.setAttribute('aria-expanded', 'false');
@@ -5865,6 +5945,15 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     return true;
   }
   window.SKLOPI_setSpotlight = setCity;
+  // Za "Tvoj personalizovani plan" (konfigurator): da li je unos poznata destinacija i urednička slika grada.
+  window.SKLOPI_knownDest = name => !!resolveDest(name, {generic:true});
+  window.SKLOPI_destPhoto = (name, w) => {
+    const r = resolveDest(name, {generic:true, loose:true});
+    if (!r) return null;
+    if (r.c.photo) return ph(r.c.photo, w || 400);
+    if (!cityImg[r.k]) loadCityPhoto(r.k);
+    return cityImg[r.k] || null;
+  };
 
   buildBtn?.addEventListener('click', () => {
     const dest = document.getElementById('dest');
@@ -6061,9 +6150,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }
   function photosFor(dest){
     if (normalizeSr(dest) === 'atina') return ATHENS_PHOTOS;
+    const cur = window.SKLOPI_destPhoto && window.SKLOPI_destPhoto(dest, 400);
+    if (cur) return [cur, cur, cur];
     const card = Array.from(document.querySelectorAll('.popular-dest-card'))
       .find(c => normalizeSr(c.dataset.dest || '') === normalizeSr(dest));
-    const src = card && card.querySelector('img') ? card.querySelector('img').src : ATHENS_PHOTOS[1];
+    const src = card && card.querySelector('img') ? card.querySelector('img').src : 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80';
     return [src, src, src];
   }
   // Procena po osobi za izbor `x`, izvedena iz osnovnog paketa `pkg` (izbor `a`).
@@ -6141,6 +6232,20 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     section.hidden = false;
   }
   document.addEventListener('sklopi:custom-plan', e => { last = e.detail; render(); });
+  document.addEventListener('sklopi:city-photo', () => { if (last && !section.hidden) render(); });
+  // Živo osvežavanje: promena destinacije, polaska, datuma ili broja putnika iznova računa 3 plana
+  // (bez ovoga bi ostali stari plani za prethodni grad). Destinacija samo kad je poznata ili posle izbora/Enter.
+  let _ppTimer = null;
+  const refresh = ms => { clearTimeout(_ppTimer); _ppTimer = setTimeout(() => { if (last && !section.hidden) render(); }, ms); };
+  ['origin','dateFrom','dateTo','adults'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) ['input','change'].forEach(ev => el.addEventListener(ev, () => refresh(250)));
+  });
+  const ppDest = document.getElementById('dest');
+  if (ppDest){
+    ppDest.addEventListener('input', () => { if (window.SKLOPI_knownDest && window.SKLOPI_knownDest(ppDest.value)) refresh(600); });
+    ppDest.addEventListener('change', () => { if (ppDest.value.trim()) refresh(0); });
+  }
   document.addEventListener('sklopi:lang', () => { if (last && !section.hidden) render(); });
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!section.hidden) render(); }, 0));
 })();
@@ -6443,7 +6548,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
 document.querySelectorAll('.popular-dest-card').forEach(card => {
   card.addEventListener('click', () => {
     document.getElementById('dest').value = card.dataset.dest;
-    if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest);
+    if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest, {generic:true, loose:true});
     if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
     runSearch(false);
   });
@@ -6608,7 +6713,7 @@ function attachPopularDestCardHandlers(grid){
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
       document.getElementById('dest').value = card.dataset.dest;
-      if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest);
+      if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest, {generic:true, loose:true});
       if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
       runSearch(false);
     });
@@ -6733,6 +6838,7 @@ if (originInputForRegional){
   }
 }
 let _destAirportTimer = null;
+let _spotTimer = null;
 const destInputForAirport = document.getElementById('dest');
 if (destInputForAirport){
   destInputForAirport.addEventListener('input', (e) => {
@@ -6742,12 +6848,22 @@ if (destInputForAirport){
     // deljenje istog tajmera za oba dovodi do toga da reorder radi
     // "na sreću" — samo kad pauza između tastera bude duža od 400ms.
     syncDestTypingWithPopular(e.target.value);
-    if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(e.target.value);   // tačan naziv grada → spotlight + 3 plana
+    if (window.SKLOPI_setSpotlight){
+      // Urednički gradovi odmah; bilo koja druga poznata destinacija (lista) posle pauze u kucanju.
+      window.SKLOPI_setSpotlight(e.target.value);
+      clearTimeout(_spotTimer);
+      const v = e.target.value;
+      _spotTimer = setTimeout(() => window.SKLOPI_setSpotlight(v, {generic:true}), 600);
+    }
     clearTimeout(_destAirportTimer);
     const val = e.target.value;
     _destAirportTimer = setTimeout(() => renderDestAirportWarning(val), 400);
   });
   if (destInputForAirport.value) renderDestAirportWarning(destInputForAirport.value);
+  // Izbor iz predloga / Enter / napuštanje polja: bilo koji upisan grad dobija spotlight i 3 plana.
+  destInputForAirport.addEventListener('change', e => {
+    if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(e.target.value, {generic:true, loose:true});
+  });
 }
 
 /* ==========================================================

@@ -2,6 +2,7 @@
    Ovde se DODAJE novi grad: jedan red u `cities` (naziv ISTI kao u polju Destinacija / kartici),
    pa nema potrebe da diraš app.js. Tekstovi su na srpskom; tx() ih prevodi (i18n-extra.js).
    - arch: 'city' (gradski odmor) ili 'sea' (odmor uz more) — bira set od 3 plana (ispod)
+     Gradovi kojih NEMA ovde (bilo koja destinacija iz liste ili upisana) dobijaju opšti set 'trip'.
    - acc:  "3 plana za <acc>" (srpski, akuzativ)     - ru: "... поездки <ru>" (ruski predlog + grad)
    - reasons: 4 kratka razloga za "Zašto <grad>?"
    - photo: Unsplash ID (bez parametara) — bez njega se koristi slika sa kartice destinacije
@@ -35,9 +36,14 @@ window.SKLOPI_DEST_PLANS = (function(){
       feats:[['\u2708','Direktan let'],['\u25a3','4\u2605 hotel blizu plaže'],['\u25b1','Auto + 2 aktivnosti']],
       flightT:'Direktan let', flightS:'Povratna karta \u2022 Ekonomija', hotelS:'4\u2605 \u2022 Blizu plaže',
       actS:'2 pažljivo odabrane ture', carS:'Auto (mali)', forWho:'Za koga: klasičan odmor uz more'};
+  var tripFirst = {key:'best-choice', title:'Najbolji izbor', badge:'Popularno', badgeCls:'plan-detail-badge--popular',
+      flightPref:'direct', hotelStars:4, prioritizeLocation:true, carPref:'none', activityCount:2,
+      feats:[['\u2708','Direktan let'],['\u25a3','4\u2605 hotel blizu centra'],['\u25c7','2 aktivnosti'],['\u25b1','Bez auta']],
+      flightT:'Direktan let', flightS:'Povratna karta \u2022 Ekonomija', hotelS:'4\u2605 \u2022 Blizu centra',
+      actS:'2 pažljivo odabrane ture', carS:'Bez auta', forWho:'Za koga: uravnotežen izbor za većinu putnika'};
   return {
     def: 'Atina',
-    arch: {city:[cityFirst, comfort, value], sea:[seaFirst, comfort, value]},
+    arch: {city:[cityFirst, comfort, value], sea:[seaFirst, comfort, value], trip:[tripFirst, comfort, value]},
     cities: {
       'Atina': {arch:'city', country:'Grčka', acc:'tvoju Atinu', ru:'в Афины', photo:'1603565816030-6b389eeb23cb',
         rating:true, fixed:[529, 689, 449],

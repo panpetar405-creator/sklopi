@@ -221,6 +221,13 @@
     ["x_dp16","4★ • Blizu plaže","4★ • Near the beach","4★ • Рядом с пляжем"],
     ["x_dp17","Za koga: klasičan odmor uz more","Best for: a classic seaside holiday","Для кого: классический отдых у моря"],
     ["x_dp18","Za koga: prvi put u gradu / city break","Best for: first time in the city / city break","Для кого: впервые в городе / городской отдых"],
+    ["x_dp19","Za koga: uravnotežen izbor za većinu putnika","Best for: a balanced pick for most travellers","Для кого: сбалансированный выбор для большинства путешественников"],
+    ["x_dp20","More i plaže","Sea and beaches","Море и пляжи"],
+    ["x_dp21","Kultura, muzeji i gradske šetnje","Culture, museums and city strolls","Культура, музеи и прогулки по городу"],
+    ["x_dp22","Priroda i izleti","Nature and day trips","Природа и экскурсии"],
+    ["x_dp23","Skijanje i zimski sportovi","Skiing and winter sports","Горные лыжи и зимние виды спорта"],
+    ["x_dp24","Dalje putovanje — isplati se duži boravak","A longer trip — worth a longer stay","Дальняя поездка — стоит остаться подольше"],
+    ["x_dp25","Dobro za porodice","Good for families","Хорошо для семей"],
   ];
   /* Nemački (DE): ključ -> prevod; ako ključa nema, koristi se engleski. */
   var DE = {
@@ -440,7 +447,14 @@
  "x_dp15": "Auto + 2 Aktivitäten",
  "x_dp16": "4★ • Strandnah",
  "x_dp17": "Für wen: klassischer Strandurlaub",
- "x_dp18": "Für wen: erster Besuch in der Stadt / Städtetrip"
+ "x_dp18": "Für wen: erster Besuch in der Stadt / Städtetrip",
+ "x_dp19": "Für wen: ausgewogene Wahl für die meisten Reisenden",
+ "x_dp20": "Meer und Strände",
+ "x_dp21": "Kultur, Museen und Stadtspaziergänge",
+ "x_dp22": "Natur und Ausflüge",
+ "x_dp23": "Skifahren und Wintersport",
+ "x_dp24": "Weitere Reise — lohnt sich für einen längeren Aufenthalt",
+ "x_dp25": "Gut für Familien"
 };
   var BY_SR = {};
   ROWS.forEach(function(r){
