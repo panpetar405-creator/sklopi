@@ -3728,3 +3728,74 @@ footer>*{position:relative;z-index:1;}
 /* Hero izbor Budžet/Balans/Komfor: dugmad su sada funkcionalna */
 .hero-benefit{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease;}
 .hero-benefit:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+/* ==========================================================================
+   Redizajn: dugmad + promo baner (deep petrol sa prelivima)
+   Sve je u ovom bloku -- da vratiš staro, obriši ceo blok do kraja fajla.
+   ========================================================================== */
+:root{
+  --btn-petrol-a:#1F7583;   /* svetliji deep petrol */
+  --btn-petrol-b:#14505C;
+  --btn-petrol-c:#0E3B46;
+  --btn-petrol:linear-gradient(135deg,var(--btn-petrol-a) 0%,var(--btn-petrol-b) 55%,var(--btn-petrol-c) 100%);
+  --btn-petrol-hover:linear-gradient(135deg,#2A8695 0%,#1A6070 55%,#124857 100%);
+  --btn-petrol-shadow:0 14px 28px -14px rgba(14,59,70,.55);
+}
+
+/* Glavna (popunjena) dugmad */
+.btn-primary,
+.auth-dropdown-inner #dropdownLoginBtn,
+.auth-dropdown-inner .btn-primary,
+.btn-alert,
+.btn-alert.attractions-see-all,
+.item-btn,.item-btn.flight,.item-btn.hotel,.item-btn.car,.item-btn.activity,
+.pkg.budget .item-btn.hotel,.pkg.comfort .item-btn.hotel,
+.ex-btn,.extra-btn,.cookie-btn.accept,
+.btn-search-main,.hero-reference .btn-search-main{
+  background:var(--btn-petrol);
+  color:var(--on-dark-strong);
+  border:none;
+  box-shadow:var(--btn-petrol-shadow);
+}
+.btn-alert.attractions-see-all,.btn-alert.attractions-see-all:hover{color:var(--on-dark-strong);}
+.btn-primary:hover,
+.auth-dropdown-inner #dropdownLoginBtn:hover,
+.auth-dropdown-inner .btn-primary:hover,
+.btn-alert:hover,
+.item-btn:hover,
+.extra-btn:hover,.cookie-btn.accept:hover,
+.btn-search-main:hover,.hero-reference .btn-search-main:hover,
+.ex-btn:hover:not(:disabled){
+  background:var(--btn-petrol-hover);
+  box-shadow:0 18px 34px -14px rgba(14,59,70,.6);
+}
+.ex-btn[aria-pressed="true"]{background:linear-gradient(135deg,#2AA7A3,#1E8F92);}
+/* krug sa strelicom ostaje zlatan */
+.btn-search-main::after,.btn-search-main:hover::after{background:var(--gold);color:var(--on-gold);}
+
+/* Sporedna (okvir) dugmad */
+.btn-secondary,.passport-check-btn,.pkg-save-btn,.saved-trip-btn,.results-back-btn{
+  background:#fff;
+  color:var(--btn-petrol-b);
+  border:1px solid rgba(20,80,92,.35);
+}
+.btn-secondary:hover,.passport-check-btn:hover,.pkg-save-btn:hover,.saved-trip-btn:hover,.results-back-btn:hover{
+  background:rgba(31,117,131,.08);
+  border-color:var(--btn-petrol-a);
+  color:var(--btn-petrol-c);
+}
+.saved-trip-btn.danger,.saved-trip-btn.danger:hover{color:var(--coral-text);border-color:var(--coral-soft);}
+.saved-trip-btn.danger:hover{background:var(--coral-soft);}
+.pkg-alert-btn{color:var(--btn-petrol-b);}
+
+/* Promo baner ("Trenutak za sebe"): bez bež papira, isti stil kao ostale bele kartice */
+.promo-banner-card{
+  background:#fff;
+  border:1px solid rgba(18,58,68,.08);
+  border-radius:24px;
+  box-shadow:0 22px 44px -26px rgba(18,58,68,.35);
+}
+.promo-banner-photo{border-radius:18px;box-shadow:none;}
+.promo-banner-photo img{filter:none;}
+.promo-banner-photo::before{display:none;}
+.promo-banner-photo::after{background:linear-gradient(180deg,rgba(14,59,70,0) 55%,rgba(14,59,70,.28) 100%);}
