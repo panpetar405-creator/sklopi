@@ -1586,6 +1586,7 @@ const AIRPORT_DB = {
   'beograd': {hasAirport:true},
   'nis': {hasAirport:true, limited:true},
   // --- Srbija: bez sopstvenog aerodroma ---
+  'niska banja': {nearest:'Niš', note:'Niška Banja nema svoj aerodrom — najbliži je Niš (oko 15 min vožnje).', c:'Niška Banja', k:'own', t:'15 min'},
   'novi sad': {nearest:'Beograd', note:'Novi Sad nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Novi Sad', k:'own', t:'1h'},
   'subotica': {nearest:'Budimpešta'},
   'kragujevac': {nearest:'Beograd', note:'Kragujevac nema svoj aerodrom — najbliži je Beograd (oko 1h vožnje).', c:'Kragujevac', k:'own', t:'1h'},
@@ -1708,6 +1709,7 @@ const AIRPORT_DB = {
   // --- Albanija ---
   'tirana': {hasAirport:true},
   'skadar': {nearest:'Podgorica'},
+  'skadarsko jezero': {nearest:'Podgorica', note:'Skadarsko jezero nema svoj aerodrom — najbliži je Podgorica (oko 30 min vožnje).', c:'Skadarsko jezero', k:'own', t:'30 min'},
   'sarande': {nearest:'Tirana'},
   'vlore': {nearest:'Tirana', note:'Vlorë nema svoj aerodrom — najbliži je Tirana (oko 2h vožnje).', c:'Vlorë', k:'own', t:'2h'},
   'durres': {nearest:'Tirana', note:'Durrës nema svoj aerodrom — najbliži je Tirana (oko 30 min vožnje).', c:'Durrës', k:'own', t:'30 min'},
@@ -6286,8 +6288,17 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     $('fdPrice').innerHTML = (currentCurrency === 'RSD' ? escapeHtml(fmtEUR(perPerson)) : perPerson.toLocaleString('de-DE') + ' \u20ac') + ' <span>' + tx('/ osoba') + '</span>';
     $('fdFrom').textContent = o || '\u2014';
     $('fdTo').textContent = d || '\u2014';
-    $('fdFromName').textContent = cityLabel(originName);
-    $('fdToName').textContent = cityLabel(destName);
+    // Polazak/destinacija bez sopstvenog aerodroma: pokaži aerodrom koji se zaista koristi + isto obaveštenje kao u pretrazi.
+    const oInfo = airportInfoFor(originName), dInfo = airportInfoFor(destName);
+    const noAp = i => i && !i.hasAirport && i.nearest;
+    $('fdFromName').textContent = cityLabel(noAp(oInfo) ? oInfo.nearest : originName);
+    $('fdToName').textContent = cityLabel(noAp(dInfo) ? dInfo.nearest : destName);
+    const apNote = $('fdAirportNote');
+    if (apNote){
+      const notes = [oInfo, dInfo].filter(noAp).map(airportNoteText).filter(Boolean);
+      apNote.textContent = notes.length ? '\u2708\ufe0f ' + notes.join(' ') : '';
+      apNote.hidden = !notes.length;
+    }
     const stopTxt = tx(pref === 'cheapest' ? 'Moguće presedanje' : 'Direktan let');
     $('fdDur').textContent = dur ? dur + ' \u2022 ' + stopTxt : stopTxt;
     $('fdCarrier').textContent = carrier ? tx('Prevoznik (procena): ') + carrier : '';
