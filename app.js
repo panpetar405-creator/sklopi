@@ -274,14 +274,58 @@ function driveTimeLabel(tStr){
 function renderLangSwitch(lang){
   const btn = document.getElementById('langSwitchBtn');
   if (!btn) return;
+  const meta = langMeta(lang);
+  const GLOBE = '<svg class="ld-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 3.9 5.7 3.9 9s-1.3 6.3-3.9 9c-2.6-2.7-3.9-5.7-3.9-9S9.4 5.7 12 3z"/></svg>';
+  const CHEV = '<svg class="ld-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  const CHECK = '<svg class="lo-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  let menu = document.getElementById('langMenu');
   if (!btn.dataset.built){
-    btn.innerHTML = I18N_LANGS.map(l => '<span class="ls-item" data-l="' + l.code + '">' + l.short + '</span>')
-      .join('<span class="ls-sep">/</span>');
     btn.dataset.built = '1';
+    btn.classList.add('lang-dd-btn');
+    btn.setAttribute('aria-haspopup', 'listbox');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', 'langMenu');
+    const wrap = document.createElement('span');
+    wrap.className = 'lang-dd';
+    btn.parentNode.insertBefore(wrap, btn);
+    wrap.appendChild(btn);
+    menu = document.createElement('ul');
+    menu.id = 'langMenu'; menu.className = 'lang-menu'; menu.hidden = true;
+    menu.setAttribute('role', 'listbox');
+    wrap.appendChild(menu);
+    const close = (focusBtn) => {
+      if (menu.hidden) return;
+      menu.hidden = true; btn.setAttribute('aria-expanded', 'false');
+      if (focusBtn) btn.focus();
+    };
+    const open = () => {
+      menu.hidden = false; btn.setAttribute('aria-expanded', 'true');
+      const cur = menu.querySelector('.is-active') || menu.querySelector('.lang-opt');
+      if (cur) cur.focus();
+    };
+    btn.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden ? open() : close(false); });
+    menu.addEventListener('click', (e) => {
+      const li = e.target.closest('[data-l]');
+      if (!li) return;
+      close(true); setLang(li.getAttribute('data-l'));
+    });
+    menu.addEventListener('keydown', (e) => {
+      const items = Array.prototype.slice.call(menu.querySelectorAll('.lang-opt'));
+      const i = items.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown'){ e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === 'ArrowUp'){ e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+      else if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); if (i >= 0) items[i].click(); }
+      else if (e.key === 'Tab'){ close(false); }
+    });
+    document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) close(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(true); });
   }
   btn.setAttribute('data-lang', lang);
-  btn.setAttribute('aria-pressed', lang !== 'sr' ? 'true' : 'false');
-  btn.querySelectorAll('.ls-item').forEach(el => el.classList.toggle('is-active', el.getAttribute('data-l') === lang));
+  btn.innerHTML = GLOBE + '<span class="ld-code">' + meta.short + '</span>' + CHEV;
+  menu.innerHTML = I18N_LANGS.map(l =>
+    '<li class="lang-opt' + (l.code === lang ? ' is-active' : '') + '" role="option" tabindex="0" data-l="' + l.code +
+    '" aria-selected="' + (l.code === lang ? 'true' : 'false') + '"><span class="lo-code">' + l.short +
+    '</span><span class="lo-name">' + (l.name || l.short) + '</span>' + CHECK + '</li>').join('');
 }
 function applyStaticI18n(){
   const lang = getLang();
@@ -7576,12 +7620,6 @@ function runPassportCheck(){
       + '“ traži da važi bar do ' + fmtDateSr(requiredExpiry) + '. Vreme je da obnoviš pasoš — MUP izdaje redovan za oko 30 dana, a uz dokaz o putovanju (kartu ili rezervaciju) moguća je i ubrzana procedura za 48h.';
   }
 }
-const langSwitchBtn = document.getElementById('langSwitchBtn');
-if (langSwitchBtn) langSwitchBtn.addEventListener('click', () => {
-  const order = I18N_LANGS.map(l => l.code);
-  const next = order[(order.indexOf(getLang()) + 1) % order.length];
-  setLang(next);
-});
 
 const currencySwitchBtn = document.getElementById('currencySwitchBtn');
 if (currencySwitchBtn) currencySwitchBtn.addEventListener('click', () => {
