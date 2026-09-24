@@ -228,6 +228,9 @@
     ["x_dp23","Skijanje i zimski sportovi","Skiing and winter sports","Горные лыжи и зимние виды спорта"],
     ["x_dp24","Dalje putovanje — isplati se duži boravak","A longer trip — worth a longer stay","Дальняя поездка — стоит остаться подольше"],
     ["x_dp25","Dobro za porodice","Good for families","Хорошо для семей"],
+    ["x_mt01","Sačuvaj u nalog","Save to account","Сохранить в аккаунт"],
+    ["x_mt02","Sačuvano u nalogu ✓","Saved to account ✓","Сохранено в аккаунте ✓"],
+    ["x_mt03","Ukloni plan","Remove plan","Удалить план"],
   ];
   /* Nemački (DE): ključ -> prevod; ako ključa nema, koristi se engleski. */
   var DE = {
@@ -454,7 +457,10 @@
  "x_dp22": "Natur und Ausflüge",
  "x_dp23": "Skifahren und Wintersport",
  "x_dp24": "Weitere Reise — lohnt sich für einen längeren Aufenthalt",
- "x_dp25": "Gut für Familien"
+ "x_dp25": "Gut für Familien",
+ "x_mt01": "Im Konto speichern",
+ "x_mt02": "Im Konto gespeichert ✓",
+ "x_mt03": "Plan entfernen"
 };
   var BY_SR = {};
   ROWS.forEach(function(r){

@@ -6455,22 +6455,38 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   const root = document.getElementById('myTrip');
   const body = document.getElementById('mtBody');
   if (!root || !body) return;
+  const KEY = 'sklopi_my_trip_v1';
   let ready = false, tab = 'active';
-  // "Moj put" pamti IZABRAN plan (grad + izbori + naziv plana). Datumi, polazak i broj putnika prate formu;
-  // grad i izbori se NE menjaju kad korisnik kasnije ukuca drugu destinaciju u pretragu.
+  // "Moj put" pamti IZABRAN plan: grad, izbore (let/hotel/auto/aktivnosti/eSIM), naziv plana i putne podatke
+  // (polazak, datumi, putnici). Čuva se u pregledaču (localStorage) pa preživi osvežavanje; grad i izbori se NE
+  // menjaju kad korisnik kasnije ukuca drugu destinaciju, a datumi/putnici prate formu dok je plan izabran.
   let trip = null;
+  function persist(){ try { localStorage.setItem(KEY, JSON.stringify(trip)); } catch(e){} }
+  function restore(){
+    try {
+      const t = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (t && typeof t.dest === 'string' && t.sel && t.ctx && /^\d{4}-\d{2}-\d{2}$/.test(t.ctx.from) && /^\d{4}-\d{2}-\d{2}$/.test(t.ctx.to)){
+        trip = t; ready = true;
+      }
+    } catch(e){}
+  }
+  function formCtx(){ const c = builderCtx(); return {originCode:c.originCode, from:c.from, to:c.to, adults:c.adults}; }
   function snap(fromPlan){
     const c = builderCtx(), ap = window.SKLOPI_ACTIVE_PLAN;
     const own = fromPlan && ap && (ap.keepDest || !ap.dest || ap.dest === c.dest);
-    trip = {dest:c.dest, sel:Object.assign({}, builderState),
+    trip = {dest:c.dest, sel:Object.assign({}, builderState), ctx:formCtx(), saved:false,
       title: own ? ap.title : '',
       photo: own && ap.photo ? ap.photo : ((window.SKLOPI_destPhoto && window.SKLOPI_destPhoto(c.dest, 300)) || '')};
+    persist();
   }
+  const isPast = () => !!trip && trip.ctx.to < todayStr();
   const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  function tripCtx(){
+    const tc = trip.ctx, nights = nightsBetween(tc.from, tc.to);
+    return {dest:trip.dest, originCode:tc.originCode, from:tc.from, to:tc.to, nights, days:nights, adults:tc.adults};
+  }
   function summary(){
-    if (!trip) snap(false);
-    const sel = trip.sel;
-    const ctx = Object.assign(builderCtx(), {dest:trip.dest});
+    const sel = trip.sel, ctx = tripCtx();
     const pkg = computeCustomPackage(sel, ctx);
     const rows = [];
     if (sel.includeFlight) rows.push(['\u2708', 'Let', pkg.flight.price]);
@@ -6480,16 +6496,30 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (sel.esim) rows.push(['\ud83d\udcf6', 'eSIM', pkg.esimCost]);
     return {ctx, pkg, rows};
   }
+  function headHtml(ctx){
+    const photo = trip.photo ? trip.photo.replace(/w=\d+/, 'w=300') : '';
+    return '<div class="mt-head">'
+      + (photo ? '<span class="mt-thumb"><img src="' + escapeHtml(photo) + '" alt="" loading="lazy"></span>' : '')
+      + '<div><h3>' + escapeHtml(cityLabel(ctx.dest)) + ' \u2013 ' + daysLabel(ctx.days) + '</h3>'
+      + '<p>' + (trip.title ? escapeHtml(tx(trip.title)) + ' \u2022 ' : '') + escapeHtml(fmtDate(ctx.from) + ' \u2013 ' + fmtDate(ctx.to)) + ' \u2022 '
+      + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '</p></div></div>';
+  }
   function render(){
     root.querySelectorAll('.mt-tab').forEach(b => {
       b.classList.toggle('is-on', b.dataset.tab === tab);
       b.setAttribute('aria-selected', b.dataset.tab === tab ? 'true' : 'false');
     });
     if (tab === 'done'){
-      body.innerHTML = '<p class="mt-empty">' + tx('Još nemaš završenih putovanja.') + '</p>';
+      if (ready && isPast()){          // putovanju je prošao datum povratka -> "Završeni"
+        body.innerHTML = '<article class="mt-card">' + headHtml(tripCtx()) + '</article>'
+          + '<button type="button" class="mt-link" id="mtRemove">' + tx('Ukloni plan') + '</button>';
+        document.getElementById('mtRemove').addEventListener('click', removeTrip);
+      } else {
+        body.innerHTML = '<p class="mt-empty">' + tx('Još nemaš završenih putovanja.') + '</p>';
+      }
       return;
     }
-    if (!ready){
+    if (!ready || isPast()){
       body.innerHTML = '<p class="mt-empty">' + tx('Još nisi sklopio put. Izaberi jedan od planova ili sastavi svoj paket.') + '</p>'
         + '<button type="button" class="btn-primary mt-btn" id="mtChoose">' + tx('Izaberi plan') + '</button>';
       document.getElementById('mtChoose').addEventListener('click', () => {
@@ -6499,27 +6529,57 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       return;
     }
     const {ctx, pkg, rows} = summary();
-    const photo = trip.photo ? trip.photo.replace(/w=\d+/, 'w=300') : '';
-    body.innerHTML = '<article class="mt-card"><div class="mt-head">'
-      + (photo ? '<span class="mt-thumb"><img src="' + escapeHtml(photo) + '" alt="" loading="lazy"></span>' : '')
-      + '<div><h3>' + escapeHtml(cityLabel(ctx.dest)) + ' \u2013 ' + daysLabel(ctx.days) + '</h3>'
-      + '<p>' + (trip.title ? escapeHtml(tx(trip.title)) + ' \u2022 ' : '') + escapeHtml(fmtDate(ctx.from) + ' \u2013 ' + fmtDate(ctx.to)) + ' \u2022 ' + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '</p></div></div>'
+    body.innerHTML = '<article class="mt-card">' + headHtml(ctx)
       + '<ul class="mt-rows">' + rows.map(r => '<li><span aria-hidden="true">' + r[0] + '</span><b>' + escapeHtml(tx(r[1])) + '</b><em>' + escapeHtml(money(r[2])) + '</em></li>').join('') + '</ul>'
       + '<p class="mt-total">' + tx('Ukupno: ') + '<b>' + escapeHtml(money(pkg.total)) + '</b></p>'
       + '<p class="mt-fine">' + tx('Ilustrativna procena za ') + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '.</p></article>'
       + '<button type="button" class="btn-primary mt-btn" id="mtDetails">' + tx('Pogledaj detalje') + '</button>'
-      + '<button type="button" class="mt-link" id="mtDownload">' + tx('Preuzmi plan puta') + '</button>';
+      + '<button type="button" class="mt-link" id="mtSave"' + (trip.saved ? ' disabled' : '') + '>' + tx(trip.saved ? 'Sačuvano u nalogu \u2713' : 'Sačuvaj u nalog') + '</button>'
+      + '<button type="button" class="mt-link" id="mtDownload">' + tx('Preuzmi plan puta') + '</button>'
+      + '<button type="button" class="mt-link" id="mtRemove">' + tx('Ukloni plan') + '</button>';
     document.getElementById('mtDetails').addEventListener('click', () => {
-      // Builder radi nad poljem Destinacija i builderState — vrati ih na izabrani plan pre otvaranja.
-      const d = document.getElementById('dest');
-      if (d && d.value.trim() !== trip.dest){ d.value = trip.dest; d.dispatchEvent(new Event('input', {bubbles:true})); }
+      // Builder radi nad poljima forme i builderState — vrati ih na izabrani plan pre otvaranja.
+      const set = (id, v) => { const el = document.getElementById(id); if (el && v != null && el.value !== String(v)){ el.value = v; el.dispatchEvent(new Event('input', {bubbles:true})); } };
+      set('dest', trip.dest); set('dateFrom', trip.ctx.from); set('dateTo', trip.ctx.to); set('adults', trip.ctx.adults);
       Object.assign(builderState, trip.sel);
       renderFormUI();
       openControlPanel();
       document.getElementById('makeBuilderBtn').click();
       document.getElementById('builderPanel')?.scrollIntoView({behavior:'smooth', block:'start'});
     });
+    document.getElementById('mtSave').addEventListener('click', saveToAccount);
     document.getElementById('mtDownload').addEventListener('click', download);
+    document.getElementById('mtRemove').addEventListener('click', removeTrip);
+  }
+  function removeTrip(){
+    trip = null; ready = false;
+    try { localStorage.removeItem(KEY); } catch(e){}
+    render();
+  }
+  // Isti zapis kao "Sačuvaj izlet" u builderu (selection.kind = 'builder'), pa ga postojeća lista
+  // sačuvanih izleta i loadSavedTrip() otvaraju bez izmena. Traži prijavu.
+  async function saveToAccount(){
+    if (!trip || trip.saved) return;
+    const user = await getCurrentUser();
+    if (!user){ promptLogin(tx('Prijavi se da sačuvaš izlete')); return; }
+    const {ctx, pkg} = summary(), sel = trip.sel;
+    const summaryTags = [pkg.flight.name, sel.hotelStars + '\u2605 hotel',
+      sel.carPref === 'none' ? 'Bez auta' : (sel.carPref === 'suv' ? 'SUV' : 'Mali auto'), sel.activityCount + ' aktivnosti'];
+    try {
+      const { error } = await sb.from('trips').insert({
+        user_id: user.id, dest: ctx.dest, date_from: ctx.from, date_to: ctx.to, adults: ctx.adults,
+        selection: {kind:'builder', builderState: Object.assign({}, sel), summaryTags, tierLabel: trip.title || 'Sopstveni izlet'},
+        total: pkg.total
+      });
+      if (error) throw error;
+      trip.saved = true; persist();
+      renderSavedTrips();
+      showToast('Izlet sačuvan (' + fmtEUR(pkg.total) + ').');
+      render();
+    } catch(err) {
+      console.warn('[sklopi] čuvanje plana iz "Moj put" nije uspelo:', err.message);
+      showToast('Čuvanje nije uspelo — pokušaj ponovo.');
+    }
   }
   function download(){
     const {ctx, pkg, rows} = summary();
@@ -6546,9 +6606,18 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   document.addEventListener('sklopi:lang', render);
   document.addEventListener('sklopi:plan-changed', () => { snap(true); ready = true; render(); });
   document.addEventListener('sklopi:custom-plan', () => { snap(false); ready = true; render(); });
-  document.addEventListener('sklopi:city-photo', () => { if (ready && trip && !trip.photo && window.SKLOPI_destPhoto){ trip.photo = window.SKLOPI_destPhoto(trip.dest, 300) || ''; if (trip.photo && tab === 'active') render(); } });
-  ['dateFrom', 'dateTo', 'adults', 'origin'].forEach(id => document.getElementById(id)?.addEventListener('change', () => { if (ready) render(); }));
+  document.addEventListener('sklopi:city-photo', () => {
+    if (ready && trip && !trip.photo && window.SKLOPI_destPhoto){
+      trip.photo = window.SKLOPI_destPhoto(trip.dest, 300) || '';
+      if (trip.photo){ persist(); if (tab === 'active') render(); }
+    }
+  });
+  // Datumi, polazak i broj putnika prate formu dok je plan izabran.
+  ['dateFrom', 'dateTo', 'adults', 'origin'].forEach(id => document.getElementById(id)?.addEventListener('change', () => {
+    if (ready && trip){ trip.ctx = formCtx(); trip.saved = false; persist(); render(); }
+  }));
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(render, 0));
+  restore();
   render();
 })();
 
