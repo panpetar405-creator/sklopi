@@ -203,6 +203,24 @@
     ["x_ds0002","Pretraži ovu destinaciju","Search this destination","Искать это направление"],
     ["x_login1", "Prijavi se da sačuvaš izlete", "Log in to save your trips", "Войдите, чтобы сохранять поездки"],
     ["x_login2", "Prijavi se da sačuvaš izlete i primaš alerte o ceni.", "Log in to save your trips and get price alerts.", "Войдите, чтобы сохранять поездки и получать уведомления о цене."],
+    ["x_dp01","Odlična kuhinja i ulična hrana","Great food and street food","Отличная кухня и уличная еда"],
+    ["x_dp02","Živ noćni život","Lively nightlife","Яркая ночная жизнь"],
+    ["x_dp03","Grad se obilazi peške","Easy to explore on foot","Город удобно обходить пешком"],
+    ["x_dp04","Arhitektura i muzeji","Architecture and museums","Архитектура и музеи"],
+    ["x_dp05","Plaže i kristalno more","Beaches and crystal-clear sea","Пляжи и кристально чистое море"],
+    ["x_dp06","Mirne uvale i priroda","Quiet coves and nature","Тихие бухты и природа"],
+    ["x_dp07","Termalna kupatila","Thermal baths","Термальные бани"],
+    ["x_dp08","Kafei i gradska šetnja","Cafés and city strolls","Кафе и прогулки по городу"],
+    ["x_dp09","Pijace i shopping","Markets and shopping","Рынки и шопинг"],
+    ["x_dp10","Povoljno za vikend","Affordable for a weekend","Выгодно на выходные"],
+    ["x_dp11","Vidikovci i panorame","Viewpoints and panoramas","Смотровые площадки и панорамы"],
+    ["x_dp12","Blizu — kratak let ili vožnja","Close by — a short flight or drive","Близко — короткий перелёт или поездка на машине"],
+    ["x_dp13","Odmor uz more","Seaside holiday","Отдых у моря"],
+    ["x_dp14","4★ hotel blizu plaže","4★ hotel near the beach","Отель 4★ рядом с пляжем"],
+    ["x_dp15","Auto + 2 aktivnosti","Car + 2 activities","Авто + 2 активности"],
+    ["x_dp16","4★ • Blizu plaže","4★ • Near the beach","4★ • Рядом с пляжем"],
+    ["x_dp17","Za koga: klasičan odmor uz more","Best for: a classic seaside holiday","Для кого: классический отдых у моря"],
+    ["x_dp18","Za koga: prvi put u gradu / city break","Best for: first time in the city / city break","Для кого: впервые в городе / городской отдых"],
   ];
   /* Nemački (DE): ključ -> prevod; ako ključa nema, koristi se engleski. */
   var DE = {
@@ -404,7 +422,25 @@
  "x_ds0001": "Keine Ergebnisse für",
  "x_ds0002": "Dieses Reiseziel suchen",
  "x_login1": "Melde dich an, um deine Reisen zu speichern",
- "x_login2": "Melde dich an, um deine Reisen zu speichern und Preisalarme zu erhalten."
+ "x_login2": "Melde dich an, um deine Reisen zu speichern und Preisalarme zu erhalten.",
+ "x_dp01": "Hervorragende Küche und Streetfood",
+ "x_dp02": "Lebendiges Nachtleben",
+ "x_dp03": "Zu Fuß gut zu erkunden",
+ "x_dp04": "Architektur und Museen",
+ "x_dp05": "Strände und kristallklares Meer",
+ "x_dp06": "Ruhige Buchten und Natur",
+ "x_dp07": "Thermalbäder",
+ "x_dp08": "Cafés und Stadtspaziergänge",
+ "x_dp09": "Märkte und Shopping",
+ "x_dp10": "Günstig fürs Wochenende",
+ "x_dp11": "Aussichtspunkte und Panoramen",
+ "x_dp12": "Nah — kurzer Flug oder Fahrt",
+ "x_dp13": "Urlaub am Meer",
+ "x_dp14": "4★-Hotel in Strandnähe",
+ "x_dp15": "Auto + 2 Aktivitäten",
+ "x_dp16": "4★ • Strandnah",
+ "x_dp17": "Für wen: klassischer Strandurlaub",
+ "x_dp18": "Für wen: erster Besuch in der Stadt / Städtetrip"
 };
   var BY_SR = {};
   ROWS.forEach(function(r){

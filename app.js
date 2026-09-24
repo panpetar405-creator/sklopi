@@ -5743,7 +5743,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     tabs.forEach(t => t.classList.toggle('is-active', t === tab));
   }));
 
-  // "3 plana za tvoju Atinu" su skriveni dok korisnik ne klikne na dugme.
+  // "3 plana za tvoj grad" su skriveni dok korisnik ne klikne na dugme.
   // Sve ostale funkcije koje vode na planove koriste window.SKLOPI_showDestPlans().
   function showDestPlans(){
     const plans = document.getElementById('destinationPlans');
@@ -5753,13 +5753,123 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     plans.scrollIntoView({behavior:'smooth', block:'start'});
   }
   window.SKLOPI_showDestPlans = showDestPlans;
-
   planBtn?.addEventListener('click', showDestPlans);
+
+  /* ---- Fiksni planovi po gradu (podaci: dest-plans.js) ----
+     Spotlight prati izabranu destinaciju: klik na karticu u "Popularne destinacije"
+     ili tačan naziv grada u polju Destinacija. Grad koji nije u dest-plans.js ne menja
+     spotlight. Tri plana dolaze iz šablona ("city"/"sea"); cena je fiksna (c.fixed) ili
+     se računa iz builder-a za trenutni polazak/datume/putnike. */
+  const CFG = window.SKLOPI_DEST_PLANS || {def:'Atina', arch:{}, cities:{}};
+  const $ = id => document.getElementById(id);
+  const qs = s => document.querySelector(s);
+  const ph = (id, w) => 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&w=' + w + '&q=82';
+  const GENERIC_PHOTO = ph('1467269204594-9661b134dd2b', 1200);
+  let curCity = CFG.def, curPlans = [], shownCity = null;
+
+  function cityKey(name){
+    const n = normalizeSr(String(name || '').trim());
+    return n ? (Object.keys(CFG.cities).find(k => normalizeSr(k) === n) || null) : null;
+  }
+  function fallbackPhoto(city){
+    const card = Array.from(document.querySelectorAll('.popular-dest-card'))
+      .find(c => normalizeSr(c.dataset.dest || '') === normalizeSr(city));
+    const im = card && card.querySelector('img');
+    return im && im.src ? im.src.replace(/w=\d+/, 'w=1200') : GENERIC_PHOTO;
+  }
+  function plansTitle(k){
+    const c = CFG.cities[k], l = getLang(), n = cityLabel(k);
+    if (l === 'sr') return '3 plana za ' + c.acc;
+    if (l === 'ru') return '3 плана для вашей поездки ' + c.ru;
+    if (l === 'de') return '3 Pläne für dein ' + n;
+    return '3 plans for your ' + n;
+  }
+  function whyTitle(k){
+    const l = getLang(), n = cityLabel(k);
+    return l === 'sr' ? 'Zašto ' + k + '?' : l === 'ru' ? 'Почему ' + n + '?' : l === 'de' ? 'Warum ' + n + '?' : 'Why ' + n + '?';
+  }
+  const pickSel = p => ({flightPref:p.flightPref, hotelStars:p.hotelStars, prioritizeLocation:p.prioritizeLocation,
+    carPref:p.carPref, activityCount:p.activityCount});
+
+  function buildPlans(k){
+    const c = CFG.cities[k], tpl = CFG.arch[c.arch] || CFG.arch.city || [];
+    const hero = c.photo ? ph(c.photo, 1200) : fallbackPhoto(k);
+    const n = cityLabel(k);
+    const plans = tpl.map((t, i) => Object.assign({}, t, {
+      dest:k, alt:n + ' \u2014 ' + tx(t.title),
+      photo: c.photos ? ph(c.photos[i], 1200) : hero,
+      thumb: c.photos ? ph(c.photos[i], 500) : hero.replace(/w=1200/, 'w=500'),
+      forWho: (i === 0 && c.forWho1) || t.forWho
+    }));
+    if (c.fixed){ plans.forEach((p, i) => { p.price = c.fixed[i]; }); return plans; }
+    const ctx = Object.assign({}, builderCtx(), {dest:k});
+    const sel = p => Object.assign({}, BUILDER_DEFAULTS, {includeFlight:true, includeHotel:true}, pickSel(p));
+    const a = sel(plans[0]), pkg = computeCustomPackage(a, ctx);
+    const derive = window.SKLOPI_derivePerPerson;
+    plans.forEach((p, i) => {
+      p.price = i === 0 ? Math.round(pkg.total / ctx.adults)
+        : (derive ? derive(pkg, a, sel(p), ctx) : Math.round(computeCustomPackage(sel(p), ctx).total / ctx.adults));
+    });
+    return plans;
+  }
+  function cardHtml(p, i){
+    const ft = p.feats.map(f => '<li><span class="dpf-ic" aria-hidden="true">' + f[0] + '</span><span>' + escapeHtml(tx(f[1])) + '</span></li>').join('');
+    return '<article class="dest-plan-card" data-plan="' + i + '"><div class="dest-plan-photo"><img src="' + escapeHtml(p.thumb)
+      + '" alt="' + escapeHtml(cityLabel(p.dest)) + '" loading="lazy">'
+      + (i === 0 ? '<span class="dest-plan-badge dest-plan-badge--popular">' + escapeHtml(tx(p.badge)) + '</span>' : '')
+      + '</div><div class="dest-plan-body"><h3>' + escapeHtml(tx(p.title)) + '</h3><p class="dest-plan-price">'
+      + escapeHtml(priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span></p><ul class="dest-plan-features">' + ft
+      + '</ul><p class="dest-plan-for">' + escapeHtml(tx(p.forWho)) + '</p></div></article>';
+  }
+  // Tekstovi koje JS preuzima od statičkog (SEO) HTML-a za Atinu: skidamo data-i18n da ih
+  // applyStaticI18n() ne vrati na Atinu; osvežavaju se u render() pri promeni grada/jezika.
+  const managed = ['.destination-reference-photo img', '.destination-reference-location', '#destinationSpotlightTitle',
+    '.destination-reference-title-row p', '.destination-reference-reason .eyebrow', '#destinationPlansBtn span', '#destinationPlansTitle']
+    .map(qs).filter(Boolean);
+  managed.forEach(el => { el.removeAttribute('data-i18n'); el.removeAttribute('data-i18n-alt'); });
+
+  function render(){
+    const k = curCity, c = CFG.cities[k];
+    if (!c || !$('destPlansList')) return;
+    const n = cityLabel(k), img = qs('.destination-reference-photo img');
+    if (img){
+      if (shownCity !== k) img.src = c.photo ? ph(c.photo, 1200) : fallbackPhoto(k);
+      img.alt = n;
+    }
+    const set = (sel, txt) => { const el = qs(sel); if (el) el.textContent = txt; };
+    set('.destination-reference-location', countryLabel(c.country));
+    set('.destination-reference-title-row p', countryLabel(c.country));
+    set('#destinationSpotlightTitle', n);
+    set('.destination-reference-reason .eyebrow', whyTitle(k));
+    set('#destinationPlansBtn span', plansTitle(k));
+    set('#destinationPlansTitle', plansTitle(k));
+    const rating = qs('.destination-reference-rating');
+    if (rating) rating.hidden = !c.rating;   // ocena je upisana samo u HTML-u (Atina); za ostale nemamo podatke
+    const ul = qs('.destination-reference-reason ul');
+    if (ul) ul.innerHTML = c.reasons.map(r => '<li>' + escapeHtml(tx(r)) + '</li>').join('');
+    curPlans = buildPlans(k);
+    $('destPlansList').innerHTML = curPlans.map(cardHtml).join('');
+    shownCity = k;
+  }
+  function setCity(name){
+    const k = cityKey(name);
+    if (!k) return false;
+    if (k === curCity) return true;
+    curCity = k;
+    const plans = $('destinationPlans');
+    if (plans) plans.hidden = true;          // stari planovi/detalji više ne važe za novi grad
+    planBtn?.setAttribute('aria-expanded', 'false');
+    if (detail) detail.hidden = true;
+    if (breakdown) breakdown.hidden = true;
+    render();
+    return true;
+  }
+  window.SKLOPI_setSpotlight = setCity;
 
   buildBtn?.addEventListener('click', () => {
     const dest = document.getElementById('dest');
     if (dest) {
-      dest.value = 'Atina';
+      dest.value = curCity;
       dest.dispatchEvent(new Event('input', {bubbles:true}));
     }
     const search = document.getElementById('searchForm');
@@ -5767,12 +5877,12 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     setTimeout(() => document.getElementById('origin')?.focus(), 500);
   });
 
-  // Popuni "Atina" u pretragu i skroluj na formu (koristi se za "Rezerviši paket").
-  function goToSearchForAthens(){
+  // Popuni destinaciju plana u pretragu i skroluj na formu (koristi se za "Rezerviši paket").
+  function goToSearchForCity(){
     const dest = document.getElementById('dest');
     const ap = window.SKLOPI_ACTIVE_PLAN;
     if (dest && !(ap && ap.keepDest)) {
-      dest.value = 'Atina';
+      dest.value = (ap && ap.dest) || curCity;
       dest.dispatchEvent(new Event('input', {bubbles:true}));
     }
     const search = document.getElementById('searchForm');
@@ -5782,40 +5892,10 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
 
   // Detalj paketa (#planDetail) + razrada (#planBreakdown: let, hotel,
   // aktivnosti, dodatne usluge) za SVE tri kartice iz "3 plana". Klik na
-  // karticu upisuje izbor plana u builderState i destinaciju Atina, pa
+  // karticu upisuje izbor plana u builderState i destinaciju grada, pa
   // razrada ispod (let/hotel/aktivnosti/dodaci) prikazuje baš taj plan.
-  const PLANS = {
-    'city-weekend': {
-      title:'Gradski vikend', price:529, badge:'Popularno', badgeCls:'plan-detail-badge--popular',
-      photo:'https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=1200&q=85',
-      alt:'Akropolj u Atini — Gradski vikend',
-      flightPref:'direct', hotelStars:4, prioritizeLocation:true, hotelLoc:'center', carPref:'none', activityCount:2,
-      flightT:'Direktan let', flightS:'Povratna karta \u2022 Ekonomija',
-      hotelS:'4\u2605 \u2022 Blizu centra', actS:'2 pažljivo odabrane ture', carS:'Bez auta',
-      forWho:'Za koga: prvi put u Atini / city break'
-    },
-    'comfort': {
-      title:'Komforniji odmor', price:689, badge:'Više komfora', badgeCls:'plan-detail-badge--comfort',
-      photo:'https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=1200&q=85',
-      alt:'Mirna obala — Komforniji odmor',
-      flightPref:'direct', hotelStars:4, prioritizeLocation:false, hotelLoc:'quiet', carPref:'small', activityCount:3,
-      flightT:'Fleksibilan let', flightS:'Povratna karta \u2022 Fleksibilan termin',
-      hotelS:'4\u2605 \u2022 Mirniji deo', actS:'3 pažljivo odabrane ture', carS:'Auto (mali)',
-      forWho:'Za koga: želiš više komfora i slobode'
-    },
-    'best-value': {
-      title:'Najviše za novac', price:449, badge:'Najpovoljnije', badgeCls:'',
-      photo:'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=1200&q=85',
-      alt:'Obala u sumrak — Najviše za novac',
-      flightPref:'cheapest', hotelStars:3, prioritizeLocation:true, hotelLoc:'center', carPref:'none', activityCount:2,
-      flightT:'Najjeftinija kombinacija', flightS:'Povratna karta \u2022 Ekonomija',
-      hotelS:'3\u2605 \u2022 Blizu centra', actS:'2 pažljivo odabrane ture', carS:'Bez auta',
-      forWho:'Za koga: maksimalno rastezanje budžeta'
-    }
-  };
   const detail = document.getElementById('planDetail');
   const breakdown = document.getElementById('planBreakdown');
-  const $ = id => document.getElementById(id);
   function priceText(n){ return currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac'; }
 
   function renderPlanDetail(){
@@ -5824,7 +5904,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const lo = Math.round(p.price * 0.935 / 10) * 10, hi = Math.round(p.price * 1.07 / 10) * 10;
     $('planDetailTitle').textContent = tx(p.title);
     const pctx = builderCtx();
-    $('planDetailMeta').textContent = p.keepDest ? cityLabel(pctx.dest) + ' \u2022 ' + daysLabel(pctx.days) : tx('Atina \u2022 4 dana');
+    $('planDetailMeta').textContent = cityLabel(pctx.dest) + ' \u2022 ' + daysLabel(pctx.days);
     $('planDetailPrice').innerHTML = escapeHtml(priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span>';
     $('planDetailEst').textContent = tx('Procena: ~') + priceText(lo).replace(' \u20ac','') + '\u2013' + priceText(hi);
     $('planDetailImg').src = p.photo;
@@ -5842,11 +5922,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }
 
   function openPlan(key){
-    const p = typeof key === 'string' ? PLANS[key] : key;
+    const p = typeof key === 'string' ? curPlans.find(x => x.key === key) : key;
     if (!p || !detail) return;
     window.SKLOPI_ACTIVE_PLAN = p;
     const dest = $('dest');
-    if (dest && !p.keepDest){ dest.value = 'Atina'; dest.dispatchEvent(new Event('input', {bubbles:true})); }
+    if (dest && !p.keepDest){ dest.value = p.dest || curCity; dest.dispatchEvent(new Event('input', {bubbles:true})); }
     Object.assign(builderState, {
       includeFlight:true, includeHotel:true, flightPref:p.flightPref, hotelStars:p.hotelStars,
       prioritizeLocation:p.prioritizeLocation, carPref:p.carPref, activityCount:p.activityCount
@@ -5858,11 +5938,19 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     detail.hidden = false;
     detail.scrollIntoView({behavior:'smooth', block:'start'});
   }
-  document.querySelectorAll('.dest-plan-card').forEach(card => {
-    card.addEventListener('click', () => openPlan(card.dataset.plan));
+  $('destPlansList')?.addEventListener('click', e => {
+    const card = e.target.closest('.dest-plan-card');
+    if (card) openPlan(curPlans[Number(card.dataset.plan)]);
   });
   window.SKLOPI_openPlan = openPlan;   // koristi ga i "Tvoj personalizovani plan"
-  document.addEventListener('sklopi:lang', () => { if (detail && !detail.hidden) renderPlanDetail(); });
+  document.addEventListener('sklopi:lang', () => { render(); if (detail && !detail.hidden) renderPlanDetail(); });
+  // Cene "računatih" gradova zavise od polaska, datuma i broja putnika.
+  let _planTimer = null;
+  ['origin','dateFrom','dateTo','adults'].forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    ['input','change'].forEach(ev => el.addEventListener(ev, () => { clearTimeout(_planTimer); _planTimer = setTimeout(render, 250); }));
+  });
 
   $('planDetailBack')?.addEventListener('click', () => {
     if (detail) detail.hidden = true;
@@ -5872,14 +5960,15 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (backId === 'destinationPlans') showDestPlans();
     else $(backId)?.scrollIntoView({behavior:'smooth', block:'start'});
   });
-  $('planDetailBook')?.addEventListener('click', goToSearchForAthens);
+  $('planDetailBook')?.addEventListener('click', goToSearchForCity);
   $('planDetailMore')?.addEventListener('click', () => {
     if (!breakdown) return;
     breakdown.hidden = false;
     document.dispatchEvent(new Event('sklopi:plan-breakdown'));
     breakdown.scrollIntoView({behavior:'smooth', block:'start'});
   });
-  $('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (detail && !detail.hidden) renderPlanDetail(); }, 0));
+  $('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { render(); if (detail && !detail.hidden) renderPlanDetail(); }, 0));
+  render();
 })();
 
 /* ==========================================================
@@ -5992,6 +6081,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     }
     return Math.round((flight + hotel + acts + car) / ctx.adults);
   }
+  window.SKLOPI_derivePerPerson = derivePerPerson;   // koristi ga i spotlight (fiksni planovi po gradu)
   function flightText(x, ctx, comfortFlex){
     if (x.flightPref === 'cheapest') return 'Let sa presedanjem';
     if (comfortFlex) return 'Fleksibilan let';
@@ -6353,6 +6443,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
 document.querySelectorAll('.popular-dest-card').forEach(card => {
   card.addEventListener('click', () => {
     document.getElementById('dest').value = card.dataset.dest;
+    if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest);
     if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
     runSearch(false);
   });
@@ -6517,6 +6608,7 @@ function attachPopularDestCardHandlers(grid){
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
       document.getElementById('dest').value = card.dataset.dest;
+      if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest);
       if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
       runSearch(false);
     });
@@ -6650,6 +6742,7 @@ if (destInputForAirport){
     // deljenje istog tajmera za oba dovodi do toga da reorder radi
     // "na sreću" — samo kad pauza između tastera bude duža od 400ms.
     syncDestTypingWithPopular(e.target.value);
+    if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(e.target.value);   // tačan naziv grada → spotlight + 3 plana
     clearTimeout(_destAirportTimer);
     const val = e.target.value;
     _destAirportTimer = setTimeout(() => renderDestAirportWarning(val), 400);
