@@ -6438,15 +6438,21 @@ const POPULAR_DEST_META = {
   'solun':['Grčka · 1h 15m','od 189 €','weekend'], 'budimpesta':['Mađarska · 1h 30m','od 179 €','city'],
   'prag':['Češka · 1h 45m','od 259 €','city'], 'zagreb':['Hrvatska · 1h','od 169 €','weekend']
 };
+// Kartice "Popularne destinacije": naziv države i "od" su fiksni na srpskom u podacima -- prevodi se pri prikazu.
+function popularMetaLabel(m){
+  const parts = String(m || '').split(/\s*[\u00B7\u2022]\s*/);
+  return parts.length > 1 ? [countryLabel(parts[0])].concat(parts.slice(1)).join(' \u00B7 ') : String(m || '');
+}
+function popularPriceLabel(pr){ return String(pr || '').replace(/^od\s+/i, () => tx('od ')); }
 function popularCardData(card){
   const key = normalizeSr(card.dest || '');
   const meta = POPULAR_DEST_META[key] || [card.name || '', '', 'all'];
   return {
     dest: card.dest || '',
-    name: card.name || t(card.nameKey || '') || card.dest || '',
+    name: cityLabel(card.name || t(card.nameKey || '') || card.dest || ''),
     desc: card.desc || (card.descKey ? t(card.descKey) : ''),
-    meta: card.meta || meta[0],
-    price: card.price || meta[1],
+    meta: popularMetaLabel(card.meta || meta[0]),
+    price: popularPriceLabel(card.price || meta[1]),
     category: card.category || meta[2] || 'all',
     image: card.image || POPULAR_DEST_IMAGES[key] || 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=500&q=82'
   };
@@ -6941,7 +6947,7 @@ function renderAuthBar(user){
       }
     });
   } else {
-    bar.innerHTML = `<button type="button" class="btn-alert" id="authOpenBtn">Prijavi se da sačuvaš izlete</button>`;
+    bar.innerHTML = `<button type="button" class="btn-alert" id="authOpenBtn">${tx('Prijavi se da sačuvaš izlete')}</button>`;
     const openBtn = document.getElementById('authOpenBtn');
     if (openBtn) openBtn.addEventListener('click', () => { _authBarExpanded = true; renderAuthBar(user); });
   }
@@ -7323,14 +7329,14 @@ function renderAccountMenu(){
          </div>`;
     } else if (_authBarExpanded) {
       dropdown.innerHTML = `<div class="auth-dropdown-inner">
-           <p>Prijavi se da sačuvaš izlete i primaš alerte o ceni.</p>
+           <p>${tx('Prijavi se da sačuvaš izlete i primaš alerte o ceni.')}</p>
            <input type="email" id="dropdownEmailInput" class="auth-input" placeholder="tvoj@email.com" autocomplete="email" required>
            <button type="button" class="btn-primary" id="dropdownSendLinkBtn">Pošalji link za prijavu</button>
            <p class="auth-hint">Nema lozinke — kliknućeš na link koji ti stigne na email.</p>
          </div>`;
     } else {
       dropdown.innerHTML = `<div class="auth-dropdown-inner">
-           <p>Prijavi se da sačuvaš izlete i primaš alerte o ceni.</p>
+           <p>${tx('Prijavi se da sačuvaš izlete i primaš alerte o ceni.')}</p>
            <button type="button" id="dropdownLoginBtn">Prijavi se</button>
          </div>`;
     }
