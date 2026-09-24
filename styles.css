@@ -3799,3 +3799,18 @@ footer>*{position:relative;z-index:1;}
 .promo-banner-photo img{filter:none;}
 .promo-banner-photo::before{display:none;}
 .promo-banner-photo::after{background:linear-gradient(180deg,rgba(14,59,70,0) 55%,rgba(14,59,70,.28) 100%);}
+
+/* Prekidači Letovi / Smeštaj / Rent a car / Aktivnost: bela dugmad sa plavim okvirom */
+.hero-reference .toggle{
+  background:#fff;
+  border:1.5px solid rgba(15,129,147,.55);
+}
+.hero-reference .toggle .tt-icon{background:transparent;box-shadow:none;color:var(--hero-aqua);}
+.hero-reference .toggle .tt-label{color:var(--btn-petrol-b);}
+.hero-reference .toggle.on{
+  background:var(--hero-aqua-soft);
+  border-color:var(--btn-petrol-a);
+  box-shadow:inset 0 0 0 1px var(--btn-petrol-a);
+}
+.hero-reference .toggle.on .tt-icon{background:transparent;box-shadow:none;color:var(--btn-petrol-c);}
+.hero-reference .toggle.on .tt-label{color:var(--btn-petrol-c);font-weight:700;}
