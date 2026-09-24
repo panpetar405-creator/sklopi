@@ -166,6 +166,8 @@
   "label_alert_threshold": "Notify me when the total estimated price drops below",
   "btn_set_alert": "Set alert",
   "alert_modal_disclaimer": "⚠️ Still an illustrative estimate, not a real partner offer. We’ll send you a confirmation email — the alert only becomes active once you click the link in it. You can unsubscribe anytime via the link in the email you receive.",
+  "alert_consent": "I agree that SKLOPI may store my email to send price alerts, in line with the <a href=\"privatnost.html\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>.",
+  "alert_consent_required": "To set the alert, you need to accept the Privacy Policy.",
   "match_trigger": "<span class=\"ac-ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z\"/></svg></span><span class=\"ac-title\">No idea where to go?</span><span class=\"ac-sub\">A short 3-question quiz — find 3 destinations that actually fit you, not random picks.</span><span class=\"match-preview-row\"><span class=\"match-preview-chip\">🌊 Beach</span><span class=\"match-preview-chip\">🏙️ City</span><span class=\"match-preview-chip\">🌲 Nature</span><span class=\"match-preview-chip\">🎉 Nightlife</span></span><span class=\"ac-cta\"><span class=\"ac-cta-label\">Find my destination</span><span class=\"ac-arrow\">→</span></span>",
   "match_modal_title": "Find your trip",
   "match_modal_sub": "Three quick questions — we score 60+ destinations by fit with you, the season and trip length, not at random. Dates and traveler count stay as set in the form above.",

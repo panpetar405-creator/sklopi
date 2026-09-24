@@ -4,8 +4,11 @@
    Pokretanje: node scripts/find-hardcoded.mjs [app.js] [--all]   (bez --all prikazuje prvih 60) */
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
 const here = path.dirname(fileURLToPath(import.meta.url));
+/* Radi u oba rasporeda: skripta u scripts/ (pa je app.js jedan nivo iznad), ili sve u korenu repoa
+   (isti princip kao u translate.mjs). */
+const root = path.basename(here) === 'scripts' ? path.join(here, '..') : here;
 const args = process.argv.slice(2);
-const file = args.find((a) => !a.startsWith('--')) || path.join(here, '..', 'app.js');
+const file = args.find((a) => !a.startsWith('--')) || path.join(root, 'app.js');
 let s = fs.readFileSync(file, 'utf8');
 s = s.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '));
 const src = fs.readFileSync(file, 'utf8').split('\n');

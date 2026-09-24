@@ -3,11 +3,11 @@
   "private": true,
   "description": "SKLOPI — statički sajt. Skripte za prevode: vidi PREVODI.md",
   "scripts": {
-    "i18n": "node scripts/translate.mjs",
-    "i18n:check": "node scripts/translate.mjs --check",
-    "i18n:build": "node scripts/translate.mjs --build",
-    "i18n:test": "node scripts/selftest.mjs",
-    "i18n:todo": "node scripts/find-hardcoded.mjs"
+    "i18n": "node translate.mjs",
+    "i18n:check": "node translate.mjs --check",
+    "i18n:build": "node translate.mjs --build",
+    "i18n:test": "node selftest.mjs",
+    "i18n:todo": "node find-hardcoded.mjs"
   },
   "engines": {
     "node": ">=18"

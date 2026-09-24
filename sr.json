@@ -166,6 +166,8 @@
   "label_alert_threshold": "Javi mi kad ukupna procenjena cena padne ispod",
   "btn_set_alert": "Postavi alert",
   "alert_modal_disclaimer": "⚠️ I dalje ilustrativna procena, ne stvarna ponuda partnera. Poslaćemo ti mejl da potvrdiš — alert se aktivira tek nakon klika na link u njemu. Odjava je moguća bilo kad preko linka u mejlu koji dobiješ.",
+  "alert_consent": "Slažem se da SKLOPI sačuva moj email radi slanja obaveštenja o ceni, u skladu sa <a href=\"privatnost.html\" target=\"_blank\" rel=\"noopener\">Politikom privatnosti</a>.",
+  "alert_consent_required": "Da bismo postavili alert, moraš prihvatiti Politiku privatnosti.",
   "match_trigger": "<span class=\"ac-ic\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M14.8 9.2l-2 5.6-5.6 2 2-5.6 5.6-2z\"/></svg></span><span class=\"ac-title\">Nemaš ideju kuda?</span><span class=\"ac-sub\">Kratak upitnik od 3 pitanja — pronađi 3 destinacije koje ti stvarno odgovaraju, ne nasumične.</span><span class=\"match-preview-row\"><span class=\"match-preview-chip\">🌊 More</span><span class=\"match-preview-chip\">🏙️ Grad</span><span class=\"match-preview-chip\">🌲 Priroda</span><span class=\"match-preview-chip\">🎉 Provod</span></span><span class=\"ac-cta\"><span class=\"ac-cta-label\">Pronađi mi destinaciju</span><span class=\"ac-arrow\">→</span></span>",
   "match_modal_title": "Pronađi svoj izlet",
   "match_modal_sub": "Tri kratka pitanja — mi bodujemo preko 60 destinacija po poklapanju sa tobom, sezonom i dužinom puta, ne nasumično. Datumi i broj putnika ostaju kao u formi iznad.",

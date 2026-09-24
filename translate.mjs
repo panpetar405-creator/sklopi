@@ -1,28 +1,28 @@
 #!/usr/bin/env node
 /* ==========================================================================
-   SKLOPI — automatski prevod sa srpskog (locales/sr.json) na ostale jezike
+   SKLOPI — automatski prevod sa srpskog (sr.json) na ostale jezike
    ==========================================================================
-   Piše se SAMO locales/sr.json. Ova skripta:
+   Piše se SAMO sr.json. Ova skripta:
      1) nađe ključeve koji fale (ili su im se srpski tekst promenio) u svakom
-        jeziku iz locales/languages.json,
+        jeziku iz languages.json,
      2) prevede ih preko Claude API-ja (ANTHROPIC_API_KEY),
      3) proveri prevod (placeholderi {n}, HTML tagovi, brendovi, oblici množine),
-     4) upiše locales/<jezik>.json + locales/_state.json,
+     4) upiše <jezik>.json + _state.json,
      5) generiše i18n-data.js (to je jedino što sajt učitava).
 
    Ručno ispravljen prevod skripta NE prepisuje: ako se posle toga promeni
    srpski tekst, ključ se samo prijavi kao "proveri ručno" (vidi --retranslate-changed).
 
    Upotreba:
-     node scripts/translate.mjs                  prevedi sve što fali + generiši i18n-data.js
-     node scripts/translate.mjs --dry-run        samo prikaži šta bi se prevodilo
-     node scripts/translate.mjs --check          bez API-ja; izlaz 1 ako nešto fali/nije ispravno
-     node scripts/translate.mjs --build          samo generiši i18n-data.js (bez API-ja)
-     node scripts/translate.mjs --lang de        samo taj jezik
-     node scripts/translate.mjs --retranslate-changed   ponovo prevedi i ručne prevode kojima se izvor promenio
-     node scripts/translate.mjs --retranslate kljuc1,kljuc2   ponovo prevedi navedene ključeve
-     node scripts/translate.mjs --prune          obriši ključeve koji više ne postoje u sr.json
-     node scripts/translate.mjs --mock           lažni prevod (za testiranje, bez API-ja)
+     node translate.mjs                  prevedi sve što fali + generiši i18n-data.js
+     node translate.mjs --dry-run        samo prikaži šta bi se prevodilo
+     node translate.mjs --check          bez API-ja; izlaz 1 ako nešto fali/nije ispravno
+     node translate.mjs --build          samo generiši i18n-data.js (bez API-ja)
+     node translate.mjs --lang de        samo taj jezik
+     node translate.mjs --retranslate-changed   ponovo prevedi i ručne prevode kojima se izvor promenio
+     node translate.mjs --retranslate kljuc1,kljuc2   ponovo prevedi navedene ključeve
+     node translate.mjs --prune          obriši ključeve koji više ne postoje u sr.json
+     node translate.mjs --mock           lažni prevod (za testiranje, bez API-ja)
    Okruženje: ANTHROPIC_API_KEY (obavezno za prevod), ANTHROPIC_MODEL (podrazumevano claude-sonnet-5).
    ========================================================================== */
 import fs from 'fs';
@@ -63,7 +63,7 @@ const h = (s) => crypto.createHash('sha1').update(String(s)).digest('hex').slice
 const log = (...a) => console.log(...a);
 
 const cfg = readJson(F.langs);
-if (!cfg) { console.error('Nedostaje locales/languages.json'); process.exit(2); }
+if (!cfg) { console.error('Nedostaje languages.json'); process.exit(2); }
 const SRC = cfg.source || 'sr';
 const LANGS = cfg.languages;
 const langInfo = (code) => LANGS.find((l) => l.code === code);
@@ -340,8 +340,8 @@ if (!flag('check') && !flag('dry-run')) {
   }
   const meta = LANGS.map((l) => ({ code: l.code, short: l.short, name: l.name, locale: l.locale, ...(l.dateMonth ? { dateMonth: l.dateMonth } : {}) }));
   const body =
-`/* AUTOMATSKI GENERISANO iz locales/*.json — NE MENJAJ RUČNO.
-   Ažuriranje: node scripts/translate.mjs   (vidi PREVODI.md) */
+`/* AUTOMATSKI GENERISANO iz *.json — NE MENJAJ RUČNO.
+   Ažuriranje: node translate.mjs   (vidi PREVODI.md) */
 const I18N_LANGS = ${JSON.stringify(meta)};
 const I18N = {
 ${LANGS.map((l) => `  ${JSON.stringify(l.code)}: ${JSON.stringify(out[l.code])}`).join(',\n')}

@@ -105,9 +105,9 @@ function guardOverlayReplace(oldId, newId, closeFn){
 /* ==========================================================
    I18N — jezici i prevodi
    ==========================================================
-   Izvor istine je SAMO locales/sr.json (srpski). Ostali jezici
-   (locales/en.json, ru.json, ...) nastaju skriptom:
-       node scripts/translate.mjs        (vidi PREVODI.md)
+   Izvor istine je SAMO sr.json (srpski). Ostali jezici
+   (en.json, ru.json, ...) nastaju skriptom:
+       node translate.mjs        (vidi PREVODI.md)
    koja i generiše i18n-data.js — taj fajl definiše I18N i I18N_LANGS
    i mora biti učitan PRE app.js. Ovde se ne piše nijedan prevod.
 
@@ -127,7 +127,7 @@ function getLang(){
   } catch(e){}
   return 'sr';
 }
-// Metapodaci jezika iz locales/languages.json (code, short, name, locale, dateMonth).
+// Metapodaci jezika iz languages.json (code, short, name, locale, dateMonth).
 function langMeta(code){
   code = code || getLang();
   return I18N_LANGS.find(l => l.code === code) || I18N_LANGS[0];
@@ -202,7 +202,7 @@ checkI18nCompleteness();
 function tf(key, vars){
   return t(key).replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] !== undefined) ? vars[k] : m);
 }
-// Množina: 'plural.<ime>' u locales/*.json je niz oblika odvojenih sa '|', redosledom
+// Množina: 'plural.<ime>' u *.json je niz oblika odvojenih sa '|', redosledom
 // CLDR kategorija tog jezika (Intl.PluralRules): sr: one|few|other, en: one|other,
 // ru: one|few|many|other. Novi jezik dobija tačan broj oblika od skripte za prevod.
 const _PLURAL_ORDER = ['zero','one','two','few','many','other'];
@@ -230,7 +230,7 @@ function daysLabel(n){ return n + ' ' + pluralWord('day', n); }
 function roomsLabel(n){ return n + ' ' + pluralWord('room', n); }
 function activitiesLabel(n){ return n + ' ' + pluralWord('activity', n); }
 
-/* Nazivi gradova i država: u locales/*.json pod ključevima 'city.<srpski naziv>' i
+/* Nazivi gradova i država: u *.json pod ključevima 'city.<srpski naziv>' i
    'country.<srpski naziv>'. Poređenje ide preko normalizeSr (bez dijakritika).
    Nepoznat naziv (npr. ono što je korisnik sam ukucao) ostaje nepromenjen. */
 const _placeCache = {};
@@ -2306,7 +2306,7 @@ const AIRPORT_DB = {
 };
 Object.keys(AIRPORT_DB).forEach(k => { AIRPORT_DB[k].slug = k; });
 /* Tekst napomene za grad bez aerodroma, na trenutnom jeziku.
-   1) Napomene sa posebnom formulacijom žive u locales/*.json pod
+   1) Napomene sa posebnom formulacijom žive u *.json pod
       'airport_note.<slug>' (srpski izvor + prevodi; slug = ključ u AIRPORT_DB).
    2) Ostale: srpski koristi originalni info.note; drugi jezici se sklapaju iz
       strukturiranih polja (c = grad, k = vrsta "nema ...", t = vreme vožnje,
@@ -4004,7 +4004,7 @@ const MATCH_VIBE_LABELS = {
   get nightlife(){ return t('mvibe_nightlife'); }, get mix(){ return t('mvibe_mix'); }
 };
 // Naziv meseca u obliku koji traži rečenica mreason_season (npr. sr: "sezona za maj",
-// ru: predloški padež). Vrednosti su u locales/*.json pod 'match_month.1'..'match_month.12'.
+// ru: predloški padež). Vrednosti su u *.json pod 'match_month.1'..'match_month.12'.
 function matchMonthName(month){ return t('match_month.' + month); }
 
 // Deo bodovanja koji NE zavisi od cene (poklapanje sa odgovorima,
@@ -7279,6 +7279,7 @@ async function openAlertModal(kind, tier, total, destOverride){
   document.getElementById('alertModalSub').textContent = 'Za ' + dest + ' — trenutna procena je ' + fmtEUR(total) + '.';
   document.getElementById('alertEmail').value = user.email;
   document.getElementById('alertThreshold').value = Math.max(1, Math.round(total * 0.9));
+  document.getElementById('alertConsent').checked = false;
   document.getElementById('alertModalBackdrop').classList.add('open');
   document.getElementById('alertModal').classList.add('open');
   guardOverlayOpen('alert', closeAlertModal);
@@ -7303,6 +7304,7 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
   const submitBtn = document.getElementById('alertModalSubmit');
   if (!email || !email.includes('@')){ showToast('Unesi ispravnu email adresu.'); return; }
   if (!threshold || threshold <= 0){ showToast('Unesi ispravan iznos.'); return; }
+  if (!document.getElementById('alertConsent').checked){ showToast(t('alert_consent_required')); return; }
   if (!_pendingAlert){ requestCloseAlertModal(); return; }
 
   if (!sb) {

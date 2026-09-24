@@ -5,10 +5,13 @@ import fs from 'fs'; import os from 'os'; import path from 'path'; import assert
 import { spawnSync } from 'child_process'; import { fileURLToPath } from 'url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const realLoc = path.join(here, '..', 'locales');
+/* Radi u oba rasporeda: skripta u scripts/ + locales/ (kao u PREVODI.md), ili sve u korenu repoa
+   (isti princip kao u translate.mjs). */
+const root = path.basename(here) === 'scripts' ? path.join(here, '..') : here;
+const realLoc = fs.existsSync(path.join(root, 'locales')) ? path.join(root, 'locales') : root;
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sklopi-i18n-'));
 fs.mkdirSync(path.join(tmp, 'locales'));
-for (const f of fs.readdirSync(realLoc)) if (f !== '_state.json') fs.copyFileSync(path.join(realLoc, f), path.join(tmp, 'locales', f));
+for (const f of fs.readdirSync(realLoc)) if (f.endsWith('.json') && f !== '_state.json') fs.copyFileSync(path.join(realLoc, f), path.join(tmp, 'locales', f));
 
 const J = (f) => JSON.parse(fs.readFileSync(path.join(tmp, 'locales', f), 'utf8'));
 const W = (f, o) => fs.writeFileSync(path.join(tmp, 'locales', f), JSON.stringify(o, null, 2) + '\n');

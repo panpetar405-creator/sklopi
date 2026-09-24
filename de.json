@@ -171,6 +171,8 @@
   "label_alert_threshold": "Benachrichtige mich, wenn der geschätzte Gesamtpreis unter diesen Wert fällt",
   "btn_set_alert": "Preisalarm einrichten",
   "alert_modal_disclaimer": "⚠️ Weiterhin eine beispielhafte Schätzung, kein echtes Partnerangebot. Wir senden dir eine Bestätigungs-E-Mail – der Alarm wird erst aktiv, wenn du auf den Link darin klickst. Du kannst dich jederzeit über den Link in der erhaltenen E-Mail abmelden.",
+  "alert_consent": "Ich bin damit einverstanden, dass SKLOPI meine E-Mail-Adresse speichert, um mir Preisbenachrichtigungen zu senden – gemäß der <a href=\"privatnost.html\" target=\"_blank\" rel=\"noopener\">Datenschutzerklärung</a>.",
+  "alert_consent_required": "Um den Alarm einzurichten, musst du die Datenschutzerklärung akzeptieren.",
   "btn_search_html": "<svg class=\"btn-search-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" aria-hidden=\"true\"><path d=\"M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z\"/></svg>Los geht's",
   "cal_wx_legend": "<span class=\"lg-exact\">☀️</span>Vorhersage (bis zu 16 Tage im Voraus) &nbsp;·&nbsp; <span class=\"lg-est\">☀️</span>Schätzung für spätere Termine, basierend auf demselben Zeitraum im Vorjahr &nbsp;·&nbsp; <span style=\"opacity:0.35\">build wx-5</span>",
   "builder_budget_label_html": "Budget <span style=\"font-weight:400;font-size:12px;color:var(--ink-soft);\">(optional)</span>",

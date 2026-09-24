@@ -34,7 +34,7 @@ const ROWS = [
 ];
 const TIER = 'best';   // procenti se računaju iz paketa Best Value
 
-/* Tekstovi koji nisu u locales/*.json — držimo ih ovde da za ovu funkciju
+/* Tekstovi koji nisu u *.json — držimo ih ovde da za ovu funkciju
    ne treba menjati prevode i regenerisati i18n-data.js. */
 const TXT = {
   sr: {now:'Ažurirano upravo sada', sec:'Ažurirano pre {n} sek', min:'Ažurirano pre {n} min', per:'po 1 osobi',

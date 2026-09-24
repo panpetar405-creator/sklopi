@@ -1,10 +1,10 @@
 /* ==========================================================
    Prevodi za blok "Bez aviona" (transport.js).
    Dodaju se u I18N posle i18n-data.js — NE traži nikakav folder,
-   skriptu ni izmenu locales/*.json. Jezik koji ovde nema prevod
+   skriptu ni izmenu *.json. Jezik koji ovde nema prevod
    (ako dodaš novi) automatski koristi srpski tekst iz transport.js.
    Kad jednom pokreneš svoju skriptu za prevode, ovaj fajl možeš
-   obrisati ako ključeve prebaciš u locales/.
+   obrisati ako ključeve prebaciš u .
 ========================================================== */
 (function(){
   if (typeof I18N === 'undefined') return;
