@@ -2,29 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sklopi.rs/</loc>
-    <lastmod>2026-09-12</lastmod>
+    <lastmod>2026-09-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://sklopi.rs/destinacija.html</loc>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sklopi.rs/vodici.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-09-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-atina.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-09-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-budva.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-09-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-  <!-- privatnost.html, uslovi-koriscenja.html i kolacici.html namerno NISU ovde:
-       sve tri imaju <meta name="robots" content="noindex">, pa slanje "noindex"
-       stranica u sitemap Google ionako ignoriše — bolje ih odmah izostaviti. -->
+  <!-- privatnost.html, uslovi-koriscenja.html, kolacici.html i zajedno.html namerno NISU ovde:
+       sve četiri imaju <meta name="robots" content="noindex">, pa slanje "noindex"
+       stranica u sitemap Google ionako ignoriše — bolje ih odmah izostaviti.
+
+       NAPOMENA za destinacija.html: stranica NEMA noindex pa je zato ovde,
+       ali title/description se trenutno postavljaju samo preko JS-a nakon
+       učitavanja (generičko "Destinacija — SKLOPI" u izvornom kodu za sve
+       destinacije). Realna SEO korist od ove stavke dolazi tek kad se doda
+       server-side / statički meta po destinaciji — do tada je ovo više
+       formalna kompletnost sitemap-a nego stvaran izvor saobraćaja. -->
 </urlset>
