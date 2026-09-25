@@ -3215,10 +3215,14 @@ const POPULAR_DESTINATIONS = [
   {name:'Banja Vrujci', extra:'Srbija'}, {name:'Banja Kanjiža', extra:'Srbija'}, {name:'Prolom Banja', extra:'Srbija'},
   {name:'Bukovička Banja', extra:'Srbija'}, {name:'Vranjska Banja', extra:'Srbija'}, {name:'Mataruška Banja', extra:'Srbija'},
   {name:'Sijarinska Banja', extra:'Srbija'}, {name:'Josanička Banja', extra:'Srbija'}, {name:'Ribarska Banja', extra:'Srbija'},
+  {name:'Lukovska Banja', extra:'Srbija'}, {name:'Kuršumlijska Banja', extra:'Srbija'}, {name:'Banja Junaković', extra:'Srbija'}, {name:'Banja Rusanda', extra:'Srbija'},
   // Srbija — jezera i prirodne atrakcije
   {name:'Palić', extra:'Srbija'}, {name:'Zlatarsko jezero', extra:'Srbija'}, {name:'Perućac', extra:'Srbija'},
   {name:'Srebrno jezero', extra:'Srbija'}, {name:'Borsko jezero', extra:'Srbija'}, {name:'Gružansko jezero', extra:'Srbija'},
   {name:'Đerdap', extra:'Srbija'}, {name:'Uvac', extra:'Srbija'}, {name:'Golubac', extra:'Srbija'},
+  {name:'Ćelijsko jezero', extra:'Srbija'}, {name:'Bovansko jezero', extra:'Srbija'}, {name:'Zaovinsko jezero', extra:'Srbija'}, {name:'Ludaško jezero', extra:'Srbija'},
+  // Srbija — reke
+  {name:'Drina', extra:'Srbija'},
   {name:'Ćuprija', extra:'Srbija'}, {name:'Prokuplje', extra:'Srbija'}, {name:'Svilajnac', extra:'Srbija'},
   {name:'Senta', extra:'Srbija'}, {name:'Kanjiža', extra:'Srbija'}, {name:'Temerin', extra:'Srbija'},
   // Region
