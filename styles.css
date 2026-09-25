@@ -1282,13 +1282,11 @@ a{color:inherit;}
 .pkg.budget{border-top-color:var(--coral);}
 .pkg.featured{
     border-top-color:var(--burgundy);
-    box-shadow:0 20px 46px -24px rgba(123,92,196,0.4);
 }
 .pkg-head{
     padding:20px 22px 18px;border-bottom:1px solid var(--line);
     display:flex;justify-content:space-between;align-items:center;gap:14px;
 }
-.pkg.featured .pkg-head{background:var(--burgundy-soft);}
 .pkg.featured .pkg-badge{background:var(--burgundy);color:var(--on-dark-strong);}
 .pkg-head h3{
     font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
