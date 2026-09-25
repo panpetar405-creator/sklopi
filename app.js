@@ -6252,9 +6252,10 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     // markirana, isto kao što se već radi za red u planDetailList iznad.
     const p = window.SKLOPI_ACTIVE_PLAN;
     const svc = (p && p.svc) || {flight:true, hotel:true, car:true, activity:true};
-    const flightSec = $('flightDetail'), hotelSec = $('hotelDetail'), actSec = $('activitiesDetail');
+    const flightSec = $('flightDetail'), hotelSec = $('hotelDetail'), carSec = $('carDetail'), actSec = $('activitiesDetail');
     if (flightSec) flightSec.hidden = !svc.flight;
     if (hotelSec) hotelSec.hidden = !svc.hotel;
+    if (carSec) carSec.hidden = !svc.car;
     if (actSec) actSec.hidden = !svc.activity;
     breakdown.hidden = false;
     document.dispatchEvent(new Event('sklopi:plan-breakdown'));
@@ -6593,6 +6594,57 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   document.addEventListener('sklopi:plan-breakdown', render);
   document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   $('hotelDetailBack')?.addEventListener('click', () => {
+    box.hidden = true;
+    document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
+})();
+
+/* ==========================================================
+   AUTO (#carDetail) — isti obrazac kao #hotelDetail/#flightDetail:
+   otvara se sa #planBreakdown, samo kad je paket stvarno tražio R a C
+   (svc.car), podaci iz forme. BAG koji je ovo popravio: R a C nije imao
+   NIKAKVU podstranicu u "Pogledaj detalje" (postojale su samo za Let/
+   Hotel/Aktivnosti) — auto je ulazio u ukupnu cenu i u "Šta je
+   uključeno?" listu, ali korisnik nije mogao da ga vidi/rezerviše kad
+   je to bila jedina ili jedna od tri tražene usluge. Cena po danu i
+   ukupno (uključujući gorivo/putarine, isto kao u builderu) su
+   ilustrativna procena iz computeCustomPackage. Dugme vodi na
+   Booking.com Cars (isti partner/provider kao za hotel).
+========================================================== */
+(function initCarDetail(){
+  const box = document.getElementById('planBreakdown');
+  const btn = document.getElementById('cdBookingBtn');
+  if (!box || !btn) return;
+  const $ = id => document.getElementById(id);
+  const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  const carLabel = p => p === 'suv' ? tx('Auto (SUV)') : tx('Auto (mali)');
+  function render(){
+    if (box.hidden || (document.getElementById('carDetail')?.hidden)) return;
+    const ctx = builderCtx();
+    const carPref = builderState.carPref !== 'none' ? builderState.carPref : 'small';
+    const sel = Object.assign({}, builderState, {carPref});
+    const pkg = computeCustomPackage(sel, ctx);
+    const perDay = Math.round(pkg.car.price / Math.max(1, ctx.days));
+    const totalWithExtras = pkg.car.price + pkg.carExtras.price;
+    $('carDetailTitle').textContent = tx('Auto u ') + cityLabel(ctx.dest);
+    $('cdMeta').textContent = carLabel(carPref);
+    $('cdPrice').innerHTML = escapeHtml(money(perDay)) + ' <span>' + tx('/ dan') + '</span>';
+    $('cdTotal').textContent = tx('(ukupno ') + money(totalWithExtras) + ', ' + tx('uklj. gorivo i putarine') + ') \u2022 ' + tx('ilustrativna procena');
+    $('cdChips').innerHTML = [
+      '\ud83d\udccd ' + cityLabel(ctx.dest),
+      '\ud83d\udcc5 ' + daysLabel(ctx.days),
+      '\u26fd ' + tx('Gorivo i putarine: ') + money(pkg.carExtras.price)
+    ].map(s => '<span class="hd-chip">' + s + '</span>').join('');
+    const url = buildAffiliateLink('car', {dest: ctx.dest, from: ctx.from, to: ctx.to, adults: ctx.adults});
+    btn.href = url;
+    btn.dataset.url = url;
+    btn.dataset.price = String(pkg.car.price);
+    btn.dataset.dest = ctx.dest;
+  }
+  document.addEventListener('sklopi:plan-breakdown', render);
+  document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
+  $('carDetailBack')?.addEventListener('click', () => {
     box.hidden = true;
     document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
   });
