@@ -5831,7 +5831,14 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
 
   // "3 plana za tvoj grad" su skriveni dok korisnik ne klikne na dugme.
   // Sve ostale funkcije koje vode na planove koriste window.SKLOPI_showDestPlans().
+  // OVO je bio pravi propust: dugme je samo otkrivalo već izrađenu sekciju
+  // bez ikakve provere, pa je moglo da se klikne (i prikaže pun predlog) i
+  // kad polazak/datumi/putnici u formi iznad nisu ni dirnuti — isti bag koji
+  // je popravljen za searchForm/spMakeBtn, ovde ostao nepovezan jer je ovo
+  // zaseban ulaz u iste planove.
   function showDestPlans(){
+    const check = validateSearchInputs();
+    if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
     const plans = document.getElementById('destinationPlans');
     if (!plans) return;
     plans.hidden = false;
