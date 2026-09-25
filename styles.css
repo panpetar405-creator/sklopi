@@ -4084,23 +4084,46 @@ button.mark-v2:active{transform:scale(.95);}
     transition:opacity .5s ease,visibility .5s ease;
 }
 .app-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none;}
-.app-splash-inner{display:flex;flex-direction:column;align-items:center;gap:16px;}
-.app-splash-mark{overflow:visible;animation:asPulse 1.8s ease-in-out .3s infinite;}
-@keyframes asAssemble1{from{transform:translate(-22px,-10px);opacity:0;}to{transform:translate(0,0);opacity:1;}}
-@keyframes asAssemble2{from{transform:translate(24px,0);opacity:0;}to{transform:translate(0,0);opacity:1;}}
-@keyframes asAssemble3{from{transform:translate(-22px,10px);opacity:0;}to{transform:translate(0,0);opacity:1;}}
-@keyframes asPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.045);}}
+.app-splash-inner{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.app-splash-mark{overflow:visible;animation:asFloat 2.4s ease-in-out .95s infinite;}
+.app-splash-mark .as-body{
+    transform-box:fill-box;transform-origin:center;
+    animation:asBodyIn .62s cubic-bezier(.22,1,.36,1) both;
+}
+.app-splash-mark .as-dot{
+    transform-box:fill-box;transform-origin:center;
+    animation:asDotDrop .6s cubic-bezier(.34,1.56,.64,1) .38s both,
+              asDotGlow 1.7s ease-in-out 1s infinite;
+}
+@keyframes asBodyIn{
+    from{opacity:0;transform:translateY(10px) scale(.92);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+}
+@keyframes asDotDrop{
+    0%{opacity:0;transform:translate(-14px,-28px) scale(.4);}
+    55%{opacity:1;transform:translate(0,3px) scale(1.18);}
+    75%{transform:translate(0,-2px) scale(.94);}
+    100%{opacity:1;transform:translate(0,0) scale(1);}
+}
+@keyframes asDotGlow{
+    0%,100%{filter:drop-shadow(0 0 0 rgba(227,111,23,0));}
+    50%{filter:drop-shadow(0 0 7px rgba(227,111,23,.9));}
+}
+@keyframes asFloat{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-4px);}
+}
 .app-splash-word{
     font-family:'Sora',sans-serif;font-weight:800;font-size:22px;letter-spacing:.02em;
     color:var(--on-dark-strong);opacity:0;
-    animation:asFadeUp .5s ease .55s both;
+    animation:asFadeUp .5s ease .78s both;
 }
 .app-splash-word em{font-style:normal;color:var(--coral);}
 @keyframes asFadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 .app-splash-track{
     width:88px;height:3px;border-radius:3px;overflow:hidden;
     background:rgba(250,246,238,.16);
-    opacity:0;animation:asFadeUp .5s ease .7s both;
+    opacity:0;animation:asFadeUp .5s ease .9s both;
 }
 .app-splash-fill{
     display:block;height:100%;width:40%;border-radius:3px;
@@ -4112,7 +4135,7 @@ button.mark-v2:active{transform:scale(.95);}
     100%{transform:translateX(250%);}
 }
 @media (prefers-reduced-motion:reduce){
-    .app-splash-mark,.app-splash-mark .as-bar-1,.app-splash-mark .as-bar-2,.app-splash-mark .as-bar-3{animation:none;opacity:1;transform:none;}
+    .app-splash-mark,.app-splash-mark .as-body,.app-splash-mark .as-dot{animation:none;opacity:1;transform:none;filter:none;}
     .app-splash-word,.app-splash-track{animation:none;opacity:1;}
     .app-splash-fill{animation:none;width:100%;}
 }
