@@ -5,95 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Predlog putovanja — SKLOPI</title>
 <meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="theme-color" content="#123A44">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=21">
+<!--
+  Ova stranica ranije nije koristila styles.css — imala je sopstvenu,
+  potpuno drugačiju paletu i fontove (Fraunces/Work Sans, krem/bordo).
+  Sad je na istom temelju kao ostatak sajta: isti styles.css, isti
+  tokeni (--ink/--deep/--gold/--coral/--paper...), Sora + Inter.
+  Ispod su SAMO dopune za delove kojih nema u deljenom styles.css —
+  isti obrazac kao stranično-specifičan <style> u destinacija.html.
+-->
 <style>
-  :root{
-    --bg:#FBF9F4; --paper:#FFFEFB; --ink:#16242A; --ink-soft:#4B5D62;
-    --deep:#123138; --gold:#B8863B; --gold-soft:#E7D3AC; --line:#DDD6C6;
-    --gold-text:#8f6423; --on-dark-strong:#F8F4E9; --on-dark:#F4EFE3; --on-gold:#241505;
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Work Sans',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;}
-  h1,h2,.display{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-0.01em;margin:0;}
-  a{color:var(--gold-text);}
-  .topbar-wrap{background:var(--paper);border-bottom:1px solid var(--line);}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;max-width:720px;margin:0 auto;}
-  .logo{font-family:'Fraunces',serif;font-size:20px;font-weight:600;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);}
-  .logo em{color:var(--gold-text);font-style:italic;}
-  .logo .mark{width:28px;height:28px;border-radius:50%;background:var(--deep);display:flex;align-items:center;justify-content:center;flex:none;}
-  .logo .mark svg{width:14px;height:14px;color:var(--gold-soft);}
-  .wrap{max-width:640px;margin:0 auto;padding:36px 20px 90px;}
-
-  .state-msg{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:34px 22px;text-align:center;color:var(--ink-soft);}
-  .state-msg .big{font-size:34px;margin-bottom:10px;}
-
-  .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:0.09em;color:var(--gold-text);font-weight:600;margin-bottom:8px;}
-  .trip-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:26px 24px;margin-bottom:22px;}
-  .trip-card h1{font-size:clamp(24px,5vw,32px);margin-bottom:4px;}
-  .trip-meta{font-size:14.5px;color:var(--ink-soft);margin-bottom:14px;}
-  .trip-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
-  .trip-tag{font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:4px 11px;color:var(--ink-soft);}
-  .trip-total{display:flex;align-items:baseline;justify-content:space-between;border-top:1px dashed var(--line);padding-top:14px;}
-  .trip-total .num{font-family:'Fraunces',serif;font-size:28px;font-weight:600;}
-  .trip-total .lab{font-size:13px;color:var(--ink-soft);}
-  .disclaimer{font-size:12px;color:var(--ink-soft);margin-top:14px;line-height:1.5;}
-
-  .rsvp-section h2{font-size:19px;margin-bottom:4px;color:var(--deep);}
-  .rsvp-sub{font-size:14px;color:var(--ink-soft);margin-bottom:16px;}
-  .rsvp-tally{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
-  .rsvp-tally .t{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:13.5px;text-align:center;}
-  .rsvp-tally .t b{display:block;font-family:'Fraunces',serif;font-size:20px;color:var(--ink);}
-
-  .rsvp-list{margin-bottom:22px;display:flex;flex-direction:column;gap:10px;}
-  .rsvp-item{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px;}
-  .rsvp-item .who{font-weight:600;display:flex;align-items:center;gap:6px;}
-  .rsvp-item .cm{color:var(--ink-soft);margin-top:4px;font-size:13.5px;}
-  .rsvp-empty{font-size:13.5px;color:var(--ink-soft);font-style:italic;margin-bottom:22px;}
-
-  .rsvp-form{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px;}
-  .rsvp-form label{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:7px;font-weight:600;}
-  .rsvp-form .row{margin-bottom:16px;}
-  .rsvp-form input[type=text], .rsvp-form textarea{
-    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:5px;
-    font-family:'Work Sans',sans-serif;font-size:14.5px;background:var(--bg);color:var(--ink);
-  }
-  .rsvp-form textarea{resize:vertical;min-height:64px;}
-  .response-options{display:flex;gap:8px;flex-wrap:wrap;}
-  .response-opt{flex:1;min-width:100px;text-align:center;border:1.5px solid var(--line);border-radius:6px;padding:10px 6px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink-soft);transition:border-color .15s ease,color .15s ease,background .15s ease;}
-  .response-opt input{display:none;}
-  .response-opt.sel{border-color:var(--gold);color:var(--gold-text);background:rgba(184,134,59,0.08);}
-  .rsvp-submit{width:100%;margin-top:6px;padding:13px;border:none;border-radius:5px;background:var(--deep);color:var(--on-dark-strong);font-family:'Work Sans',sans-serif;font-weight:600;font-size:15px;cursor:pointer;}
-  .rsvp-submit:hover{opacity:0.9;}
-  .rsvp-submit:disabled{opacity:0.5;cursor:default;}
-  .form-msg{font-size:13px;margin-top:10px;}
-  .form-msg.err{color:#B0402E;}
-  .form-msg.ok{color:#3E7A4B;}
-
-  footer{background:var(--deep);color:var(--on-dark);padding:26px 40px;margin-top:50px;font-size:12.5px;text-align:center;}
-  footer a{color:var(--gold-soft);}
-  .cta-back{display:block;text-align:center;margin:28px 0 6px;font-size:14px;}
+.zj-eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:0.09em;color:var(--gold-text);font-weight:700;margin:22px 0 10px;}
+.zj-trip-card{margin-bottom:22px;}
+.zj-trip-card .saved-trip-head h1{font-size:clamp(26px,5vw,34px);margin:0;}
+.zj-trip-total{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+.zj-rsvp h2{font-size:21px;margin:0 0 4px;}
+.zj-sub{font-size:14.5px;color:var(--ink-soft);margin:0 0 16px;}
+.zj-tally{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.zj-tally-item{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 16px;text-align:center;min-width:88px;font-size:13px;color:var(--ink-soft);}
+.zj-tally-item b{display:block;font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:var(--ink);}
+.zj-list-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:6px 16px;margin-bottom:22px;}
+.zj-list-card .tc-item:first-child{border-top:none;}
+.zj-empty{padding:14px 0;font-size:13.5px;color:var(--ink-soft);font-style:italic;}
+.zj-form{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px;}
+.zj-field{margin-bottom:16px;}
+.zj-field label{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);font-weight:600;margin-bottom:7px;}
+.zj-input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;color:var(--ink);background:#fff;min-height:46px;padding:10px 12px;border:1px solid var(--line-form);border-radius:10px;}
+.zj-input:focus-visible{outline:2px solid var(--gold-text);outline-offset:1px;}
+textarea.zj-input{min-height:76px;resize:vertical;font-family:'Inter',sans-serif;}
+.zj-response{flex:1;min-width:104px;text-align:center;}
+.zj-response[data-v="idem"].on{background:var(--emerald);border-color:var(--emerald);color:var(--on-dark-strong);}
+.zj-response[data-v="mozda"].on{background:var(--gold);border-color:var(--gold);color:var(--on-gold);}
+.zj-response[data-v="ne_mogu"].on{background:var(--coral);border-color:var(--coral);color:#FDEEEB;}
+.zj-msg{font-size:13px;margin:10px 0 0;min-height:0;}
+.zj-msg.err{color:var(--coral-text);}
+.zj-msg.ok{color:var(--emerald);}
+.zj-cta-back{display:block;text-align:center;margin:30px auto 0;max-width:420px;}
+.zj-state{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:44px 22px;text-align:center;color:var(--ink-soft);margin-top:22px;}
+.zj-state .big{font-size:36px;margin-bottom:10px;}
+@media (max-width:520px){
+.zj-form{padding:18px;}
+.zj-response{min-width:0;}
+}
 </style>
 </head>
 <body>
 
-<div class="topbar-wrap">
-  <div class="topbar">
-    <a href="index.html" class="logo">
-      <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg></div>
-      SKLOPI<em>.</em>
-    </a>
-  </div>
+<div class="legal-header">
+<a href="index.html" class="logo">
+<span class="mark"><svg viewBox="0 0 24 24" fill="none"><g transform="rotate(-18 12 12)"><rect x="4" y="5" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="7" r="1.4" fill="var(--deep)"/><circle cx="20" cy="7" r="1.4" fill="var(--deep)"/><line x1="12" y1="5" x2="12" y2="9" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="10.5" width="16" height="4" rx="2" fill="#fff"/><circle cx="4" cy="12.5" r="1.4" fill="var(--deep)"/><circle cx="20" cy="12.5" r="1.4" fill="var(--deep)"/><line x1="12" y1="10.5" x2="12" y2="14.5" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="var(--deep)"/><circle cx="20" cy="18" r="1.4" fill="var(--deep)"/><line x1="12" y1="16" x2="12" y2="20" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/></g></svg></span>SKLOPI<em>.</em>
+</a>
+<a href="index.html" class="legal-back">← Nazad na početnu</a>
 </div>
 
-<div class="wrap" id="app">
-  <div class="state-msg" id="loadingMsg"><div class="big">⏳</div>Učitavam predlog putovanja…</div>
+<div class="legal-wrap" id="app">
+<div class="zj-state" id="loadingMsg"><div class="big">⏳</div>Učitavam predlog putovanja…</div>
 </div>
 
-<footer>SKLOPI — prototip proizvoda u razvoju. · <a href="privatnost.html">Privatnost</a> · <a href="uslovi-koriscenja.html">Uslovi</a> · <a href="kolacici.html">Kolačići</a></footer>
+<footer id="about">
+<div class="footer-inner">
+<div class="footer-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><g transform="rotate(-18 12 12)"><rect x="4" y="5" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="7" r="1.4" fill="var(--deep)"/><circle cx="20" cy="7" r="1.4" fill="var(--deep)"/><line x1="12" y1="5" x2="12" y2="9" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="10.5" width="16" height="4" rx="2" fill="#fff"/><circle cx="4" cy="12.5" r="1.4" fill="var(--deep)"/><circle cx="20" cy="12.5" r="1.4" fill="var(--deep)"/><line x1="12" y1="10.5" x2="12" y2="14.5" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="var(--deep)"/><circle cx="20" cy="18" r="1.4" fill="var(--deep)"/><line x1="12" y1="16" x2="12" y2="20" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/></g></svg></div>SKLOPI<em>.</em></div>
+<div class="flinks"><a href="index.html#faq">Pomoć i FAQ</a><a href="#" data-contact="mail">Kontakt</a><a href="privatnost.html">Privatnost</a><a href="uslovi-koriscenja.html">Uslovi</a><a href="kolacici.html">Kolačići</a></div>
+</div>
+<div class="foot-note">SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu.</div>
+</footer>
+
+<a href="#" data-contact="wa" rel="noopener" class="whatsapp-fab" aria-label="Piši nam na WhatsApp">
+<svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"/></svg>
+</a>
 
 <script src="config.js"></script>
-<script src="cookies.js"></script>
+<script src="contact.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ==========================================================
@@ -102,6 +91,8 @@
    get_trip_responses, add_trip_response) definisane u
    supabase/share_trip.sql — vidi taj fajl za objašnjenje zašto
    NEMA direktnog .from('trips').select() ovde.
+   (Ovo je samo redizajn markup-a/CSS-a — poslovna logika ispod
+   je nepromenjena.)
 ========================================================== */
 const sb = window.supabase.createClient(window.SKLOPI_SUPABASE_URL, window.SKLOPI_SUPABASE_KEY);
 
@@ -143,7 +134,7 @@ let selectedResponse = null;
 
 async function init(){
   if (!token){
-    app.innerHTML = `<div class="state-msg"><div class="big">🔗</div>Ovaj link nije potpun — nedostaje deo sa oznakom putovanja.</div>`;
+    app.innerHTML = `<div class="zj-state"><div class="big">🔗</div>Ovaj link nije potpun — nedostaje deo sa oznakom putovanja.</div>`;
     return;
   }
 
@@ -151,7 +142,7 @@ async function init(){
   const trip = tripRows && tripRows[0];
 
   if (tripErr || !trip){
-    app.innerHTML = `<div class="state-msg"><div class="big">🙈</div>Ovaj link za deljenje nije važeći, ili je aranžman u međuvremenu obrisan.<br><br><a href="index.html">Napravi svoj na Skoknici →</a></div>`;
+    app.innerHTML = `<div class="zj-state"><div class="big">🙈</div>Ovaj link za deljenje nije važeći, ili je aranžman u međuvremenu obrisan.<br><br><a href="index.html">Napravi svoj na SKLOPI-ju →</a></div>`;
     return;
   }
 
@@ -162,53 +153,62 @@ async function init(){
 function renderTrip(trip){
   const tags = tierLabelsForSaved(trip.selection || {});
   app.innerHTML = `
-    <div class="eyebrow">Neko te zove na put</div>
-    <div class="trip-card">
-      <h1>${escapeHtml(trip.dest)}</h1>
-      <div class="trip-meta">${fmtDate(trip.date_from)} – ${fmtDate(trip.date_to)} · ${trip.adults} putnik${trip.adults===1?'':'a'}</div>
-      <div class="trip-tags">${tags.map(t=>`<span class="trip-tag">${escapeHtml(t)}</span>`).join('')}</div>
-      <div class="trip-total">
-        <span class="lab">procenjeno ukupno (za ${trip.adults} putnik${trip.adults===1?'':'a'})</span>
-        <span class="num">${fmtEUR(trip.total)}</span>
+    <p class="zj-eyebrow">Neko te zove na put</p>
+
+    <div class="saved-trip-card zj-trip-card">
+      <div class="saved-trip-head">
+        <div>
+          <h1>${escapeHtml(trip.dest)}</h1>
+          <div class="saved-trip-meta">${fmtDate(trip.date_from)} – ${fmtDate(trip.date_to)} · ${trip.adults} putnik${trip.adults===1?'':'a'}</div>
+        </div>
       </div>
-      <p class="disclaimer">⚠️ Ilustrativna procena sa Skoknice, ne stvarna ponuda partnera — pre rezervacije proverite cenu direktno na partnerskom sajtu.</p>
+      ${tags.length ? `<div class="saved-trip-tags">${tags.map(t=>`<span class="saved-trip-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+      <div class="pkg-total zj-trip-total">
+        <div class="num tabular">${fmtEUR(trip.total)}</div>
+        <div class="cur">procenjeno ukupno (za ${trip.adults} putnik${trip.adults===1?'':'a'})</div>
+      </div>
+      <p class="disclaimer">⚠️ Ilustrativna procena sa SKLOPI-ja, ne stvarna ponuda partnera — pre rezervacije proveri cenu direktno na partnerskom sajtu.</p>
     </div>
 
-    <div class="rsvp-section">
+    <section class="zj-rsvp">
       <h2>Ko ide?</h2>
-      <p class="rsvp-sub">Javi se ispod — bez pravljenja naloga.</p>
-      <div class="rsvp-tally" id="rsvpTally"></div>
-      <div class="rsvp-list" id="rsvpList"></div>
+      <p class="zj-sub">Javi se ispod — bez pravljenja naloga.</p>
 
-      <div class="rsvp-form">
-        <div class="row">
+      <div class="zj-tally" id="rsvpTally"></div>
+
+      <div class="zj-list-card">
+        <ul class="tc-list" id="rsvpList"></ul>
+      </div>
+
+      <div class="zj-form">
+        <div class="zj-field">
           <label for="rsvpName">Tvoje ime</label>
-          <input type="text" id="rsvpName" maxlength="60" placeholder="npr. Ana">
+          <input class="zj-input" type="text" id="rsvpName" maxlength="60" placeholder="npr. Ana">
         </div>
-        <div class="row">
+        <div class="zj-field">
           <label>Da li ideš?</label>
-          <div class="response-options" id="responseOptions">
-            <label class="response-opt" data-v="idem"><input type="radio" name="resp">🎉 Idem</label>
-            <label class="response-opt" data-v="mozda"><input type="radio" name="resp">🤔 Možda</label>
-            <label class="response-opt" data-v="ne_mogu"><input type="radio" name="resp">😕 Ne mogu</label>
+          <div class="chip-row" id="responseOptions">
+            <button type="button" class="chip zj-response" data-v="idem">🎉 Idem</button>
+            <button type="button" class="chip zj-response" data-v="mozda">🤔 Možda</button>
+            <button type="button" class="chip zj-response" data-v="ne_mogu">😕 Ne mogu</button>
           </div>
         </div>
-        <div class="row">
+        <div class="zj-field">
           <label for="rsvpComment">Komentar (opciono)</label>
-          <textarea id="rsvpComment" maxlength="300" placeholder="npr. meni odgovara samo drugi vikend u oktobru"></textarea>
+          <textarea class="zj-input" id="rsvpComment" maxlength="300" placeholder="npr. meni odgovara samo drugi vikend u oktobru"></textarea>
         </div>
-        <button type="button" class="rsvp-submit" id="rsvpSubmit">Pošalji odgovor</button>
-        <p class="form-msg" id="rsvpMsg"></p>
+        <button type="button" class="btn-primary q-submit" id="rsvpSubmit" style="width:100%;">Pošalji odgovor</button>
+        <p class="zj-msg" id="rsvpMsg"></p>
       </div>
-    </div>
+    </section>
 
-    <a class="cta-back" href="index.html">🧭 Napravi i ti svoj izlet na Skoknici →</a>
+    <a class="btn-primary q-submit zj-cta-back" href="index.html">🧭 Napravi i ti svoj izlet na SKLOPI-ju</a>
   `;
 
-  document.querySelectorAll('.response-opt').forEach(opt=>{
+  document.querySelectorAll('.zj-response').forEach(opt=>{
     opt.addEventListener('click', ()=>{
-      document.querySelectorAll('.response-opt').forEach(o=>o.classList.remove('sel'));
-      opt.classList.add('sel');
+      document.querySelectorAll('.zj-response').forEach(o=>o.classList.remove('on'));
+      opt.classList.add('on');
       selectedResponse = opt.dataset.v;
     });
   });
@@ -224,18 +224,18 @@ function renderResponses(list){
   const counts = {idem:0, mozda:0, ne_mogu:0};
   list.forEach(r => { if (counts[r.response] !== undefined) counts[r.response]++; });
   tallyEl.innerHTML = Object.keys(RESPONSE_META).map(k =>
-    `<div class="t"><b>${counts[k]}</b>${RESPONSE_META[k].emoji} ${RESPONSE_META[k].label}</div>`
+    `<div class="zj-tally-item"><b>${counts[k]}</b>${RESPONSE_META[k].emoji} ${RESPONSE_META[k].label}</div>`
   ).join('');
 
   if (!list.length){
-    listEl.innerHTML = '<p class="rsvp-empty" id="rsvpEmptyMsg">Još niko nije odgovorio — budi prvi.</p>';
+    listEl.innerHTML = '<p class="zj-empty" id="rsvpEmptyMsg">Još niko nije odgovorio — budi prvi.</p>';
     return;
   }
   listEl.innerHTML = list.map(r => `
-    <div class="rsvp-item">
-      <div class="who">${RESPONSE_META[r.response] ? RESPONSE_META[r.response].emoji : ''} ${escapeHtml(r.name)}</div>
-      ${r.comment ? `<div class="cm">${escapeHtml(r.comment)}</div>` : ''}
-    </div>
+    <li class="tc-item">
+      <span class="tc-ic">${RESPONSE_META[r.response] ? RESPONSE_META[r.response].emoji : '💬'}</span>
+      <div><b>${escapeHtml(r.name)}</b>${r.comment ? `<p>${escapeHtml(r.comment)}</p>` : ''}</div>
+    </li>
   `).join('');
 }
 
@@ -251,8 +251,8 @@ async function submitResponse(){
   const msgEl = document.getElementById('rsvpMsg');
   const btn = document.getElementById('rsvpSubmit');
 
-  if (!name){ msgEl.textContent = 'Unesi svoje ime.'; msgEl.className = 'form-msg err'; return; }
-  if (!selectedResponse){ msgEl.textContent = 'Izaberi jednu od tri opcije iznad.'; msgEl.className = 'form-msg err'; return; }
+  if (!name){ msgEl.textContent = 'Unesi svoje ime.'; msgEl.className = 'zj-msg err'; return; }
+  if (!selectedResponse){ msgEl.textContent = 'Izaberi jednu od tri opcije iznad.'; msgEl.className = 'zj-msg err'; return; }
 
   btn.disabled = true;
   const { error } = await sb.rpc('add_trip_response', {
@@ -260,10 +260,10 @@ async function submitResponse(){
   });
   btn.disabled = false;
 
-  if (error){ msgEl.textContent = 'Greška: ' + error.message; msgEl.className = 'form-msg err'; return; }
+  if (error){ msgEl.textContent = 'Greška: ' + error.message; msgEl.className = 'zj-msg err'; return; }
 
   msgEl.textContent = 'Hvala, odgovor je zabeležen!';
-  msgEl.className = 'form-msg ok';
+  msgEl.className = 'zj-msg ok';
   document.getElementById('rsvpComment').value = '';
   await refreshResponses();
 }
