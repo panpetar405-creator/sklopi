@@ -981,7 +981,11 @@ function pickBestLocationMatch(results, query){
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.width = '';
-      window.scrollTo(0, calScrollY);
+      // behavior:'instant' je NAMERNO eksplicitan — <html> ima globalno
+      // scroll-behavior:smooth u CSS-u (styles.css), pa bi obično
+      // scrollTo(0, calScrollY) bez ovoga animirano "odleteo" preko celog
+      // sajta do sačuvane pozicije umesto da odmah skoči na nju.
+      window.scrollTo({top: calScrollY, left: 0, behavior: 'instant'});
     }, 0);
   }
 
@@ -1248,7 +1252,9 @@ function pickBestLocationMatch(results, query){
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.width = '';
-      window.scrollTo(0, paxScrollY);
+      // behavior:'instant' iz istog razloga kao u unlockPageScroll za
+      // kalendar iznad — zaobilazi globalno scroll-behavior:smooth.
+      window.scrollTo({top: paxScrollY, left: 0, behavior: 'instant'});
     }, 0);
   }
 
@@ -4356,7 +4362,11 @@ function unlockResultsPageScroll(){
     document.body.style.left = '';
     document.body.style.right = '';
     document.body.style.width = '';
-    window.scrollTo(0, _resultsScrollY);
+    // behavior:'instant' iz istog razloga kao kod kalendara/putnika — bez
+    // ovoga skrol animirano "leti" preko celog sajta (vidljivo i kod
+    // zatvaranja rezultata i kod zatvaranja vodiča-po-stavci/feature-guide,
+    // koji deli ovu istu funkciju za otključavanje skrola).
+    window.scrollTo({top: _resultsScrollY, left: 0, behavior: 'instant'});
   }, 0);
 }
 
