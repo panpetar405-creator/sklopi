@@ -140,6 +140,7 @@ a{color:inherit;}
 .topbar-right{display:flex;align-items:center;gap:10px;}
 /* ---- Redizajn 2026: novi navbar logo + "Sastavi put" dugme ---- */
 .logo-v2{display:flex;align-items:center;gap:10px;font-family:'Sora',sans-serif;font-weight:800;font-size:22px;color:var(--ink);}
+.logo-v2-svg{height:32px;width:auto;display:block;flex:none;}
 .logo-v2 .mark-v2{width:38px;height:38px;border-radius:11px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
 .logo-v2 .mark-v2 svg{width:20px;height:20px;}
 .logo-v2 em{font-style:normal;color:var(--coral);margin-left:2px;}
