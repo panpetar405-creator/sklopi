@@ -386,6 +386,7 @@
   "val_dest_missing": "Enter a destination so we can find offers.",
   "val_origin_missing": "Enter where you depart from — we need it to price the flight.",
   "val_dates_missing": "Pick your travel dates.",
+  "val_passengers_missing": "Choose the number of passengers.",
   "val_return_before_departure": "The return date must be after the departure date.",
   "val_departure_in_past": "The departure date is in the past — pick new dates.",
   "val_no_service": "Turn on at least one service: flights, stay, car or activities.",

@@ -737,6 +737,20 @@ function pickBestLocationMatch(results, query){
     updateDisplay();
   }
 
+  // Izloženo van IIFE-a — kad neko SPOLJA upiše prave datume direktno u
+  // #dateFrom/#dateTo (učitavanje sačuvanog izleta, "Pogledaj detalje"),
+  // stub mora da izgubi "is-empty" i pokaže te datume, isti obrazac kao
+  // window.syncPaxDisplay za broj putnika. Bez ovoga validacija (koja sad
+  // proverava baš tu "is-empty" klasu, ne samo sirovu vrednost polja —
+  // videti validateSearchInputs) ne bi prepoznala datume kao izabrane.
+  window.syncDateDisplay = function(){
+    selStart = parseISODate(hiddenFrom.value);
+    selEnd = parseISODate(hiddenTo.value);
+    viewYear = selStart.getFullYear();
+    viewMonth = selStart.getMonth();
+    updateDisplay();
+  };
+
   function buildMonthGrid(year, month, monthLabelText){
     const first = new Date(year, month, 1);
     const startOffset = (first.getDay() + 6) % 7; // ponedeljak = 0
@@ -5060,11 +5074,20 @@ function validateSearchInputs(extra){
   const flight = on('flight'), hotel = on('hotel');
   const car = on('car') || !!extra.car, activity = on('activity') || !!extra.activity;
   const isDate = v => /^\d{4}-\d{2}-\d{2}$/.test(v || '') && !isNaN(new Date(v));
+  // #dateFrom/#dateTo se PUNE default vrednošću (danas+14 dana) čim se
+  // stranica učita — to je samo početna pozicija kalendara, ne stvarni
+  // izbor korisnika. Zato datumi ovde NISU validni dok ih korisnik ne
+  // potvrdi (dugme "Gotovo" u kalendaru skida "is-empty" — vidi updateDisplay
+  // u IIFE-u iznad); bez ove provere je moguće poslati pretragu i dobiti
+  // ceo paket a da datumi nikad nisu ni otvoreni, kamoli izabrani.
+  const datesConfirmed = !document.getElementById('dateDisplayBtn')?.classList.contains('is-empty');
+  const paxConfirmed = !document.getElementById('paxDisplayBtn')?.classList.contains('is-empty');
   if (!dest) return {ok:false, focus:'dest', msg:t('val_dest_missing')};
   if (flight && !origin) return {ok:false, focus:'origin', msg:t('val_origin_missing')};
-  if (!isDate(from) || !isDate(to)) return {ok:false, focus:'form', msg:t('val_dates_missing')};
+  if (!datesConfirmed || !isDate(from) || !isDate(to)) return {ok:false, focus:'form', msg:t('val_dates_missing')};
   if (to <= from) return {ok:false, focus:'form', msg:t('val_return_before_departure')};
   if (extra.checkPast && from < localTodayStr()) return {ok:false, focus:'form', msg:t('val_departure_in_past')};
+  if (!paxConfirmed) return {ok:false, focus:'form', msg:t('val_passengers_missing')};
   if (!(flight || hotel || car || activity)) return {ok:false, focus:'form', msg:t('val_no_service')};
   return {ok:true};
 }
@@ -6625,6 +6648,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       // Builder radi nad poljima forme i builderState — vrati ih na izabrani plan pre otvaranja.
       const set = (id, v) => { const el = document.getElementById(id); if (el && v != null && el.value !== String(v)){ el.value = v; el.dispatchEvent(new Event('input', {bubbles:true})); } };
       set('dest', trip.dest); set('dateFrom', trip.ctx.from); set('dateTo', trip.ctx.to); set('adults', trip.ctx.adults);
+      if (typeof window.syncPaxDisplay === 'function') window.syncPaxDisplay();
+      if (typeof window.syncDateDisplay === 'function') window.syncDateDisplay();
       Object.assign(builderState, trip.sel);
       renderFormUI();
       openControlPanel();
@@ -7521,6 +7546,7 @@ function loadSavedTrip(tripId){
   document.getElementById('dateTo').value = trip.date_to;
   document.getElementById('adults').value = String(trip.adults);
   if (typeof window.syncPaxDisplay === 'function') window.syncPaxDisplay();
+  if (typeof window.syncDateDisplay === 'function') window.syncDateDisplay();
   document.getElementById('dateFrom').dispatchEvent(new Event('change', {bubbles:true}));
 
   if (trip.selection && trip.selection.kind === 'builder' && trip.selection.builderState){
