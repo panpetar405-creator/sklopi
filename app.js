@@ -5929,8 +5929,17 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     // airportNoteText, vidi renderDestAirportWarning). Dodajemo je i ovde,
     // istim tekstom, da poruka bude dosledna kroz ceo sajt.
     const apInfo = airportInfoFor(k);
-    const airportNote = (apInfo && !apInfo.hasAirport && apInfo.nearest) ? airportNoteText(apInfo) : '';
-    plans.forEach(p => { p.airportNote = airportNote; });
+    const noOwnAirport = apInfo && !apInfo.hasAirport && apInfo.nearest;
+    const airportNote = noOwnAirport ? airportNoteText(apInfo) : '';
+    plans.forEach(p => {
+      p.airportNote = airportNote;
+      // "Direktan let"/"Fleksibilan let" i sl. opisuju TIP karte (bez
+      // presedanja), ne kuda sleće — samo po sebi to zvuči kao direktan let
+      // baš u k, što zbunjuje kad grad nema aerodrom. flightArrival se
+      // dodaje u cardHtml() uz taj tekst ("... do Tivata"), da kartica ne
+      // zvuči kao da protivreči napomeni ispod nje.
+      p.flightArrival = noOwnAirport ? apInfo.nearest : null;
+    });
     if (c.fixed){ plans.forEach((p, i) => { p.price = c.fixed[i]; }); return plans; }
     const ctx = Object.assign({}, builderCtx(), {dest:k});
     const sel = p => Object.assign({}, BUILDER_DEFAULTS, {includeFlight:true, includeHotel:true}, pickSel(p));
@@ -5943,7 +5952,17 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     return plans;
   }
   function cardHtml(p, i){
-    const ft = p.feats.map(f => '<li><span class="dpf-ic" aria-hidden="true">' + f[0] + '</span><span>' + escapeHtml(tx(f[1])) + '</span></li>').join('');
+    const ft = p.feats.map(f => {
+      // f[0] je '\u2708' (✈) samo za red o letu (uvek prvi u feats, videti
+      // dest-plans.js) — tu, i samo tu, dodajemo "do {aerodrom}" kad grad
+      // nema sopstveni aerodrom, da red o letu ne izgleda kao da je u
+      // suprotnosti sa napomenom ispod (apNote) koja kaže da leti do
+      // drugog grada.
+      const label = (f[0] === '\u2708' && p.flightArrival)
+        ? tx(f[1]) + ' \u2192 ' + cityLabel(p.flightArrival)
+        : tx(f[1]);
+      return '<li><span class="dpf-ic" aria-hidden="true">' + f[0] + '</span><span>' + escapeHtml(label) + '</span></li>';
+    }).join('');
     const apNote = p.airportNote ? '<p class="dest-plan-airport-note">\u2708\ufe0f ' + escapeHtml(p.airportNote) + '</p>' : '';
     return '<article class="dest-plan-card" data-plan="' + i + '"><div class="dest-plan-photo"><img src="' + escapeHtml(p.thumb)
       + '" alt="' + escapeHtml(cityLabel(p.dest)) + '" loading="lazy">'
