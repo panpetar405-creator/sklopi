@@ -1701,6 +1701,9 @@ const AIRPORT_DB = {
   'banja luka': {hasAirport:true, limited:true},
   'tuzla': {hasAirport:true},
   'mostar': {hasAirport:true},
+  'blagaj': {nearest:'Mostar', note:'Blagaj nema svoj aerodrom — najbliži je Mostar (oko 15 min vožnje).', c:'Blagaj', k:'own', t:'15 min'},
+  'pocitelj': {nearest:'Mostar', note:'Počitelj nema svoj aerodrom — najbliži je Mostar (oko 30 min vožnje).', c:'Počitelj', k:'own', t:'30 min'},
+  'medjugorje': {nearest:'Mostar', note:'Međugorje nema svoj aerodrom — najbliži je Mostar (oko 25 min vožnje).', c:'Međugorje', k:'own', t:'25 min'},
   // --- BiH: bez sopstvenog aerodroma ---
   'zenica': {nearest:'Sarajevo', note:'Zenica nema svoj aerodrom — najbliži je Sarajevo (oko 1h vožnje).', c:'Zenica', k:'own', t:'1h'},
   'prijedor': {nearest:'Banja Luka', note:'Prijedor nema svoj aerodrom — najbliži je Banja Luka (oko 40 min vožnje).', c:'Prijedor', k:'own', t:'40 min'},
@@ -1713,6 +1716,16 @@ const AIRPORT_DB = {
   'travnik': {nearest:'Sarajevo', note:'Travnik nema svoj aerodrom — najbliži je Sarajevo (oko 1h30 vožnje).', c:'Travnik', k:'own', t:'1h30'},
   'livno': {nearest:'Split', note:'Livno nema svoj aerodrom — najbliži je Split u Hrvatskoj (oko 1h30 vožnje), Sarajevo je alternativa.', c:'Livno', k:'own', t:'1h30', cc:'Hrvatskoj', alt:'Sarajevo'},
   'gorazde': {nearest:'Sarajevo', note:'Goražde nema svoj aerodrom — najbliži je Sarajevo (oko 1h vožnje).', c:'Goražde', k:'own', t:'1h'},
+  'vrelo bosne': {nearest:'Sarajevo', note:'Vrelo Bosne nema svoj aerodrom — najbliži je Sarajevo (oko 20 min vožnje).', c:'Vrelo Bosne', k:'own', t:'20 min'},
+  'konjic': {nearest:'Sarajevo', note:'Konjic nema svoj aerodrom — najbliži je Sarajevo (oko 45 min vožnje), Mostar je alternativa.', c:'Konjic', k:'own', t:'45 min', alt:'Mostar'},
+  'jajce': {nearest:'Banja Luka', note:'Jajce nema svoj aerodrom — najbliži je Banja Luka (oko 1h30 vožnje), Sarajevo je alternativa.', c:'Jajce', k:'own', t:'1h30', alt:'Sarajevo'},
+  'neum': {nearest:'Dubrovnik', note:'Neum nema svoj aerodrom — najbliži je Dubrovnik u Hrvatskoj (oko 30 min vožnje), Mostar je alternativa.', c:'Neum', k:'own', t:'30 min', cc:'Hrvatskoj', alt:'Mostar'},
+  'bjelasnica': {nearest:'Sarajevo', note:'Bjelašnica nema svoj aerodrom — najbliži je Sarajevo (oko 30 min vožnje).', c:'Bjelašnica', k:'own', t:'30 min'},
+  'jahorina': {nearest:'Sarajevo', note:'Jahorina nema svoj aerodrom — najbliži je Sarajevo (oko 40 min vožnje).', c:'Jahorina', k:'own', t:'40 min'},
+  'vlasic': {nearest:'Banja Luka', note:'Vlašić nema svoj aerodrom — najbliži je Banja Luka (oko 1h30 vožnje), Sarajevo je alternativa.', c:'Vlašić', k:'own', t:'1h30', alt:'Sarajevo'},
+  'kupres': {nearest:'Split', note:'Kupres nema svoj aerodrom — najbliži je Split u Hrvatskoj (oko 1h30 vožnje), Mostar je alternativa.', c:'Kupres', k:'own', t:'1h30', cc:'Hrvatskoj', alt:'Mostar'},
+  'sutjeska': {nearest:'Sarajevo', note:'Nacionalni park Sutjeska nema svoj aerodrom — najbliži je Sarajevo (oko 2h30 vožnje).', c:'Sutjeska', k:'own', t:'2h30'},
+  'una': {nearest:'Banja Luka', note:'Nacionalni park Una nema svoj aerodrom — najbliži je Banja Luka (oko 2h vožnje).', c:'Una', k:'own', t:'2h'},
   // --- Hrvatska: aerodromi ---
   'zagreb': {hasAirport:true}, 'split': {hasAirport:true}, 'dubrovnik': {hasAirport:true},
   'zadar': {hasAirport:true}, 'rijeka': {hasAirport:true}, 'pula': {hasAirport:true},
@@ -5152,6 +5165,12 @@ async function runSearch(shouldScroll, autoReveal){
 
 document.getElementById('searchForm').addEventListener('submit', function(e){
   e.preventDefault();
+  // Ista provera kao za pravu pretragu (runSearch) — bez ovoga je moguće
+  // otvoriti "Prilagodi svoj plan" i dobiti pun paket/3 plana a da polazak,
+  // datumi ili broj putnika nikad nisu upisani/potvrđeni (pravi bag: video
+  // se npr. sa "Blagaj" bez ijednog drugog polja i bez izabranog leta).
+  const check = validateSearchInputs();
+  if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
   trackFunnelEvent('search_submit', {
     destination: document.getElementById('dest').value.trim() || 'Atina'
   });
@@ -5932,6 +5951,14 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }
   const pickSel = p => ({flightPref:p.flightPref, hotelStars:p.hotelStars, prioritizeLocation:p.prioritizeLocation,
     carPref:p.carPref, activityCount:p.activityCount});
+  // Servisi koje je korisnik STVARNO markirao (Letovi/Smeštaj/R a C/Aktivnost
+  // ispod forme) — bez ovoga su kartice "3 plana" uvek prikazivale ceo
+  // paket (let + hotel + auto + aktivnosti) iz fiksnog šablona, čak i kad je
+  // korisnik obeležio samo "Smeštaj" (pravi bag).
+  function activeServiceFlags(){
+    const on = key => { const el = document.querySelector('.toggle[data-t="' + key + '"]'); return !!(el && el.classList.contains('on')); };
+    return {flight:on('flight'), hotel:on('hotel'), car:on('car'), activity:on('activity')};
+  }
 
   function buildPlans(k){
     const c = curEntry, tpl = CFG.arch[c.arch] || CFG.arch.city || [];
@@ -5954,6 +5981,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const apInfo = airportInfoFor(k);
     const noOwnAirport = apInfo && !apInfo.hasAirport && apInfo.nearest;
     const airportNote = noOwnAirport ? airportNoteText(apInfo) : '';
+    const svc = activeServiceFlags();
     plans.forEach(p => {
       p.airportNote = airportNote;
       // "Direktan let"/"Fleksibilan let" i sl. opisuju TIP karte (bez
@@ -5962,10 +5990,32 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       // dodaje u cardHtml() uz taj tekst ("... do Tivata"), da kartica ne
       // zvuči kao da protivreči napomeni ispod nje.
       p.flightArrival = noOwnAirport ? apInfo.nearest : null;
+      // Šabloni (dest-plans.js) uvek nabrajaju sve 4 stavke (let/hotel/
+      // aktivnosti/auto) bez obzira šta je korisnik markirao ispod forme —
+      // zato je kartica za "samo Smeštaj" ipak pisala "Direktan let". Ovde
+      // sklanjamo stavke za servise koje korisnik NIJE tražio; auto-red je
+      // ponekad kombinovan sa brojem aktivnosti ("Auto + 3 aktivnosti"), pa
+      // se prikazuje samo ako je auto zaista uključen.
+      p.feats = p.feats.filter(f => {
+        if (f[0] === '\u2708') return svc.flight;
+        if (f[0] === '\u25a3') return svc.hotel;
+        if (f[0] === '\u25c7') return svc.activity;
+        if (f[0] === '\u25b1') return svc.car;
+        return true;
+      });
+      if (!svc.flight){ p.airportNote = ''; p.flightArrival = null; }
     });
-    if (c.fixed){ plans.forEach((p, i) => { p.price = c.fixed[i]; }); return plans; }
+    // Uredničke fiksne cene (c.fixed, npr. Atina) pretpostavljaju PUN paket
+    // (let + hotel); ako korisnik nije tražio let i/ili hotel, te cene više
+    // ne važe i računamo iz builder-a (ispod), isto kao za sve ostale gradove.
+    if (c.fixed && svc.flight && svc.hotel){ plans.forEach((p, i) => { p.price = c.fixed[i]; }); return plans; }
     const ctx = Object.assign({}, builderCtx(), {dest:k});
-    const sel = p => Object.assign({}, BUILDER_DEFAULTS, {includeFlight:true, includeHotel:true}, pickSel(p));
+    const sel = p => {
+      const s = Object.assign({}, BUILDER_DEFAULTS, {includeFlight:svc.flight, includeHotel:svc.hotel}, pickSel(p));
+      if (!svc.car) s.carPref = 'none';
+      if (!svc.activity) s.activityCount = 0;
+      return s;
+    };
     const a = sel(plans[0]), pkg = computeCustomPackage(a, ctx);
     const derive = window.SKLOPI_derivePerPerson;
     plans.forEach((p, i) => {
@@ -8127,11 +8177,11 @@ function setTransportToggle(dataT, shouldBeOn){
 // originalno mesto kad se modal zatvori (restoreBuilderSummaryPosition).
 document.getElementById('spMakeBtn').addEventListener('click', () => {
   const destInput = document.getElementById('dest');
-  if (!destInput.value.trim()){
-    showToast('Unesi destinaciju da bismo napravili izlet.');
-    destInput.focus();
-    return;
-  }
+  // Ranije se proveravala SAMO destinacija — polazak (ako je let uključen),
+  // datumi i broj putnika su mogli ostati prazni/nepotvrđeni, pa je izlet
+  // pravljen na osnovu nepotpunog unosa. Ista provera kao za pretragu.
+  const check = validateSearchInputs();
+  if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
 
   trackFunnelEvent('builder_open', {
     destination: destInput.value.trim()
