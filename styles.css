@@ -4006,3 +4006,52 @@ button.mark-v2:active{transform:scale(.95);}
 .q-radio-line input[type="radio"]:checked{border-color:var(--btn-petrol-a);}
 .q-radio-line input[type="radio"]:checked::after{background:var(--btn-petrol-a);}
 .q-radio-line:has(input:checked){background:#e9f5f5;color:var(--btn-petrol-c);}
+
+/* ===== App loading splash (redizajn) ===== */
+.app-splash{
+    position:fixed;inset:0;z-index:99999;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 120% at 50% 20%,var(--deep) 0%,var(--deep2) 100%);
+    transition:opacity .5s ease,visibility .5s ease;
+}
+.app-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.app-splash-inner{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.app-splash-mark{overflow:visible;}
+.app-splash-mark .as-bar rect{fill:var(--gold-soft);}
+.app-splash-mark .as-bar-2 rect{fill:#FFFFFF;}
+.app-splash-mark .as-bar circle,
+.app-splash-mark .as-bar line{fill:var(--deep2);stroke:var(--deep2);}
+.app-splash-mark .as-bar-1{animation:asAssemble1 .7s cubic-bezier(.22,1,.36,1) both;}
+.app-splash-mark .as-bar-2{animation:asAssemble2 .7s cubic-bezier(.22,1,.36,1) both .1s;}
+.app-splash-mark .as-bar-3{animation:asAssemble3 .7s cubic-bezier(.22,1,.36,1) both .2s;}
+.app-splash-mark{animation:asPulse 1.8s ease-in-out .9s infinite;}
+@keyframes asAssemble1{from{transform:translate(-22px,-10px);opacity:0;}to{transform:translate(0,0);opacity:1;}}
+@keyframes asAssemble2{from{transform:translate(24px,0);opacity:0;}to{transform:translate(0,0);opacity:1;}}
+@keyframes asAssemble3{from{transform:translate(-22px,10px);opacity:0;}to{transform:translate(0,0);opacity:1;}}
+@keyframes asPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.045);}}
+.app-splash-word{
+    font-family:'Sora',sans-serif;font-weight:800;font-size:22px;letter-spacing:.02em;
+    color:var(--on-dark-strong);opacity:0;
+    animation:asFadeUp .5s ease .55s both;
+}
+.app-splash-word em{font-style:normal;color:var(--coral);}
+@keyframes asFadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.app-splash-track{
+    width:88px;height:3px;border-radius:3px;overflow:hidden;
+    background:rgba(250,246,238,.16);
+    opacity:0;animation:asFadeUp .5s ease .7s both;
+}
+.app-splash-fill{
+    display:block;height:100%;width:40%;border-radius:3px;
+    background:linear-gradient(90deg,var(--coral),var(--gold));
+    animation:asTrack 1.1s ease-in-out infinite;
+}
+@keyframes asTrack{
+    0%{transform:translateX(-100%);}
+    100%{transform:translateX(250%);}
+}
+@media (prefers-reduced-motion:reduce){
+    .app-splash-mark,.app-splash-mark .as-bar-1,.app-splash-mark .as-bar-2,.app-splash-mark .as-bar-3{animation:none;opacity:1;transform:none;}
+    .app-splash-word,.app-splash-track{animation:none;opacity:1;}
+    .app-splash-fill{animation:none;width:100%;}
+}

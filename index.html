@@ -133,10 +133,56 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@600;700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=45">
+<link rel="stylesheet" href="styles.css?v=46">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 </head>
 <body>
+<noscript><style>#appSplash{display:none!important;}</style></noscript>
+<div id="appSplash" class="app-splash" role="status" aria-live="polite" aria-label="Učitavanje">
+  <div class="app-splash-inner">
+    <svg class="app-splash-mark" viewBox="0 0 24 24" width="88" height="88" aria-hidden="true">
+      <g transform="rotate(-18 12 12)">
+        <g class="as-bar as-bar-1">
+          <rect x="4" y="5" width="16" height="4" rx="2"/>
+          <circle cx="4" cy="7" r="1.4"/><circle cx="20" cy="7" r="1.4"/>
+          <line x1="12" y1="5" x2="12" y2="9"/>
+        </g>
+        <g class="as-bar as-bar-2">
+          <rect x="4" y="10.5" width="16" height="4" rx="2"/>
+          <circle cx="4" cy="12.5" r="1.4"/><circle cx="20" cy="12.5" r="1.4"/>
+          <line x1="12" y1="10.5" x2="12" y2="14.5"/>
+        </g>
+        <g class="as-bar as-bar-3">
+          <rect x="4" y="16" width="16" height="4" rx="2"/>
+          <circle cx="4" cy="18" r="1.4"/><circle cx="20" cy="18" r="1.4"/>
+          <line x1="12" y1="16" x2="12" y2="20"/>
+        </g>
+      </g>
+    </svg>
+    <div class="app-splash-word">SKLOPI<em>.</em></div>
+    <div class="app-splash-track"><span class="app-splash-fill"></span></div>
+  </div>
+</div>
+<script>
+(function(){
+  var el = document.getElementById('appSplash');
+  if(!el) return;
+  var hidden = false;
+  function hide(){
+    if(hidden) return;
+    hidden = true;
+    el.classList.add('is-hidden');
+    setTimeout(function(){ if(el && el.parentNode) el.parentNode.removeChild(el); }, 550);
+  }
+  var shownAt = Date.now();
+  window.addEventListener('load', function(){
+    var elapsed = Date.now() - shownAt;
+    var minShow = 700; /* dovoljno da se animacija sklapanja vidi */
+    setTimeout(hide, Math.max(0, minShow - elapsed));
+  });
+  setTimeout(hide, 4000); /* sigurnosni fallback ako 'load' ne okine */
+})();
+</script>
 <div class="topbar-wrap">
 <div class="topbar">
 <div class="logo logo-v2">
