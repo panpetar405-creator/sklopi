@@ -390,6 +390,7 @@
   "val_origin_missing": "Gib deinen Abflugort ein – wir brauchen ihn, um den Flug zu berechnen.",
   "val_dates_missing": "Wähle deine Reisedaten.",
   "val_passengers_missing": "Wähle die Anzahl der Reisenden.",
+  "dest_plans_estimate_note": "Dies sind Richtpreise für 2 Reisende und ungefähre Daten — trage unten deine Angaben ein für einen genauen, vollständigen Plan.",
   "val_return_before_departure": "Das Rückreisedatum muss nach dem Abreisedatum liegen.",
   "val_departure_in_past": "Das Abreisedatum liegt in der Vergangenheit – wähle neue Daten.",
   "val_no_service": "Aktiviere mindestens eine Leistung: Flüge, Unterkunft, Auto oder Aktivitäten.",

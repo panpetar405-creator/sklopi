@@ -6027,6 +6027,19 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (ul) ul.innerHTML = c.reasons.map(r => '<li>' + escapeHtml(tx(r)) + '</li>').join('');
     curPlans = buildPlans(k);
     $('destPlansList').innerHTML = curPlans.map(cardHtml).join('');
+    // Ove kartice se računaju i prikazuju ČIM se otvori destinacija, pre
+    // nego što korisnik uopšte dirne "Sastavi svoj put" formu ispod — cena
+    // je zato uvek zasnovana na podrazumevanim vrednostima (2 putnika,
+    // orijentacioni datumi), ne na nečemu što je korisnik stvarno izabrao.
+    // Napomena ispod naslova to jasno kaže dok god forma nije popunjena;
+    // čim JESTE (isti "is-empty" signal kao u validateSearchInputs), kartice
+    // već odražavaju stvarne podatke pa napomena više nije potrebna.
+    const estNote = $('destPlansEstNote');
+    if (estNote){
+      const datesConfirmed = !document.getElementById('dateDisplayBtn')?.classList.contains('is-empty');
+      const paxConfirmed = !document.getElementById('paxDisplayBtn')?.classList.contains('is-empty');
+      estNote.hidden = datesConfirmed && paxConfirmed;
+    }
     shownCity = k;
   }
   function setCity(name, o){

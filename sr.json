@@ -387,6 +387,7 @@
   "val_origin_missing": "Upiši polazak — bez njega ne možemo da izračunamo let.",
   "val_dates_missing": "Izaberi datume putovanja.",
   "val_passengers_missing": "Izaberi broj putnika.",
+  "dest_plans_estimate_note": "Ovo su orijentacione cene za 2 putnika i okvirne datume — upiši svoje podatke ispod za tačan i kompletan plan.",
   "val_return_before_departure": "Datum povratka mora biti posle datuma polaska.",
   "val_departure_in_past": "Datum polaska je u prošlosti — izaberi nove datume.",
   "val_no_service": "Uključi bar jednu uslugu: let, smeštaj, auto ili aktivnosti.",
