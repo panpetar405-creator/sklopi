@@ -6243,6 +6243,19 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   $('planDetailBook')?.addEventListener('click', goToSearchForCity);
   $('planDetailMore')?.addEventListener('click', () => {
     if (!breakdown) return;
+    // BAG: "Pogledaj detalje" je otvarao SVE podstranice (let/hotel/
+    // aktivnosti) bez obzira na to koje je usluge korisnik stvarno
+    // markirao (Letovi/Smeštaj/R a C/Aktivnost) — npr. paket sa samo
+    // "Smeštaj" i dalje je prikazivao "Let Beograd → X" (i, pošto Polazak
+    // nije bio popunjen jer let nije ni tražen, tiho je pretpostavljao
+    // Beograd). Sada sakrivamo podstranicu za svaku uslugu koja nije
+    // markirana, isto kao što se već radi za red u planDetailList iznad.
+    const p = window.SKLOPI_ACTIVE_PLAN;
+    const svc = (p && p.svc) || {flight:true, hotel:true, car:true, activity:true};
+    const flightSec = $('flightDetail'), hotelSec = $('hotelDetail'), actSec = $('activitiesDetail');
+    if (flightSec) flightSec.hidden = !svc.flight;
+    if (hotelSec) hotelSec.hidden = !svc.hotel;
+    if (actSec) actSec.hidden = !svc.activity;
     breakdown.hidden = false;
     document.dispatchEvent(new Event('sklopi:plan-breakdown'));
     breakdown.scrollIntoView({behavior:'smooth', block:'start'});
@@ -6468,8 +6481,18 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   if (!box || !btn) return;
   const $ = id => document.getElementById(id);
   function render(){
+    // Ako ovaj paket uopšte nije tražio let (svc.flight === false), sekcija
+    // je već sakrivena iz planDetailMore handlera iznad — ovde samo ne
+    // trošimo posao i ne prikazujemo je slučajno preko nekog drugog
+    // okidača (promena jezika/valute) dok je hidden.
+    if (box.hidden || (document.getElementById('flightDetail')?.hidden)) return;
     const ctx = builderCtx();
-    const originName = ctx.originCode || 'Beograd';
+    // Polazak nije popunjen (let nije ni bio tražen, pa polje nije bilo
+    // obavezno) — NE pretvaramo to tiho u "Beograd" kao pravu pretpostavku;
+    // jasno označavamo da je polazište nepoznato i tražimo od korisnika
+    // da ga upiše, umesto da mu ponudimo let iz grada koji nikad nije uneo.
+    const hasOrigin = !!ctx.originCode;
+    const originName = hasOrigin ? ctx.originCode : 'Beograd';
     const destName = ctx.dest;
     const c = Object.assign({}, ctx, {originCode: originName});
     const pref = builderState.flightPref === 'cheapest' ? 'cheapest' : 'direct';
@@ -6497,6 +6520,9 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const apNote = $('fdAirportNote');
     if (apNote){
       const notes = [oInfo, dInfo].filter(noAp).map(airportNoteText).filter(Boolean);
+      // Ako Polazak nije upisan, ne ćutimo o pretpostavci — jasno kažemo
+      // da je Beograd samo podrazumevano polazište dok korisnik ne unese svoje.
+      if (!hasOrigin) notes.unshift(tx('Polazak nije unet — cena je procena za let iz Beograda. Upiši svoj Polazak za tačniju ponudu.'));
       apNote.textContent = notes.length ? '\u2708\ufe0f ' + notes.join(' ') : '';
       apNote.hidden = !notes.length;
     }
@@ -6536,6 +6562,9 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   const $ = id => document.getElementById(id);
   const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
   function render(){
+    // Isti razlog kao u initFlightDetail: ne prikazuj/računaj ako ovaj
+    // paket nije tražio Smeštaj (svc.hotel === false).
+    if (box.hidden || (document.getElementById('hotelDetail')?.hidden)) return;
     const ctx = builderCtx();
     const stars = builderState.hotelStars || 3;
     const central = !!builderState.prioritizeLocation;
@@ -6589,6 +6618,9 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   ];
   const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
   function render(){
+    // Isti razlog kao u initFlightDetail: ne prikazuj/računaj ako ovaj
+    // paket nije tražio Aktivnosti (svc.activity === false).
+    if (box.hidden || (document.getElementById('activitiesDetail')?.hidden)) return;
     const ctx = builderCtx();
     let items;
     if (normalizeSr(ctx.dest) === 'atina'){
