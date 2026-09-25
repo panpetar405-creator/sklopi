@@ -5966,6 +5966,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const on = key => { const el = document.querySelector('.toggle[data-t="' + key + '"]'); return !!(el && el.classList.contains('on')); };
     return {flight:on('flight'), hotel:on('hotel'), car:on('car'), activity:on('activity')};
   }
+  window.SKLOPI_activeServiceFlags = activeServiceFlags; // koriste ga i "Sastavi svoj paket"/"Tvoj personalizovani plan"
 
   function buildPlans(k){
     const c = curEntry, tpl = CFG.arch[c.arch] || CFG.arch.city || [];
@@ -6011,6 +6012,12 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
         return true;
       });
       if (!svc.flight){ p.airportNote = ''; p.flightArrival = null; }
+      // Detalj paketa (#planDetail, "Pogledaj detalje") NIJE čitao feats —
+      // gradio je red-po-red direktno iz šablona (p.flightT/hotelS/actS/
+      // carS), pa je i posle filtriranja feats-a za listu kartica detalj i
+      // dalje uvek pisao "Direktan let" i ćutao o aerodromu. Čuvamo svc
+      // ovde da renderPlanDetail() zna šta stvarno da prikaže.
+      p.svc = svc;
     });
     // Uredničke fiksne cene (c.fixed, npr. Atina) pretpostavljaju PUN paket
     // (let + hotel); ako korisnik nije tražio let i/ili hotel, te cene više
@@ -6158,6 +6165,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   function renderPlanDetail(){
     const p = window.SKLOPI_ACTIVE_PLAN;
     if (!p || !detail) return;
+    const svc = p.svc || {flight:true, hotel:true, car:true, activity:true}; // stariji/keširan plan bez svc -> ponašaj se kao pre
     const lo = Math.round(p.price * 0.935 / 10) * 10, hi = Math.round(p.price * 1.07 / 10) * 10;
     $('planDetailTitle').textContent = tx(p.title);
     const pctx = builderCtx();
@@ -6171,11 +6179,21 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     badge.className = 'plan-detail-badge ' + p.badgeCls;
     $('planDetailFor').textContent = tx(p.forWho);
     const row = (ic, t1, t2) => '<li><span class="pdl-ic" aria-hidden="true">' + ic + '</span><div><b>' + t1 + '</b><small>' + t2 + '</small></div></li>';
+    // Isti princip kao za kartice u listi: red se prikazuje SAMO ako je taj
+    // servis stvarno tražen, i let dobija "\u2192 <aerodrom>" kad grad nema
+    // svoj (ista logika/tekst kao airportInfoFor/airportNoteText svuda drugde).
+    const flightTitle = p.flightArrival ? escapeHtml(tx(p.flightT)) + ' \u2192 ' + escapeHtml(cityLabel(p.flightArrival)) : escapeHtml(tx(p.flightT));
     $('planDetailList').innerHTML =
-      row('\u2708', escapeHtml(tx(p.flightT)), escapeHtml(tx(p.flightS))) +
-      row('\u25a3', tx('Hotel'), escapeHtml(tx(p.hotelS))) +
-      row('\u25c7', tx('Aktivnosti'), escapeHtml(tx(p.actS))) +
-      row('\u25b1', tx('Prevoz'), escapeHtml(tx(p.carS)));
+      (svc.flight ? row('\u2708', flightTitle, escapeHtml(tx(p.flightS))) : '') +
+      (svc.hotel ? row('\u25a3', tx('Hotel'), escapeHtml(tx(p.hotelS))) : '') +
+      (svc.activity ? row('\u25c7', tx('Aktivnosti'), escapeHtml(tx(p.actS))) : '') +
+      (svc.car ? row('\u25b1', tx('Prevoz'), escapeHtml(tx(p.carS))) : '');
+    const apEl = $('planDetailAirport');
+    if (apEl){
+      const show = svc.flight && !!p.airportNote;
+      apEl.hidden = !show;
+      apEl.textContent = show ? ('\u2708\ufe0f ' + p.airportNote) : '';
+    }
   }
 
   function openPlan(key){
@@ -6184,9 +6202,14 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     window.SKLOPI_ACTIVE_PLAN = p;
     const dest = $('dest');
     if (dest && !p.keepDest){ dest.value = p.dest || curCity; dest.dispatchEvent(new Event('input', {bubbles:true})); }
+    // Isto ovde: nekad se builderState (za "razradu"/rezervaciju ispod)
+    // uvek postavljao na includeFlight/includeHotel true, bez obzira na
+    // stvarno markirane servise — pa je i razrada tražila let za grad bez
+    // aerodroma / usluge koje korisnik nikad nije tražio.
+    const svc = p.svc || {flight:true, hotel:true, car:true, activity:true};
     Object.assign(builderState, {
-      includeFlight:true, includeHotel:true, flightPref:p.flightPref, hotelStars:p.hotelStars,
-      prioritizeLocation:p.prioritizeLocation, carPref:p.carPref, activityCount:p.activityCount
+      includeFlight:svc.flight, includeHotel:svc.hotel, flightPref:p.flightPref, hotelStars:p.hotelStars,
+      prioritizeLocation:p.prioritizeLocation, carPref:svc.car ? p.carPref : 'none', activityCount:svc.activity ? p.activityCount : 0
     });
     renderFormUI();
     document.dispatchEvent(new Event('sklopi:plan-changed'));
@@ -6267,18 +6290,18 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     });
   });
   btn.addEventListener('click', () => {
-    const destEl = document.getElementById('dest');
-    if (!destEl || !destEl.value.trim()){
-      showToast(tx('Prvo izaberi destinaciju, pa sklopi put.'));
-      focusSearchField('dest');
-      return;
-    }
-    builderState.includeFlight = true;
-    builderState.includeHotel = true;
+    // Ranije se proveravala SAMO destinacija — ista rupa kao kod ostalih
+    // dugmadi "Sklopi moj put"/"Napravi izlet": polazak, datumi i broj
+    // putnika su mogli ostati prazni. Ista provera kao svuda drugde.
+    const check = validateSearchInputs();
+    if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
+    const svc = window.SKLOPI_activeServiceFlags ? window.SKLOPI_activeServiceFlags() : {flight:true, hotel:true, car:true, activity:true};
+    builderState.includeFlight = svc.flight;
+    builderState.includeHotel = svc.hotel;
     builderState.flightPref = getChip('flight') === 'cheapest' ? 'cheapest' : 'direct';
     builderState.hotelStars = Number(getChip('stars')) || 4;
-    builderState.carPref = getChip('car') || 'none';
-    builderState.activityCount = Number(getChip('acts')) || 2;
+    builderState.carPref = svc.car ? (getChip('car') || 'none') : 'none';
+    builderState.activityCount = svc.activity ? (Number(getChip('acts')) || 2) : 0;
     renderFormUI();
     // Rezultat je "Tvoj personalizovani plan" (#personalPlans); builder se
     // otvara tek klikom na "Pogledaj detalje" na nekom od planova.
@@ -6353,32 +6376,43 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   function render(){
     if (!last) return;
     const ctx = builderCtx();
-    const a = Object.assign({}, builderState, last.sel, {includeFlight:true, includeHotel:true});
+    const svc = window.SKLOPI_activeServiceFlags ? window.SKLOPI_activeServiceFlags() : {flight:true, hotel:true, car:true, activity:true};
+    const a = Object.assign({}, builderState, last.sel, {includeFlight:svc.flight, includeHotel:svc.hotel});
+    if (!svc.car) a.carPref = 'none';
+    if (!svc.activity) a.activityCount = 0;
     const pkg = computeCustomPackage(a, ctx);
+    // Grad bez sopstvenog aerodroma (ista baza/tekst kao svuda drugde na
+    // sajtu): dodajemo napomenu i "\u2192 <aerodrom>" umesto da kartica ćuti
+    // ili tvrdi da let sleće baš u ctx.dest.
+    const apInfo = airportInfoFor(ctx.dest);
+    const noOwnAirport = svc.flight && apInfo && !apInfo.hasAirport && apInfo.nearest;
+    const airportNote = noOwnAirport ? airportNoteText(apInfo) : '';
     const plans = [
       {title:'Plan 1 \u2013 Najbolji izbor', sel:a, flex:false},
       {title:'Plan 2 \u2013 Više komfora', flex:true, sel:Object.assign({}, a, {
         flightPref:'direct', hotelStars:Math.min(5, a.hotelStars + 1),
-        carPref: a.carPref === 'none' ? 'small' : a.carPref,
-        activityCount:Math.min(10, a.activityCount + 1)})},
+        carPref: svc.car ? (a.carPref === 'none' ? 'small' : a.carPref) : 'none',
+        activityCount: svc.activity ? Math.min(10, a.activityCount + 1) : 0})},
       {title:'Plan 3 \u2013 Najviše za novac', flex:false, sel:Object.assign({}, a, {
         flightPref:'cheapest', hotelStars:Math.max(3, a.hotelStars - 1),
-        carPref:'none', activityCount:Math.max(1, a.activityCount - 1)})}
+        carPref:'none', activityCount: svc.activity ? Math.max(1, a.activityCount - 1) : 0})}
     ];
     const photos = photosFor(ctx.dest);
     tags.innerHTML = '<span class="pp-tag">' + escapeHtml(tx(TIER_LABEL[last.tier] || 'Balans')) + '</span>'
       + '<span class="pp-tag pp-tag--stars">' + a.hotelStars + '\u2605 ' + tx('hotel') + ' +</span>';
     list.innerHTML = plans.map((p, i) => {
       const price = p.price = i === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
+      const flightLabel = escapeHtml(tx(flightText(p.sel, ctx, p.flex))) + (noOwnAirport ? ' \u2192 ' + escapeHtml(cityLabel(apInfo.nearest)) : '');
+      const apNote = airportNote ? '<p class="dest-plan-airport-note">\u2708\ufe0f ' + escapeHtml(airportNote) + '</p>' : '';
       return '<article class="pp-card" data-plan="' + i + '"><div class="pp-card-top"><div class="pp-card-info">'
         + '<h3>' + escapeHtml(tx(p.title)) + '</h3>'
         + '<p class="pp-price">' + fmtPrice(price) + ' <span>' + tx('/ osoba') + '</span></p>'
         + '<ul class="pp-feats">'
-        + '<li><span class="dpf-ic" aria-hidden="true">\u2708</span>' + escapeHtml(tx(flightText(p.sel, ctx, p.flex))) + '</li>'
-        + '<li><span class="dpf-ic" aria-hidden="true">\u25a3</span>' + p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(ctx.nights) + ')</li>'
-        + '<li><span class="dpf-ic" aria-hidden="true">\u25c7</span>' + activitiesLabel(p.sel.activityCount) + '</li>'
-        + '<li><span class="dpf-ic" aria-hidden="true">\u25b1</span>' + escapeHtml(tx(carText(p.sel.carPref))) + '</li>'
-        + '</ul></div><div class="pp-photo"><img src="' + photos[i] + '" alt="" loading="lazy"></div></div>'
+        + (svc.flight ? '<li><span class="dpf-ic" aria-hidden="true">\u2708</span>' + flightLabel + '</li>' : '')
+        + (svc.hotel ? '<li><span class="dpf-ic" aria-hidden="true">\u25a3</span>' + p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(ctx.nights) + ')</li>' : '')
+        + (svc.activity ? '<li><span class="dpf-ic" aria-hidden="true">\u25c7</span>' + activitiesLabel(p.sel.activityCount) + '</li>' : '')
+        + (svc.car ? '<li><span class="dpf-ic" aria-hidden="true">\u25b1</span>' + escapeHtml(tx(carText(p.sel.carPref))) + '</li>' : '')
+        + '</ul>' + apNote + '</div><div class="pp-photo"><img src="' + photos[i] + '" alt="" loading="lazy"></div></div>'
         + '<button type="button" class="btn-primary pp-more" data-plan="' + i + '">' + tx('Pogledaj detalje') + '</button></article>';
     }).join('');
     list.querySelectorAll('.pp-more').forEach(btn => btn.addEventListener('click', () => {
@@ -6394,7 +6428,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
         flightT:flightText(p.sel, c, p.flex), flightS:'Povratna karta',
         hotelS:rooms, actS:activitiesLabel(p.sel.activityCount), carS:carText(p.sel.carPref),
         forWho:'Izračunato prema tvojim izborima u \u201eSastavi svoj paket\u201c.',
-        keepDest:true, backTo:'personalPlans'
+        keepDest:true, backTo:'personalPlans',
+        svc:svc, airportNote:airportNote, flightArrival:noOwnAirport ? apInfo.nearest : null
       });
     }));
     section.hidden = false;
