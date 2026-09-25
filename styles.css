@@ -2013,11 +2013,11 @@ treba prvo da padne, tekst ostaje u drugom planu. */
     width:100%;max-width:none;justify-content:center;
     padding:4px 4px 4px 26px;font-size:15.5px;font-weight:600;letter-spacing:0.02em;
     border-radius:14px;
-    background:linear-gradient(100deg,#DABE87 0%,var(--gold) 100%);
-    color:var(--on-gold);
-    box-shadow:0 10px 22px -12px rgba(231,169,62,0.5);
+    background:var(--btn-orange);
+    color:var(--on-dark-strong);
+    box-shadow:var(--btn-orange-shadow);
 }
-.btn-search-main .btn-search-icon{width:16px;height:16px;flex:none;stroke:var(--on-gold);}
+.btn-search-main .btn-search-icon{width:16px;height:16px;flex:none;stroke:var(--on-dark-strong);}
 .btn-search-main::after{
     width:38px;height:38px;font-size:16px;
     background:var(--deep);color:var(--on-dark-strong);
@@ -3464,10 +3464,10 @@ footer{padding:28px 20px;}
 .hero-reference .btn-search-main{
     min-width:210px;
     max-width:none;
-    background:linear-gradient(135deg,#0d7b8b,#073c48);
+    background:var(--btn-orange);
     border-radius:12px;
     padding:6px 7px 6px 22px;
-    box-shadow:0 14px 28px -14px rgba(7,60,72,.45);
+    box-shadow:var(--btn-orange-shadow);
 }
 .hero-reference .btn-search-main::after{
     width:40px;height:40px;
@@ -3885,6 +3885,14 @@ footer>*{position:relative;z-index:1;}
   --btn-petrol:linear-gradient(135deg,var(--btn-petrol-a) 0%,var(--btn-petrol-c) 100%);
   --btn-petrol-hover:linear-gradient(135deg,#12909f 0%,#0a4a58 100%);
   --btn-petrol-shadow:0 14px 28px -14px rgba(7,60,72,.45);
+  /* Narandzasta paleta glavnog CTA dugmeta — usklađena sa bojom tačke
+     iz logotipa (rgb(227,111,23) / #E36F17). */
+  --btn-orange-a:#F0904A;   /* svetlija narandzasta */
+  --btn-orange-b:#E36F17;   /* tačno boja tačke iz logotipa */
+  --btn-orange-c:#B8540F;   /* tamnija narandzasta, za dubinu gradijenta */
+  --btn-orange:linear-gradient(135deg,var(--btn-orange-a) 0%,var(--btn-orange-b) 50%,var(--btn-orange-c) 100%);
+  --btn-orange-hover:linear-gradient(135deg,#F5A468 0%,#9C4A0E 100%);
+  --btn-orange-shadow:0 14px 28px -14px rgba(179,84,16,.5);
 }
 
 /* Glavna (popunjena) dugmad */
@@ -3895,8 +3903,7 @@ footer>*{position:relative;z-index:1;}
 .btn-alert.attractions-see-all,
 .item-btn,.item-btn.flight,.item-btn.hotel,.item-btn.car,.item-btn.activity,
 .pkg.budget .item-btn.hotel,.pkg.comfort .item-btn.hotel,
-.ex-btn,.extra-btn,.cookie-btn.accept,
-.btn-search-main,.hero-reference .btn-search-main{
+.ex-btn,.extra-btn,.cookie-btn.accept{
   background:var(--btn-petrol);
   color:var(--on-dark-strong);
   border:none;
@@ -3909,12 +3916,22 @@ footer>*{position:relative;z-index:1;}
 .btn-alert:hover,
 .item-btn:hover,
 .extra-btn:hover,.cookie-btn.accept:hover,
-.btn-search-main:hover,.hero-reference .btn-search-main:hover,
 .ex-btn:hover:not(:disabled){
   background:var(--btn-petrol-hover);
   box-shadow:0 20px 36px -14px rgba(7,60,72,.55);
 }
 .ex-btn[aria-pressed="true"]{background:linear-gradient(135deg,#2AA7A3,#1E8F92);}
+/* Glavno CTA dugme (pretraga) — narandzasto, usklađeno sa tačkom iz logotipa */
+.btn-search-main,.hero-reference .btn-search-main{
+  background:var(--btn-orange);
+  color:var(--on-dark-strong);
+  border:none;
+  box-shadow:var(--btn-orange-shadow);
+}
+.btn-search-main:hover,.hero-reference .btn-search-main:hover{
+  background:var(--btn-orange-hover);
+  box-shadow:0 20px 36px -14px rgba(179,84,16,.55);
+}
 /* krug sa strelicom ostaje zlatan */
 .btn-search-main::after,.btn-search-main:hover::after{background:var(--gold);color:var(--on-gold);}
 
