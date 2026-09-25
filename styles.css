@@ -141,6 +141,21 @@ a{color:inherit;}
 /* ---- Redizajn 2026: novi navbar logo + "Sastavi put" dugme ---- */
 .logo-v2{display:flex;align-items:center;gap:10px;font-family:'Sora',sans-serif;font-weight:800;font-size:22px;color:var(--ink);}
 .logo-v2-svg{height:32px;width:auto;display:block;flex:none;}
+.hero-ui-overlay{
+    position:absolute;top:16px;left:16px;right:16px;
+    display:flex;justify-content:space-between;align-items:center;
+    z-index:10;pointer-events:none;
+}
+.hero-ui-btn{
+    pointer-events:auto;
+    width:40px;height:40px;border-radius:50%;border:0;
+    background:rgba(0,0,0,.28);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;cursor:pointer;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    transition:background .15s ease;
+}
+.hero-ui-btn:active{background:rgba(0,0,0,.45);}
 .logo-v2 .mark-v2{width:38px;height:38px;border-radius:11px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
 .logo-v2 .mark-v2 svg{width:20px;height:20px;}
 .logo-v2 em{font-style:normal;color:var(--coral);margin-left:2px;}
