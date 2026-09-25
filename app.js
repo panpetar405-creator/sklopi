@@ -27,6 +27,19 @@ window.addEventListener('error', function(e){ document.title = 'GRESKA: ' + e.me
    — ona samo prosledi na history.back(), da postoji JEDAN jedini put
    kojim se overlay zatvara i history stek ostane čist.
 ========================================================== */
+// Isključujemo automatsko vraćanje skrola koje sam browser radi na
+// popstate. Bez ovoga, kad se overlay (npr. feature-guide "Putarine")
+// zatvori preko "Nazad" i stigne popstate, browser NAJPRE sam skoči
+// na skrol poziciju koju je zapamtio za taj unos u historiji (obično
+// vrh strane — pozadina je za vreme overlay-a bila zaključana preko
+// position:fixed trika, pa je "prava" scrollY vrednost dokumenta bila
+// 0), a tek POSLE toga naš unlockResultsPageScroll()/closeFeatureGuideSheet()
+// vrati skrol na stvarnu poziciju. Ta dva koraka daju vidljiv "trzaj":
+// skrol prvo ode na vrh sajta pa se tek onda vrati na sekciju. Ručno
+// upravljamo skrolom (lockResultsPageScroll/unlockResultsPageScroll i
+// slično), pa browser-ovo automatsko vraćanje ovde samo smeta.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 const _historyOverlays = []; // stek { id, close(rawCloseFn) }
 
 function guardOverlayOpen(id, closeFn){
