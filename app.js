@@ -573,7 +573,21 @@ function pickBestLocationMatch(results, query){
       // pretragu), pa tek onda izvorni upisani naziv kao rezervu.
       const rawCity = city.trim().split(',')[0].trim();
       const enName = (typeof DEST_EN_NAMES !== 'undefined' && DEST_EN_NAMES[rawCity]) || null;
-      const queries = (enName && enName.toLowerCase() !== city.trim().toLowerCase()) ? [enName, city] : [city];
+      const queries = [];
+      const addQuery = (q) => { if (q && !queries.some(x => x.toLowerCase() === q.toLowerCase())) queries.push(q); };
+      addQuery(enName);
+      addQuery(city);
+      // Jezera, planine, nacionalni parkovi i slična turistička mesta (npr.
+      // "Skadarsko jezero", "Durmitor", "Plitvička jezera") nisu naseljena
+      // mesta i Open-Meteo ih ne vodi u geo bazi — koristimo AIRPORT_DB
+      // (ista tabela kao za "najbliži aerodrom") da nađemo najbliži poznat
+      // grad i njegovu prognozu prikažemo kao okvirnu.
+      if (typeof airportInfoFor === 'function'){
+        const info = airportInfoFor(rawCity);
+        if (info && !info.hasAirport && info.nearest){
+          addQuery((typeof DEST_EN_NAMES !== 'undefined' && DEST_EN_NAMES[info.nearest]) || info.nearest);
+        }
+      }
       const attempts = [];
       queries.forEach(q => {
         attempts.push(
