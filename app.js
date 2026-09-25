@@ -3441,7 +3441,11 @@ const POPULAR_DESTINATIONS = [
   {name:'Meksiko Siti', extra:'Meksiko'}, {name:'Kankun', extra:'Meksiko'},
   {name:'Rio de Žaneiro', extra:'Brazil'}, {name:'Sao Paulo', extra:'Brazil'}, {name:'Buenos Ajres', extra:'Argentina'},
   {name:'Bogota', extra:'Kolumbija'}, {name:'Lima', extra:'Peru'},
-  {name:'Bangkok', extra:'Tajland'}, {name:'Puket', extra:'Tajland'}, {name:'Tokio', extra:'Japan'}, {name:'Osaka', extra:'Japan'}, {name:'Kjoto', extra:'Japan'},
+  {name:'Bangkok', extra:'Tajland'}, {name:'Puket', extra:'Tajland'}, {name:'Čijang Maj', extra:'Tajland'}, {name:'Pataja', extra:'Tajland'},
+  {name:'Krabi', extra:'Tajland'}, {name:'Ko Samui', extra:'Tajland'}, {name:'Ko Pangan', extra:'Tajland'}, {name:'Ko Tao', extra:'Tajland'},
+  {name:'Ko Pi Pi', extra:'Tajland'}, {name:'Ko Lanta', extra:'Tajland'}, {name:'Ajutaja', extra:'Tajland'}, {name:'Čijang Raj', extra:'Tajland'},
+  {name:'Hua Hin', extra:'Tajland'}, {name:'Sukotaj', extra:'Tajland'},
+  {name:'Tokio', extra:'Japan'}, {name:'Osaka', extra:'Japan'}, {name:'Kjoto', extra:'Japan'},
   {name:'Bali', extra:'Indonezija'}, {name:'Džakarta', extra:'Indonezija'}, {name:'Singapur', extra:'Singapur'},
   {name:'Ho Ši Min', extra:'Vijetnam'}, {name:'Hanoj', extra:'Vijetnam'},
   {name:'Peking', extra:'Kina'}, {name:'Šangaj', extra:'Kina'}, {name:'Hongkong', extra:'Kina'},
@@ -3463,6 +3467,21 @@ const POPULAR_DESTINATIONS = [
   {name:'Karpatos', extra:'Grčka'}, {name:'Parga', extra:'Grčka'}, {name:'Sivota', extra:'Grčka'},
   {name:'Košice', extra:'Slovačka'}, {name:'Visoke Tatre', extra:'Slovačka'},
   {name:'Garmisch-Partenkirchen', extra:'Nemačka'}, {name:'St. Anton am Arlberg', extra:'Austrija'},
+  // Dodato — poznata mesta/znamenitosti koje su falile unutar postojećih zemalja
+  {name:'Hajdelberg', extra:'Nemačka'}, {name:'Potsdam', extra:'Nemačka'}, {name:'Nojšvanštajn', extra:'Nemačka'}, {name:'Rotenburg na Tauberu', extra:'Nemačka'},
+  {name:'Versaj', extra:'Francuska'},
+  {name:'Činkve Tere', extra:'Italija'}, {name:'Komsko jezero', extra:'Italija'},
+  {name:'Grindelvald', extra:'Švajcarska'},
+  {name:'Geiranger', extra:'Norveška'},
+  {name:'Maču Piču', extra:'Peru'}, {name:'Kusko', extra:'Peru'},
+  // Dodato — potpuno nove zemlje/mikro-države
+  {name:'Vatikan', extra:'Vatikan'}, {name:'San Marino', extra:'San Marino'}, {name:'Andora', extra:'Andora'},
+  {name:'Vaduz', extra:'Lihtenštajn'}, {name:'Torshavn', extra:'Farska ostrva'},
+  {name:'Aman', extra:'Jordan'}, {name:'Petra', extra:'Jordan'}, {name:'Akaba', extra:'Jordan'},
+  {name:'Bejrut', extra:'Liban'}, {name:'Muskat', extra:'Oman'},
+  {name:'Kolombo', extra:'Šri Lanka'}, {name:'Katmandu', extra:'Nepal'},
+  {name:'Angkor Vat', extra:'Kambodža'}, {name:'Pnom Pen', extra:'Kambodža'},
+  {name:'Vindhuk', extra:'Namibija'}, {name:'Santjago', extra:'Čile'}, {name:'Kito', extra:'Ekvador'}, {name:'San Hoze', extra:'Kostarika'},
 ];
 // Uklanja srpske kvačice (č/ć/š/ž/đ) i standardne akcente, radi poređenja bez
 // obzira da li korisnik kuca sa ili bez njih (npr. "Kotor" vs "Beč"/"Bec").
