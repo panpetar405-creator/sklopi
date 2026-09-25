@@ -9475,3 +9475,13 @@ refreshDisplayedPrices = function(){
     document.dispatchEvent(new Event('sklopi:lang'));
   };
 })();
+
+
+/* Registracija service worker-a — neophodno da bi Chrome ponudio
+   pravu instalaciju ("Instaliraj"), ne samo prečicu. */
+(function(){
+  if (!('serviceWorker' in navigator)) return;
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  });
+})();
