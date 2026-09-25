@@ -3785,16 +3785,18 @@ footer>*{position:relative;z-index:1;}
 .hero-benefit:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 
 /* ==========================================================================
-   Redizajn: dugmad + promo baner (deep petrol sa prelivima)
-   Sve je u ovom bloku -- da vratiš staro, obriši ceo blok do kraja fajla.
+   Redizajn: dugmad + promo baner
+   Usklađeno sa odobrenim "referentnim dizajnom" (tirkizna paleta) iz
+   styles-patch.css (taj fajl je sada spojen ovde i više se ne učitava zasebno).
+   Da vratiš staro, obriši ceo blok do kraja fajla.
    ========================================================================== */
 :root{
-  --btn-petrol-a:#1F7583;   /* svetliji deep petrol */
-  --btn-petrol-b:#14505C;
-  --btn-petrol-c:#0E3B46;
-  --btn-petrol:linear-gradient(135deg,var(--btn-petrol-a) 0%,var(--btn-petrol-b) 55%,var(--btn-petrol-c) 100%);
-  --btn-petrol-hover:linear-gradient(135deg,#2A8695 0%,#1A6070 55%,#124857 100%);
-  --btn-petrol-shadow:0 14px 28px -14px rgba(14,59,70,.55);
+  --btn-petrol-a:#0d7b8b;   /* tirkizna, referentni dizajn */
+  --btn-petrol-b:#0a5f6d;
+  --btn-petrol-c:#073c48;
+  --btn-petrol:linear-gradient(135deg,var(--btn-petrol-a) 0%,var(--btn-petrol-c) 100%);
+  --btn-petrol-hover:linear-gradient(135deg,#12909f 0%,#0a4a58 100%);
+  --btn-petrol-shadow:0 14px 28px -14px rgba(7,60,72,.45);
 }
 
 /* Glavna (popunjena) dugmad */
@@ -3822,7 +3824,7 @@ footer>*{position:relative;z-index:1;}
 .btn-search-main:hover,.hero-reference .btn-search-main:hover,
 .ex-btn:hover:not(:disabled){
   background:var(--btn-petrol-hover);
-  box-shadow:0 18px 34px -14px rgba(14,59,70,.6);
+  box-shadow:0 20px 36px -14px rgba(7,60,72,.55);
 }
 .ex-btn[aria-pressed="true"]{background:linear-gradient(135deg,#2AA7A3,#1E8F92);}
 /* krug sa strelicom ostaje zlatan */
@@ -3927,3 +3929,27 @@ button.mark-v2:active{transform:scale(.95);}
 .mobile-panel::before{display:none;}
 .auth-dropdown{background:#fff;border:1px solid rgba(18,58,68,.12);border-radius:18px;box-shadow:0 18px 40px -14px rgba(14,59,70,.4);}
 .auth-dropdown::before{color:var(--btn-petrol-b);}
+
+/* ==========================================================================
+   Spojeno iz styles-patch.css ("Tirkizna paleta dugmadi — referentni dizajn").
+   Ove tri celine nisu bile pokrivene promenljivama --btn-petrol-* iznad,
+   pa se eksplicitno postavljaju ovde da bi zaista bile poslednja (pobednička)
+   pravila u kaskadi. Ako se ubuduće menja paleta dugmadi, menjaj i ovde.
+   ========================================================================== */
+
+/* Čipovi u "Sastavi svoj paket" */
+.cp-chip.is-on{
+  background:var(--btn-petrol-a);
+  border-color:var(--btn-petrol-a);
+  color:#fff;
+  box-shadow:0 6px 14px rgba(13,99,113,.18);
+}
+
+/* Kvadrati Letovi / Smeštaj / Rent a car / Aktivnost u hero pretrazi —
+   uključeno stanje sada je puna tirkizna značka, ne providan okvir. */
+.hero-reference .toggle.on .tt-icon{
+  background:var(--btn-petrol);
+  color:#fff;
+  box-shadow:0 8px 16px -10px rgba(7,60,72,.5);
+}
+.hero-reference .toggle.on .tt-label{color:var(--hero-ink);}
