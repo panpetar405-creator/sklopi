@@ -6163,6 +6163,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     planBtn?.setAttribute('aria-expanded', 'false');
     if (detail) detail.hidden = true;
     if (breakdown) breakdown.hidden = true;
+    // Grad se promenio mimo "Nazad" toka (npr. nova pretraga) — overlay
+    // se gasi "sam od sebe", pa ga samo skidamo sa guard steka (bez
+    // history.back()), isti princip kao guardOverlayDrop svuda drugde.
+    guardOverlayDrop('planBreakdown');
+    guardOverlayDrop('planDetail');
     render();
     return true;
   }
@@ -6274,10 +6279,34 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     renderFormUI();
     document.dispatchEvent(new Event('sklopi:plan-changed'));
     if (breakdown) breakdown.hidden = true;   // razrada se otvara tek na "Pogledaj detalje"
+    guardOverlayDrop('planBreakdown');   // ako je razrada prethodnog paketa bila otvorena/gurnuta, skini je sa steka
     renderPlanDetail();
     detail.hidden = false;
+    guardOverlayOpen('planDetail', closePlanDetail);
     detail.scrollIntoView({behavior:'smooth', block:'start'});
   }
+
+  // "Sirovo" zatvaranje #planDetail (i, ako je otvorena, #planBreakdown
+  // razrade unutar njega) — poziva ga ISKLJUČIVO popstate handler (preko
+  // guarda) ili guardOverlayRequestClose fallback ispod. Ne diraj historiju
+  // ovde, to je posao guarda (vidi komentar na vrhu fajla).
+  function closePlanDetail(){
+    if (detail) detail.hidden = true;
+    if (breakdown) breakdown.hidden = true;
+    guardOverlayDrop('planBreakdown');   // ako je razrada bila otvorena, skini je i sa steka
+    const ap = window.SKLOPI_ACTIVE_PLAN;
+    const backId = (ap && ap.backTo) || 'destinationPlans';
+    if (backId === 'destinationPlans') showDestPlans();
+    else $(backId)?.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  // "Sirovo" zatvaranje #planBreakdown (vraćanje na #planDetail) — isti
+  // princip, koriste ga i flightDetailBack/hotelDetailBack/carDetailBack
+  // ispod preko guardOverlayRequestClose('planBreakdown').
+  function closePlanBreakdown(){
+    if (breakdown) breakdown.hidden = true;
+    document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  window.SKLOPI_closePlanBreakdown = closePlanBreakdown;
   $('destPlansList')?.addEventListener('click', e => {
     const card = e.target.closest('.dest-plan-card');
     if (card) openPlan(curPlans[Number(card.dataset.plan)]);
@@ -6296,12 +6325,10 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   document.addEventListener('sklopi:services-changed', render);
 
   $('planDetailBack')?.addEventListener('click', () => {
-    if (detail) detail.hidden = true;
-    if (breakdown) breakdown.hidden = true;
-    const ap = window.SKLOPI_ACTIVE_PLAN;
-    const backId = (ap && ap.backTo) || 'destinationPlans';
-    if (backId === 'destinationPlans') showDestPlans();
-    else $(backId)?.scrollIntoView({behavior:'smooth', block:'start'});
+    // guardOverlayRequestClose ide preko history.back() -> popstate ->
+    // closePlanDetail(); ako iz nekog razloga overlay nije na steku
+    // (fallback), zatvori direktno.
+    if (!guardOverlayRequestClose('planDetail')) closePlanDetail();
   });
   $('planDetailBook')?.addEventListener('click', goToSearchForCity);
   $('planDetailMore')?.addEventListener('click', () => {
@@ -6321,6 +6348,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (carSec) carSec.hidden = !svc.car;
     if (actSec) actSec.hidden = !svc.activity;
     breakdown.hidden = false;
+    guardOverlayOpen('planBreakdown', closePlanBreakdown);
     document.dispatchEvent(new Event('sklopi:plan-breakdown'));
     breakdown.scrollIntoView({behavior:'smooth', block:'start'});
   });
@@ -6606,8 +6634,10 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   document.addEventListener('sklopi:plan-breakdown', render);
   document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   document.getElementById('flightDetailBack')?.addEventListener('click', () => {
-    box.hidden = true;
-    document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+    if (!guardOverlayRequestClose('planBreakdown')) {
+      box.hidden = true;
+      document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
   });
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
 })();
@@ -6659,8 +6689,10 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   document.addEventListener('sklopi:plan-breakdown', render);
   document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   $('hotelDetailBack')?.addEventListener('click', () => {
-    box.hidden = true;
-    document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+    if (!guardOverlayRequestClose('planBreakdown')) {
+      box.hidden = true;
+      document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
   });
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
 })();
@@ -6710,8 +6742,10 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   document.addEventListener('sklopi:plan-breakdown', render);
   document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
   $('carDetailBack')?.addEventListener('click', () => {
-    box.hidden = true;
-    document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+    if (!guardOverlayRequestClose('planBreakdown')) {
+      box.hidden = true;
+      document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
   });
   document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
 })();
