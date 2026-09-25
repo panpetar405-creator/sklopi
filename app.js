@@ -1900,6 +1900,30 @@ const AIRPORT_DB = {
   'kaskais': {nearest:'Lisabon', note:'Kaskais nema svoj aerodrom — najbliži je Lisabon (oko 30 min vožnje).', c:'Kaskais', k:'own', t:'30 min'},
   'nazare': {nearest:'Lisabon', note:'Nazare nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje).', c:'Nazare', k:'own', t:'1h30'},
   'fatima': {nearest:'Lisabon', note:'Fatima nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje), Porto je alternativa.', c:'Fatima', k:'own', t:'1h30', alt:'Porto'},
+  'aveiro': {nearest:'Porto', note:'Aveiro nema svoj aerodrom — najbliži je Porto (oko 1h vožnje).', c:'Aveiro', k:'own', t:'1h'},
+  'guimaraes': {nearest:'Porto', note:'Guimarães nema svoj aerodrom — najbliži je Porto (oko 50 min vožnje).', c:'Guimarães', k:'own', t:'50 min'},
+  'setubal': {nearest:'Lisabon', note:'Setúbal nema svoj aerodrom — najbliži je Lisabon (oko 45 min vožnje).', c:'Setúbal', k:'own', t:'45 min'},
+  'viseu': {nearest:'Porto', note:'Viseu nema svoj aerodrom — najbliži je Porto (oko 1h30 vožnje), Koimbra je alternativa.', c:'Viseu', k:'own', t:'1h30', alt:'Koimbra'},
+  'obidos': {nearest:'Lisabon', note:'Óbidos nema svoj aerodrom — najbliži je Lisabon (oko 1h vožnje).', c:'Óbidos', k:'own', t:'1h'},
+  'tomar': {nearest:'Lisabon', note:'Tomar nema svoj aerodrom — najbliži je Lisabon (oko 1h30 vožnje), Koimbra je alternativa.', c:'Tomar', k:'own', t:'1h30', alt:'Koimbra'},
+  'elvas': {nearest:'Lisabon', note:'Elvas nema svoj aerodrom — najbliži je Lisabon (oko 2h vožnje).', c:'Elvas', k:'own', t:'2h'},
+  'marvao': {nearest:'Lisabon', note:'Marvão nema svoj aerodrom — najbliži je Lisabon (oko 2h vožnje).', c:'Marvão', k:'own', t:'2h'},
+  'monsaraz': {nearest:'Faro', note:'Monsaraz nema svoj aerodrom — najbliži je Faro (oko 2h vožnje), Lisabon je alternativa.', c:'Monsaraz', k:'own', t:'2h', alt:'Lisabon'},
+  'caldas da rainha': {nearest:'Lisabon', note:'Caldas da Rainha nema svoj aerodrom — najbliži je Lisabon (oko 1h vožnje).', c:'Caldas da Rainha', k:'own', t:'1h'},
+  'termas de sao pedro do sul': {nearest:'Porto', note:'Termas de São Pedro do Sul nemaju aerodrom — najbliži je Porto (oko 1h30 vožnje).', c:'Termas de São Pedro do Sul', k:'own', t:'1h30'},
+  'caldas do geres': {nearest:'Porto', note:'Caldas do Gerês nemaju aerodrom — najbliži je Porto (oko 1h30 vožnje).', c:'Caldas do Gerês', k:'own', t:'1h30'},
+  'monfortinho': {nearest:'Lisabon', note:'Monfortinho nema svoj aerodrom — najbliži je Lisabon (oko 3h vožnje).', c:'Monfortinho', k:'own', t:'3h'},
+  'serra da estrela': {nearest:'Koimbra', note:'Serra da Estrela nema aerodrom u blizini — najbliži je Koimbra (oko 1h30 vožnje).', c:'Serra da Estrela', k:'nearby', t:'1h30'},
+  'peneda-geres': {nearest:'Porto', note:'Peneda-Gerês nema aerodrom u blizini — najbliži je Porto (oko 1h30 vožnje).', c:'Peneda-Gerês', k:'nearby', t:'1h30'},
+  'monchique': {nearest:'Faro', note:'Monchique nema svoj aerodrom — najbliži je Faro (oko 1h vožnje).', c:'Monchique', k:'own', t:'1h'},
+  'ericeira': {nearest:'Lisabon', note:'Ericeira nema svoj aerodrom — najbliži je Lisabon (oko 40 min vožnje).', c:'Ericeira', k:'own', t:'40 min'},
+  'peniche': {nearest:'Lisabon', note:'Peniche nema svoj aerodrom — najbliži je Lisabon (oko 1h15 vožnje).', c:'Peniche', k:'own', t:'1h15'},
+  'lagos': {nearest:'Faro', note:'Lagos nema svoj aerodrom — najbliži je Faro (oko 1h vožnje).', c:'Lagos', k:'own', t:'1h'},
+  'portimao': {nearest:'Faro', note:'Portimão nema svoj aerodrom — najbliži je Faro (oko 40 min vožnje).', c:'Portimão', k:'own', t:'40 min'},
+  'tavira': {nearest:'Faro', note:'Tavira nema svoj aerodrom — najbliži je Faro (oko 30 min vožnje).', c:'Tavira', k:'own', t:'30 min'},
+  'vilamoura': {nearest:'Faro', note:'Vilamoura nema svoj aerodrom — najbliži je Faro (oko 25 min vožnje).', c:'Vilamoura', k:'own', t:'25 min'},
+  'sesimbra': {nearest:'Lisabon', note:'Sesimbra nema svoj aerodrom — najbliži je Lisabon (oko 40 min vožnje).', c:'Sesimbra', k:'own', t:'40 min'},
+  'costa da caparica': {nearest:'Lisabon', note:'Costa da Caparica nema svoj aerodrom — najbliži je Lisabon (oko 30 min vožnje).', c:'Costa da Caparica', k:'own', t:'30 min'},
   // --- Francuska: aerodromi ---
   'pariz': {hasAirport:true},
   'nica': {hasAirport:true},
@@ -1954,6 +1978,23 @@ const AIRPORT_DB = {
   'ceske budejovice': {nearest:'Prag', note:'Češke Budejovice nemaju svoj aerodrom sa redovnim letovima — najbliži je Prag (oko 2h vožnje), Linc je alternativa.', c:'Češke Budejovice', k:'sched', t:'2h', alt:'Linc'},
   'hradec kralove': {nearest:'Prag', note:'Hradec Kralove nema svoj aerodrom — najbliži je Prag (oko 1h30 vožnje).', c:'Hradec Kralove', k:'own', t:'1h30'},
   'liberec': {nearest:'Prag', note:'Liberec nema svoj aerodrom — najbliži je Prag (oko 1h30 vožnje).', c:'Liberec', k:'own', t:'1h30'},
+  'pardubice': {nearest:'Prag', note:'Pardubice nemaju svoj aerodrom sa redovnim letovima — najbliži je Prag (oko 1h vožnje).', c:'Pardubice', k:'sched', t:'1h'},
+  'zlin': {nearest:'Brno', note:'Zlin nema svoj aerodrom sa redovnim letovima — najbliži je Brno (oko 1h vožnje).', c:'Zlin', k:'sched', t:'1h'},
+  'telc': {nearest:'Brno', note:'Telč nema svoj aerodrom — najbliži je Brno (oko 1h vožnje), Prag je alternativa.', c:'Telč', k:'own', t:'1h', alt:'Prag'},
+  'mikulov': {nearest:'Brno', note:'Mikulov nema svoj aerodrom — najbliži je Brno (oko 45 min vožnje).', c:'Mikulov', k:'own', t:'45 min'},
+  'kromeriz': {nearest:'Brno', note:'Kroměříž nema svoj aerodrom — najbliži je Brno (oko 1h vožnje).', c:'Kroměříž', k:'own', t:'1h'},
+  'litomysl': {nearest:'Prag', note:'Litomyšl nema svoj aerodrom — najbliži je Prag (oko 2h vožnje).', c:'Litomyšl', k:'own', t:'2h'},
+  'terezin': {nearest:'Prag', note:'Terezin nema svoj aerodrom — najbliži je Prag (oko 1h vožnje).', c:'Terezin', k:'own', t:'1h'},
+  'marianske lazne': {nearest:'Prag', note:'Mariánske Lazne nemaju svoj aerodrom — najbliži je Prag (oko 2h vožnje), Karlovi Vari su alternativa.', c:'Mariánske Lazne', k:'own', t:'2h', alt:'Karlovi Vari'},
+  'frantiskove lazne': {nearest:'Karlovi Vari', note:'Františkove Lazne nemaju svoj aerodrom — najbliži je Karlovi Vari (oko 30 min vožnje).', c:'Františkove Lazne', k:'own', t:'30 min'},
+  'luhacovice': {nearest:'Brno', note:'Luhačovice nemaju svoj aerodrom — najbliži je Brno (oko 1h30 vožnje).', c:'Luhačovice', k:'own', t:'1h30'},
+  'krkonose': {nearest:'Prag', note:'Krkonoše nemaju aerodrom u blizini — najbliži je Prag (oko 2h vožnje), Liberec je polazna tačka.', c:'Krkonoše', k:'nearby', t:'2h'},
+  'sumava': {nearest:'Prag', note:'Šumava nema aerodrom u blizini — najbliži je Prag (oko 2h vožnje), Linc je alternativa.', c:'Šumava', k:'nearby', t:'2h', alt:'Linc'},
+  'jeseniky': {nearest:'Ostrava', note:'Jeseniky nemaju aerodrom u blizini — najbliži je Ostrava (oko 1h vožnje).', c:'Jeseniky', k:'nearby', t:'1h'},
+  'lipno jezero': {nearest:'Prag', note:'Lipno jezero nema aerodrom u blizini — najbliži je Prag (oko 2h30 vožnje), Linc je alternativa.', c:'Lipno jezero', k:'nearby', t:'2h30', alt:'Linc'},
+  'macha jezero': {nearest:'Prag', note:'Mácha jezero nema aerodrom u blizini — najbliži je Prag (oko 1h vožnje).', c:'Mácha jezero', k:'nearby', t:'1h'},
+  'konopiste dvorac': {nearest:'Prag', note:'Konopište dvorac nema svoj aerodrom — najbliži je Prag (oko 45 min vožnje).', c:'Konopište dvorac', k:'own', t:'45 min'},
+  'karlstejn dvorac': {nearest:'Prag', note:'Karlštejn dvorac nema svoj aerodrom — najbliži je Prag (oko 30 min vožnje).', c:'Karlštejn dvorac', k:'own', t:'30 min'},
   // --- Švedska: aerodromi ---
   'stokholm': {hasAirport:true},
   'geteborg': {hasAirport:true},
@@ -2065,6 +2106,14 @@ const AIRPORT_DB = {
   'carevo': {nearest:'Burgas', note:'Carevo nema svoj aerodrom — najbliži je Burgas (oko 1h vožnje).', c:'Carevo', k:'own', t:'1h'},
   'pomorije': {nearest:'Burgas', note:'Pomorije nema svoj aerodrom — najbliži je Burgas (oko 20 min vožnje).', c:'Pomorije', k:'own', t:'20 min'},
   'ahtopol': {nearest:'Burgas', note:'Ahtopol nema svoj aerodrom — najbliži je Burgas (oko 1h30 vožnje).', c:'Ahtopol', k:'own', t:'1h30'},
+  'karlovo': {nearest:'Plovdiv', note:'Karlovo nema svoj aerodrom — najbliži je Plovdiv (oko 1h vožnje).', c:'Karlovo', k:'own', t:'1h'},
+  'kazanlak': {nearest:'Plovdiv', note:'Kazanlak nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje), Sofija je alternativa.', c:'Kazanlak', k:'own', t:'1h30', alt:'Sofija'},
+  'smoljan': {nearest:'Plovdiv', note:'Smoljan nema svoj aerodrom — najbliži je Plovdiv (oko 2h vožnje).', c:'Smoljan', k:'own', t:'2h'},
+  'kardzali': {nearest:'Plovdiv', note:'Kardžali nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).', c:'Kardžali', k:'own', t:'1h30'},
+  'vraca': {nearest:'Sofija', note:'Vraca nema svoj aerodrom — najbliži je Sofija (oko 1h vožnje).', c:'Vraca', k:'own', t:'1h'},
+  'pernik': {nearest:'Sofija', note:'Pernik nema svoj aerodrom — najbliži je Sofija (oko 30 min vožnje).', c:'Pernik', k:'own', t:'30 min'},
+  'trojan': {nearest:'Sofija', note:'Trojan nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje), Plovdiv je alternativa.', c:'Trojan', k:'own', t:'2h', alt:'Plovdiv'},
+  'asenovgrad': {nearest:'Plovdiv', note:'Asenovgrad nema svoj aerodrom — najbliži je Plovdiv (oko 30 min vožnje).', c:'Asenovgrad', k:'own', t:'30 min'},
   // --- Rumunija: aerodromi ---
   'bukurest': {hasAirport:true},
   'kluz': {hasAirport:true, limited:true},
@@ -2073,10 +2122,51 @@ const AIRPORT_DB = {
   'temisvar': {hasAirport:true, limited:true},
   'jasi': {hasAirport:true, limited:true},
   'brasov': {hasAirport:true, limited:true},
+  'krajova': {hasAirport:true, limited:true},
+  'oradea': {hasAirport:true, limited:true},
+  'arad': {hasAirport:true, limited:true},
+  'bakau': {hasAirport:true, limited:true},
+  'satu mare': {hasAirport:true, limited:true},
+  'baja mare': {hasAirport:true, limited:true},
+  'targu mures': {hasAirport:true, limited:true},
   // --- Rumunija: bez sopstvenog aerodroma ---
-  'sinaja': {nearest:'Bukurešt'},
+  'sinaja': {nearest:'Bukurešt', note:'Sinaja nema svoj aerodrom — najbliži je Bukurešt (oko 2h vožnje).', c:'Sinaja', k:'own', t:'2h'},
   'bran': {nearest:'Brašov', note:'Bran nema svoj aerodrom — najbliži je Brašov (oko 30 min vožnje).', c:'Bran', k:'own', t:'30 min'},
-  'mamaja': {nearest:'Konstanca'},
+  'mamaja': {nearest:'Konstanca', note:'Mamaja nema svoj aerodrom — najbliži je Konstanca (oko 15 min vožnje).', c:'Mamaja', k:'own', t:'15 min'},
+  'plojesti': {nearest:'Bukurešt', note:'Ploješti nema svoj aerodrom — najbliži je Bukurešt (oko 1h vožnje).', c:'Ploješti', k:'own', t:'1h'},
+  'pitesti': {nearest:'Bukurešt', note:'Pitešti nema svoj aerodrom — najbliži je Bukurešt (oko 1h30 vožnje).', c:'Pitešti', k:'own', t:'1h30'},
+  'galac': {nearest:'Jaši', note:'Galac nema svoj aerodrom — najbliži je Jaši (oko 1h30 vožnje), Bukurešt je alternativa.', c:'Galac', k:'own', t:'1h30', alt:'Bukurešt'},
+  'sighisoara': {nearest:'Targu Mureš', note:'Sighišoara nema svoj aerodrom — najbliži je Targu Mureš (oko 1h vožnje), Brašov je alternativa.', c:'Sighišoara', k:'own', t:'1h', alt:'Brašov'},
+  'alba julija': {nearest:'Sibiu', note:'Alba Julija nema svoj aerodrom — najbliži je Sibiu (oko 1h vožnje).', c:'Alba Julija', k:'own', t:'1h'},
+  'sfantu georgije': {nearest:'Brašov', note:'Sfantu Georgije nema svoj aerodrom — najbliži je Brašov (oko 30 min vožnje).', c:'Sfantu Georgije', k:'own', t:'30 min'},
+  'deva': {nearest:'Arad', note:'Deva nema svoj aerodrom — najbliži je Arad (oko 1h30 vožnje), Sibiu je alternativa.', c:'Deva', k:'own', t:'1h30', alt:'Sibiu'},
+  'resica': {nearest:'Temišvar', note:'Rešica nema svoj aerodrom — najbliži je Temišvar (oko 1h30 vožnje).', c:'Rešica', k:'own', t:'1h30'},
+  'zalau': {nearest:'Kluž', note:'Zalau nema svoj aerodrom — najbliži je Kluž (oko 1h vožnje).', c:'Zalau', k:'own', t:'1h'},
+  'buzau': {nearest:'Bukurešt', note:'Buzau nema svoj aerodrom — najbliži je Bukurešt (oko 1h30 vožnje).', c:'Buzau', k:'own', t:'1h30'},
+  'foksani': {nearest:'Bakau', note:'Fokšani nema svoj aerodrom — najbliži je Bakau (oko 1h vožnje), Jaši je alternativa.', c:'Fokšani', k:'own', t:'1h', alt:'Jaši'},
+  'targoviste': {nearest:'Bukurešt', note:'Targovište nema svoj aerodrom — najbliži je Bukurešt (oko 1h30 vožnje).', c:'Targovište', k:'own', t:'1h30'},
+  'bajle herkulane': {nearest:'Temišvar', note:'Bajle Herkulane nema svoj aerodrom — najbliži je Temišvar (oko 2h vožnje).', c:'Bajle Herkulane', k:'own', t:'2h'},
+  'sovata': {nearest:'Targu Mureš', note:'Sovata nema svoj aerodrom — najbliži je Targu Mureš (oko 1h vožnje).', c:'Sovata', k:'own', t:'1h'},
+  'bajle feliks': {nearest:'Oradea', note:'Bajle Feliks nema svoj aerodrom — najbliži je Oradea (oko 30 min vožnje).', c:'Bajle Feliks', k:'own', t:'30 min'},
+  'vatra dornei': {nearest:'Kluž', note:'Vatra Dornei nema svoj aerodrom — najbliži je Kluž (oko 2h30 vožnje).', c:'Vatra Dornei', k:'own', t:'2h30'},
+  'kovasna': {nearest:'Brašov', note:'Kovasna nema svoj aerodrom — najbliži je Brašov (oko 1h vožnje).', c:'Kovasna', k:'own', t:'1h'},
+  'slanik moldova': {nearest:'Bakau', note:'Slanik Moldova nema svoj aerodrom — najbliži je Bakau (oko 1h30 vožnje).', c:'Slanik Moldova', k:'own', t:'1h30'},
+  'predeal': {nearest:'Brašov', note:'Predeal nema svoj aerodrom — najbliži je Brašov (oko 30 min vožnje).', c:'Predeal', k:'own', t:'30 min'},
+  'poiana brasov': {nearest:'Brašov', note:'Poiana Brašov nema svoj aerodrom — najbliži je Brašov (oko 20 min vožnje).', c:'Poiana Brašov', k:'own', t:'20 min'},
+  'busteni': {nearest:'Brašov', note:'Bušteni nema svoj aerodrom — najbliži je Brašov (oko 40 min vožnje), Bukurešt je alternativa.', c:'Bušteni', k:'own', t:'40 min', alt:'Bukurešt'},
+  'semenic': {nearest:'Temišvar', note:'Semenic nema svoj aerodrom — najbliži je Temišvar (oko 1h30 vožnje).', c:'Semenic', k:'own', t:'1h30'},
+  'paltinis': {nearest:'Sibiu', note:'Paltiniš nema svoj aerodrom — najbliži je Sibiu (oko 45 min vožnje).', c:'Paltiniš', k:'own', t:'45 min'},
+  'peles dvorac': {nearest:'Bukurešt', note:'Peleš dvorac nema svoj aerodrom — najbliži je Bukurešt (oko 2h vožnje).', c:'Peleš dvorac', k:'own', t:'2h'},
+  'risnov': {nearest:'Brašov', note:'Rišnov nema svoj aerodrom — najbliži je Brašov (oko 20 min vožnje).', c:'Rišnov', k:'own', t:'20 min'},
+  'maramures': {nearest:'Baja Mare', note:'Maramureš nema svoj aerodrom — najbliži je Baja Mare (oko 1h vožnje).', c:'Maramureš', k:'own', t:'1h'},
+  'bukovina': {nearest:'Jaši', note:'Bukovina nema svoj aerodrom — najbliži je Jaši (oko 2h30 vožnje), Kluž je alternativa.', c:'Bukovina', k:'own', t:'2h30', alt:'Kluž'},
+  'eforie nord': {nearest:'Konstanca', note:'Eforie Nord nema svoj aerodrom — najbliži je Konstanca (oko 15 min vožnje).', c:'Eforie Nord', k:'own', t:'15 min'},
+  'eforie sud': {nearest:'Konstanca', note:'Eforie Sud nema svoj aerodrom — najbliži je Konstanca (oko 20 min vožnje).', c:'Eforie Sud', k:'own', t:'20 min'},
+  'vama vekje': {nearest:'Konstanca', note:'Vama Vekje nema svoj aerodrom — najbliži je Konstanca (oko 45 min vožnje).', c:'Vama Vekje', k:'own', t:'45 min'},
+  'neptun': {nearest:'Konstanca', note:'Neptun nema svoj aerodrom — najbliži je Konstanca (oko 30 min vožnje).', c:'Neptun', k:'own', t:'30 min'},
+  'kostinesti': {nearest:'Konstanca', note:'Kostinešti nema svoj aerodrom — najbliži je Konstanca (oko 25 min vožnje).', c:'Kostinešti', k:'own', t:'25 min'},
+  'mangalija': {nearest:'Konstanca', note:'Mangalija nema svoj aerodrom — najbliži je Konstanca (oko 40 min vožnje).', c:'Mangalija', k:'own', t:'40 min'},
+  'navodari': {nearest:'Konstanca', note:'Navodari nema svoj aerodrom — najbliži je Konstanca (oko 20 min vožnje).', c:'Navodari', k:'own', t:'20 min'},
   // --- Italija: aerodromi ---
   'rim': {hasAirport:true},
   'milano': {hasAirport:true},
@@ -2210,6 +2300,25 @@ const AIRPORT_DB = {
   // --- Slovačka: bez sopstvenog aerodroma ---
   'banska bistrica': {nearest:'Bratislava', note:'Banska Bistrica nema aerodrom sa redovnim letovima — najbliži je Bratislava (oko 2h30 vožnje).', c:'Banska Bistrica', k:'sched', t:'2h30'},
   'vysoke tatre': {nearest:'Poprad', note:'Visoke Tatre nemaju sopstveni aerodrom — najbliži je Poprad (oko 30 min vožnje).', c:'Visoke Tatre', k:'own', t:'30 min'},
+  'zilina': {nearest:'Bratislava', note:'Žilina nema svoj aerodrom sa redovnim letovima — najbliži je Bratislava (oko 2h vožnje).', c:'Žilina', k:'sched', t:'2h'},
+  'presov': {nearest:'Košice', note:'Prešov nema svoj aerodrom — najbliži je Košice (oko 30 min vožnje).', c:'Prešov', k:'own', t:'30 min'},
+  'nitra': {nearest:'Bratislava', note:'Nitra nema svoj aerodrom — najbliži je Bratislava (oko 1h vožnje).', c:'Nitra', k:'own', t:'1h'},
+  'trnava': {nearest:'Bratislava', note:'Trnava nema svoj aerodrom — najbliži je Bratislava (oko 45 min vožnje).', c:'Trnava', k:'own', t:'45 min'},
+  'levoca': {nearest:'Poprad', note:'Levoča nema svoj aerodrom — najbliži je Poprad (oko 30 min vožnje).', c:'Levoča', k:'own', t:'30 min'},
+  'bardejov': {nearest:'Košice', note:'Bardejov nema svoj aerodrom — najbliži je Košice (oko 1h30 vožnje).', c:'Bardejov', k:'own', t:'1h30'},
+  'kezmarok': {nearest:'Poprad', note:'Kežmarok nema svoj aerodrom — najbliži je Poprad (oko 20 min vožnje).', c:'Kežmarok', k:'own', t:'20 min'},
+  'trencin': {nearest:'Bratislava', note:'Trenčín nema svoj aerodrom — najbliži je Bratislava (oko 1h30 vožnje).', c:'Trenčín', k:'own', t:'1h30'},
+  'piestany': {nearest:'Bratislava', note:'Piešťany nemaju svoj aerodrom — najbliži je Bratislava (oko 1h vožnje).', c:'Piešťany', k:'own', t:'1h'},
+  'bardejovske kupele': {nearest:'Košice', note:'Bardejovske Kupele nemaju svoj aerodrom — najbliži je Košice (oko 1h30 vožnje).', c:'Bardejovske Kupele', k:'own', t:'1h30'},
+  'dudince': {nearest:'Bratislava', note:'Dudince nemaju svoj aerodrom sa redovnim letovima — najbliži je Bratislava (oko 2h vožnje).', c:'Dudince', k:'sched', t:'2h'},
+  'niske tatre': {nearest:'Poprad', note:'Niske Tatre nemaju aerodrom u blizini — najbliži je Poprad (oko 1h vožnje).', c:'Niske Tatre', k:'nearby', t:'1h'},
+  'mala fatra': {nearest:'Bratislava', note:'Mala Fatra nema aerodrom u blizini — najbliži je Bratislava (oko 2h vožnje), Žilina je polazna tačka.', c:'Mala Fatra', k:'nearby', t:'2h'},
+  'strbske pleso': {nearest:'Poprad', note:'Štrbske Pleso nema svoj aerodrom — najbliži je Poprad (oko 30 min vožnje).', c:'Štrbske Pleso', k:'own', t:'30 min'},
+  'domasa jezero': {nearest:'Košice', note:'Domaša jezero nema aerodrom u blizini — najbliži je Košice (oko 1h vožnje).', c:'Domaša jezero', k:'nearby', t:'1h'},
+  'oravska priehrada': {nearest:'Žilina', note:'Oravska priehrada nema aerodrom u blizini — najbliži je Bratislava (oko 2h30 vožnje).', c:'Oravska priehrada', k:'nearby', t:'2h30'},
+  'spisski hrad': {nearest:'Poprad', note:'Spišski hrad nema svoj aerodrom — najbliži je Poprad (oko 30 min vožnje).', c:'Spišski hrad', k:'own', t:'30 min'},
+  'demanovska jaskinja': {nearest:'Poprad', note:'Demänovska jaskinja nema aerodrom u blizini — najbliži je Poprad (oko 1h vožnje).', c:'Demänovska jaskinja', k:'nearby', t:'1h'},
+  'oravski hrad': {nearest:'Žilina', note:'Oravski hrad nema aerodrom u blizini — najbliži je Bratislava (oko 2h30 vožnje).', c:'Oravski hrad', k:'nearby', t:'2h30'},
   // --- Baltik: aerodromi ---
   'talin': {hasAirport:true},
   'riga': {hasAirport:true},
@@ -2375,7 +2484,41 @@ const AIRPORT_DB = {
   'kijev': {nearest:'Varsava'},
   'lavov': {nearest:'Zesuv'},
   'odesa': {nearest:'Kisinjev'},
-  'harkov': {nearest:'Varsava'}
+  'harkov': {nearest:'Varsava'},
+  // --- Čile: aerodromi ---
+  'santiago': {hasAirport:true},
+  'konsepsion': {hasAirport:true, limited:true},
+  'la serena': {hasAirport:true, limited:true},
+  'puerto montt': {hasAirport:true, limited:true},
+  'punta arenas': {hasAirport:true, limited:true},
+  'antofagasta': {hasAirport:true, limited:true},
+  'ikike': {hasAirport:true, limited:true},
+  'arika': {hasAirport:true, limited:true},
+  'kalama': {hasAirport:true, limited:true},
+  'temuko': {hasAirport:true, limited:true},
+  'uskrsnje ostrvo': {hasAirport:true, limited:true},
+  // --- Čile: bez sopstvenog aerodroma ---
+  'pukon': {nearest:'Temuko', note:'Pukon nema svoj aerodrom — najbliži je Temuko (oko 1h vožnje).', c:'Pukon', k:'own', t:'1h'},
+  'san pedro de atakama': {nearest:'Kalama', note:'San Pedro de Atakama nema svoj aerodrom — najbliži je Kalama (oko 1h30 vožnje).', c:'San Pedro de Atakama', k:'own', t:'1h30'},
+  'puerto varas': {nearest:'Puerto Montt', note:'Puerto Varas nema svoj aerodrom — najbliži je Puerto Montt (oko 30 min vožnje).', c:'Puerto Varas', k:'own', t:'30 min'},
+  'viljarika': {nearest:'Temuko', note:'Viljarika nema svoj aerodrom — najbliži je Temuko (oko 1h15 vožnje).', c:'Viljarika', k:'own', t:'1h15'},
+  'ciloe': {nearest:'Puerto Montt', note:'Čiloe nema svoj aerodrom — najbliži je Puerto Montt (oko 1h vožnje plus trajekt).', c:'Čiloe', k:'own', t:'1h + trajekt'},
+  'terme pujehue': {nearest:'Puerto Montt', note:'Terme Pujehue nemaju svoj aerodrom — najbliži je Puerto Montt (oko 2h vožnje).', c:'Terme Pujehue', k:'own', t:'2h'},
+  'terme ciljan': {nearest:'Konsepsion', note:'Terme Čiljan nemaju svoj aerodrom — najbliži je Konsepsion (oko 2h vožnje).', c:'Terme Čiljan', k:'own', t:'2h'},
+  'terme kolina': {nearest:'Santiago', note:'Terme Kolina nemaju svoj aerodrom — najbliži je Santiago (oko 1h30 vožnje).', c:'Terme Kolina', k:'own', t:'1h30'},
+  'vale nevado': {nearest:'Santiago', note:'Vale Nevado nema svoj aerodrom — najbliži je Santiago (oko 1h vožnje).', c:'Vale Nevado', k:'own', t:'1h'},
+  'vulkan viljarika': {nearest:'Temuko', note:'Vulkan Viljarika nema aerodrom u blizini — najbliži je Temuko (oko 1h15 vožnje).', c:'Vulkan Viljarika', k:'nearby', t:'1h15'},
+  'portiljo': {nearest:'Santiago', note:'Portiljo nema svoj aerodrom — najbliži je Santiago (oko 2h vožnje).', c:'Portiljo', k:'own', t:'2h'},
+  'jezero ljankiue': {nearest:'Puerto Montt', note:'Jezero Ljankiue nema aerodrom u blizini — najbliži je Puerto Montt (oko 45 min vožnje).', c:'Jezero Ljankiue', k:'nearby', t:'45 min'},
+  'jezero viljarika': {nearest:'Temuko', note:'Jezero Viljarika nema aerodrom u blizini — najbliži je Temuko (oko 1h15 vožnje).', c:'Jezero Viljarika', k:'nearby', t:'1h15'},
+  'jezero djeneral karera': {nearest:'Puerto Montt', note:'Jezero Đeneral Karera nema aerodrom u blizini — najbliži je Puerto Montt (oko 8h vožnje, region se najčešće obilazi preko lokalnih letova).', c:'Jezero Đeneral Karera', k:'nearby', t:'8h'},
+  'jezero todos los santos': {nearest:'Puerto Montt', note:'Jezero Todos los Santos nema aerodrom u blizini — najbliži je Puerto Montt (oko 1h vožnje).', c:'Jezero Todos los Santos', k:'nearby', t:'1h'},
+  'tores del pajne': {nearest:'Punta Arenas', note:'Tores del Pajne nemaju aerodrom u blizini — najbliži je Punta Arenas (oko 5h vožnje).', c:'Tores del Pajne', k:'nearby', t:'5h'},
+  'dolina meseca': {nearest:'Kalama', note:'Dolina Meseca nema svoj aerodrom — najbliži je Kalama (oko 1h30 vožnje).', c:'Dolina Meseca', k:'own', t:'1h30'},
+  'atakama pustinja': {nearest:'Kalama', note:'Atakama pustinja nema aerodrom u blizini — najbliži je Kalama (oko 1h30 vožnje).', c:'Atakama pustinja', k:'nearby', t:'1h30'},
+  'valparaiso': {nearest:'Santiago', note:'Valparaiso nema svoj aerodrom — najbliži je Santiago (oko 1h15 vožnje).', c:'Valparaiso', k:'own', t:'1h15'},
+  'vinja del mar': {nearest:'Santiago', note:'Vinja del Mar nema svoj aerodrom — najbliži je Santiago (oko 1h15 vožnje), Valparaiso je alternativa.', c:'Vinja del Mar', k:'own', t:'1h15', alt:'Valparaiso'},
+  'picilemu': {nearest:'Santiago', note:'Pičilemu nema svoj aerodrom — najbliži je Santiago (oko 3h vožnje).', c:'Pičilemu', k:'own', t:'3h'}
 };
 Object.keys(AIRPORT_DB).forEach(k => { AIRPORT_DB[k].slug = k; });
 /* Tekst napomene za grad bez aerodroma, na trenutnom jeziku.
@@ -3490,7 +3633,32 @@ const POPULAR_DESTINATIONS = [
   {name:'Qeparo', extra:'Albanija'}, {name:'Borsh', extra:'Albanija'}, {name:'Jale', extra:'Albanija'}, {name:'Golem', extra:'Albanija'},
   {name:'Drin', extra:'Albanija'}, {name:'Vjosa', extra:'Albanija'}, {name:'Shkumbin', extra:'Albanija'}, {name:'Buna', extra:'Albanija'},
   {name:'Bukurešt', extra:'Rumunija'}, {name:'Kluž', extra:'Rumunija'}, {name:'Brašov', extra:'Rumunija'}, {name:'Konstanca', extra:'Rumunija'},
-  {name:'Sibiu', extra:'Rumunija'}, {name:'Temišvar', extra:'Rumunija'}, {name:'Jaši', extra:'Rumunija'}, {name:'Sinaja', extra:'Rumunija'}, {name:'Bran', extra:'Rumunija'}, {name:'Mamaja', extra:'Rumunija'},
+  {name:'Sibiu', extra:'Rumunija'}, {name:'Temišvar', extra:'Rumunija'}, {name:'Jaši', extra:'Rumunija'},
+  {name:'Krajova', extra:'Rumunija'}, {name:'Oradea', extra:'Rumunija'}, {name:'Arad', extra:'Rumunija'},
+  {name:'Bakau', extra:'Rumunija'}, {name:'Satu Mare', extra:'Rumunija'}, {name:'Baja Mare', extra:'Rumunija'},
+  {name:'Targu Mureš', extra:'Rumunija'}, {name:'Ploješti', extra:'Rumunija'}, {name:'Pitešti', extra:'Rumunija'}, {name:'Galac', extra:'Rumunija'},
+  // Rumunija — manja mesta
+  {name:'Sighišoara', extra:'Rumunija'}, {name:'Alba Julija', extra:'Rumunija'}, {name:'Sfantu Georgije', extra:'Rumunija'},
+  {name:'Deva', extra:'Rumunija'}, {name:'Rešica', extra:'Rumunija'}, {name:'Zalau', extra:'Rumunija'},
+  {name:'Buzau', extra:'Rumunija'}, {name:'Fokšani', extra:'Rumunija'}, {name:'Targovište', extra:'Rumunija'},
+  // Rumunija — banje
+  {name:'Bajle Herkulane', extra:'Rumunija'}, {name:'Sovata', extra:'Rumunija'}, {name:'Bajle Feliks', extra:'Rumunija'},
+  {name:'Vatra Dornei', extra:'Rumunija'}, {name:'Kovasna', extra:'Rumunija'}, {name:'Slanik Moldova', extra:'Rumunija'},
+  // Rumunija — planine
+  {name:'Sinaja', extra:'Rumunija'}, {name:'Predeal', extra:'Rumunija'}, {name:'Poiana Brašov', extra:'Rumunija'},
+  {name:'Bušteni', extra:'Rumunija'}, {name:'Semenic', extra:'Rumunija'}, {name:'Paltiniš', extra:'Rumunija'},
+  // Rumunija — reke
+  {name:'Mureš', extra:'Rumunija'}, {name:'Olt', extra:'Rumunija'}, {name:'Prut', extra:'Rumunija'}, {name:'Siret', extra:'Rumunija'},
+  // Rumunija — jezera
+  {name:'Crveno Jezero', extra:'Rumunija'}, {name:'Jezero Bikaz', extra:'Rumunija'}, {name:'Jezero Sveta Ana', extra:'Rumunija'},
+  {name:'Jezero Vidraru', extra:'Rumunija'}, {name:'Delta Dunava', extra:'Rumunija'},
+  // Rumunija — turistički centri
+  {name:'Bran', extra:'Rumunija'}, {name:'Peleš Dvorac', extra:'Rumunija'}, {name:'Rišnov', extra:'Rumunija'},
+  {name:'Maramureš', extra:'Rumunija'}, {name:'Bukovina', extra:'Rumunija'},
+  // Rumunija — primorska mesta
+  {name:'Mamaja', extra:'Rumunija'}, {name:'Eforie Nord', extra:'Rumunija'}, {name:'Eforie Sud', extra:'Rumunija'},
+  {name:'Vama Vekje', extra:'Rumunija'}, {name:'Neptun', extra:'Rumunija'}, {name:'Kostinešti', extra:'Rumunija'},
+  {name:'Mangalija', extra:'Rumunija'}, {name:'Navodari', extra:'Rumunija'},
   {name:'Sofija', extra:'Bugarska'}, {name:'Varna', extra:'Bugarska'}, {name:'Burgas', extra:'Bugarska'},
   {name:'Plovdiv', extra:'Bugarska'}, {name:'Nesebar', extra:'Bugarska'}, {name:'Bansko', extra:'Bugarska'},
   {name:'Ruse', extra:'Bugarska'}, {name:'Stara Zagora', extra:'Bugarska'}, {name:'Pleven', extra:'Bugarska'},
@@ -3510,6 +3678,14 @@ const POPULAR_DESTINATIONS = [
   {name:'Sozopol', extra:'Bugarska'}, {name:'Sunčev Breg', extra:'Bugarska'}, {name:'Zlatni Pjasci', extra:'Bugarska'},
   {name:'Primorsko', extra:'Bugarska'}, {name:'Balčik', extra:'Bugarska'}, {name:'Kavarna', extra:'Bugarska'},
   {name:'Carevo', extra:'Bugarska'}, {name:'Pomorije', extra:'Bugarska'}, {name:'Ahtopol', extra:'Bugarska'},
+  // Bugarska — manja mesta
+  {name:'Karlovo', extra:'Bugarska'}, {name:'Kazanlak', extra:'Bugarska'}, {name:'Smoljan', extra:'Bugarska'},
+  {name:'Kardžali', extra:'Bugarska'}, {name:'Vraca', extra:'Bugarska'}, {name:'Pernik', extra:'Bugarska'},
+  {name:'Trojan', extra:'Bugarska'}, {name:'Asenovgrad', extra:'Bugarska'},
+  // Bugarska — reke
+  {name:'Marica', extra:'Bugarska'}, {name:'Iskar', extra:'Bugarska'}, {name:'Struma', extra:'Bugarska'}, {name:'Tundža', extra:'Bugarska'},
+  // Bugarska — jezera
+  {name:'Sedam Rilskih Jezera', extra:'Bugarska'}, {name:'Srebarno Jezero', extra:'Bugarska'}, {name:'Pančarevsko Jezero', extra:'Bugarska'}, {name:'Batačko Jezero', extra:'Bugarska'},
   // Grčka i Egej
   {name:'Atina', extra:'Grčka'}, {name:'Solun', extra:'Grčka'}, {name:'Krf', extra:'Grčka'},
   {name:'Santorini', extra:'Grčka'}, {name:'Mikonos', extra:'Grčka'}, {name:'Rodos', extra:'Grčka'},
@@ -3593,10 +3769,29 @@ const POPULAR_DESTINATIONS = [
   // Španija — obala i planine
   {name:'Kosta Brava', extra:'Španija'}, {name:'Kosta del Sol', extra:'Španija'}, {name:'Kosta Blanka', extra:'Španija'},
   {name:'Marbelja', extra:'Španija'}, {name:'Benidorm', extra:'Španija'}, {name:'Torremolinos', extra:'Španija'}, {name:'Salou', extra:'Španija'}, {name:'Sitges', extra:'Španija'},
-  {name:'Sijera Nevada', extra:'Španija'}, {name:'Pirineji', extra:'Španija'},
-  {name:'Lisabon', extra:'Portugalija'}, {name:'Porto', extra:'Portugalija'}, {name:'Faro', extra:'Portugalija'}, {name:'Kordoba', extra:'Španija'},
-  {name:'Koimbra', extra:'Portugalija'}, {name:'Braga', extra:'Portugalija'}, {name:'Sintra', extra:'Portugalija'},
-  {name:'Albufeira', extra:'Portugalija'}, {name:'Madeira', extra:'Portugalija'}, {name:'Azori', extra:'Portugalija'},
+  {name:'Sijera Nevada', extra:'Španija'}, {name:'Pirineji', extra:'Španija'}, {name:'Kordoba', extra:'Španija'},
+  {name:'Lisabon', extra:'Portugalija'}, {name:'Porto', extra:'Portugalija'}, {name:'Faro', extra:'Portugalija'},
+  {name:'Koimbra', extra:'Portugalija'}, {name:'Braga', extra:'Portugalija'},
+  // Portugalija — gradovi
+  {name:'Aveiro', extra:'Portugalija'}, {name:'Guimarães', extra:'Portugalija'}, {name:'Setúbal', extra:'Portugalija'}, {name:'Viseu', extra:'Portugalija'},
+  // Portugalija — manja mesta
+  {name:'Óbidos', extra:'Portugalija'}, {name:'Tomar', extra:'Portugalija'}, {name:'Elvas', extra:'Portugalija'}, {name:'Marvão', extra:'Portugalija'}, {name:'Monsaraz', extra:'Portugalija'},
+  // Portugalija — banje
+  {name:'Caldas da Rainha', extra:'Portugalija'}, {name:'Termas de São Pedro do Sul', extra:'Portugalija'}, {name:'Caldas do Gerês', extra:'Portugalija'}, {name:'Monfortinho', extra:'Portugalija'},
+  // Portugalija — planine
+  {name:'Serra da Estrela', extra:'Portugalija'}, {name:'Peneda-Gerês', extra:'Portugalija'}, {name:'Monchique', extra:'Portugalija'},
+  // Portugalija — reke
+  {name:'Douro', extra:'Portugalija'}, {name:'Tejo', extra:'Portugalija'}, {name:'Minho', extra:'Portugalija'}, {name:'Mondego', extra:'Portugalija'},
+  // Portugalija — jezera
+  {name:'Alqueva', extra:'Portugalija'}, {name:'Jezero Sedam Gradova', extra:'Portugalija'}, {name:'Jezero Furnas', extra:'Portugalija'},
+  // Portugalija — turistički centri
+  {name:'Sintra', extra:'Portugalija'}, {name:'Evora', extra:'Portugalija'}, {name:'Fatima', extra:'Portugalija'},
+  // Portugalija — primorska mesta i ostrva
+  {name:'Albufeira', extra:'Portugalija'}, {name:'Kaskais', extra:'Portugalija'}, {name:'Nazare', extra:'Portugalija'},
+  {name:'Ericeira', extra:'Portugalija'}, {name:'Peniche', extra:'Portugalija'}, {name:'Lagos', extra:'Portugalija'},
+  {name:'Portimão', extra:'Portugalija'}, {name:'Tavira', extra:'Portugalija'}, {name:'Vilamoura', extra:'Portugalija'},
+  {name:'Sesimbra', extra:'Portugalija'}, {name:'Costa da Caparica', extra:'Portugalija'},
+  {name:'Madeira', extra:'Portugalija'}, {name:'Azori', extra:'Portugalija'}, {name:'Tersejra', extra:'Portugalija'},
   // Zapadna/Severna Evropa
   {name:'Pariz', extra:'Francuska'}, {name:'Nica', extra:'Francuska'}, {name:'Lion', extra:'Francuska'},
   {name:'Bordo', extra:'Francuska'}, {name:'Marselj', extra:'Francuska'}, {name:'Strazbur', extra:'Francuska'},
@@ -3643,8 +3838,36 @@ const POPULAR_DESTINATIONS = [
   // Austrija — jezera
   {name:'Volfgangze', extra:'Austrija'}, {name:'Ahenze', extra:'Austrija'}, {name:'Vertersee', extra:'Austrija'},
   {name:'Atersee', extra:'Austrija'}, {name:'Mondzee', extra:'Austrija'}, {name:'Traunzee', extra:'Austrija'}, {name:'Nojzidlersko Jezero', extra:'Austrija'},
-  {name:'Prag', extra:'Češka'}, {name:'Brno', extra:'Češka'}, {name:'Budimpešta', extra:'Mađarska'}, {name:'Bratislava', extra:'Slovačka'},
-  {name:'Karlovi Vari', extra:'Češka'}, {name:'Češki Krumlov', extra:'Češka'}, {name:'Plzenj', extra:'Češka'}, {name:'Olomouc', extra:'Češka'}, {name:'Kutna Hora', extra:'Češka'},
+  {name:'Prag', extra:'Češka'}, {name:'Brno', extra:'Češka'}, {name:'Plzenj', extra:'Češka'}, {name:'Olomouc', extra:'Češka'},
+  {name:'Ostrava', extra:'Češka'}, {name:'Hradec Kralove', extra:'Češka'}, {name:'Liberec', extra:'Češka'}, {name:'Pardubice', extra:'Češka'},
+  {name:'Zlin', extra:'Češka'}, {name:'Češke Budejovice', extra:'Češka'},
+  // Češka — manja mesta
+  {name:'Telč', extra:'Češka'}, {name:'Mikulov', extra:'Češka'}, {name:'Kroměříž', extra:'Češka'}, {name:'Litomyšl', extra:'Češka'}, {name:'Terezin', extra:'Češka'},
+  // Češka — banje
+  {name:'Karlovi Vari', extra:'Češka'}, {name:'Mariánske Lazne', extra:'Češka'}, {name:'Františkove Lazne', extra:'Češka'}, {name:'Luhačovice', extra:'Češka'},
+  // Češka — planine
+  {name:'Krkonoše', extra:'Češka'}, {name:'Šumava', extra:'Češka'}, {name:'Jeseniky', extra:'Češka'},
+  // Češka — reke
+  {name:'Vltava', extra:'Češka'}, {name:'Labe', extra:'Češka'}, {name:'Morava', extra:'Češka'},
+  // Češka — jezera
+  {name:'Lipno Jezero', extra:'Češka'}, {name:'Mácha Jezero', extra:'Češka'},
+  // Češka — turistički centri
+  {name:'Češki Krumlov', extra:'Češka'}, {name:'Kutna Hora', extra:'Češka'}, {name:'Konopiste Dvorac', extra:'Češka'}, {name:'Karlštejn Dvorac', extra:'Češka'},
+  {name:'Bratislava', extra:'Slovačka'}, {name:'Košice', extra:'Slovačka'}, {name:'Poprad', extra:'Slovačka'}, {name:'Banska Bistrica', extra:'Slovačka'},
+  {name:'Žilina', extra:'Slovačka'}, {name:'Prešov', extra:'Slovačka'}, {name:'Nitra', extra:'Slovačka'}, {name:'Trnava', extra:'Slovačka'},
+  // Slovačka — manja mesta
+  {name:'Levoča', extra:'Slovačka'}, {name:'Bardejov', extra:'Slovačka'}, {name:'Kežmarok', extra:'Slovačka'}, {name:'Trenčín', extra:'Slovačka'},
+  // Slovačka — banje
+  {name:'Piešťany', extra:'Slovačka'}, {name:'Bardejovske Kupele', extra:'Slovačka'}, {name:'Dudince', extra:'Slovačka'},
+  // Slovačka — planine
+  {name:'Visoke Tatre', extra:'Slovačka'}, {name:'Niske Tatre', extra:'Slovačka'}, {name:'Mala Fatra', extra:'Slovačka'},
+  // Slovačka — reke
+  {name:'Váh', extra:'Slovačka'}, {name:'Hron', extra:'Slovačka'}, {name:'Hornád', extra:'Slovačka'},
+  // Slovačka — jezera
+  {name:'Štrbske Pleso', extra:'Slovačka'}, {name:'Domaša Jezero', extra:'Slovačka'}, {name:'Oravska Priehrada', extra:'Slovačka'},
+  // Slovačka — turistički centri
+  {name:'Spišski Hrad', extra:'Slovačka'}, {name:'Demanovska Jaskinja', extra:'Slovačka'}, {name:'Oravski Hrad', extra:'Slovačka'},
+  {name:'Budimpešta', extra:'Mađarska'},
   {name:'Segedin', extra:'Mađarska'}, {name:'Pečuj', extra:'Mađarska'}, {name:'Debrecin', extra:'Mađarska'}, {name:'Đer', extra:'Mađarska'},
   {name:'Balaton', extra:'Mađarska'}, {name:'Heviz', extra:'Mađarska'}, {name:'Šiofok', extra:'Mađarska'}, {name:'Kečkemet', extra:'Mađarska'},
   {name:'Varšava', extra:'Poljska'}, {name:'Krakov', extra:'Poljska'}, {name:'Vroclav', extra:'Poljska'},
@@ -3715,8 +3938,26 @@ const POPULAR_DESTINATIONS = [
   {name:'Zanzibar', extra:'Tanzanija'}, {name:'Mauricijus', extra:'Mauricijus'},
   {name:'Mahe', extra:'Sejšeli'}, {name:'Sejšeli', extra:'Sejšeli'},
   {name:'Sal', extra:'Zelenortska ostrva'}, {name:'Zelenortska ostrva', extra:'Zelenortska ostrva'},
+  // Čile — gradovi
+  {name:'Santiago', extra:'Čile'}, {name:'Konsepsion', extra:'Čile'}, {name:'La Serena', extra:'Čile'},
+  {name:'Puerto Montt', extra:'Čile'}, {name:'Punta Arenas', extra:'Čile'}, {name:'Antofagasta', extra:'Čile'},
+  {name:'Ikike', extra:'Čile'}, {name:'Arika', extra:'Čile'}, {name:'Kalama', extra:'Čile'}, {name:'Temuko', extra:'Čile'},
+  // Čile — manja mesta
+  {name:'Pukon', extra:'Čile'}, {name:'San Pedro de Atakama', extra:'Čile'}, {name:'Puerto Varas', extra:'Čile'},
+  {name:'Viljarika', extra:'Čile'}, {name:'Čiloe', extra:'Čile'},
+  // Čile — banje
+  {name:'Terme Pujehue', extra:'Čile'}, {name:'Terme Čiljan', extra:'Čile'}, {name:'Terme Kolina', extra:'Čile'},
+  // Čile — planine
+  {name:'Vale Nevado', extra:'Čile'}, {name:'Vulkan Viljarika', extra:'Čile'}, {name:'Portiljo', extra:'Čile'},
+  // Čile — reke
+  {name:'Bio Bio', extra:'Čile'}, {name:'Majpo', extra:'Čile'}, {name:'Baker', extra:'Čile'},
+  // Čile — jezera
+  {name:'Jezero Ljankiue', extra:'Čile'}, {name:'Jezero Viljarika', extra:'Čile'}, {name:'Jezero Đeneral Karera', extra:'Čile'}, {name:'Jezero Todos los Santos', extra:'Čile'},
+  // Čile — turistički centri
+  {name:'Tores del Pajne', extra:'Čile'}, {name:'Uskršnje ostrvo', extra:'Čile'}, {name:'Dolina Meseca', extra:'Čile'}, {name:'Atakama pustinja', extra:'Čile'},
+  // Čile — primorska mesta
+  {name:'Valparaiso', extra:'Čile'}, {name:'Vinja del Mar', extra:'Čile'}, {name:'Pičilemu', extra:'Čile'},
   {name:'Karpatos', extra:'Grčka'}, {name:'Parga', extra:'Grčka'}, {name:'Sivota', extra:'Grčka'},
-  {name:'Košice', extra:'Slovačka'}, {name:'Visoke Tatre', extra:'Slovačka'},
   {name:'Garmisch-Partenkirchen', extra:'Nemačka'}, {name:'St. Anton am Arlberg', extra:'Austrija'},
   // Dodato — poznata mesta/znamenitosti koje su falile unutar postojećih zemalja
   {name:'Hajdelberg', extra:'Nemačka'}, {name:'Potsdam', extra:'Nemačka'}, {name:'Nojšvanštajn', extra:'Nemačka'}, {name:'Rotenburg na Tauberu', extra:'Nemačka'},
