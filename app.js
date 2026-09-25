@@ -5060,6 +5060,14 @@ document.querySelectorAll('.toggle').forEach(t=>{
       renderOriginAirportWarning(document.getElementById('origin').value);
       renderDestAirportWarning(document.getElementById('dest').value);
     }
+    // BAG: "3 plana" i "Tvoj personalizovani plan" su se osvežavali SAMO na
+    // promenu Polaska/datuma/putnika (vidi njihove 'origin'/'dateFrom'/
+    // 'dateTo'/'adults' listenere), ne i na Letovi/Smeštaj/R a C/Aktivnost —
+    // pa je npr. markiranje sva 4 toggle-a i dalje prikazivalo kartice
+    // izračunate za STARO (podrazumevano: samo Smeštaj) stanje, dok
+    // korisnik posle toga ne bi dirnuo neko od tih ostalih polja. Ovaj
+    // event javlja svima koji zavise od izbora usluga da se osveže odmah.
+    document.dispatchEvent(new Event('sklopi:services-changed'));
   });
 });
 
@@ -6231,6 +6239,9 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (!el) return;
     ['input','change'].forEach(ev => el.addEventListener(ev, () => { clearTimeout(_planTimer); _planTimer = setTimeout(render, 250); }));
   });
+  // I na promenu Letovi/Smeštaj/R a C/Aktivnost — vidi napomenu uz
+  // 'sklopi:services-changed' gore (FORM WIRING) za ceo bag.
+  document.addEventListener('sklopi:services-changed', render);
 
   $('planDetailBack')?.addEventListener('click', () => {
     if (detail) detail.hidden = true;
@@ -6458,6 +6469,8 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const el = document.getElementById(id);
     if (el) ['input','change'].forEach(ev => el.addEventListener(ev, () => refresh(250)));
   });
+  // Isti bag/popravka kao za "3 plana" — vidi 'sklopi:services-changed'.
+  document.addEventListener('sklopi:services-changed', () => refresh(0));
   const ppDest = document.getElementById('dest');
   if (ppDest){
     ppDest.addEventListener('input', () => { if (window.SKLOPI_knownDest && window.SKLOPI_knownDest(ppDest.value)) refresh(600); });
