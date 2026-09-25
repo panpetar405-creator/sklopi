@@ -1713,6 +1713,47 @@ jedna do druge, svaka SAMA sebi dugme (nema odvojenog CTA ispod). */
 .q-text-field:focus{border-bottom-color:var(--gold);}
 .q-num-field{max-width:90px;}
 .q-row-head--static{cursor:default;}
+/* ---------- Redizajn 2026: "Prilagodi svoj plan" / #builderPanel —
+   q-row iz ravne liste (samo linija ispod) postaje zasebna kartica sa
+   ikonicom, u istom stilu kao .pkg/.feature kartice na ostatku sajta
+   (radius 14px, meka senka), umesto da forma deluje generički. Ikonice
+   ponovo koriste već postojeće .builder-ic boje (ic-flight/ic-hotel/
+   ic-car/ic-activity) koje su ranije bile definisane ali nekorišćene. ---------- */
+.q-form{gap:12px;}
+.q-form .q-row{
+    border-bottom:none;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:4px 16px;
+    box-shadow:0 10px 24px -18px rgba(18,58,68,.35);
+}
+.q-form .q-row.checked{border-color:var(--line-form);}
+.q-form .q-row-head{padding:14px 0;gap:12px;}
+.q-form .q-row-head .builder-ic{width:34px;height:34px;}
+.q-form .q-row-head .builder-ic svg{width:16px;height:16px;}
+.q-form .q-sub-inner{padding-left:46px;}
+/* Istaknuto (izabrano) stanje radio/checkbox opcija — obojena "pilula"
+   umesto samo tačke, u boji koja već postoji za tu grupu na sajtu. */
+.q-radio-line:has(input:checked){
+    background:var(--deep-soft);color:var(--deep);font-weight:700;
+    border-radius:10px;margin:0 -8px;padding:5px 8px;
+}
+.q-sub-inner:has(input[name$="HotelStarsRadio"]) .q-radio-line:has(input:checked){
+    background:var(--gold-soft);color:var(--gold-text);
+}
+.q-sub-inner:has(input[name$="CarPrefRadio"]) .q-radio-line:has(input:checked){
+    background:var(--coral-soft);color:var(--coral-text);
+}
+.q-row-head:has(input[type="checkbox"]:checked) .q-name{color:var(--deep);}
+/* ---------- Cenovna stavka po redu ("Tvoj izlet") — ikonica u boji
+   umesto gole emoji glife, ista paleta kao gore radi doslednosti. ---------- */
+.builder-line .lic{
+    width:26px;height:26px;border-radius:50%;flex:none;
+    display:inline-flex;align-items:center;justify-content:center;
+}
+.builder-line .lic svg{width:13px;height:13px;}
+.builder-line .lic.ic-flight{background:var(--deep-soft);color:var(--deep);}
+.builder-line .lic.ic-hotel{background:var(--gold-soft);color:var(--gold);}
+.builder-line .lic.ic-car{background:var(--coral-soft);color:var(--coral);}
+.builder-line .lic.ic-activity{background:var(--aqua-soft);color:var(--aqua);}
 .builder-summary{
     background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:6px;
     padding:24px 24px 26px;position:sticky;top:78px;

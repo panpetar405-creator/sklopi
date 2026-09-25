@@ -5290,11 +5290,18 @@ function renderBuilder(){
   const pkg = computeCustomPackage(builderState, ctx);
 
   const lines = document.getElementById('builderLines');
+  const ICONS = {
+    flight:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"/></svg>',
+    hotel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"/></svg>',
+    car:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M6 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M15 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M6 12h12"/></svg>',
+    activity:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg>'
+  };
+  const badge = (kind) => '<span class="lic ic-' + kind + '">' + ICONS[kind] + '</span>';
   const rows = [];
-  if (builderState.includeFlight) rows.push(['✈️', t('builder_flight_label'), pkg.flight.price]);
-  if (builderState.includeHotel) rows.push(['🏨', 'Hotel', pkg.hotel.price]);
-  if (builderState.carPref !== 'none') rows.push(['🚗', 'Auto', pkg.car.price]);
-  if (builderState.activityCount > 0) rows.push(['🎟️', t('builder_activities_label'), pkg.activity.price]);
+  if (builderState.includeFlight) rows.push([badge('flight'), t('builder_flight_label'), pkg.flight.price]);
+  if (builderState.includeHotel) rows.push([badge('hotel'), 'Hotel', pkg.hotel.price]);
+  if (builderState.carPref !== 'none') rows.push([badge('car'), 'Auto', pkg.car.price]);
+  if (builderState.activityCount > 0) rows.push([badge('activity'), t('builder_activities_label'), pkg.activity.price]);
   if (pkg.carExtras.price > 0) rows.push(['⛽', 'Gorivo i putarine (auto)', pkg.carExtras.price]);
   if (builderState.insurance) rows.push(['🛡️', t('f_insurance_name'), pkg.insuranceCost]);
   if (builderState.putarina) rows.push(['🛣️', t('f_tolls_name'), pkg.putarinaCost]);
