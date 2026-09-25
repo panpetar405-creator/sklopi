@@ -3953,3 +3953,20 @@ button.mark-v2:active{transform:scale(.95);}
   box-shadow:0 8px 16px -10px rgba(7,60,72,.5);
 }
 .hero-reference .toggle.on .tt-label{color:var(--hero-ink);}
+
+/* ==========================================================================
+   Uskladi generička "izabrano/aktivno" stanja u upitniku (#builderPanel),
+   čipovima i dugmetu za zatvaranje panela sa novom tirkiznom paletom
+   dugmadi (referentni dizajn). NE dira kategorijske boje po tipu stavke
+   (let, smeštaj=zlatna, auto=koralna, aktivnost=aqua) — one ostaju iste
+   svuda na sajtu jer nose značenje (koja je to vrsta stavke), samo se
+   ujednačuju generička "checked/selected" stanja koja ranije nisu bila
+   vezana za kategoriju već su prosto koristila staru tamnu boju dugmadi.
+   ========================================================================== */
+.builder-close{background:var(--btn-petrol);}
+.chip.on{background:var(--btn-petrol);border-color:var(--btn-petrol-a);box-shadow:0 6px 14px -8px rgba(7,60,72,.4);}
+.q-row-head input[type="checkbox"]:checked{background:var(--btn-petrol-a);border-color:var(--btn-petrol-a);}
+.q-row-head:has(input[type="checkbox"]:checked) .q-name{color:var(--btn-petrol-c);}
+.q-radio-line input[type="radio"]:checked{border-color:var(--btn-petrol-a);}
+.q-radio-line input[type="radio"]:checked::after{background:var(--btn-petrol-a);}
+.q-radio-line:has(input:checked){background:#e9f5f5;color:var(--btn-petrol-c);}
