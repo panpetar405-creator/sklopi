@@ -3671,8 +3671,8 @@ function fmtDateSr(d){
 ========================================================== */
 const LOC_DROPDOWN_INPUT_ID = { destSuggestions:'dest', originSuggestions:'origin' };
 const _locDropdownState = {
-  destSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false },
-  originSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false }
+  destSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false, reqSeq:0 },
+  originSuggestions:{ items:[], activeIndex:-1, suppressNextFetch:false, reqSeq:0 }
 };
 // Koristi visualViewport (kad postoji — svi moderni Android/Chrome) da
 // zna GDE se stvarno završava vidljiv deo ekrana kad je tastatura otvorena.
@@ -3715,7 +3715,13 @@ function closeLocDropdown(datalistId){
   const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
   const state = _locDropdownState[datalistId];
   if (panel){ panel.classList.remove('open'); panel.innerHTML = ''; }
-  if (state){ state.items = []; state.activeIndex = -1; }
+  // reqSeq++ ovde je KLJUČNO: poništava svaki fetchLocationSuggestions poziv
+  // koji je u tom trenutku još "u letu" (čeka backend/Open-Meteo). Bez ovoga,
+  // zatvaranje panela (izborom predloga, blur-om ili skrolom) ne prekida stari
+  // mrežni poziv — kad on kasnije stigne, ponovo otvara panel sa starim
+  // predlozima, iako je korisnik u međuvremenu već izabrao/sačuvao destinaciju
+  // i pomerio se dalje po sajtu.
+  if (state){ state.items = []; state.activeIndex = -1; state.reqSeq++; }
   if (inputEl){ inputEl.setAttribute('aria-expanded', 'false'); inputEl.removeAttribute('aria-activedescendant'); }
 }
 function selectLocSuggestion(datalistId, value){
@@ -3823,6 +3829,13 @@ async function fetchLocationSuggestions(q, datalistId){
   const query = q.trim();
   const inputEl = document.getElementById(LOC_DROPDOWN_INPUT_ID[datalistId]);
   const stubEl = inputEl ? inputEl.closest('.stub') : null;
+  const state = _locDropdownState[datalistId];
+  // Isti princip kao mySeq/wxRequestSeq kod prognoze: obeleži OVAJ poziv
+  // brojem. Ako se panel u međuvremenu zatvori (izbor, blur, nova pretraga —
+  // svaki poziv closeLocDropdown-a povećava reqSeq), taj broj više neće biti
+  // najsvežiji, pa ovaj poziv na kraju NEĆE ponovo otvoriti panel sa
+  // zastarelim/tuđim predlozima.
+  const mySeq = state ? ++state.reqSeq : 0;
   if (query.length < 2){ renderLocationSuggestions([], datalistId); if (stubEl) stubEl.classList.remove('is-loading'); return; }
   if (stubEl) stubEl.classList.add('is-loading');
 
@@ -3870,7 +3883,10 @@ async function fetchLocationSuggestions(q, datalistId){
       }
     }
 
-    renderLocationSuggestions(combined.slice(0, 6), datalistId);
+    // Ako je u međuvremenu panel zatvoren (izbor predloga, blur, skrol koji
+    // je blur-ovao polje...) ili je pokrenuta NOVIJA pretraga, ovaj odgovor
+    // je zastareo — ne prikazuj ga.
+    if (!state || mySeq === state.reqSeq) renderLocationSuggestions(combined.slice(0, 6), datalistId);
   } finally {
     if (stubEl) stubEl.classList.remove('is-loading');
   }
