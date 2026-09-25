@@ -17,7 +17,7 @@
        promenljivih su namerno nepromenjeni da sva pravila ispod i dalje
        rade — menjaju se samo HEX vrednosti. */
     --bg:#E7F2FA;            /* svetla nebo-plava pozadina sajta */
-    --paper:#FAF6EE;         /* topla hartija */
+    --paper:#FFFFFF;         /* bela pozadina kartica */
     --ink:#0C2229;           /* duboko tirkizno-crna */
     --ink-soft:#4B6067;
     --deep:#123A44;          /* Deep Petrol, tamniji/hladniji ton */
