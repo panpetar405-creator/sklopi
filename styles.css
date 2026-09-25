@@ -1132,10 +1132,14 @@ a{color:inherit;}
 .dest-page-card{
     display:flex;align-items:center;gap:14px;text-decoration:none;
     background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--aqua);
-    border-radius:14px;padding:16px 18px;margin-top:18px;
+    border-radius:14px;padding:16px 18px;
+    width:88%;max-width:420px;margin:18px auto 14px;
     box-shadow:0 12px 28px -20px rgba(18,58,68,0.22);
     transition:box-shadow .2s ease, transform .15s ease;
     -webkit-tap-highlight-color:transparent;
+}
+@media (min-width:860px){
+    .dest-page-card{width:100%;max-width:none;margin:18px 0 14px;}
 }
 .dest-page-card:active{transform:translateY(1px);}
 .dest-page-card:hover{box-shadow:0 16px 34px -18px rgba(18,58,68,0.3);}
