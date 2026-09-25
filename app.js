@@ -6163,7 +6163,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
 
   buildBtn?.addEventListener('click', () => {
     const dest = document.getElementById('dest');
-    if (dest) {
+    // Dispatch-uj 'input' SAMO ako se vrednost stvarno menja — u suprotnom
+    // isti (već unet/sačuvan) grad opet pokrene fetchLocationSuggestions
+    // i lista predloga se ponovo otvori dok se skroluje nazad na formu,
+    // iako korisnik ništa nije kucao niti menjao destinaciju.
+    if (dest && dest.value !== curCity) {
       dest.value = curCity;
       dest.dispatchEvent(new Event('input', {bubbles:true}));
     }
@@ -6177,8 +6181,12 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const dest = document.getElementById('dest');
     const ap = window.SKLOPI_ACTIVE_PLAN;
     if (dest && !(ap && ap.keepDest)) {
-      dest.value = (ap && ap.dest) || curCity;
-      dest.dispatchEvent(new Event('input', {bubbles:true}));
+      const newDest = (ap && ap.dest) || curCity;
+      // Isto kao gore: ne diraj/ne dispatch-uj ako je destinacija već ta ista.
+      if (dest.value !== newDest) {
+        dest.value = newDest;
+        dest.dispatchEvent(new Event('input', {bubbles:true}));
+      }
     }
     const search = document.getElementById('searchForm');
     if (search) search.scrollIntoView({behavior:'smooth', block:'center'});
@@ -6232,7 +6240,12 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (!p || !detail) return;
     window.SKLOPI_ACTIVE_PLAN = p;
     const dest = $('dest');
-    if (dest && !p.keepDest){ dest.value = p.dest || curCity; dest.dispatchEvent(new Event('input', {bubbles:true})); }
+    if (dest && !p.keepDest){
+      const newDest = p.dest || curCity;
+      // Isti razlog kao kod buildBtn/goToSearchForCity iznad — ne
+      // dispatch-uj 'input' ako se destinacija stvarno ne menja.
+      if (dest.value !== newDest){ dest.value = newDest; dest.dispatchEvent(new Event('input', {bubbles:true})); }
+    }
     // Isto ovde: nekad se builderState (za "razradu"/rezervaciju ispod)
     // uvek postavljao na includeFlight/includeHotel true, bez obzira na
     // stvarno markirane servise — pa je i razrada tražila let za grad bez
