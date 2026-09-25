@@ -566,19 +566,30 @@ function pickBestLocationMatch(results, query){
       const key = city.trim().toLowerCase();
       if (!key) return {geo:null, networkError:false};
       if (this.geoCache[key]) return {geo:this.geoCache[key], networkError:false};
-      const attempts = [
-        'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=10&language=sr&format=json',
-        'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=10&language=en&format=json',
-        'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=10&format=json'
-      ];
+      // Neki srpski egzonimi (npr. "Skoplje") ne postoje u Open-Meteo geo bazi —
+      // ona grad vodi pod međunarodnim nazivom ("Skopje"), pa bi upit sa srpskim
+      // nazivom vratio 0 rezultata i prognoza se ne bi prikazala. Zato prvo
+      // probamo prevod iz DEST_EN_NAMES (ista tabela koja se koristi za Viator
+      // pretragu), pa tek onda izvorni upisani naziv kao rezervu.
+      const rawCity = city.trim().split(',')[0].trim();
+      const enName = (typeof DEST_EN_NAMES !== 'undefined' && DEST_EN_NAMES[rawCity]) || null;
+      const queries = (enName && enName.toLowerCase() !== city.trim().toLowerCase()) ? [enName, city] : [city];
+      const attempts = [];
+      queries.forEach(q => {
+        attempts.push(
+          {q, url:'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(q) + '&count=10&language=sr&format=json'},
+          {q, url:'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(q) + '&count=10&language=en&format=json'},
+          {q, url:'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(q) + '&count=10&format=json'}
+        );
+      });
       let networkError = false;
-      for (const url of attempts){
+      for (const {q, url} of attempts){
         try{
           const res = await fetch(url);
           if (!res.ok){ networkError = true; continue; }
           const data = await res.json();
           if (data && data.results && data.results.length){
-            const r = pickBestLocationMatch(data.results, city);
+            const r = pickBestLocationMatch(data.results, q);
             const geo = {lat: Math.round(r.latitude*100)/100, lon: Math.round(r.longitude*100)/100};
             this.geoCache[key] = geo;
             return {geo, networkError:false};
