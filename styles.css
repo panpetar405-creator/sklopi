@@ -1126,6 +1126,38 @@ a{color:inherit;}
     padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.5;
 }
 .plan-note b{color:var(--ink);}
+/* ---------- "Sve o putu na jednom mestu" — link ka destinacija.html,
+   iznad kartica sa ponudama. Isti jezik kartica kao .pkg/.transport-card
+   (bela pozadina, senka), sa levim akcentom i strelicom kao .plan-control-link. ---------- */
+.dest-page-card{
+    display:flex;align-items:center;gap:14px;text-decoration:none;
+    background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--aqua);
+    border-radius:14px;padding:16px 18px;margin-top:18px;
+    box-shadow:0 12px 28px -20px rgba(18,58,68,0.22);
+    transition:box-shadow .2s ease, transform .15s ease;
+    -webkit-tap-highlight-color:transparent;
+}
+.dest-page-card:active{transform:translateY(1px);}
+.dest-page-card:hover{box-shadow:0 16px 34px -18px rgba(18,58,68,0.3);}
+.dest-page-card .dpc-ic{
+    flex:none;width:40px;height:40px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+    background:var(--aqua-soft);color:var(--aqua);
+}
+.dest-page-card .dpc-text{flex:1;min-width:0;display:flex;flex-direction:column;}
+.dest-page-card .dpc-title{font-family:'Sora',sans-serif;font-weight:700;font-size:14.5px;color:var(--ink);}
+.dest-page-card .dpc-sub{font-size:12.5px;line-height:1.45;color:var(--ink-soft);margin-top:3px;}
+.dest-page-card .dpc-arrow{
+    flex:none;width:28px;height:28px;border-radius:7px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--aqua-soft);color:var(--aqua);font-size:14px;
+    transition:transform .2s ease;
+}
+.dest-page-card:hover .dpc-arrow{transform:translateX(2px);}
+@media (max-width:560px){
+    .dest-page-card{padding:13px 14px;gap:11px;}
+    .dest-page-card .dpc-ic{width:34px;height:34px;font-size:16px;}
+}
 /* ---------- "Da li si sve pokrio?" — putni checklist ---------- */
 .travel-checklist{
     background:var(--paper);border:1px solid var(--line);border-radius:14px;

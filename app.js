@@ -4400,17 +4400,22 @@ async function renderResultsInner(dest, from, to, nights, days, adults, flags, o
   const altNote = altAirportNoteFor(originCode);
   const destNote = destAirportNoteFor(dest);
   const unknownNote = isKnownDestination(dest) ? '' : tf('unknown_dest_note', {dest: dest});
-  // Napomena: checklist "Da li si sve pokrio?" i promo "Sve o putu na jednom
-  // mestu" (link ka destinacija.html) su namerno uklonjeni iznad kartica sa
-  // ponudama — ostaju samo funkcionalna upozorenja bitna za samu pretragu
-  // (nepoznata destinacija, alternativni aerodrom). Checklist i dalje živi
-  // na destinacija.html.
+  // Link ka stranici destinacije (destinacija.html): letovi, smeštaj, atrakcije, ruta i saveti za iste datume.
+  // Prikazan kao kartica (dest-page-card) iznad ponuda, u istom vizuelnom jeziku kao ostale bele kartice sa senkom.
+  const destPageUrl = 'destinacija.html?' + new URLSearchParams({
+    od: originCode || 'Beograd', do: dest, polazak: from, povratak: to, putnika: String(adults)
+  }).toString();
+  const destPageNote = `<a class="dest-page-card" href="${escapeHtml(destPageUrl)}">` +
+    `<span class="dpc-ic" aria-hidden="true">🧭</span>` +
+    `<span class="dpc-text"><span class="dpc-title">Sve o putu na jednom mestu</span>` +
+    `<span class="dpc-sub">Letovi, smeštaj, atrakcije, ruta i saveti za tvoje datume.</span></span>` +
+    `<span class="dpc-arrow" aria-hidden="true">→</span></a>`;
   const notes = [
     unknownNote ? `<div class="plan-note">🔎 ${escapeHtml(unknownNote)}</div>` : '',
     altNote ? `<div class="plan-note">✈️ <b>Isplati li se let preko drugog aerodroma?</b><br>${escapeHtml(altNote)}</div>` : '',
     destNote ? `<div class="plan-note">🛬 <b>Pazi na koji aerodrom slećeš</b><br>${escapeHtml(destNote)}</div>` : ''
   ].filter(Boolean).join('');
-  head.innerHTML = notes ? `<div class="plan-notes">${notes}</div>` : '';
+  head.innerHTML = destPageNote + (notes ? `<div class="plan-notes">${notes}</div>` : '');
 
   // "Tvoj plan" kartica (naslov, Nastavi dugme i builder link) je uklonjena —
   // paketi se sada prikazuju odmah, bez međukoraka. Zamena skeletona
