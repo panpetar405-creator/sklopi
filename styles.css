@@ -2421,6 +2421,39 @@ footer{
     margin:0;
     padding:0 20px calc(28px + env(safe-area-inset-bottom));
 }
+/* #planDetail/#planBreakdown — isti "zaseban prozor" obrazac kao gore kod
+   #results/#attractionsSheet. Bez ovoga su to obične sekcije u toku
+   stranice (samo se skida [hidden]), pa skrol prstom "pobegne" na
+   ostatak sajta umesto da ostane zaključan unutar kartice/razrade — vidi
+   lockResultsPageScroll()/unlockResultsPageScroll() poziv u openPlan()/
+   closePlanDetail() u app.js. Klasa .open (ne samo [hidden]) je ta koja
+   uključuje position:fixed. */
+#planDetail.open{
+    position:fixed;left:0;right:0;bottom:0;top:auto;z-index:59;
+    height:95dvh;max-height:95dvh;
+    padding-top:0;padding-bottom:0;
+    background:var(--bg);
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -24px 50px -20px rgba(18,58,68,0.4);
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
+}
+#planDetail.open > .plan-detail-card{
+    flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:calc(28px + env(safe-area-inset-bottom));
+}
+/* #planBreakdown je overlay PREKO #planDetail (viši z-index) — sadrži
+   više .section-a (let/hotel/auto/aktivnosti/extra) koji se prosto ređaju
+   jedan za drugim, pa se skrol zaključava na samom #planBreakdown-u (a
+   ne po pojedinačnoj .section unutra, kao kod #results). */
+#planBreakdown.open{
+    position:fixed;inset:0;z-index:60;
+    background:var(--bg);
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:0 0 calc(28px + env(safe-area-inset-bottom));
+    animation:resultsSheetUp .28s cubic-bezier(.2,.8,.2,1) both;
+}
 @keyframes resultsSheetUp{
     from{transform:translateY(24px);opacity:0.4;}
     to{transform:translateY(0);opacity:1;}
@@ -2429,6 +2462,8 @@ footer{
     #results.visible{animation:none;}
     #featureGuideSheet.visible{animation:none;}
     #attractionsSheet.visible{animation:none;}
+    #planDetail.open{animation:none;}
+    #planBreakdown.open{animation:none;}
 }
 .results-sheet-head{
     display:flex;align-items:center;position:sticky;top:0;z-index:2;

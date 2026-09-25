@@ -4444,6 +4444,22 @@ function closeResultsSheet(){
       guardOverlayDrop('results');
     }
   });
+  // Isto i za #planDetail/#planBreakdown — ako se ekran "prebaci" preko
+  // 760px dok su otvoreni (npr. rotacija tableta), skini klasu .open
+  // (position:fixed) i zaključavanje skrola; na širem ekranu su to opet
+  // obične sekcije u toku stranice.
+  window.addEventListener('resize', () => {
+    const detail = document.getElementById('planDetail');
+    const breakdown = document.getElementById('planBreakdown');
+    const detailOpen = detail && detail.classList.contains('open');
+    const breakdownOpen = breakdown && breakdown.classList.contains('open');
+    if (!detailOpen && !breakdownOpen) return;
+    if (!isMobileResults()){
+      if (detail) detail.classList.remove('open');
+      if (breakdown) breakdown.classList.remove('open');
+      if (_resultsScrollLocked) unlockResultsPageScroll();
+    }
+  });
 })();
 
 function showResultsError(){
@@ -6278,10 +6294,18 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     });
     renderFormUI();
     document.dispatchEvent(new Event('sklopi:plan-changed'));
-    if (breakdown) breakdown.hidden = true;   // razrada se otvara tek na "Pogledaj detalje"
+    if (breakdown){ breakdown.hidden = true; breakdown.classList.remove('open'); }   // razrada se otvara tek na "Pogledaj detalje"
     guardOverlayDrop('planBreakdown');   // ako je razrada prethodnog paketa bila otvorena/gurnuta, skini je sa steka
     renderPlanDetail();
     detail.hidden = false;
+    // #planDetail je na mobilnom zaseban "prozor" preko sadržaja (isti
+    // obrazac kao #results/#attractionsSheet) — bez klase .open (position:
+    // fixed) i lockResultsPageScroll() skrol prstom "pobegne" na ostatak
+    // sajta umesto da ostane zaključan unutar kartice. Vidi styles.css.
+    if (isMobileResults()){
+      detail.classList.add('open');
+      lockResultsPageScroll();
+    }
     guardOverlayOpen('planDetail', closePlanDetail);
     detail.scrollIntoView({behavior:'smooth', block:'start'});
   }
@@ -6291,9 +6315,14 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   // guarda) ili guardOverlayRequestClose fallback ispod. Ne diraj historiju
   // ovde, to je posao guarda (vidi komentar na vrhu fajla).
   function closePlanDetail(){
-    if (detail) detail.hidden = true;
-    if (breakdown) breakdown.hidden = true;
+    const wasLocked = _resultsScrollLocked;
+    if (detail){ detail.hidden = true; detail.classList.remove('open'); detail.removeAttribute('role'); detail.removeAttribute('aria-modal'); }
+    if (breakdown){ breakdown.hidden = true; breakdown.classList.remove('open'); }
     guardOverlayDrop('planBreakdown');   // ako je razrada bila otvorena, skini je i sa steka
+    // Skida se zaključavanje skrola OVDE (ne u closePlanBreakdown) jer je
+    // ovo konačno zatvaranje ekrana — dok se razrada zatvara natrag na
+    // #planDetail, taj je i dalje otvoren pa skrol ostaje zaključan.
+    if (wasLocked) unlockResultsPageScroll();
     const ap = window.SKLOPI_ACTIVE_PLAN;
     const backId = (ap && ap.backTo) || 'destinationPlans';
     if (backId === 'destinationPlans') showDestPlans();
@@ -6301,9 +6330,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }
   // "Sirovo" zatvaranje #planBreakdown (vraćanje na #planDetail) — isti
   // princip, koriste ga i flightDetailBack/hotelDetailBack/carDetailBack
-  // ispod preko guardOverlayRequestClose('planBreakdown').
+  // ispod preko guardOverlayRequestClose('planBreakdown'). Skrol OSTAJE
+  // zaključan (unlockResultsPageScroll() se ne zove ovde) jer se vraćamo
+  // na #planDetail, koji je i dalje otvoren ispod.
   function closePlanBreakdown(){
-    if (breakdown) breakdown.hidden = true;
+    if (breakdown){ breakdown.hidden = true; breakdown.classList.remove('open'); }
     document.getElementById('planDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
   }
   window.SKLOPI_closePlanBreakdown = closePlanBreakdown;
@@ -6348,6 +6379,14 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (carSec) carSec.hidden = !svc.car;
     if (actSec) actSec.hidden = !svc.activity;
     breakdown.hidden = false;
+    // Isti razlog kao u openPlan() iznad — #planBreakdown je zaseban
+    // prozor preko #planDetail-a na mobilnom. lockResultsPageScroll() je
+    // idempotentan (već je zaključan iz openPlan()), samo za svaki slučaj
+    // ako je breakdown nekako otvoren bez prethodnog planDetail-a.
+    if (isMobileResults()){
+      breakdown.classList.add('open');
+      lockResultsPageScroll();
+    }
     guardOverlayOpen('planBreakdown', closePlanBreakdown);
     document.dispatchEvent(new Event('sklopi:plan-breakdown'));
     breakdown.scrollIntoView({behavior:'smooth', block:'start'});
