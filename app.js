@@ -2372,13 +2372,22 @@ function airportNoteText(info){
 function airportInfoFor(cityRaw){
   const norm = normalizeSr((cityRaw || '').trim());
   if (!norm) return null;
+  // NAPOMENA: ključevi u AIRPORT_DB su ispisani sa dijakritikom (npr.
+  // 'rogaška slatina', 'čatež') dok je `norm` uvek BEZ dijakritike
+  // (normalizeSr skida š/č/ž/đ/ć). Poređenje mora ići normalizovan-naspram-
+  // normalizovanog, inače svaki grad sa dijakritikom u ključu (Rogaška
+  // Slatina, Čatež, Laško, Škofja Loka, Portorož, Škocjanske jame...)
+  // NIKAD ne pogodi zapis u bazi — vraća se null kao da grad uopšte nije
+  // u AIRPORT_DB, pa nestaje i upozorenje o aerodromu i preusmeravanje na
+  // najbliži pravi aerodrom (bio je ovo pravi bag, ne samo teorijski slučaj).
   for (const key in AIRPORT_DB){
-    if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)){
+    const nkey = normalizeSr(key);
+    if (norm === nkey || norm.startsWith(nkey + ' ') || norm.startsWith(nkey + ',') || norm.includes(' ' + nkey)){
       return AIRPORT_DB[key];
     }
   }
   if (norm.length >= 4){
-    const candidates = Object.keys(AIRPORT_DB).filter(key => key.startsWith(norm));
+    const candidates = Object.keys(AIRPORT_DB).filter(key => normalizeSr(key).startsWith(norm));
     if (candidates.length === 1) return AIRPORT_DB[candidates[0]];
   }
   return null;
@@ -8419,6 +8428,7 @@ const ATTRACTIONS_DATA = [
   {id:'a9', name:'Panoramski točak London Eye', city:'London', country:'Velika Britanija', category:'gondole', categoryLabel:'Gondole i panorame', img:'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=70&auto=format&fit=crop', price:32, q:'London Eye'},
   {id:'a10', name:'DJ set na krovnom baru', city:'Barselona', country:'Španija', category:'noc', categoryLabel:'Noćni život', img:'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=70&auto=format&fit=crop', price:25, q:'Barcelona rooftop bar'},
   {id:'a11', name:'Muzej Akropolja — brza ulaznica', city:'Atina', country:'Grčka', category:'kultura', categoryLabel:'Kultura i znamenitosti', img:'https://images.unsplash.com/photo-1555993539-1732b0258235?w=800&q=70&auto=format&fit=crop', price:28, q:'Acropolis museum'},
+  {id:'a12', name:'Rafting na reci Soči', city:'Bovec', country:'Slovenija', category:'avantura', categoryLabel:'Avantura', img:'https://images.unsplash.com/photo-1530866495561-507c9faab8c9?w=800&q=70&auto=format&fit=crop', price:65, q:'Soca rafting'},
   {id:'a13', name:'Jazz klub u podrumu', city:'Njujork', country:'SAD', category:'muzika', categoryLabel:'Muzika i koncerti', img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=70&auto=format&fit=crop', price:48, q:'New York jazz club'},
   {id:'a14', name:'Vinska tura kroz Toskanu', city:'Firenca', country:'Italija', category:'gastro', categoryLabel:'Gastro ture', img:'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=70&auto=format&fit=crop', price:79, q:'Tuscany wine tour'}
 ];
