@@ -850,6 +850,7 @@ a{color:inherit;}
 .dest-plan-features li{display:flex;align-items:center;gap:8px;color:#3d565c;font:600 13px/1.3 'DM Sans',sans-serif;}
 .dpf-ic{flex:none;width:19px;height:19px;border-radius:7px;background:#eef7f8;color:#0d6872;display:flex;align-items:center;justify-content:center;font-size:11px;}
 .dest-plan-for{margin:10px 0 0;padding-top:10px;border-top:1px solid #eef2f2;color:#8b9a9e;font:600 12px/1.4 'DM Sans',sans-serif;}
+.dest-plan-airport-note{margin:10px 0 0;padding:8px 10px;background:rgba(236,217,173,0.25);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:600 12px/1.4 'DM Sans',sans-serif;}
 .dest-plan-card{cursor:pointer;transition:.18s ease;}
 .dest-plan-card:hover{border-color:#a9d6db;box-shadow:0 14px 32px rgba(15,68,78,.12);}
 @media (max-width:700px){

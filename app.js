@@ -5920,6 +5920,17 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       thumb: c.photos ? ph(c.photos[i], 500) : hero.replace(/w=1200/, 'w=500'),
       forWho: (i === 0 && c.forWho1) || t.forWho
     }));
+    // Grad BEZ sopstvenog aerodroma (Bled, Rogaška Slatina...): urednički
+    // feats iznad uvek pišu "Direktan let" / "Fleksibilan let" i sl. jer su
+    // to fiksni šabloni po arhetipu (city/sea), isti za sve destinacije —
+    // ne znaju ništa o AIRPORT_DB. Bez ovoga kartica ovde ćuti o tome da let
+    // stvarno sleće u drugi grad, iako se ISTA napomena već ispisuje kad
+    // korisnik kuca tu destinaciju u polju pretrage (airportInfoFor +
+    // airportNoteText, vidi renderDestAirportWarning). Dodajemo je i ovde,
+    // istim tekstom, da poruka bude dosledna kroz ceo sajt.
+    const apInfo = airportInfoFor(k);
+    const airportNote = (apInfo && !apInfo.hasAirport && apInfo.nearest) ? airportNoteText(apInfo) : '';
+    plans.forEach(p => { p.airportNote = airportNote; });
     if (c.fixed){ plans.forEach((p, i) => { p.price = c.fixed[i]; }); return plans; }
     const ctx = Object.assign({}, builderCtx(), {dest:k});
     const sel = p => Object.assign({}, BUILDER_DEFAULTS, {includeFlight:true, includeHotel:true}, pickSel(p));
@@ -5933,12 +5944,13 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   }
   function cardHtml(p, i){
     const ft = p.feats.map(f => '<li><span class="dpf-ic" aria-hidden="true">' + f[0] + '</span><span>' + escapeHtml(tx(f[1])) + '</span></li>').join('');
+    const apNote = p.airportNote ? '<p class="dest-plan-airport-note">\u2708\ufe0f ' + escapeHtml(p.airportNote) + '</p>' : '';
     return '<article class="dest-plan-card" data-plan="' + i + '"><div class="dest-plan-photo"><img src="' + escapeHtml(p.thumb)
       + '" alt="' + escapeHtml(cityLabel(p.dest)) + '" loading="lazy">'
       + (i === 0 ? '<span class="dest-plan-badge dest-plan-badge--popular">' + escapeHtml(tx(p.badge)) + '</span>' : '')
       + '</div><div class="dest-plan-body"><h3>' + escapeHtml(tx(p.title)) + '</h3><p class="dest-plan-price">'
       + escapeHtml(priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span></p><ul class="dest-plan-features">' + ft
-      + '</ul><p class="dest-plan-for">' + escapeHtml(tx(p.forWho)) + '</p></div></article>';
+      + '</ul>' + apNote + '<p class="dest-plan-for">' + escapeHtml(tx(p.forWho)) + '</p></div></article>';
   }
   // Tekstovi koje JS preuzima od statičkog (SEO) HTML-a za Atinu: skidamo data-i18n da ih
   // applyStaticI18n() ne vrati na Atinu; osvežavaju se u render() pri promeni grada/jezika.
