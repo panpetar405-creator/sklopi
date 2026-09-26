@@ -2806,6 +2806,7 @@ const AIRPORT_DB = {
   'ronda': {nearest:'Malaga', note:'Ronda nema svoj aerodrom — najbliži je Malaga (oko 2h vožnje).', c:'Ronda', k:'own', t:'2h'},
   'kadiz': {nearest:'Herez', note:'Kadiz nema svoj aerodrom — najbliži je Herez de la Frontera (oko 45 min vožnje), Sevilja je alternativa.', c:'Kadiz', k:'own', t:'45 min', nn:'Herez de la Frontera', alt:'Sevilja'},
   'marbelja': {nearest:'Malaga', note:'Marbelja nema svoj aerodrom — najbliži je Malaga (oko 45 min vožnje).', c:'Marbelja', k:'own', t:'45 min'},
+  'benidorm': {nearest:'Alikante', note:'Benidorm nema svoj aerodrom — najbliži je Alikante (oko 45 min vožnje).', c:'Benidorm', k:'own', t:'45 min'},
   'kuenka': {nearest:'Madrid', note:'Kuenka nema svoj aerodrom — najbliži je Madrid (oko 1h30 vožnje).', c:'Kuenka', k:'own', t:'1h30'},
   'avila': {nearest:'Madrid', note:'Avila nema svoj aerodrom — najbliži je Madrid (oko 1h vožnje).', c:'Avila', k:'own', t:'1h'},
   'panticosa': {nearest:'Zaragoza', note:'Panticosa nema svoj aerodrom — najbliži je Zaragoza (oko 2h30 vožnje).', c:'Panticosa', k:'own', t:'2h30'},
@@ -2818,6 +2819,7 @@ const AIRPORT_DB = {
   'bec': {hasAirport:true},
   'salcburg': {hasAirport:true, limited:true},
   'grac': {hasAirport:true, limited:true},
+  'graz': {hasAirport:true, limited:true},
   'insbruk': {hasAirport:true, limited:true},
   'linc': {hasAirport:true, limited:true},
   'klagenfurt': {hasAirport:true, limited:true},
@@ -3181,6 +3183,7 @@ const AIRPORT_DB = {
   'sen moric': {nearest:'Cirih', note:'Sen Moric nema svoj aerodrom — najbliži je Cirih (oko 3h vožnje), ima i mali lokalni aerodrom za privatne letove.', c:'Sen Moric', k:'own', t:'3h'},
   'verbije': {nearest:'Ženeva', note:'Verbije nema svoj aerodrom — najbliži je Ženeva (oko 2h vožnje).', c:'Verbije', k:'own', t:'2h'},
   'davos': {nearest:'Cirih', note:'Davos nema svoj aerodrom — najbliži je Cirih (oko 2h vožnje).', c:'Davos', k:'own', t:'2h'},
+  'grindelvald': {nearest:'Bern', note:'Grindelvald nema svoj aerodrom — najbliži je Bern (oko 1h15 vožnje), Cirih je alternativa.', c:'Grindelvald', k:'own', t:'1h15', alt:'Cirih'},
   // --- Mađarska: dodatni aerodromi ---
   'debrecin': {hasAirport:true, limited:true},
   // --- Rusija: aerodromi ---
@@ -5936,6 +5939,13 @@ function computePackagesLocally(dest, from, to, nights, days, adults, flags, ori
 const MATCH_DESTINATIONS_TAGS = [
   {name:'Budimpešta', vibes:['city'], months:[3,4,5,6,9,10,11,12], distance:'near', family:true, nightlife:true},
   {name:'Beč', vibes:['city'], months:[1,2,3,4,5,9,10,11,12], distance:'near', family:true, nightlife:false},
+  // Austrija — dopuna (Kicbil i St. Anton am Arlberg su već u redu "Skijaški centri")
+  {name:'Zalcburg', vibes:['city','nature'], months:[1,2,3,4,5,9,10,11,12], distance:'near', family:true, nightlife:false},
+  {name:'Insbruk', vibes:['city','nature','ski'], months:[12,1,2,3,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Graz', vibes:['city'], months:[3,4,5,9,10,11], distance:'near', family:true, nightlife:false},
+  {name:'Halštat', vibes:['nature'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Grosglokner', vibes:['nature'], months:[6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Vertersee', vibes:['nature','sea'], months:[6,7,8,9], distance:'near', family:true, nightlife:false},
   {name:'Sofija', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
   {name:'Solun', vibes:['city','sea'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:true},
   {name:'Skoplje', vibes:['city'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
@@ -5945,10 +5955,25 @@ const MATCH_DESTINATIONS_TAGS = [
   {name:'Budva', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'near', family:false, nightlife:true},
   {name:'Kotor', vibes:['sea','nature'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
   {name:'Herceg Novi', vibes:['sea','nature'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  // Crna Gora — dopuna (Žabljak je već ispod, u redu "Skijaški centri" nema svoju stavku ovde)
+  {name:'Podgorica', vibes:['city'], months:[4,5,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Tivat', vibes:['sea'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Sveti Stefan', vibes:['sea'], months:[5,6,7,8,9], distance:'near', family:false, nightlife:false},
+  {name:'Petrovac', vibes:['sea'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Ulcinj', vibes:['sea'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Cetinje', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Durmitor', vibes:['nature'], months:[6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Skadarsko Jezero', vibes:['nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
   {name:'Dubrovnik', vibes:['sea','city'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
   {name:'Split', vibes:['sea','city','nightlife'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:true},
   {name:'Hvar', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'near', family:false, nightlife:true},
   {name:'Zagreb', vibes:['city'], months:[3,4,5,6,9,10,11,12], distance:'near', family:true, nightlife:false},
+  // Hrvatska — dopuna (obala)
+  {name:'Zadar', vibes:['sea','city'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Rijeka', vibes:['sea','city'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Pula', vibes:['sea','city'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Rovinj', vibes:['sea'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Plitvička Jezera', vibes:['nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
   {name:'Ljubljana', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
   {name:'Bled', vibes:['nature'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
   {name:'Sarajevo', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
@@ -5964,6 +5989,14 @@ const MATCH_DESTINATIONS_TAGS = [
   {name:'Mikonos', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'medium', family:false, nightlife:true},
   {name:'Rodos', vibes:['sea'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:false},
   {name:'Krit', vibes:['sea','nature'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:false},
+  // Grčka — dopuna
+  {name:'Zakintos', vibes:['sea'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Kefalonija', vibes:['sea','nature'], months:[5,6,7,8,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Halkidiki', vibes:['sea'], months:[5,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Nafplion', vibes:['city','nature'], months:[4,5,6,9,10], distance:'near', family:true, nightlife:false},
+  {name:'Paros', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'medium', family:false, nightlife:true},
+  {name:'Naksos', vibes:['sea'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Kos', vibes:['sea','nightlife'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:true},
   {name:'Rim', vibes:['city'], months:[3,4,5,9,10,11], distance:'medium', family:true, nightlife:false},
   {name:'Milano', vibes:['city','nightlife'], months:[3,4,5,9,10], distance:'medium', family:false, nightlife:true},
   {name:'Venecija', vibes:['city'], months:[3,4,5,9,10], distance:'medium', family:true, nightlife:false},
@@ -5972,15 +6005,52 @@ const MATCH_DESTINATIONS_TAGS = [
   {name:'Madrid', vibes:['city','nightlife'], months:[4,5,9,10], distance:'medium', family:true, nightlife:true},
   {name:'Malaga', vibes:['sea'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
   {name:'Ibica', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'medium', family:false, nightlife:true},
+  // Španija — dopuna
+  {name:'Sevilja', vibes:['city','nightlife'], months:[3,4,5,10,11], distance:'medium', family:true, nightlife:true},
+  {name:'Valensija', vibes:['city','sea'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:true},
+  {name:'Majorka', vibes:['sea','nightlife'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:true},
+  {name:'Granada', vibes:['city','nature'], months:[3,4,5,9,10,11], distance:'medium', family:true, nightlife:false},
+  {name:'Tenerife', vibes:['sea'], months:[1,2,3,4,5,10,11,12], distance:'medium', family:true, nightlife:false},
+  {name:'San Sebastijan', vibes:['city','sea'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Alikante', vibes:['sea'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Bilbao', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Toledo', vibes:['city'], months:[3,4,5,9,10,11], distance:'medium', family:true, nightlife:false},
+  {name:'Kordoba', vibes:['city'], months:[3,4,5,10,11], distance:'medium', family:true, nightlife:false},
+  {name:'Marbelja', vibes:['sea','nightlife'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:true},
+  {name:'Benidorm', vibes:['sea','nightlife'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:true},
   {name:'Lisabon', vibes:['city','sea','nightlife'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:true},
   {name:'Porto', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  // Portugalija — dopuna
+  {name:'Faro', vibes:['sea'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Albufeira', vibes:['sea','nightlife'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:true},
+  {name:'Madeira', vibes:['sea','nature'], months:[3,4,5,9,10,11], distance:'medium', family:true, nightlife:false},
+  {name:'Sintra', vibes:['city','nature'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Koimbra', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Azori', vibes:['nature','sea'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
   {name:'Pariz', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
   {name:'Nica', vibes:['sea','city'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
   {name:'London', vibes:['city','nightlife'], months:[4,5,6,9], distance:'medium', family:true, nightlife:true},
   {name:'Amsterdam', vibes:['city','nightlife'], months:[4,5,6,9], distance:'medium', family:true, nightlife:true},
   {name:'Berlin', vibes:['city','nightlife'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:true},
   {name:'Minhen', vibes:['city'], months:[5,6,9], distance:'medium', family:true, nightlife:false},
+  // Nemačka — dopuna (Garmisch-Partenkirchen je već u redu "Skijaški centri")
+  {name:'Hamburg', vibes:['city','nightlife'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:true},
+  {name:'Keln', vibes:['city','nightlife'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:true},
+  {name:'Drezden', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Nirnberg', vibes:['city'], months:[4,5,9,10,11,12], distance:'medium', family:true, nightlife:false},
+  {name:'Hajdelberg', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Potsdam', vibes:['city','nature'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Nojšvanštajn', vibes:['nature'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Bodensko Jezero', vibes:['nature'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
   {name:'Cirih', vibes:['city','nature'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  // Švajcarska — dopuna
+  {name:'Ženeva', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Bern', vibes:['city'], months:[4,5,6,9,10], distance:'medium', family:true, nightlife:false},
+  {name:'Lucern', vibes:['city','nature'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Interlaken', vibes:['nature'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Lugano', vibes:['city','nature'], months:[5,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Grindelvald', vibes:['nature','ski'], months:[12,1,2,3,6,7,8,9], distance:'medium', family:true, nightlife:false},
+  {name:'Cermat', vibes:['ski','nature'], months:[12,1,2,3,6,7,8,9], distance:'medium', family:true, nightlife:false},
   {name:'Antalija', vibes:['sea'], months:[5,6,7,8,9,10], distance:'medium', family:true, nightlife:false},
   {name:'Bodrum', vibes:['sea','nightlife'], months:[6,7,8,9], distance:'medium', family:false, nightlife:true},
   {name:'Kapadokija', vibes:['nature'], months:[4,5,9,10], distance:'medium', family:true, nightlife:false},
@@ -11384,11 +11454,18 @@ function destCardHtml(it){
   const url = destPhotoFor(it);
   const kind = destKind(it);
   const icon = DEST_ROW_ICON[it.row] || (kind === 'hotel' ? '🏨' : '🎟️');
+  // Obaveštenje za mesta bez sopstvenog aerodroma (ista baza/logika kao svuda
+  // drugde u aplikaciji — airportInfoFor/airportNoteText), da korisnik odmah
+  // na kartici vidi da let ide na najbliži aerodrom, a ne u sam grad.
+  const apInfo = airportInfoFor(it.dest);
+  const noOwnAirport = apInfo && !apInfo.hasAirport;
+  const apNote = noOwnAirport ? airportNoteText(apInfo) : '';
   return `<div class="dest-card dest-card--${kind}" data-dest="${escapeHtml(it.dest)}" data-kind="${kind}" data-row="${escapeHtml(it.row || '')}">
     <button type="button" class="dc-pick" aria-label="${escapeHtml(dtx('pick_aria') + name)}">
       <span class="dc-photo">${url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" decoding="async">` : `<span class="dc-ico" aria-hidden="true">${icon}</span>`}</span>
       <span class="dc-cap"><span class="dc-name">${escapeHtml(name)}</span>${country ? `<span class="dc-country">${escapeHtml(country)}</span>` : ''}</span>
     </button>
+    ${apNote ? `<p class="dc-airport-note" style="margin:6px 10px 0;font-size:12px;line-height:1.35;color:var(--muted,#8a8f98);">\u2708\ufe0f ${escapeHtml(apNote)}</p>` : ''}
     ${destOfferHtml(it, kind)}
   </div>`;
 }
