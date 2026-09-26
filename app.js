@@ -133,12 +133,35 @@ function guardOverlayReplace(oldId, newId, closeFn){
    za deljenje (zajedno.html) NISU obuhvaćene — ostaju na srpskom.
 ========================================================== */
 function hasLang(code){ return Object.prototype.hasOwnProperty.call(I18N, code); }
+// Redosled: ?lang= iz URL-a (da Google/deljeni linkovi mogu da otvore
+// konkretnu jezičku verziju) > localStorage (pamćenje izbora) > sr.
 function getLang(){
+  try {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (urlLang && hasLang(urlLang)) return urlLang;
+  } catch(e){}
   try {
     const saved = localStorage.getItem('sklopi_lang');
     if (saved && hasLang(saved)) return saved;
   } catch(e){}
   return 'sr';
+}
+// og:locale po jeziku (Facebook/WhatsApp format sa donjom crtom).
+const OG_LOCALE = { sr: 'sr_RS', en: 'en_GB', ru: 'ru_RU', de: 'de_DE' };
+// Ažurira canonical/og:url/og:locale da odgovaraju TRENUTNOM jeziku.
+// hreflang <link> tagovi ostaju statični u <head> (isti za sve jezike —
+// nabrajaju sve verzije), ovde se menja samo "koja je ovo verzija".
+function updateLangSEOTags(lang){
+  try {
+    const base = location.origin + location.pathname;
+    const url = (lang === 'sr') ? base : (base + '?lang=' + lang);
+    const canon = document.querySelector('link[rel="canonical"]');
+    if (canon) canon.setAttribute('href', url);
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', url);
+    const ogLocale = document.querySelector('meta[property="og:locale"]');
+    if (ogLocale) ogLocale.setAttribute('content', OG_LOCALE[lang] || OG_LOCALE.sr);
+  } catch(e){}
 }
 // Metapodaci jezika iz languages.json (code, short, name, locale, dateMonth).
 function langMeta(code){
@@ -357,10 +380,21 @@ function applyStaticI18n(){
   if (titleEl) titleEl.textContent = t('meta_title');
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', t('meta_description'));
+  updateLangSEOTags(lang);
 }
 function setLang(lang){
-  localStorage.setItem('sklopi_lang', hasLang(lang) ? lang : 'sr');
+  const l = hasLang(lang) ? lang : 'sr';
+  localStorage.setItem('sklopi_lang', l);
+  // Upiši izbor i u URL (bez reload-a) — tako link postaje deljiv i
+  // Google indeksira konkretnu jezičku verziju umesto samo srpske.
+  try {
+    const url = new URL(location.href);
+    if (l === 'sr') url.searchParams.delete('lang');
+    else url.searchParams.set('lang', l);
+    history.replaceState(history.state, '', url.toString());
+  } catch(e){}
   applyStaticI18n();
+  updateLangSEOTags(l);
   // Ponovo iscrtaj dinamički generisan sadržaj (rezultati/builder/auth/saved)
   // u novom jeziku, ako trenutno postoji na strani.
   if (typeof window.onLangChange === 'function') window.onLangChange(lang);
