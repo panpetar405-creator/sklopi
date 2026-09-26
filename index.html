@@ -6,6 +6,8 @@
 <style>
 html,body{background:#123A44;margin:0;}
 #appSplash{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#123A44 0%,#0A1B20 100%);display:flex;align-items:center;justify-content:center;}
+@keyframes splashPop{0%{opacity:0;transform:scale(.4);}60%{transform:scale(1.12);}80%{transform:scale(.95);}100%{opacity:1;transform:scale(1);}}
+@keyframes splashFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 </style>
 <title>SKLOPI — sastavi putni paket, jedna cena</title>
 <meta name="description" content="SKLOPI sastavlja putni paket od leta, hotela, rentakara i aktivnosti i sabira sve u jednu procenjenu cenu. Napravi sopstveni putni paket ili biraj gotove predloge po budžetu.">
@@ -157,7 +159,7 @@ html,body{background:#123A44;margin:0;}
 <noscript><style>#appSplash{display:none!important;}</style></noscript>
 <div id="appSplash" class="app-splash" role="status" aria-live="polite" aria-label="Učitavanje">
   <div class="app-splash-inner">
-    <img class="app-splash-mark" src="app-icon-192.png?v=2" width="88" height="88" aria-hidden="true" style="border-radius:20px;">
+    <img class="app-splash-mark" src="app-icon-192.png?v=2" width="96" height="96" aria-hidden="true" style="border-radius:22px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1) both,splashFloat 2.4s ease-in-out .7s infinite;">
     <div class="app-splash-track"><span class="app-splash-fill"></span></div>
   </div>
 </div>
