@@ -469,7 +469,12 @@
       I18N[l][r[0]] = l === 'sr' ? r[1] : (l === 'ru' ? r[3] : (l === 'de' && DE[r[0]] != null ? DE[r[0]] : r[2]));
     });
   });
-  function lang(){ try { var s = localStorage.getItem('sklopi_lang'); if (s && I18N[s]) return s; } catch(e){} return 'sr'; }
+  // Isti redosled kao getLang() u app.js: ?lang= iz URL-a > localStorage > sr.
+  function lang(){
+    try { var u = new URLSearchParams(location.search).get('lang'); if (u && I18N[u]) return u; } catch(e){}
+    try { var s = localStorage.getItem('sklopi_lang'); if (s && I18N[s]) return s; } catch(e){}
+    return 'sr';
+  }
   function look(s){ var k = BY_SR[s]; return k ? I18N[lang()][k] : null; }
   // tx('srpski tekst') -> prevod za trenutni jezik; ako ga nema, vraća original.
   // Podržava i "tekst (BEG–ATH)" — prevodi se samo deo pre zagrade.
