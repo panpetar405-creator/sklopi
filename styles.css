@@ -3867,6 +3867,7 @@ footer>*{position:relative;z-index:1;}
 .topbar{padding:10px 16px;}
 .topbar .logo-v2{font-size:19px;gap:8px;}
 .topbar .logo-v2 .mark-v2{width:34px;height:34px;border-radius:10px;}
+.topbar .logo-v2-svg,.topbar .logo-v2-mark{height:26px;}
 .topbar-right .lang-switch{height:34px;padding:0 10px;font-size:12px;}
 }
 
