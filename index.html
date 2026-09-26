@@ -5,9 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 html,body{background:#123A44;margin:0;}
-#appSplash{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#123A44 0%,#0A1B20 100%);display:flex;align-items:center;justify-content:center;}
+#appSplash{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#123A44 0%,#0A1B20 100%);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+#appSplash.is-hidden{opacity:0;pointer-events:none;}
+.app-splash-inner{position:relative;display:flex;flex-direction:column;align-items:center;gap:26px;}
+.app-splash-mark{position:relative;z-index:1;display:block;}
+.app-splash-inner::before{content:"";position:absolute;top:0;left:50%;width:96px;height:96px;margin-left:-48px;border-radius:22px;box-shadow:0 0 0 0 rgba(230,126,34,.55);animation:splashRing 1.8s ease-out infinite;}
+.app-splash-track{width:120px;height:4px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden;position:relative;}
+.app-splash-fill{position:absolute;top:0;left:0;height:100%;width:38%;border-radius:4px;background:linear-gradient(90deg,#d9631c,#f0964c);animation:splashLoad 1.15s cubic-bezier(.45,0,.55,1) infinite;}
 @keyframes splashPop{0%{opacity:0;transform:scale(.4);}60%{transform:scale(1.12);}80%{transform:scale(.95);}100%{opacity:1;transform:scale(1);}}
 @keyframes splashFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+@keyframes splashRing{0%{box-shadow:0 0 0 0 rgba(230,126,34,.55);}100%{box-shadow:0 0 0 26px rgba(230,126,34,0);}}
+@keyframes splashLoad{0%{left:-38%;}100%{left:100%;}}
 </style>
 <title>SKLOPI — sastavi putni paket, jedna cena</title>
 <meta name="description" content="SKLOPI sastavlja putni paket od leta, hotela, rentakara i aktivnosti i sabira sve u jednu procenjenu cenu. Napravi sopstveni putni paket ili biraj gotove predloge po budžetu.">
