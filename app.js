@@ -1416,7 +1416,9 @@ const COUNTRY_SLUG_SR = {
   'Danska':'denmark', 'Finska':'finland', 'Irska':'ireland', 'Belgija':'belgium',
   'Švajcarska':'switzerland', 'Turska':'turkey', 'Izrael':'israel', 'UAE':'united-arab-emirates',
   'Egipat':'egypt', 'Maroko':'morocco', 'SAD':'united-states', 'Tajland':'thailand',
-  'Japan':'japan', 'Indonezija':'indonesia', 'Singapur':'singapore'
+  'Japan':'japan', 'Indonezija':'indonesia', 'Singapur':'singapore',
+  'Indija':'india', 'Šri Lanka':'sri-lanka', 'Brazil':'brazil', 'Kolumbija':'colombia', 'Ekvador':'ecuador',
+  'Australija':'australia', 'Kina':'china'
 };
 function airaloCountrySlug(destName){
   const match = POPULAR_DESTINATIONS.find(d => normalizeSr(d.name) === normalizeSr(destName));
@@ -1741,6 +1743,10 @@ const AIRPORT_DB = {
   'bihac': {nearest:'Banja Luka', note:'Bihać nema svoj aerodrom — najbliži je Banja Luka (oko 2h vožnje), Zagreb je alternativa.', c:'Bihać', k:'own', t:'2h', alt:'Zagreb'},
   'doboj': {nearest:'Banja Luka', note:'Doboj nema svoj aerodrom — najbliži je Banja Luka (oko 1h vožnje), Sarajevo je alternativa.', c:'Doboj', k:'own', t:'1h', alt:'Sarajevo'},
   'trebinje': {nearest:'Dubrovnik', note:'Trebinje nema svoj aerodrom — najbliži je Dubrovnik u Hrvatskoj (oko 40 min vožnje).', c:'Trebinje', k:'own', t:'40 min', cc:'Hrvatskoj'},
+  // NAPOMENA: 'foca (turska)' MORA stajati PRE bosanskog 'foca' unosa — inače
+  // airportInfoFor() pogrešno uhvati "Foča (Turska)" preko startsWith('foca ')
+  // na bosanskom ključu i vrati Sarajevo umesto Izmira (grad u Turskoj kod Izmira).
+  'foca (turska)': {nearest:'Izmir', note:'Foča (Turska) nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).', c:'Foča (Turska)', k:'own', t:'1h'},
   'foca': {nearest:'Sarajevo', note:'Foča nema svoj aerodrom — najbliži je Sarajevo (oko 1h30 vožnje).', c:'Foča', k:'own', t:'1h30'},
   'bijeljina': {nearest:'Tuzla', note:'Bijeljina nema svoj aerodrom — najbliži je Tuzla (oko 1h vožnje), Beograd je alternativa.', c:'Bijeljina', k:'own', t:'1h', alt:'Beograd'},
   'brcko': {nearest:'Tuzla', note:'Brčko nema svoj aerodrom — najbliži je Tuzla (oko 1h vožnje).', c:'Brčko', k:'own', t:'1h'},
@@ -2122,6 +2128,12 @@ const AIRPORT_DB = {
   'didim': {nearest:'Izmir', note:'Didim nema svoj aerodrom — najbliži je Izmir (oko 2h vožnje).', c:'Didim', k:'own', t:'2h'},
   'ajvalik': {nearest:'Izmir', note:'Ajvalik nema svoj aerodrom — najbliži je Izmir (oko 2h vožnje).', c:'Ajvalik', k:'own', t:'2h'},
   'silifke': {nearest:'Adana', note:'Silifke nema svoj aerodrom — najbliži je Adana (oko 2h vožnje).', c:'Silifke', k:'own', t:'2h'},
+  'kusadasi': {nearest:'Izmir', note:'Kušadasi nema svoj aerodrom — najbliži je Izmir (oko 1h15 vožnje).', c:'Kušadasi', k:'own', t:'1h15'},
+  'cesme': {nearest:'Izmir', note:'Česme nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).', c:'Česme', k:'own', t:'1h'},
+  'eskisehir': {hasAirport:true, limited:true},
+  'kizildzahamam': {nearest:'Ankara', note:'Kizildžahamam nema svoj aerodrom — najbliži je Ankara (oko 1h vožnje).', c:'Kizildžahamam', k:'own', t:'1h'},
+  'kas': {nearest:'Dalaman', note:'Kaš nema svoj aerodrom — najbliži je Dalaman (oko 2h vožnje), Antalija je alternativa.', c:'Kaš', k:'own', t:'2h', alt:'Antalija'},
+  'datca': {nearest:'Dalaman', note:'Datča nema svoj aerodrom — najbliži je Dalaman (oko 1h45 vožnje).', c:'Datča', k:'own', t:'1h45'},
   'foča (turska)': {nearest:'Izmir', note:'Foča nema svoj aerodrom — najbliži je Izmir (oko 1h vožnje).', c:'Foča', k:'own', t:'1h'},
   // --- Portugalija: aerodromi ---
   'lisabon': {hasAirport:true},
@@ -2421,6 +2433,15 @@ const AIRPORT_DB = {
   'pernik': {nearest:'Sofija', note:'Pernik nema svoj aerodrom — najbliži je Sofija (oko 30 min vožnje).', c:'Pernik', k:'own', t:'30 min'},
   'trojan': {nearest:'Sofija', note:'Trojan nema svoj aerodrom — najbliži je Sofija (oko 2h vožnje), Plovdiv je alternativa.', c:'Trojan', k:'own', t:'2h', alt:'Plovdiv'},
   'asenovgrad': {nearest:'Plovdiv', note:'Asenovgrad nema svoj aerodrom — najbliži je Plovdiv (oko 30 min vožnje).', c:'Asenovgrad', k:'own', t:'30 min'},
+  // --- Bugarska: reke i jezera (bez sopstvenog aerodroma) ---
+  'marica': {nearest:'Plovdiv', note:'Reka Marica nema svoj aerodrom — najbliži je Plovdiv (oko 20 min vožnje).', c:'Marica', k:'own', t:'20 min'},
+  'iskar': {nearest:'Sofija', note:'Reka Iskar nema svoj aerodrom — najbliži je Sofija (oko 40 min vožnje).', c:'Iskar', k:'own', t:'40 min'},
+  'struma': {nearest:'Sofija', note:'Reka Struma nema svoj aerodrom — najbliži je Sofija (oko 1h vožnje).', c:'Struma', k:'own', t:'1h'},
+  'tundza': {nearest:'Burgas', note:'Reka Tundža nema svoj aerodrom — najbliži je Burgas (oko 1h30 vožnje), Plovdiv je alternativa.', c:'Tundža', k:'own', t:'1h30', alt:'Plovdiv'},
+  'sedam rilskih jezera': {nearest:'Sofija', note:'Sedam Rilskih Jezera nemaju aerodrom — najbliži je Sofija (oko 2h vožnje).', c:'Sedam Rilskih Jezera', k:'own', t:'2h'},
+  'srebarno jezero': {nearest:'Varna', note:'Srebarno Jezero nema svoj aerodrom — najbliži je Varna (oko 2h vožnje).', c:'Srebarno Jezero', k:'own', t:'2h'},
+  'pancarevsko jezero': {nearest:'Sofija', note:'Pančarevsko Jezero nema svoj aerodrom — najbliži je Sofija (oko 20 min vožnje).', c:'Pančarevsko Jezero', k:'own', t:'20 min'},
+  'batacko jezero': {nearest:'Plovdiv', note:'Batačko Jezero nema svoj aerodrom — najbliži je Plovdiv (oko 1h30 vožnje).', c:'Batačko Jezero', k:'own', t:'1h30'},
   // --- Rumunija: aerodromi ---
   'bukurest': {hasAirport:true},
   'kluz': {hasAirport:true, limited:true},
@@ -2474,6 +2495,16 @@ const AIRPORT_DB = {
   'kostinesti': {nearest:'Konstanca', note:'Kostinešti nema svoj aerodrom — najbliži je Konstanca (oko 25 min vožnje).', c:'Kostinešti', k:'own', t:'25 min'},
   'mangalija': {nearest:'Konstanca', note:'Mangalija nema svoj aerodrom — najbliži je Konstanca (oko 40 min vožnje).', c:'Mangalija', k:'own', t:'40 min'},
   'navodari': {nearest:'Konstanca', note:'Navodari nema svoj aerodrom — najbliži je Konstanca (oko 20 min vožnje).', c:'Navodari', k:'own', t:'20 min'},
+  // --- Rumunija: reke i jezera (bez sopstvenog aerodroma) ---
+  'mures': {nearest:'Targu Mureš', note:'Reka Mureš nema svoj aerodrom — najbliži je Targu Mureš (oko 20 min vožnje).', c:'Mureš', k:'own', t:'20 min'},
+  'olt': {nearest:'Sibiu', note:'Reka Olt nema svoj aerodrom — najbliži je Sibiu (oko 1h vožnje).', c:'Olt', k:'own', t:'1h'},
+  'prut': {nearest:'Jaši', note:'Reka Prut nema svoj aerodrom — najbliži je Jaši (oko 1h vožnje).', c:'Prut', k:'own', t:'1h'},
+  'siret': {nearest:'Bakau', note:'Reka Siret nema svoj aerodrom — najbliži je Bakau (oko 1h vožnje).', c:'Siret', k:'own', t:'1h'},
+  'crveno jezero': {nearest:'Brašov', note:'Crveno Jezero nema svoj aerodrom — najbliži je Brašov (oko 2h vožnje), Targu Mureš je alternativa.', c:'Crveno Jezero', k:'own', t:'2h', alt:'Targu Mureš'},
+  'jezero bikaz': {nearest:'Bakau', note:'Jezero Bikaz nema svoj aerodrom — najbliži je Bakau (oko 1h30 vožnje).', c:'Jezero Bikaz', k:'own', t:'1h30'},
+  'jezero sveta ana': {nearest:'Brašov', note:'Jezero Sveta Ana nema svoj aerodrom — najbliži je Brašov (oko 1h vožnje).', c:'Jezero Sveta Ana', k:'own', t:'1h'},
+  'jezero vidraru': {nearest:'Bukurešt', note:'Jezero Vidraru nema svoj aerodrom — najbliži je Bukurešt (oko 2h30 vožnje).', c:'Jezero Vidraru', k:'own', t:'2h30'},
+  'delta dunava': {nearest:'Konstanca', note:'Delta Dunava nema svoj aerodrom — najbliži je Konstanca (oko 2h vožnje); Tulča ima manji lokalni aerodrom sa ograničenim brojem letova.', c:'Delta Dunava', k:'own', t:'2h'},
   // --- Italija: aerodromi ---
   'rim': {hasAirport:true},
   'milano': {hasAirport:true},
@@ -2951,7 +2982,60 @@ const AIRPORT_DB = {
   'atakama pustinja': {nearest:'Kalama', note:'Atakama pustinja nema aerodrom u blizini — najbliži je Kalama (oko 1h30 vožnje).', c:'Atakama pustinja', k:'nearby', t:'1h30'},
   'valparaiso': {nearest:'Santiago', note:'Valparaiso nema svoj aerodrom — najbliži je Santiago (oko 1h15 vožnje).', c:'Valparaiso', k:'own', t:'1h15'},
   'vinja del mar': {nearest:'Santiago', note:'Vinja del Mar nema svoj aerodrom — najbliži je Santiago (oko 1h15 vožnje), Valparaiso je alternativa.', c:'Vinja del Mar', k:'own', t:'1h15', alt:'Valparaiso'},
-  'picilemu': {nearest:'Santiago', note:'Pičilemu nema svoj aerodrom — najbliži je Santiago (oko 3h vožnje).', c:'Pičilemu', k:'own', t:'3h'}
+  'picilemu': {nearest:'Santiago', note:'Pičilemu nema svoj aerodrom — najbliži je Santiago (oko 3h vožnje).', c:'Pičilemu', k:'own', t:'3h'},
+  // --- Indija, Indonezija, Šri Lanka, Brazil, Kolumbija, Ekvador: glavni hub-ovi ---
+  'nju delhi': {hasAirport:true},
+  'mumbaj': {hasAirport:true},
+  'goa': {hasAirport:true, limited:true},
+  'bali': {hasAirport:true},
+  'dzakarta': {hasAirport:true},
+  'kolombo': {hasAirport:true},
+  'rio de zaneiro': {hasAirport:true},
+  'sao paulo': {hasAirport:true},
+  'bogota': {hasAirport:true},
+  'kartahena': {hasAirport:true, limited:true},
+  'kito': {hasAirport:true},
+  'galapagos ostrva': {hasAirport:true, limited:true},
+  // --- Tajland: aerodromi ---
+  'bangkok': {hasAirport:true},
+  'puket': {hasAirport:true},
+  'cijang maj': {hasAirport:true},
+  'cijang raj': {hasAirport:true, limited:true},
+  'krabi': {hasAirport:true, limited:true},
+  'ko samui': {hasAirport:true, limited:true},
+  'pataja': {hasAirport:true, limited:true},
+  'hua hin': {hasAirport:true, limited:true},
+  'sukotaj': {hasAirport:true, limited:true},
+  // --- Tajland: bez sopstvenog aerodroma ---
+  'ajutaja': {nearest:'Bangkok', note:'Ajutaja nema svoj aerodrom — najbliži je Bangkok (oko 1h15 vožnje).', c:'Ajutaja', k:'own', t:'1h15'},
+  'ko pangan': {nearest:'Ko Samui', note:'Ko Pangan nema svoj aerodrom — najbliži je Ko Samui (trajektom, oko 30 min).', c:'Ko Pangan', k:'own', t:'30 min'},
+  'ko tao': {nearest:'Ko Samui', note:'Ko Tao nema svoj aerodrom — najbliži je Ko Samui (trajektom, oko 1h30).', c:'Ko Tao', k:'own', t:'1h30'},
+  'ko pi pi': {nearest:'Krabi', note:'Ko Pi Pi nema svoj aerodrom — najbliži je Krabi (trajektom, oko 1h30), Puket je alternativa.', c:'Ko Pi Pi', k:'own', t:'1h30', alt:'Puket'},
+  'ko lanta': {nearest:'Krabi', note:'Ko Lanta nema svoj aerodrom — najbliži je Krabi (oko 2h, vožnja i trajekt).', c:'Ko Lanta', k:'own', t:'2h'},
+  // --- Australija: aerodromi ---
+  'sidnej': {hasAirport:true},
+  'melburn': {hasAirport:true},
+  'brizbejn': {hasAirport:true},
+  'pert': {hasAirport:true},
+  'adelejd': {hasAirport:true},
+  'gold coast': {hasAirport:true, limited:true},
+  'kernz': {hasAirport:true, limited:true},
+  'darvin': {hasAirport:true, limited:true},
+  'hobart': {hasAirport:true, limited:true},
+  'kanbera': {hasAirport:true, limited:true},
+  'uluru': {hasAirport:true, limited:true},
+  // --- Kina: aerodromi ---
+  'peking': {hasAirport:true},
+  'sangaj': {hasAirport:true},
+  'hongkong': {hasAirport:true},
+  'guangdzou': {hasAirport:true},
+  'sendzen': {hasAirport:true},
+  'cengdu': {hasAirport:true},
+  'hangdzou': {hasAirport:true},
+  'sian': {hasAirport:true, limited:true},
+  'guilin': {hasAirport:true, limited:true},
+  'makao': {hasAirport:true, limited:true},
+  'lasa': {hasAirport:true, limited:true}
 };
 Object.keys(AIRPORT_DB).forEach(k => { AIRPORT_DB[k].slug = k; });
 /* Tekst napomene za grad bez aerodroma, na trenutnom jeziku.
@@ -4375,7 +4459,7 @@ const POPULAR_DESTINATIONS = [
   {name:'Toronto', extra:'Kanada'}, {name:'Vankuver', extra:'Kanada'}, {name:'Montreal', extra:'Kanada'}, {name:'Otava', extra:'Kanada'},
   {name:'Meksiko Siti', extra:'Meksiko'}, {name:'Kankun', extra:'Meksiko'},
   {name:'Rio de Žaneiro', extra:'Brazil'}, {name:'Sao Paulo', extra:'Brazil'}, {name:'Buenos Ajres', extra:'Argentina'},
-  {name:'Bogota', extra:'Kolumbija'}, {name:'Lima', extra:'Peru'},
+  {name:'Bogota', extra:'Kolumbija'}, {name:'Kartahena', extra:'Kolumbija'}, {name:'Lima', extra:'Peru'},
   {name:'Bangkok', extra:'Tajland'}, {name:'Puket', extra:'Tajland'}, {name:'Čijang Maj', extra:'Tajland'}, {name:'Pataja', extra:'Tajland'},
   {name:'Krabi', extra:'Tajland'}, {name:'Ko Samui', extra:'Tajland'}, {name:'Ko Pangan', extra:'Tajland'}, {name:'Ko Tao', extra:'Tajland'},
   {name:'Ko Pi Pi', extra:'Tajland'}, {name:'Ko Lanta', extra:'Tajland'}, {name:'Ajutaja', extra:'Tajland'}, {name:'Čijang Raj', extra:'Tajland'},
@@ -4384,10 +4468,16 @@ const POPULAR_DESTINATIONS = [
   {name:'Bali', extra:'Indonezija'}, {name:'Džakarta', extra:'Indonezija'}, {name:'Singapur', extra:'Singapur'},
   {name:'Ho Ši Min', extra:'Vijetnam'}, {name:'Hanoj', extra:'Vijetnam'},
   {name:'Peking', extra:'Kina'}, {name:'Šangaj', extra:'Kina'}, {name:'Hongkong', extra:'Kina'},
+  {name:'Guangdžou', extra:'Kina'}, {name:'Šendžen', extra:'Kina'}, {name:'Sian', extra:'Kina'},
+  {name:'Čengdu', extra:'Kina'}, {name:'Guilin', extra:'Kina'}, {name:'Makao', extra:'Kina'},
+  {name:'Hangdžou', extra:'Kina'}, {name:'Lasa', extra:'Kina'},
   {name:'Seul', extra:'Južna Koreja'}, {name:'Kuala Lumpur', extra:'Malezija'}, {name:'Manila', extra:'Filipini'},
-  {name:'Nju Delhi', extra:'Indija'}, {name:'Mumbaj', extra:'Indija'}, {name:'Male', extra:'Maldivi'},
+  {name:'Nju Delhi', extra:'Indija'}, {name:'Mumbaj', extra:'Indija'}, {name:'Goa', extra:'Indija'}, {name:'Male', extra:'Maldivi'},
   {name:'Baku', extra:'Azerbejdžan'}, {name:'Tbilisi', extra:'Gruzija'},
   {name:'Sidnej', extra:'Australija'}, {name:'Melburn', extra:'Australija'}, {name:'Brizbejn', extra:'Australija'},
+  {name:'Pert', extra:'Australija'}, {name:'Gold Coast', extra:'Australija'}, {name:'Kernz', extra:'Australija'},
+  {name:'Uluru', extra:'Australija'}, {name:'Adelejd', extra:'Australija'}, {name:'Darvin', extra:'Australija'},
+  {name:'Hobart', extra:'Australija'}, {name:'Kanbera', extra:'Australija'},
   {name:'Okland', extra:'Novi Zeland'}, {name:'Velington', extra:'Novi Zeland'},
   {name:'Doha', extra:'Katar'}, {name:'Rijad', extra:'Saudijska Arabija'},
   {name:'Kejptaun', extra:'Južnoafrička Republika'}, {name:'Najrobi', extra:'Kenija'},
@@ -4434,7 +4524,7 @@ const POPULAR_DESTINATIONS = [
   {name:'Bejrut', extra:'Liban'}, {name:'Muskat', extra:'Oman'},
   {name:'Kolombo', extra:'Šri Lanka'}, {name:'Katmandu', extra:'Nepal'},
   {name:'Angkor Vat', extra:'Kambodža'}, {name:'Pnom Pen', extra:'Kambodža'},
-  {name:'Vindhuk', extra:'Namibija'}, {name:'Santjago', extra:'Čile'}, {name:'Kito', extra:'Ekvador'}, {name:'San Hoze', extra:'Kostarika'},
+  {name:'Vindhuk', extra:'Namibija'}, {name:'Santjago', extra:'Čile'}, {name:'Kito', extra:'Ekvador'}, {name:'Galapagos ostrva', extra:'Ekvador'}, {name:'San Hoze', extra:'Kostarika'},
 ];
 // Uklanja srpske kvačice (č/ć/š/ž/đ) i standardne akcente, radi poređenja bez
 // obzira da li korisnik kuca sa ili bez njih (npr. "Kotor" vs "Beč"/"Bec").
