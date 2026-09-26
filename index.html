@@ -19,6 +19,14 @@ html,body{background:#123A44;margin:0;}
 <meta property="og:locale" content="sr_RS">
 <meta property="og:url" content="https://sklopi.rs/">
 <link rel="canonical" href="https://sklopi.rs/">
+<!-- hreflang: nabraja SVE jezičke verzije ove stranice (isto na svakoj od njih).
+     URL se ne menja (i dalje sklopi.rs/), samo ?lang= parametar bira jezik —
+     JS (setLang/getLang u app.js) čita/upisuje ga i ažurira canonical/og:url/og:locale. -->
+<link rel="alternate" hreflang="sr" href="https://sklopi.rs/">
+<link rel="alternate" hreflang="en" href="https://sklopi.rs/?lang=en">
+<link rel="alternate" hreflang="ru" href="https://sklopi.rs/?lang=ru">
+<link rel="alternate" hreflang="de" href="https://sklopi.rs/?lang=de">
+<link rel="alternate" hreflang="x-default" href="https://sklopi.rs/">
 <script type="application/ld+json">
 {
 "@context": "https://schema.org",
@@ -136,9 +144,14 @@ html,body{background:#123A44;margin:0;}
 <meta name="apple-mobile-web-app-title" content="SKLOPI">
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@600;700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=48">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+<link rel="stylesheet" href="styles.css?v=49">
+<!-- Leaflet CSS ucitan bez blokiranja renderovanja: koristi se samo za mapu
+     u kasnijem koraku planiranja, ne za sadrzaj iznad "fold-a". -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"></noscript>
 </head>
 <body>
 <noscript><style>#appSplash{display:none!important;}</style></noscript>
@@ -201,7 +214,7 @@ html,body{background:#123A44;margin:0;}
 <div class="hero hero-reference" id="searchForm-wrap">
 <div class="hero-reference-shell">
   <div class="hero-reference-visual">
-    <img src="https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?auto=format&fit=crop&w=1800&q=88" alt="Mediteranska obala i grad uz more" loading="eager" data-i18n-alt="x_9ec990">
+    <img src="https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?auto=format&fit=crop&w=1800&q=88" alt="Mediteranska obala i grad uz more" loading="eager" fetchpriority="high" data-i18n-alt="x_9ec990">
     <div class="hero-reference-visual-overlay"></div>
     <div class="hero-ui-overlay">
       <button type="button" class="hero-ui-btn" id="hamburgerBtn" aria-label="Meni" aria-haspopup="true" aria-controls="mobilePanel" data-i18n-aria-label="aria_menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h11M4 17h16"/></svg></button>
@@ -878,10 +891,10 @@ html,body{background:#123A44;margin:0;}
     <p data-i18n="x_140209">Otkrij korisne savete, vodiče i inspiraciju za sledeće putovanje.</p>
   </div>
   <div class="gd-list">
-    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=300&q=80" alt="" loading="lazy"></span><span class="gd-info"><b data-i18n="x_3ed543">Atina za 4 dana</b><small data-i18n="x_ccf0cf">Kompletan vodič kroz grad</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
-    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=300&q=80" alt="" loading="lazy"></span><span class="gd-info"><b data-i18n="x_9c2f13">Grčka – najlepše plaže</b><small data-i18n="x_c0e0e3">Top destinacije i saveti</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
-    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1553531384-cc64ac80f931?auto=format&fit=crop&w=300&q=80" alt="" loading="lazy"></span><span class="gd-info"><b data-i18n="x_3795c2">Šta poneti na put?</b><small data-i18n="x_7ec6b1">Spisak za savršeno putovanje</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
-    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=300&q=80" alt="" loading="lazy"></span><span class="gd-info"><b data-i18n="x_455108">Kako uštedeti na putovanju?</b><small data-i18n="x_51467e">Praktični saveti</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
+    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=300&q=80" alt="Akropolj u Atini — vodič za 4 dana" loading="lazy"></span><span class="gd-info"><b data-i18n="x_3ed543">Atina za 4 dana</b><small data-i18n="x_ccf0cf">Kompletan vodič kroz grad</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
+    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=300&q=80" alt="Peščana plaža u Grčkoj sa bistrim morem" loading="lazy"></span><span class="gd-info"><b data-i18n="x_9c2f13">Grčka – najlepše plaže</b><small data-i18n="x_c0e0e3">Top destinacije i saveti</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
+    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1553531384-cc64ac80f931?auto=format&fit=crop&w=300&q=80" alt="Spakovan kofer i putna torba za odmor" loading="lazy"></span><span class="gd-info"><b data-i18n="x_3795c2">Šta poneti na put?</b><small data-i18n="x_7ec6b1">Spisak za savršeno putovanje</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
+    <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=300&q=80" alt="Novčanik i planiranje budžeta za putovanje" loading="lazy"></span><span class="gd-info"><b data-i18n="x_455108">Kako uštedeti na putovanju?</b><small data-i18n="x_51467e">Praktični saveti</small><em data-i18n="x_0abb08">Čitaj više &rarr;</em></span></a>
   </div>
 </section>
 <section class="section my-trip-section" id="myTrip" aria-labelledby="myTripTitle">
@@ -947,7 +960,7 @@ html,body{background:#123A44;margin:0;}
 </details>
 </div>
 <div class="faq-banner faq-banner-v2">
-<div class="faq-banner-photo"><img src="https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?auto=format&fit=crop&w=900&q=70" alt="" loading="lazy"></div>
+<div class="faq-banner-photo"><img src="https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?auto=format&fit=crop&w=900&q=70" alt="Plaža uz more za odmor sa najčešćim pitanjima o rezervaciji" loading="lazy"></div>
 <div class="faq-banner-content">
 <svg class="faq-banner-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 19l6-10 4 6 2-3 6 7H3z" fill="currentColor"/></svg>
 <p data-i18n-html="x_9e1232">Nema savršenog putovanja.<br>Samo dobro isplaniranog.</p>
@@ -956,7 +969,7 @@ html,body{background:#123A44;margin:0;}
 </div>
 </div>
 <footer id="about">
-<div class="footer-photo"><img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1400&q=65" alt="" loading="lazy"></div>
+<div class="footer-photo"><img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1400&q=65" alt="Obala i zalazak sunca — SKLOPI planiranje putovanja" loading="lazy"></div>
 <svg class="footer-mark-v2" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 19l6-10 4 6 2-3 6 7H3z" fill="currentColor"/></svg>
 <div class="footer-tagline-v2">
 <b>SKLOPI</b>
@@ -1282,18 +1295,18 @@ html,body{background:#123A44;margin:0;}
 <a href="#" data-contact="wa" rel="noopener" class="whatsapp-fab" id="whatsappFab" data-i18n-aria-label="whatsapp_aria" aria-label="Piši nam na WhatsApp">
 <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"/></svg>
 </a>
-<script src="config.js"></script>
-<script src="affiliate.js?v=1"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
-<script src="i18n-data.js?v=03e94cef"></script>
-<script src="i18n-extra.js?v=6"></script>
-<script src="dest-plans.js?v=2"></script>
-<script src="app.js?v=44"></script>
-<script src="price-mix.js?v=2"></script>
-<script src="transport.js?v=9"></script>
-<script src="transport-i18n.js?v=1"></script>
-<script src="contact.js"></script>
-<script src="cookies.js"></script>
+<script src="config.js" defer></script>
+<script src="affiliate.js?v=1" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous" defer></script>
+<script src="i18n-data.js?v=03e94cef" defer></script>
+<script src="i18n-extra.js?v=6" defer></script>
+<script src="dest-plans.js?v=2" defer></script>
+<script src="app.js?v=44" defer></script>
+<script src="price-mix.js?v=2" defer></script>
+<script src="transport.js?v=9" defer></script>
+<script src="transport-i18n.js?v=1" defer></script>
+<script src="contact.js" defer></script>
+<script src="cookies.js" defer></script>
 </body>
 </html>

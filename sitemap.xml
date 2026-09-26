@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://sklopi.rs/</loc>
-    <lastmod>2026-09-12</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <!-- Jedina stranica sa 4 jezika (sr/en/ru/de, preko ?lang=) — ostale
+         stranice u ovom sitemap-u postoje samo na srpskom. -->
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/"/>
   </url>
   <url>
     <loc>https://sklopi.rs/destinacija.html</loc>
@@ -27,6 +35,24 @@
   <url>
     <loc>https://sklopi.rs/vodic-budva.html</loc>
     <lastmod>2026-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-split.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-solun.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-istanbul.html</loc>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
