@@ -31,6 +31,44 @@
     <lastmod>2026-09-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/vodic-atina-en.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/vodic-atina-ru.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-atina-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-atina-en.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/vodic-atina-en.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/vodic-atina-ru.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-atina-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-atina-ru.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/vodic-atina-en.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/vodic-atina-ru.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-atina-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-atina-de.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/vodic-atina-en.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/vodic-atina-ru.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-atina-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-budva.html</loc>
