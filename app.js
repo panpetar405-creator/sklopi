@@ -2169,6 +2169,11 @@ const AIRPORT_DB = {
   'monchique': {nearest:'Faro', note:'Monchique nema svoj aerodrom — najbliži je Faro (oko 1h vožnje).', c:'Monchique', k:'own', t:'1h'},
   'ericeira': {nearest:'Lisabon', note:'Ericeira nema svoj aerodrom — najbliži je Lisabon (oko 40 min vožnje).', c:'Ericeira', k:'own', t:'40 min'},
   'peniche': {nearest:'Lisabon', note:'Peniche nema svoj aerodrom — najbliži je Lisabon (oko 1h15 vožnje).', c:'Peniche', k:'own', t:'1h15'},
+  // NAPOMENA: 'lagos (nigerija)' MORA stajati PRE portugalskog 'lagos' unosa —
+  // inače airportInfoFor() pogrešno uhvati "Lagos (Nigerija)" preko
+  // startsWith('lagos ') na portugalskom ključu i vrati Faro umesto sopstvenog
+  // aerodroma u Lagosu (Nigerija).
+  'lagos (nigerija)': {hasAirport:true},
   'lagos': {nearest:'Faro', note:'Lagos nema svoj aerodrom — najbliži je Faro (oko 1h vožnje).', c:'Lagos', k:'own', t:'1h'},
   'portimao': {nearest:'Faro', note:'Portimão nema svoj aerodrom — najbliži je Faro (oko 40 min vožnje).', c:'Portimão', k:'own', t:'40 min'},
   'tavira': {nearest:'Faro', note:'Tavira nema svoj aerodrom — najbliži je Faro (oko 30 min vožnje).', c:'Tavira', k:'own', t:'30 min'},
@@ -2788,6 +2793,11 @@ const AIRPORT_DB = {
   'korzika': {hasAirport:true, limited:true},
   'lil': {hasAirport:true, limited:true},
   'ren': {hasAirport:true, limited:true},
+  // NAPOMENA: 'brest (belorusija)' MORA stajati PRE francuskog 'brest' unosa —
+  // inače airportInfoFor() pogrešno uhvati "Brest (Belorusija)" preko
+  // startsWith('brest ') na francuskom ključu i vrati Brest (Francuska)
+  // umesto Minska.
+  'brest (belorusija)': {nearest:'Minsk', note:'Brest (Belorusija) nema redovne komercijalne letove — najbliži je Minsk (oko 4h vožnje).', c:'Brest (Belorusija)', k:'own', t:'4h'},
   'brest': {hasAirport:true, limited:true},
   'klermonferan': {hasAirport:true, limited:true},
   'bijaric': {hasAirport:true, limited:true},
@@ -2934,13 +2944,72 @@ const AIRPORT_DB = {
   'davos': {nearest:'Cirih', note:'Davos nema svoj aerodrom — najbliži je Cirih (oko 2h vožnje).', c:'Davos', k:'own', t:'2h'},
   // --- Mađarska: dodatni aerodromi ---
   'debrecin': {hasAirport:true, limited:true},
-  // --- Rusija (evropski deo): aerodromi ---
+  // --- Rusija: aerodromi ---
   'moskva': {hasAirport:true},
   'sanktpeterburg': {hasAirport:true},
   'soci': {hasAirport:true, limited:true},
   'kalinjingrad': {hasAirport:true, limited:true},
   'kazanj': {hasAirport:true, limited:true},
   'krasnodar': {hasAirport:true, limited:true},
+  'jekaterinburg': {hasAirport:true, limited:true},
+  'novosibirsk': {hasAirport:true, limited:true},
+  'vladivostok': {hasAirport:true, limited:true},
+  'niznji novgorod': {hasAirport:true, limited:true},
+  'samara': {hasAirport:true, limited:true},
+  'rostov na donu': {hasAirport:true, limited:true},
+  'ufa': {hasAirport:true, limited:true},
+  'krasnojarsk': {hasAirport:true, limited:true},
+  'irkutsk': {hasAirport:true, limited:true},
+  'volgograd': {hasAirport:true, limited:true},
+  'perm': {hasAirport:true, limited:true},
+  'voronjez': {hasAirport:true, limited:true},
+  'petrozavodsk': {hasAirport:true, limited:true},
+  'ulan-ude': {hasAirport:true, limited:true},
+  'petropavlovsk-kamcatski': {hasAirport:true, limited:true},
+  'murmansk': {hasAirport:true, limited:true},
+  'arhangelsk': {hasAirport:true, limited:true},
+  'mineralne vode': {hasAirport:true, limited:true},
+  'anapa': {hasAirport:true, limited:true},
+  'gelendzik': {hasAirport:true, limited:true},
+  'gorno-altajsk': {hasAirport:true, limited:true},
+  'pskov': {hasAirport:true, limited:true},
+  // --- Rusija: manja mesta bez sopstvenog aerodroma ---
+  'suzdalj': {nearest:'Moskva', note:'Suzdalj nema svoj aerodrom — najbliži je Moskva (oko 3h30 vožnje).', c:'Suzdalj', k:'own', t:'3h30'},
+  'vladimir': {nearest:'Moskva', note:'Vladimir nema svoj aerodrom — najbliži je Moskva (oko 2h30 vožnje).', c:'Vladimir', k:'own', t:'2h30'},
+  'jaroslavlj': {nearest:'Moskva', note:'Jaroslavlj nema redovne komercijalne letove — najbliži veći aerodrom je Moskva (oko 3h vožnje).', c:'Jaroslavlj', k:'own', t:'3h'},
+  'kostroma': {nearest:'Jaroslavlj', note:'Kostroma nema redovne komercijalne letove — najbliži veći grad sa aerodromom je Jaroslavlj (oko 1h30 vožnje).', c:'Kostroma', k:'own', t:'1h30'},
+  'rostov veliki': {nearest:'Jaroslavlj', note:'Rostov Veliki nema svoj aerodrom — najbliži je Jaroslavlj (oko 1h vožnje).', c:'Rostov Veliki', k:'own', t:'1h'},
+  'pereslavlj-zaleski': {nearest:'Moskva', note:'Pereslavlj-Zaleski nema svoj aerodrom — najbliži je Moskva (oko 2h vožnje).', c:'Pereslavlj-Zaleski', k:'own', t:'2h'},
+  'sergijev posad': {nearest:'Moskva', note:'Sergijev Posad nema svoj aerodrom — najbliži je Moskva (oko 1h15 vožnje).', c:'Sergijev Posad', k:'own', t:'1h15'},
+  'uglic': {nearest:'Jaroslavlj', note:'Uglič nema svoj aerodrom — najbliži je Jaroslavlj (oko 1h30 vožnje).', c:'Uglič', k:'own', t:'1h30'},
+  'kolomna': {nearest:'Moskva', note:'Kolomna nema svoj aerodrom — najbliži je Moskva (oko 1h30 vožnje).', c:'Kolomna', k:'own', t:'1h30'},
+  'zvenigorod': {nearest:'Moskva', note:'Zvenigorod nema svoj aerodrom — najbliži je Moskva (oko 1h vožnje).', c:'Zvenigorod', k:'own', t:'1h'},
+  'tver': {nearest:'Moskva', note:'Tver nema svoj aerodrom — najbliži je Moskva (oko 2h30 vožnje).', c:'Tver', k:'own', t:'2h30'},
+  'smolensk': {nearest:'Moskva', note:'Smolensk nema redovne komercijalne letove — najbliži veći aerodrom je Moskva (oko 4h vožnje).', c:'Smolensk', k:'own', t:'4h'},
+  'veliki novgorod': {nearest:'Sankt Peterburg', note:'Veliki Novgorod nema redovne komercijalne letove — najbliži je Sankt Peterburg (oko 2h30 vožnje).', c:'Veliki Novgorod', k:'own', t:'2h30'},
+  'vyborg': {nearest:'Sankt Peterburg', note:'Vyborg nema svoj aerodrom — najbliži je Sankt Peterburg (oko 2h vožnje).', c:'Vyborg', k:'own', t:'2h'},
+  'petergof': {nearest:'Sankt Peterburg', note:'Petergof nema svoj aerodrom — najbliži je Sankt Peterburg (oko 40 min vožnje).', c:'Petergof', k:'own', t:'40 min'},
+  'puskin': {nearest:'Sankt Peterburg', note:'Puškin (Carsko Selo) nema svoj aerodrom — najbliži je Sankt Peterburg (oko 30 min vožnje).', c:'Puškin', k:'own', t:'30 min'},
+  'kronstat': {nearest:'Sankt Peterburg', note:'Kronštat nema svoj aerodrom — najbliži je Sankt Peterburg (oko 45 min vožnje).', c:'Kronštat', k:'own', t:'45 min'},
+  // --- Rusija: planine i banje (bez sopstvenog aerodroma) ---
+  'elbrus': {nearest:'Mineralne Vode', note:'Elbrus nema aerodrom u blizini — najbliži je Mineralne Vode (oko 3h vožnje).', c:'Elbrus', k:'nearby', t:'3h'},
+  'dombaj': {nearest:'Mineralne Vode', note:'Dombaj nema svoj aerodrom — najbliži je Mineralne Vode (oko 3h vožnje).', c:'Dombaj', k:'own', t:'3h'},
+  'sereges': {nearest:'Novokuznjeck', note:'Šeregeš nema svoj aerodrom — najbliži je Novokuznjeck (oko 2h30 vožnje).', c:'Šeregeš', k:'own', t:'2h30'},
+  'pjatigorsk': {nearest:'Mineralne Vode', note:'Pjatigorsk nema svoj aerodrom — najbliži je Mineralne Vode (oko 25 min vožnje).', c:'Pjatigorsk', k:'own', t:'25 min'},
+  'kislovodsk': {nearest:'Mineralne Vode', note:'Kislovodsk nema svoj aerodrom — najbliži je Mineralne Vode (oko 40 min vožnje).', c:'Kislovodsk', k:'own', t:'40 min'},
+  'zeleznovodsk': {nearest:'Mineralne Vode', note:'Železnovodsk nema svoj aerodrom — najbliži je Mineralne Vode (oko 30 min vožnje).', c:'Železnovodsk', k:'own', t:'30 min'},
+  'jesentuki': {nearest:'Mineralne Vode', note:'Jesentuki nema svoj aerodrom — najbliži je Mineralne Vode (oko 20 min vožnje).', c:'Jesentuki', k:'own', t:'20 min'},
+  // --- Rusija: jezera i primorska mesta (bez sopstvenog aerodroma) ---
+  'bajkalsko jezero': {nearest:'Irkutsk', note:'Bajkalsko jezero nema aerodrom u blizini — najbliži je Irkutsk (oko 1h15 vožnje do zapadne obale).', c:'Bajkalsko jezero', k:'nearby', t:'1h15'},
+  'listvjanka': {nearest:'Irkutsk', note:'Listvjanka nema svoj aerodrom — najbliži je Irkutsk (oko 1h15 vožnje).', c:'Listvjanka', k:'own', t:'1h15'},
+  'olhon ostrvo': {nearest:'Irkutsk', note:'Olhon ostrvo nema aerodrom u blizini — najbliži je Irkutsk (oko 5-6h vožnje i trajektom).', c:'Olhon ostrvo', k:'nearby', t:'5-6h'},
+  'ladosko jezero': {nearest:'Sankt Peterburg', note:'Ladoško jezero nema aerodrom u blizini — najbliži je Sankt Peterburg (oko 1h30 vožnje).', c:'Ladoško jezero', k:'nearby', t:'1h30'},
+  'onjesko jezero': {nearest:'Petrozavodsk', note:'Onješko jezero nema aerodrom u blizini — najbliži je Petrozavodsk (oko 30 min vožnje).', c:'Onješko jezero', k:'nearby', t:'30 min'},
+  'teletsko jezero': {nearest:'Gorno-Altajsk', note:'Teletsko jezero nema aerodrom u blizini — najbliži je Gorno-Altajsk (oko 3h30 vožnje).', c:'Teletsko jezero', k:'nearby', t:'3h30'},
+  'tuapse': {nearest:'Soči', note:'Tuapse nema svoj aerodrom — najbliži je Soči (oko 1h30 vožnje), Krasnodar je alternativa.', c:'Tuapse', k:'own', t:'1h30', alt:'Krasnodar'},
+  'svetlogorsk': {nearest:'Kalinjingrad', note:'Svetlogorsk nema svoj aerodrom — najbliži je Kalinjingrad (oko 40 min vožnje).', c:'Svetlogorsk', k:'own', t:'40 min'},
+  'zelenogradsk': {nearest:'Kalinjingrad', note:'Zelenogradsk nema svoj aerodrom — najbliži je Kalinjingrad (oko 30 min vožnje).', c:'Zelenogradsk', k:'own', t:'30 min'},
+  'kurska kosa': {nearest:'Kalinjingrad', note:'Kurška kosa nema aerodrom u blizini — najbliži je Kalinjingrad (oko 40 min vožnje).', c:'Kurška kosa', k:'nearby', t:'40 min'},
   // --- Ukrajina: vazdušni prostor zatvoren za civilni saobraćaj od feb. 2022,
   //     nema redovnih putničkih letova ni sa jednog ukrajinskog aerodroma dok
   //     traje rat — zato se ovde ne tretiraju kao hasAirport:true, već se
@@ -3035,7 +3104,76 @@ const AIRPORT_DB = {
   'sian': {hasAirport:true, limited:true},
   'guilin': {hasAirport:true, limited:true},
   'makao': {hasAirport:true, limited:true},
-  'lasa': {hasAirport:true, limited:true}
+  'lasa': {hasAirport:true, limited:true},
+  // --- Belorusija, Moldavija, Jermenija, Centralna Azija: aerodromi ---
+  'minsk': {hasAirport:true},
+  'jerevan': {hasAirport:true},
+  'almati': {hasAirport:true},
+  'astana': {hasAirport:true},
+  'taskent': {hasAirport:true},
+  'samarkand': {hasAirport:true, limited:true},
+  'buhara': {hasAirport:true, limited:true},
+  'biskek': {hasAirport:true},
+  'ulan bator': {hasAirport:true},
+  // --- Belorusija, Jermenija, Kirgistan, Butan: bez sopstvenog aerodroma ---
+  'jezero sevan': {nearest:'Jerevan', note:'Jezero Sevan nema aerodrom u blizini — najbliži je Jerevan (oko 1h vožnje).', c:'Jezero Sevan', k:'nearby', t:'1h'},
+  'jezero isik-kulj': {nearest:'Biškek', note:'Jezero Isik-kulj nema aerodrom u blizini — najbliži je Biškek (oko 3h vožnje).', c:'Jezero Isik-kulj', k:'nearby', t:'3h'},
+  'timpu': {nearest:'Paro', note:'Timpu nema svoj aerodrom — najbliži je Paro, jedini međunarodni aerodrom Butana (oko 1h vožnje).', c:'Timpu', k:'own', t:'1h'},
+  // --- Južna Azija, Jugoistočna Azija: aerodromi ---
+  'islamabad': {hasAirport:true},
+  'lahore': {hasAirport:true},
+  'karaci': {hasAirport:true},
+  'daka': {hasAirport:true},
+  'jangon': {hasAirport:true},
+  'bagan': {hasAirport:true, limited:true},
+  'vijentijan': {hasAirport:true},
+  'luang prabang': {hasAirport:true, limited:true},
+  // --- Okeanija, Grenland: aerodromi ---
+  'nadi': {hasAirport:true},
+  'suva': {hasAirport:true, limited:true},
+  'apija': {hasAirport:true},
+  'port morsbi': {hasAirport:true},
+  'nuk': {hasAirport:true, limited:true},
+  // --- Južna Amerika: aerodromi ---
+  'montevideo': {hasAirport:true},
+  'punta del este': {hasAirport:true, limited:true},
+  'la paz': {hasAirport:true},
+  'sukre': {hasAirport:true, limited:true},
+  'salar de ujuni': {hasAirport:true, limited:true},
+  'asunsion': {hasAirport:true},
+  'karakas': {hasAirport:true},
+  // --- Južna Amerika: bez sopstvenog aerodroma ---
+  'angelski slap': {nearest:'Karakas', note:'Angelski slap nema aerodrom u blizini — obično se stiže unutrašnjim letom preko Sijudad Bolivara (oko 1h leta od Karakasa).', c:'Angelski slap', k:'nearby', t:'1h'},
+  // --- Centralna Amerika i Karibi: aerodromi ---
+  'panama siti': {hasAirport:true},
+  'gvatemala siti': {hasAirport:true},
+  'belize siti': {hasAirport:true},
+  'roatan': {hasAirport:true, limited:true},
+  'kingston': {hasAirport:true},
+  'montego bej': {hasAirport:true},
+  'nasau': {hasAirport:true},
+  'bridztaun': {hasAirport:true},
+  'san huan': {hasAirport:true},
+  // --- Centralna Amerika: bez sopstvenog aerodroma ---
+  'antigva gvatemala': {nearest:'Gvatemala Siti', note:'Antigva Gvatemala nema svoj aerodrom — najbliži je Gvatemala Siti (oko 1h vožnje).', c:'Antigva Gvatemala', k:'own', t:'1h'},
+  'tikal': {nearest:'Flores', note:'Tikal nema aerodrom u blizini — najbliži je Flores/Santa Elena (oko 1h vožnje).', c:'Tikal', k:'nearby', t:'1h'},
+  // --- Afrika: aerodromi ---
+  'akra': {hasAirport:true},
+  'abudza': {hasAirport:true},
+  'adis abeba': {hasAirport:true},
+  'kigali': {hasAirport:true},
+  'gaboron': {hasAirport:true, limited:true},
+  'livingston': {hasAirport:true, limited:true},
+  'harare': {hasAirport:true, limited:true},
+  'maputo': {hasAirport:true, limited:true},
+  'alzir': {hasAirport:true, limited:true},
+  // --- Afrika: bez sopstvenog aerodroma ---
+  'kampala': {nearest:'Entebe', note:'Kampala nema svoj aerodrom — najbliži je Entebe (oko 40 min vožnje).', c:'Kampala', k:'own', t:'40 min'},
+  'delta okavango': {nearest:'Maun', note:'Delta Okavango nema aerodrom u blizini — najbliži je Maun, odakle se dalje leti malim avionima do kampova (oko 1h leta).', c:'Delta Okavango', k:'nearby', t:'1h'},
+  'vodopadi viktorija': {hasAirport:true, limited:true},
+  // --- Bliski istok: aerodromi ---
+  'manama': {hasAirport:true},
+  'kuvajt siti': {hasAirport:true}
 };
 Object.keys(AIRPORT_DB).forEach(k => { AIRPORT_DB[k].slug = k; });
 /* Tekst napomene za grad bez aerodroma, na trenutnom jeziku.
@@ -4525,6 +4663,118 @@ const POPULAR_DESTINATIONS = [
   {name:'Kolombo', extra:'Šri Lanka'}, {name:'Katmandu', extra:'Nepal'},
   {name:'Angkor Vat', extra:'Kambodža'}, {name:'Pnom Pen', extra:'Kambodža'},
   {name:'Vindhuk', extra:'Namibija'}, {name:'Santjago', extra:'Čile'}, {name:'Kito', extra:'Ekvador'}, {name:'Galapagos ostrva', extra:'Ekvador'}, {name:'San Hoze', extra:'Kostarika'},
+  // Rusija — gradovi
+  {name:'Moskva', extra:'Rusija'}, {name:'Sankt Peterburg', extra:'Rusija'}, {name:'Kazanj', extra:'Rusija'},
+  {name:'Jekaterinburg', extra:'Rusija'}, {name:'Novosibirsk', extra:'Rusija'}, {name:'Vladivostok', extra:'Rusija'},
+  {name:'Nižnji Novgorod', extra:'Rusija'}, {name:'Samara', extra:'Rusija'}, {name:'Rostov na Donu', extra:'Rusija'},
+  {name:'Ufa', extra:'Rusija'}, {name:'Krasnojarsk', extra:'Rusija'}, {name:'Irkutsk', extra:'Rusija'},
+  {name:'Volgograd', extra:'Rusija'}, {name:'Perm', extra:'Rusija'}, {name:'Voronjež', extra:'Rusija'},
+  {name:'Murmansk', extra:'Rusija'}, {name:'Arhangelsk', extra:'Rusija'}, {name:'Petrozavodsk', extra:'Rusija'},
+  {name:'Ulan-Ude', extra:'Rusija'}, {name:'Petropavlovsk-Kamčatski', extra:'Rusija'}, {name:'Pskov', extra:'Rusija'},
+  {name:'Mineralne Vode', extra:'Rusija'},
+  // Rusija — manja mesta (Zlatni prsten i okolina Moskve/Sankt Peterburga)
+  {name:'Suzdalj', extra:'Rusija'}, {name:'Vladimir', extra:'Rusija'}, {name:'Jaroslavlj', extra:'Rusija'},
+  {name:'Kostroma', extra:'Rusija'}, {name:'Rostov Veliki', extra:'Rusija'}, {name:'Pereslavlj-Zaleski', extra:'Rusija'},
+  {name:'Sergijev Posad', extra:'Rusija'}, {name:'Uglič', extra:'Rusija'}, {name:'Kolomna', extra:'Rusija'},
+  {name:'Zvenigorod', extra:'Rusija'}, {name:'Tver', extra:'Rusija'}, {name:'Smolensk', extra:'Rusija'},
+  {name:'Veliki Novgorod', extra:'Rusija'}, {name:'Vyborg', extra:'Rusija'}, {name:'Petergof', extra:'Rusija'},
+  {name:'Puškin (Carsko Selo)', extra:'Rusija'}, {name:'Kronštat', extra:'Rusija'},
+  // Rusija — planine
+  {name:'Elbrus', extra:'Rusija'}, {name:'Dombaj', extra:'Rusija'}, {name:'Šeregeš', extra:'Rusija'}, {name:'Gorno-Altajsk', extra:'Rusija'},
+  // Rusija — banje (Kavkaske mineralne vode)
+  {name:'Pjatigorsk', extra:'Rusija'}, {name:'Kislovodsk', extra:'Rusija'}, {name:'Železnovodsk', extra:'Rusija'}, {name:'Jesentuki', extra:'Rusija'},
+  // Rusija — reke
+  {name:'Volga', extra:'Rusija'}, {name:'Jenisej', extra:'Rusija'}, {name:'Ob', extra:'Rusija'},
+  {name:'Lena', extra:'Rusija'}, {name:'Amur', extra:'Rusija'}, {name:'Don', extra:'Rusija'}, {name:'Kama', extra:'Rusija'},
+  // Rusija — jezera
+  {name:'Bajkalsko jezero', extra:'Rusija'}, {name:'Ladoško jezero', extra:'Rusija'}, {name:'Onješko jezero', extra:'Rusija'}, {name:'Teletsko jezero', extra:'Rusija'},
+  // Rusija — turistički centri
+  {name:'Karelija', extra:'Rusija'}, {name:'Kamčatka', extra:'Rusija'}, {name:'Listvjanka', extra:'Rusija'}, {name:'Olhon ostrvo', extra:'Rusija'},
+  // Rusija — primorska mesta
+  {name:'Soči', extra:'Rusija'}, {name:'Anapa', extra:'Rusija'}, {name:'Gelendžik', extra:'Rusija'}, {name:'Tuapse', extra:'Rusija'},
+  {name:'Kalinjingrad', extra:'Rusija'}, {name:'Svetlogorsk', extra:'Rusija'}, {name:'Zelenogradsk', extra:'Rusija'}, {name:'Kurška kosa', extra:'Rusija'},
+  // Ukrajina
+  {name:'Kijev', extra:'Ukrajina'}, {name:'Lavov', extra:'Ukrajina'}, {name:'Odesa', extra:'Ukrajina'}, {name:'Harkov', extra:'Ukrajina'},
+  // Belorusija
+  {name:'Minsk', extra:'Belorusija'}, {name:'Brest (Belorusija)', extra:'Belorusija'},
+  // Moldavija
+  {name:'Kišinjev', extra:'Moldavija'},
+  // Jermenija
+  {name:'Jerevan', extra:'Jermenija'}, {name:'Jezero Sevan', extra:'Jermenija'},
+  // Kazahstan
+  {name:'Almati', extra:'Kazahstan'}, {name:'Astana', extra:'Kazahstan'},
+  // Uzbekistan
+  {name:'Taškent', extra:'Uzbekistan'}, {name:'Samarkand', extra:'Uzbekistan'}, {name:'Buhara', extra:'Uzbekistan'},
+  // Kirgistan
+  {name:'Biškek', extra:'Kirgistan'}, {name:'Jezero Isik-kulj', extra:'Kirgistan'},
+  // Mongolija
+  {name:'Ulan Bator', extra:'Mongolija'},
+  // Pakistan
+  {name:'Islamabad', extra:'Pakistan'}, {name:'Lahore', extra:'Pakistan'}, {name:'Karači', extra:'Pakistan'},
+  // Bangladeš
+  {name:'Daka', extra:'Bangladeš'},
+  // Mijanmar
+  {name:'Jangon', extra:'Mijanmar'}, {name:'Bagan', extra:'Mijanmar'},
+  // Laos
+  {name:'Vijentijan', extra:'Laos'}, {name:'Luang Prabang', extra:'Laos'},
+  // Butan
+  {name:'Timpu', extra:'Butan'},
+  // Fidži
+  {name:'Nadi', extra:'Fidži'}, {name:'Suva', extra:'Fidži'},
+  // Samoa
+  {name:'Apija', extra:'Samoa'},
+  // Papua Nova Gvineja
+  {name:'Port Morsbi', extra:'Papua Nova Gvineja'},
+  // Grenland
+  {name:'Nuk', extra:'Grenland'},
+  // Urugvaj
+  {name:'Montevideo', extra:'Urugvaj'}, {name:'Punta del Este', extra:'Urugvaj'},
+  // Bolivija
+  {name:'La Paz', extra:'Bolivija'}, {name:'Salar de Ujuni', extra:'Bolivija'}, {name:'Sukre', extra:'Bolivija'},
+  // Paragvaj
+  {name:'Asunsion', extra:'Paragvaj'},
+  // Venecuela
+  {name:'Karakas', extra:'Venecuela'}, {name:'Angelski slap', extra:'Venecuela'},
+  // Panama
+  {name:'Panama Siti', extra:'Panama'},
+  // Gvatemala
+  {name:'Gvatemala Siti', extra:'Gvatemala'}, {name:'Antigva Gvatemala', extra:'Gvatemala'}, {name:'Tikal', extra:'Gvatemala'},
+  // Belize
+  {name:'Belize Siti', extra:'Belize'},
+  // Honduras
+  {name:'Roatan', extra:'Honduras'},
+  // Jamajka
+  {name:'Kingston', extra:'Jamajka'}, {name:'Montego Bej', extra:'Jamajka'},
+  // Bahami
+  {name:'Nasau', extra:'Bahami'},
+  // Barbados
+  {name:'Bridžtaun', extra:'Barbados'},
+  // Portoriko
+  {name:'San Huan', extra:'Portoriko'},
+  // Gana
+  {name:'Akra', extra:'Gana'},
+  // Nigerija
+  {name:'Lagos (Nigerija)', extra:'Nigerija'}, {name:'Abudža', extra:'Nigerija'},
+  // Etiopija
+  {name:'Adis Abeba', extra:'Etiopija'},
+  // Uganda
+  {name:'Kampala', extra:'Uganda'},
+  // Ruanda
+  {name:'Kigali', extra:'Ruanda'},
+  // Bocvana
+  {name:'Gaboron', extra:'Bocvana'}, {name:'Delta Okavango', extra:'Bocvana'},
+  // Zambija
+  {name:'Livingston', extra:'Zambija'}, {name:'Vodopadi Viktorija', extra:'Zambija'},
+  // Zimbabve
+  {name:'Harare', extra:'Zimbabve'},
+  // Mozambik
+  {name:'Maputo', extra:'Mozambik'},
+  // Alžir
+  {name:'Alžir (grad)', extra:'Alžir'},
+  // Bahrein
+  {name:'Manama', extra:'Bahrein'},
+  // Kuvajt
+  {name:'Kuvajt Siti', extra:'Kuvajt'},
 ];
 // Uklanja srpske kvačice (č/ć/š/ž/đ) i standardne akcente, radi poređenja bez
 // obzira da li korisnik kuca sa ili bez njih (npr. "Kotor" vs "Beč"/"Bec").
