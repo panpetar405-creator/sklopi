@@ -9078,27 +9078,90 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     ]
   };
   const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+
+  /* ---- PRAVE aktivnosti sa Viator-a (preko Worker-a), za BILO KOJU destinaciju ----
+     CITY_ACTIVITIES/generički fallback iznad su i dalje tu — služe kao trenutni
+     prikaz (bez čekanja mreže) DOK se ne vrati pravi odgovor, i kao rezerva ako
+     Worker nije podešen ili je Viator privremeno nedostupan. Kad pravi podaci
+     stignu za destinaciju koja je i dalje upisana, tiho zamenjuju placeholder. */
+  const REAL_ACT_CACHE_KEY = 'sklopi_dest_activities_v1';
+  const REAL_ACT_TTL = 3600 * 1000; // isto ograničenje keširanja kao Viator dozvoljava (1h)
+  function realActEndpoint(){
+    if (window.SKLOPI_DEST_ACTIVITIES_URL) return window.SKLOPI_DEST_ACTIVITIES_URL;
+    const base = window.SKLOPI_ALERT_WORKER_URL;
+    return base ? String(base).replace(/\/$/, '') + '/go/destination-activities' : '';
+  }
+  function realActQuery(destName){
+    return (typeof DEST_EN_NAMES !== 'undefined' && DEST_EN_NAMES[destName]) || destName;
+  }
+  function readRealActCache(q){
+    try {
+      const all = JSON.parse(localStorage.getItem(REAL_ACT_CACHE_KEY) || '{}');
+      const hit = all[q];
+      if (hit && (Date.now() - hit.t) < REAL_ACT_TTL) return hit.items;
+    } catch(e){}
+    return null;
+  }
+  function writeRealActCache(q, items){
+    try {
+      const all = JSON.parse(localStorage.getItem(REAL_ACT_CACHE_KEY) || '{}');
+      all[q] = {t: Date.now(), items};
+      localStorage.setItem(REAL_ACT_CACHE_KEY, JSON.stringify(all));
+    } catch(e){}
+  }
+  async function fetchRealActivities(destName){
+    const endpoint = realActEndpoint();
+    if (!endpoint) return null; // Worker nije podešen — ostaje na ilustrativnom prikazu
+    const q = realActQuery(destName);
+    const cached = readRealActCache(q);
+    if (cached) return cached;
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({dest: destName, q})
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const items = Array.isArray(data.items) ? data.items : [];
+      writeRealActCache(q, items);
+      return items;
+    } catch(e){ return null; }
+  }
+  function paint(items, ctx){
+    list.innerHTML = items.map(it => {
+      const url = it.url || buildAffiliateLink('activity', {dest: it.q || ctx.dest});
+      return '<article class="ad-card"><div class="ad-photo"><img src="' + escapeHtml(it.img) + '" alt="" loading="lazy"></div>'
+        + '<div class="ad-info"><h3>' + escapeHtml(tx(it.name)) + '</h3><p class="ad-price">' + tx('od ') + escapeHtml(money(it.price)) + '</p>'
+        + '<span class="partner-badge partner-badge--viator">Viator</span></div>'
+        + '<a class="ad-book" href="' + escapeHtml(url) + '" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="' + it.price
+        + '" data-url="' + escapeHtml(url) + '" data-dest="' + escapeHtml(ctx.dest) + '" data-tier="plan" onclick="bookItem(this)">' + tx('Rezerviši') + '</a></article>';
+    }).join('');
+  }
   function render(){
     // Isti razlog kao u initFlightDetail: ne prikazuj/računaj ako ovaj
     // paket nije tražio Aktivnosti (svc.activity === false).
     if (box.hidden || (document.getElementById('activitiesDetail')?.hidden)) return;
     const ctx = builderCtx();
     const destKey = normalizeSr(ctx.dest);
-    let items;
+    let items, fallbackImg;
     if (destKey === 'atina'){
       items = ATHENS;
+      fallbackImg = ATHENS[2].img;
     } else {
       const pkg = computeCustomPackage(Object.assign({}, builderState, {activityCount:2}), ctx);
       const base = Math.max(10, Math.round(pkg.activity.price / 2));
       const card = Array.from(document.querySelectorAll('.popular-dest-card'))
         .find(c => normalizeSr(c.dataset.dest || '') === destKey);
       const img = card && card.querySelector('img') ? card.querySelector('img').src : ATHENS[2].img;
+      fallbackImg = img;
       const curated = CITY_ACTIVITIES[destKey];
       if (curated){
         items = curated.map(it => ({name: it.name, price: Math.max(5, Math.round(base * it.ratio)), q: it.q, img}));
       } else {
         // Generički fallback za destinacije bez posebno pripremljenih aktivnosti —
-        // ime destinacije se ubacuje u naslov da se lista razlikuje od grada do grada.
+        // ime destinacije se ubacuje u naslov da se lista razlikuje od grada do grada,
+        // dok se (ispod) ne učita prava lista sa Viator-a za baš to mesto.
         items = [
           {name:'Ulaznice za glavne znamenitosti \u2013 ' + ctx.dest, price:Math.round(base * 1.1), q:ctx.dest + ' top attractions tickets', img},
           {name:'Obilazak starog grada \u2013 ' + ctx.dest, price:Math.round(base * 0.85), q:ctx.dest + ' old town walking tour', img},
@@ -9106,14 +9169,17 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
         ];
       }
     }
-    list.innerHTML = items.map(it => {
-      const url = buildAffiliateLink('activity', {dest: it.q});
-      return '<article class="ad-card"><div class="ad-photo"><img src="' + escapeHtml(it.img) + '" alt="" loading="lazy"></div>'
-        + '<div class="ad-info"><h3>' + escapeHtml(tx(it.name)) + '</h3><p class="ad-price">' + tx('od ') + escapeHtml(money(it.price)) + '</p>'
-        + '<span class="partner-badge partner-badge--viator">Viator</span></div>'
-        + '<a class="ad-book" href="' + escapeHtml(url) + '" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="' + it.price
-        + '" data-url="' + escapeHtml(url) + '" data-dest="' + escapeHtml(ctx.dest) + '" data-tier="plan" onclick="bookItem(this)">' + tx('Rezerviši') + '</a></article>';
-    }).join('');
+    paint(items, ctx);
+    // Pravi podaci sa Viator-a za TAČNO ovo mesto stižu asinhrono i (tiho, bez
+    // treperenja) zamenjuju gornji ilustrativni prikaz — jedina prava vrednost
+    // za korisnika, radi za bilo koju destinaciju, ne samo za kurirane gradove.
+    fetchRealActivities(ctx.dest).then(real => {
+      if (!real || !real.length) return;
+      if (box.hidden || (document.getElementById('activitiesDetail')?.hidden)) return;
+      if (normalizeSr(builderCtx().dest) !== destKey) return; // korisnik je u međuvremenu promenio destinaciju
+      const mapped = real.slice(0, 3).map(r => ({name: r.name, price: r.price, url: r.url, img: r.img || fallbackImg}));
+      paint(mapped, ctx);
+    }).catch(() => {});
   }
   document.addEventListener('sklopi:plan-breakdown', render);
   document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
