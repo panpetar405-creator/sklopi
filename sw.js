@@ -7,7 +7,16 @@
    jedan registrovan 'fetch' handler), a uzgred daje i osnovnu
    otpornost na slab/nestabilan signal.
 */
-const CACHE_VERSION = 'sklopi-shell-v1';
+// VAŽNO: pri svakom deploy-u koji menja app.js/styles.css/index.html,
+// promeni ovaj string (npr. v2, v3...) — to je jedini način da postojeći
+// korisnici (i ti sam/a kad testiraš) odmah dobiju novu verziju, jer se
+// SW fajl inače retko menja pa se ne re-instalira sam od sebe.
+const CACHE_VERSION = 'sklopi-shell-v2';
+// app.js i styles.css su kritični za funkcionalnost i menjaju se često —
+// za njih se mreža uvek probom prva (network-first), keš je samo rezerva
+// za slab/nestabilan signal ili offline rad. Bez ovoga bi stari keš mogao
+// da nastavi da se servira i posle uspešnog deploy-a nove verzije.
+const NETWORK_FIRST = ['/app.js', '/styles.css'];
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -60,7 +69,24 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Statika sa sopstvenog domena (css/js/manifest/ikonice): keš prvi,
+  // app.js / styles.css: mreža prva (network-first), keš samo kao
+  // rezerva ako nema interneta — da svaki deploy odmah stigne do korisnika.
+  if (NETWORK_FIRST.includes(url.pathname)) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res && res.status === 200) {
+            const copy = res.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Ostala statika sa sopstvenog domena (manifest/ikonice): keš prvi,
   // pa mreža, da app-shell radi i offline i brže učitava.
   event.respondWith(
     caches.match(req).then((cached) => {
