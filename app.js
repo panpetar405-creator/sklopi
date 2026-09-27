@@ -7474,7 +7474,8 @@ const BUILDER_DEFAULTS = {
   esim: false,
   putarina: false,
   transferi: false,
-  touristTax: false,
+  touristTax: true, // Boravišna taksa NIJE opcioni popust — realan trošak koji se stvarno plaća
+                     // u hotelu, zato je uključena po difoltu (korisnik i dalje može da je isključi).
   budget: null
 };
 const builderState = Object.assign({}, BUILDER_DEFAULTS);
@@ -7608,7 +7609,8 @@ function computeCustomPackage(sel, ctx){
   const transferiCost = sel.transferi ? BUILDER_ADDON_RATES.transferi * ctx.adults : 0;
   // Boravišna taksa (city/tourist tax) — po osobi, po noći; naplaćuje se na
   // licu mesta u hotelu, van same cene smeštaja, zato je poseban dodatak.
-  const touristTaxCost = sel.touristTax ? Math.round(BUILDER_ADDON_RATES.touristTax * ctx.adults * ctx.nights) : 0;
+  // Računa se SAMO ako je hotel uključen (nema smisla bez smeštaja).
+  const touristTaxCost = (sel.touristTax && sel.includeHotel) ? Math.round(BUILDER_ADDON_RATES.touristTax * ctx.adults * ctx.nights) : 0;
 
   // Isti dnevni tržišni faktor kao u gotovim ponudama (vidi marketFactor) —
   // primenjen na sve stavke osim osiguranja/eSIM-a, koji su fiksni dodaci
@@ -7654,7 +7656,7 @@ function renderBuilder(){
   if (pkg.carExtras.price > 0) rows.push(['⛽', 'Gorivo i putarine (auto)', pkg.carExtras.price]);
   if (builderState.insurance) rows.push(['🛡️', t('f_insurance_name'), pkg.insuranceCost]);
   if (builderState.putarina) rows.push(['🛣️', t('f_tolls_name'), pkg.putarinaCost]);
-  if (builderState.touristTax) rows.push(['🏛️', t('f_tax_name'), pkg.touristTaxCost]);
+  if (builderState.touristTax && builderState.includeHotel) rows.push(['🏛️', t('f_tax_name'), pkg.touristTaxCost]);
   if (builderState.esim) rows.push(['📶', 'eSIM', pkg.esimCost]);
   if (builderState.transferi) rows.push(['🚐', t('f_transfer_name'), pkg.transferiCost]);
 
@@ -9253,6 +9255,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const rows = [];
     if (sel.includeFlight) rows.push(['\u2708', tx('Let'), pkg.flight.price]);
     if (sel.includeHotel) rows.push(['\u25a3', tx('Hotel'), pkg.hotel.price]);
+    if (sel.includeHotel && sel.touristTax) rows.push(['\ud83c\udfdb\ufe0f', tx('Boravišna taksa'), pkg.touristTaxCost]);
     if (sel.activityCount > 0) rows.push(['\u25c7', tx('Aktivnosti'), pkg.activity.price]);
     if (sel.carPref !== 'none') rows.push(['\u25b1', tx('Prevoz'), pkg.car.price + pkg.carExtras.price]);
     if (sel.esim) rows.push(['\ud83d\udcf6', tx('eSIM'), pkg.esimCost]);
@@ -9316,6 +9319,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const rows = [];
     if (sel.includeFlight) rows.push(['\u2708', 'Let', pkg.flight.price]);
     if (sel.includeHotel) rows.push(['\u25a3', 'Hotel', pkg.hotel.price]);
+    if (sel.includeHotel && sel.touristTax) rows.push(['\ud83c\udfdb\ufe0f', 'Boravišna taksa', pkg.touristTaxCost]);
     if (sel.activityCount > 0) rows.push(['\u25c7', 'Aktivnosti', pkg.activity.price]);
     rows.push(['\u25b1', 'Prevoz', sel.carPref === 'none' ? 0 : pkg.car.price + pkg.carExtras.price]);
     if (sel.esim) rows.push(['\ud83d\udcf6', 'eSIM', pkg.esimCost]);
