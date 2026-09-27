@@ -8103,13 +8103,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     tabs.forEach(t => t.classList.toggle('is-active', t === tab));
   }));
 
-  // "3 plana za tvoj grad" su skriveni dok korisnik ne klikne na dugme.
-  // Sve ostale funkcije koje vode na planove koriste window.SKLOPI_showDestPlans().
-  // OVO je bio pravi propust: dugme je samo otkrivalo već izrađenu sekciju
-  // bez ikakve provere, pa je moglo da se klikne (i prikaže pun predlog) i
-  // kad polazak/datumi/putnici u formi iznad nisu ni dirnuti — isti bag koji
-  // je popravljen za searchForm/spMakeBtn, ovde ostao nepovezan jer je ovo
-  // zaseban ulaz u iste planove.
+  // "3 plana za tvoj grad" su skriveni dok korisnik ne popuni formu (destinacija,
+  // datumi, putnici) i ne klikne CTA. Sve ostale funkcije koje vode na planove
+  // koriste window.SKLOPI_showDestPlans(). Bez ove provere moglo bi da se otvori
+  // pun predlog (i "Atina" primer sa spotlight kartice) a da polazak/datumi/
+  // putnici u formi iznad nisu ni dirnuti.
   function showDestPlans(){
     const check = validateSearchInputs();
     if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
