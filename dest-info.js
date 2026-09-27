@@ -41,7 +41,7 @@
   var _cache = {};          // dest → parsed JSON
   var _reqId = 0;           // za race-condition zaštitu
   // Poziva tvoj Worker (ključ za Groq stoji samo tamo, kao Secret).
-  var DEST_INFO_URL = 'https://api.sklopi.rs/dest-info';  // <- promeni ako ti je Worker na drugoj adresi
+  var DEST_INFO_URL = '/api/dest-info';  // ruta u tvom Worker-u (isti domen kao sajt)
 
   /* ── Helpers ── */
   function esc(s) {

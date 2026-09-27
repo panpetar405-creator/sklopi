@@ -67,4 +67,4 @@ function json(obj, status = 200) {
 
 // U svom glavnom fetch handleru dodaj:
 //   const url = new URL(request.url);
-//   if (url.pathname === '/dest-info') return handleDestInfo(request, env);
+//   if (url.pathname === '/api/dest-info') return handleDestInfo(request, env);
