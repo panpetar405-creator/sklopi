@@ -40,8 +40,8 @@
   var _currentDest = '';
   var _cache = {};          // dest → parsed JSON
   var _reqId = 0;           // za race-condition zaštitu
-  // PAZI: ključ u frontend kodu je javan. Najbolje ga prebaci na server (API_BASE) i ovde zovi svoj endpoint.
-  var GROQ_KEY = 'NOVI_KLJUC_OVDE';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
+  // Poziva tvoj Worker (ključ za Groq stoji samo tamo, kao Secret).
+  var DEST_INFO_URL = 'https://api.sklopi.rs/dest-info';  // <- promeni ako ti je Worker na drugoj adresi
 
   /* ── Helpers ── */
   function esc(s) {
@@ -114,29 +114,18 @@
 
     var myReq = ++_reqId;
 
-    var prompt = 'Ti si travel ekspert koji pomaže srpskim turistima. Za destinaciju "' + dest + '" vrati SAMO JSON objekat (bez markdown, bez teksta pre ili posle) sa ovom strukturom:\n\n{\n  "flag": "🇮🇹",\n  "currency": "EUR",\n  "currency_rate": "1 EUR ≈ 117 RSD",\n  "timezone": "CET (UTC+1)",\n  "local_time_now": "14:30",\n  "language": "Italijanski",\n  "safety_level": "Bezbedno",\n  "safety_note": "Pazi na džepare u centru",\n  "weather": {\n    "season_now": "Jesen",\n    "temp_range": "12–22°C",\n    "icon": "🌤️",\n    "description": "Blago i suvo, idealno za šetnju",\n    "best_months": "Apr–Jun, Sep–Okt"\n  },\n  "visa": {\n    "required": false,\n    "type": "Bez vize (Šengen 90/180)",\n    "duration": "Do 90 dana",\n    "passport_note": "Pasoš mora važiti još 3 meseca po povratku",\n    "health_note": "Preporučena EHIC kartica"\n  },\n  "daily_cost": {\n    "budget": {"range": "30–50 EUR", "note": "Hostel, street food, javni prevoz"},\n    "mid": {"range": "80–140 EUR", "note": "3–4★ hotel, restoran, ulaznice"},\n    "comfort": {"range": "200–400+ EUR", "note": "5★ hotel, fine dining, taksi"}\n  },\n  "transport": {\n    "public": "Metro 1.50 EUR, bus mreža pokriva ceo grad",\n    "taxi": "Aerodrom–centar ≈ 48 EUR fiksna tarifa",\n    "tip": "Metro za centar, bus za Vatikan"\n  },\n  "practical": {\n    "plug": "Tip C/F, 230V",\n    "water": "Česmovača pitka",\n    "tip_custom": "5–10% u restoranima"\n  },\n  "must_see": [\n    {"name": "Koloseum", "note": "Kupi ulaznicu online unapred"},\n    {"name": "Vatikan", "note": "Rezerviši mesec dana ranije u sezoni"},\n    {"name": "Fontana di Trevi", "note": "Dođi u zoru — bez gužve"},\n    {"name": "Forum Romanum", "note": "Ulaznica kombinovana sa Koloseumom"},\n    {"name": "Borghese galerija", "note": "Obavezna rezervacija — Bernini skulpture"}\n  ],\n  "phrases": [\n    {"sr": "Hvala", "local": "Grazie"},\n    {"sr": "Izvinite", "local": "Scusi"},\n    {"sr": "Koliko košta?", "local": "Quanto costa?"},\n    {"sr": "Gde je…?", "local": "Dov\'è…?"},\n    {"sr": "Govorite li engleski?", "local": "Parla inglese?"}\n  ]\n}\n\nSva polja su obavezna. Prilagodi sve stavke stvarnim uslovima za ' + dest + '. Vrati SAMO JSON, ništa drugo.';
-
-    fetch('https://api.groq.com/openai/v1/chat/completions', {
+    fetch(DEST_INFO_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 3000,
-        temperature: 0.3,
-        response_format: { type: 'json_object' },
-        messages: [{ role: 'user', content: prompt }]
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dest: dest })
     })
     .then(function (res) {
       if (!res.ok) { return res.text().then(function (t) { throw new Error('HTTP ' + res.status + ': ' + t.slice(0, 300)); }); }
       return res.json();
     })
-    .then(function (data) {
+    .then(function (info) {
       if (myReq !== _reqId) return; // zastareo zahtev
-      var raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
-      var a = raw.indexOf('{'), b = raw.lastIndexOf('}');
-      var clean = (a !== -1 && b > a) ? raw.slice(a, b + 1) : raw;
-      var info = JSON.parse(clean);
+      if (!info || typeof info !== 'object' || info.error) throw new Error((info && info.error) || 'prazan odgovor');
       _cache[dest] = info;
       showSkeleton(false);
       renderPanel(info);
