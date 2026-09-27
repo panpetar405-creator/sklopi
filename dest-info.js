@@ -41,7 +41,7 @@
   var _cache = {};          // dest → parsed JSON
   var _reqId = 0;           // za race-condition zaštitu
   // PAZI: ključ u frontend kodu je javan. Najbolje ga prebaci na server (API_BASE) i ovde zovi svoj endpoint.
-  var GROQ_KEY = 'NOVI_KLJUC_OVDE';
+  var GROQ_KEY = 'NOVI_KLJUC_OVDE';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
 
   /* ── Helpers ── */
   function esc(s) {
