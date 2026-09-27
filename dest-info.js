@@ -40,6 +40,8 @@
   var _currentDest = '';
   var _cache = {};          // dest → parsed JSON
   var _reqId = 0;           // za race-condition zaštitu
+  // PAZI: ključ u frontend kodu je javan. Najbolje ga prebaci na server (API_BASE) i ovde zovi svoj endpoint.
+  var GROQ_KEY = 'NOVI_KLJUC_OVDE';
 
   /* ── Helpers ── */
   function esc(s) {
@@ -116,18 +118,24 @@
 
     fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer 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' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        max_tokens: 1000,
+        max_tokens: 3000,
+        temperature: 0.3,
+        response_format: { type: 'json_object' },
         messages: [{ role: 'user', content: prompt }]
       })
     })
-    .then(function (res) { return res.json(); })
+    .then(function (res) {
+      if (!res.ok) { return res.text().then(function (t) { throw new Error('HTTP ' + res.status + ': ' + t.slice(0, 300)); }); }
+      return res.json();
+    })
     .then(function (data) {
       if (myReq !== _reqId) return; // zastareo zahtev
       var raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
-      var clean = raw.replace(/```json|```/g, '').trim();
+      var a = raw.indexOf('{'), b = raw.lastIndexOf('}');
+      var clean = (a !== -1 && b > a) ? raw.slice(a, b + 1) : raw;
       var info = JSON.parse(clean);
       _cache[dest] = info;
       showSkeleton(false);
