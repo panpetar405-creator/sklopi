@@ -8103,14 +8103,17 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     tabs.forEach(t => t.classList.toggle('is-active', t === tab));
   }));
 
-  // "3 plana za tvoj grad" su skriveni dok korisnik ne popuni formu (destinacija,
-  // datumi, putnici) i ne klikne CTA. Sve ostale funkcije koje vode na planove
-  // koriste window.SKLOPI_showDestPlans(). Bez ove provere moglo bi da se otvori
-  // pun predlog (i "Atina" primer sa spotlight kartice) a da polazak/datumi/
+  // Ceo spotlight blok (foto/"Zašto <grad>?"/dugmad) I "3 plana" ispod njega
+  // su skriveni dok korisnik ne popuni formu (destinacija, datumi, putnici) i
+  // ne klikne CTA. Sve ostale funkcije koje vode na planove koriste
+  // window.SKLOPI_showDestPlans(). Bez ove provere moglo bi da se otvori pun
+  // predlog (i "Atina" primer sa spotlight kartice) a da polazak/datumi/
   // putnici u formi iznad nisu ni dirnuti.
   function showDestPlans(){
     const check = validateSearchInputs();
     if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
+    const spotlight = document.getElementById('destinationSpotlight');
+    if (spotlight) spotlight.hidden = false;
     const plans = document.getElementById('destinationPlans');
     if (!plans) return;
     plans.hidden = false;
