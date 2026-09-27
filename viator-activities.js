@@ -11,19 +11,26 @@
    slika, pravi link direktno na tu turu) — to je prava vrednost usluge,
    ne ilustracija.
 
-   Ruta:   POST /go/destination-activities   (isti obrazac kao /go/destination-images
-           i /go/send-confirmation — deploy-uje se kao deo istog Worker-a/rute).
+   VAŽNO — OVAJ SAJT IMA SAMO JEDAN WORKER (vidi wrangler.toml: main =
+   "price-alert-worker.js"). Ovaj fajl NIJE zaseban deploy — to je razlog
+   zašto "/go/destination-activities" dosad nije radio uprkos deploy-u.
+   Ovaj modul samo IZVOZI handleDestinationActivities(), a price-alert-
+   worker.js ga uvozi i poziva za rutu POST /go/destination-activities
+   (vidi izmenu u price-alert-worker.js — import + grana u fetch()).
+   NE deploy-uje se ovaj fajl posebno; deploy-uje se ceo Worker odjednom
+   (isti "npx wrangler deploy" koji već koristiš).
+
+   Ruta:   POST /go/destination-activities
    Telo:   {"dest":"Zagreb", "q":"Zagreb, Croatia"}    (q = engleski naziv za Viator pretragu,
            app.js šalje isti izraz koji inače koristi za Viator affiliate link)
    Odgovor: {"items":[{"name":"...", "price":42, "currency":"EUR", "img":"https://…", "url":"https://…"}]}
            (do 3 stavke; prazan niz ako Viator nema rezultata za taj pojam)
 
-   PODEŠAVANJE (ako VIATOR_API_KEY već postoji od destination-images.js Worker-a,
-   samo dodaj ovu rutu — ključ se ne ponavlja):
+   PODEŠAVANJE:
      1) Viator nalog → Tools → Affiliate API → ključ (Basic Access je dovoljan).
-     2) wrangler secret put VIATOR_API_KEY   (ako već nije postavljen za ovaj Worker)
-     3) (opciono) ALLOWED_ORIGINS = "https://sklopi.rs,https://www.sklopi.rs"
-     4) Route: <tvoj-domen>/go/destination-activities → ovaj Worker.
+     2) wrangler secret put VIATOR_API_KEY   (na OVAJ, jedini Worker — "sklopi")
+     3) Deploy (isto kao i inače — nema posebne rute za podešavanje, jer je
+        sve u istom Worker-u kao i /go/send-confirmation).
    NAPOMENA: nazivi polja u Viator odgovoru (title/pricingSummary/productUrl...) su
    uzeti iz uobičajene strukture Merchandising API v2 odgovora — pre prvog live
    deploy-a proveri jedan stvaran odgovor (npr. Postman) i po potrebi prilagodi
@@ -36,19 +43,12 @@ const CACHE_SECONDS = 3600;
 const MAX_TERM = 80;
 const ITEMS_PER_QUERY = 3;
 
-function corsHeaders(request, env){
-  const origin = request.headers.get('Origin') || '';
-  const allowed = (env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
-  const ok = !allowed.length || allowed.includes(origin);
-  return {
-    'Access-Control-Allow-Origin': ok ? (allowed.length ? origin : '*') : allowed[0],
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Vary': 'Origin'
-  };
-}
 function json(body, status, headers){
-  return new Response(JSON.stringify(body), {status, headers: Object.assign({'Content-Type':'application/json'}, headers)});
+  // Headers je case-insensitive po specifikaciji — ovako je bezbedno i kad
+  // prosleđeni cors objekat već ima svoj (drugačije pisan) content-type.
+  const h = new Headers(headers || {});
+  h.set('Content-Type', 'application/json');
+  return new Response(JSON.stringify(body), {status, headers: h});
 }
 
 // Bira sliku iz proizvoda — ista logika kao pickImageUrl() u destination-images.js.
@@ -125,26 +125,24 @@ async function cachedActivities(term, env, ctx, fetchFn, cache){
   return items;
 }
 
-export default {
-  async fetch(request, env, ctx, deps){
-    const cors = corsHeaders(request, env || {});
-    if (request.method === 'OPTIONS') return new Response(null, {status: 204, headers: cors});
-    if (request.method !== 'POST') return json({error: 'method'}, 405, cors);
-    if (!env || !env.VIATOR_API_KEY) return json({items: [], error: 'not_configured'}, 503, cors);
+// Poziva se iz price-alert-worker.js za POST /go/destination-activities.
+// corsHeadersFn je funkcija corsHeaders(env) VEĆ definisana u price-alert-worker.js
+// (prosleđena odavde da se ne duplira i da CORS bude isti kao za ostale rute sajta).
+export async function handleDestinationActivities(request, env, ctx, corsHeadersFn){
+  const cors = corsHeadersFn(env);
+  if (!env || !env.VIATOR_API_KEY) return json({items: [], error: 'not_configured'}, 503, cors);
 
-    let body;
-    try { body = await request.json(); } catch(e){ return json({error: 'bad_json'}, 400, cors); }
-    const q = String((body && body.q) || (body && body.dest) || '').trim().slice(0, MAX_TERM);
-    if (!q) return json({error: 'no_query'}, 400, cors);
+  let body;
+  try { body = await request.json(); } catch(e){ return json({error: 'bad_json'}, 400, cors); }
+  const q = String((body && body.q) || (body && body.dest) || '').trim().slice(0, MAX_TERM);
+  if (!q) return json({error: 'no_query'}, 400, cors);
 
-    const fetchFn = (deps && deps.fetch) || fetch;
-    const cache = (deps && 'cache' in deps) ? deps.cache : (typeof caches !== 'undefined' ? caches.default : null);
-    try {
-      const items = await cachedActivities(q, env, ctx, fetchFn, cache);
-      return json({items}, 200, Object.assign({'Cache-Control': 'no-store'}, cors));
-    } catch(e){
-      console.warn('destination-activities:', q, e && e.message);
-      return json({items: [], error: 'upstream'}, 200, Object.assign({'Cache-Control': 'no-store'}, cors));
-    }
+  const cache = typeof caches !== 'undefined' ? caches.default : null;
+  try {
+    const items = await cachedActivities(q, env, ctx, fetch, cache);
+    return json({items}, 200, Object.assign({'Cache-Control': 'no-store'}, cors));
+  } catch(e){
+    console.warn('destination-activities:', q, e && e.message);
+    return json({items: [], error: 'upstream'}, 200, Object.assign({'Cache-Control': 'no-store'}, cors));
   }
-};
+}

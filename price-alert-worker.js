@@ -17,6 +17,7 @@
 ========================================================== */
 
 import { computeAlertPrice } from './pricing-core.js';
+import { handleDestinationActivities } from './viator-activities.js';
 
 const TIER_LABELS = {
   budget: 'Budget',
@@ -25,8 +26,17 @@ const TIER_LABELS = {
 };
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    if (url.pathname === '/go/destination-activities') {
+      if (request.method === 'OPTIONS') {
+        return corsPreflightResponse(env);
+      }
+      if (request.method === 'POST') {
+        return handleDestinationActivities(request, env, ctx, corsHeaders);
+      }
+    }
 
     if (
       (url.pathname === '/go/unsubscribe' ||
