@@ -114,11 +114,11 @@
 
     var prompt = 'Ti si travel ekspert koji pomaže srpskim turistima. Za destinaciju "' + dest + '" vrati SAMO JSON objekat (bez markdown, bez teksta pre ili posle) sa ovom strukturom:\n\n{\n  "flag": "🇮🇹",\n  "currency": "EUR",\n  "currency_rate": "1 EUR ≈ 117 RSD",\n  "timezone": "CET (UTC+1)",\n  "local_time_now": "14:30",\n  "language": "Italijanski",\n  "safety_level": "Bezbedno",\n  "safety_note": "Pazi na džepare u centru",\n  "weather": {\n    "season_now": "Jesen",\n    "temp_range": "12–22°C",\n    "icon": "🌤️",\n    "description": "Blago i suvo, idealno za šetnju",\n    "best_months": "Apr–Jun, Sep–Okt"\n  },\n  "visa": {\n    "required": false,\n    "type": "Bez vize (Šengen 90/180)",\n    "duration": "Do 90 dana",\n    "passport_note": "Pasoš mora važiti još 3 meseca po povratku",\n    "health_note": "Preporučena EHIC kartica"\n  },\n  "daily_cost": {\n    "budget": {"range": "30–50 EUR", "note": "Hostel, street food, javni prevoz"},\n    "mid": {"range": "80–140 EUR", "note": "3–4★ hotel, restoran, ulaznice"},\n    "comfort": {"range": "200–400+ EUR", "note": "5★ hotel, fine dining, taksi"}\n  },\n  "transport": {\n    "public": "Metro 1.50 EUR, bus mreža pokriva ceo grad",\n    "taxi": "Aerodrom–centar ≈ 48 EUR fiksna tarifa",\n    "tip": "Metro za centar, bus za Vatikan"\n  },\n  "practical": {\n    "plug": "Tip C/F, 230V",\n    "water": "Česmovača pitka",\n    "tip_custom": "5–10% u restoranima"\n  },\n  "must_see": [\n    {"name": "Koloseum", "note": "Kupi ulaznicu online unapred"},\n    {"name": "Vatikan", "note": "Rezerviši mesec dana ranije u sezoni"},\n    {"name": "Fontana di Trevi", "note": "Dođi u zoru — bez gužve"},\n    {"name": "Forum Romanum", "note": "Ulaznica kombinovana sa Koloseumom"},\n    {"name": "Borghese galerija", "note": "Obavezna rezervacija — Bernini skulpture"}\n  ],\n  "phrases": [\n    {"sr": "Hvala", "local": "Grazie"},\n    {"sr": "Izvinite", "local": "Scusi"},\n    {"sr": "Koliko košta?", "local": "Quanto costa?"},\n    {"sr": "Gde je…?", "local": "Dov\'è…?"},\n    {"sr": "Govorite li engleski?", "local": "Parla inglese?"}\n  ]\n}\n\nSva polja su obavezna. Prilagodi sve stavke stvarnim uslovima za ' + dest + '. Vrati SAMO JSON, ništa drugo.';
 
-    fetch('https://api.anthropic.com/v1/messages', {
+    fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer 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' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -126,7 +126,7 @@
     .then(function (res) { return res.json(); })
     .then(function (data) {
       if (myReq !== _reqId) return; // zastareo zahtev
-      var raw = (data.content || []).map(function (b) { return b.text || ''; }).join('');
+      var raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '';
       var clean = raw.replace(/```json|```/g, '').trim();
       var info = JSON.parse(clean);
       _cache[dest] = info;
