@@ -7441,11 +7441,12 @@ document.getElementById('searchForm').addEventListener('submit', function(e){
   });
   // PRIVREMENO (dogovoreno): CTA više ne otvara upitnik "Prilagodi svoj
   // plan" (#startPrefsModal) ni rezultate sa 3 generisane kartice
-  // (runSearch/#resultsBody) — vodi direktno na već postojeću "3 plana"
-  // sekciju za upisanu destinaciju (#destinationPlans, isto dugme kao
-  // "3 plana" u Destination Spotlight-u). Stari kod (openStartPrefsModal)
-  // ostaje ispod, nekorišćen, za slučaj da se ovaj tok vrati.
-  if (window.SKLOPI_showDestPlans) window.SKLOPI_showDestPlans();
+  // (runSearch/#resultsBody) — vodi na spotlight karticu za upisanu
+  // destinaciju (#destinationSpotlight). Tek klik na njeno dugme "3 plana —
+  // <grad>" otvara stvarnu listu ponuda (#destinationPlans) — dva odvojena
+  // koraka, ne oba odjednom. Stari kod (openStartPrefsModal) ostaje ispod,
+  // nekorišćen, za slučaj da se ovaj tok vrati.
+  if (window.SKLOPI_revealSpotlight) window.SKLOPI_revealSpotlight();
   else openStartPrefsModal();
 });
 
@@ -8103,12 +8104,22 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     tabs.forEach(t => t.classList.toggle('is-active', t === tab));
   }));
 
-  // Ceo spotlight blok (foto/"Zašto <grad>?"/dugmad) I "3 plana" ispod njega
-  // su skriveni dok korisnik ne popuni formu (destinacija, datumi, putnici) i
-  // ne klikne CTA. Sve ostale funkcije koje vode na planove koriste
-  // window.SKLOPI_showDestPlans(). Bez ove provere moglo bi da se otvori pun
-  // predlog (i "Atina" primer sa spotlight kartice) a da polazak/datumi/
-  // putnici u formi iznad nisu ni dirnuti.
+  // KORAK 1: klik na glavni CTA ("Sklopi moj put") otkriva SAMO spotlight
+  // karticu (foto/"Zašto <grad>?"/dugmad) — ne i listu od 3 ponude. Forma
+  // (destinacija, datumi, putnici) mora biti popunjena; bez toga bi kartica
+  // mogla da se otvori (i "Atina" primer) a da ništa nije stvarno upisano.
+  function revealSpotlight(){
+    const check = validateSearchInputs();
+    if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return false; }
+    const spotlight = document.getElementById('destinationSpotlight');
+    if (spotlight){ spotlight.hidden = false; spotlight.scrollIntoView({behavior:'smooth', block:'start'}); }
+    return true;
+  }
+  window.SKLOPI_revealSpotlight = revealSpotlight;
+  // KORAK 2: klik na dugme "3 plana — <grad>" (unutar spotlight kartice)
+  // otvara stvarnu listu od 3 ponude ispod. Takođe se koristi kad se planovi
+  // otvaraju direktno (npr. "Izaberi plan" u Moj put, ili povratak sa detalja
+  // paketa) — u tom slučaju otkriva i spotlight, da kontekst ne nedostaje.
   function showDestPlans(){
     const check = validateSearchInputs();
     if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
