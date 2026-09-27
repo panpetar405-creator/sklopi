@@ -134,7 +134,7 @@
       if (myReq !== _reqId) return;
       console.warn('[sklopi][dest-info] greška:', err);
       showSkeleton(false);
-      showError();
+      showError(String(err && err.message || err));
     });
   }
 
@@ -148,11 +148,11 @@
     if (disc) disc.hidden = show;
   }
 
-  function showError() {
+  function showError(detail) {
     var ct = el('destInfoContent');
     if (ct) {
       ct.hidden = false;
-      ct.innerHTML = '<p class="di-error">Nije uspelo učitavanje info o destinaciji. Pokušaj ponovo osvežavanjem stranice.</p>';
+      ct.innerHTML = '<p class="di-error">Nije uspelo učitavanje info o destinaciji. Pokušaj ponovo osvežavanjem stranice.</p><p class="di-error" style="font-size:12px;opacity:.7">Detalji: ' + esc(detail || '') + '</p>';
     }
   }
 
