@@ -113,7 +113,43 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://sklopi.rs/vodic-rim.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-barselona.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-bec.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-beograd.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-budimpesta.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://sklopi.rs/vodic-zagreb.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-herceg-novi.html</loc>
     <lastmod>2026-09-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
