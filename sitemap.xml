@@ -112,6 +112,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-zagreb.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
   <!-- privatnost.html, uslovi-koriscenja.html i kolacici.html namerno NISU ovde:
        sve tri imaju <meta name="robots" content="noindex">, pa slanje "noindex"
        stranica u sitemap Google ionako ignoriše — bolje ih odmah izostaviti. -->
