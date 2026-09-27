@@ -9008,26 +9008,103 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     {name:'Obilazak starog grada', price:28, q:'Athens old town walking tour', img:'https://images.unsplash.com/photo-1555993539-1732b0258235?w=300&q=70&auto=format&fit=crop'},
     {name:'Krstarenje zalivom', price:42, q:'Athens bay cruise', img:'https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?auto=format&fit=crop&w=300&q=80'}
   ];
+  // Kurirane, po destinaciji specifične aktivnosti (stvarne znamenitosti/ture) za
+  // gradove koje SKLOPI posebno ističe (isti spisak kao dest-plans.js). Cena se i
+  // dalje izvodi iz computeCustomPackage (base * ratio) da ostane usklađena sa
+  // ostatkom procene paketa; menja se samo NAZIV aktivnosti po destinaciji.
+  // Za sve ostale (stotine manjih mesta) koristi se generički fallback ispod, ali
+  // sa imenom destinacije ubačenim u naslov — da se više ne ponavlja identičan
+  // tekst bez obzira šta je upisano u polje Destinacija.
+  const CITY_ACTIVITIES = {
+    istanbul: [
+      {name:'Aja Sofija i Plava džamija', ratio:1.15, q:'Hagia Sophia Blue Mosque tour'},
+      {name:'Obilazak Velikog bazara', ratio:0.75, q:'Istanbul Grand Bazaar tour'},
+      {name:'Krstarenje Bosforom', ratio:1.05, q:'Bosphorus cruise Istanbul'}
+    ],
+    krf: [
+      {name:'Obilazak starog grada Krfa', ratio:0.85, q:'Corfu old town walking tour'},
+      {name:'Poseta tvrđavi Angelokastro', ratio:1.05, q:'Angelokastro fortress Corfu tour'},
+      {name:'Izlet brodom do Paleokastrice', ratio:1.3, q:'Corfu boat trip Paleokastritsa'}
+    ],
+    pariz: [
+      {name:'Ulaznica za Ajfelovu kulu', ratio:1.3, q:'Eiffel Tower tickets'},
+      {name:'Obilazak Luvra', ratio:1.1, q:'Louvre museum tour'},
+      {name:'Šetnja kroz Monmartr', ratio:0.7, q:'Montmartre walking tour Paris'}
+    ],
+    lisabon: [
+      {name:'Vožnja istorijskim tramvajem 28', ratio:0.6, q:'Lisbon tram 28 tour'},
+      {name:'Obilazak četvrti Alfama', ratio:0.85, q:'Alfama walking tour Lisbon'},
+      {name:'Izlet do Sintre', ratio:1.5, q:'Sintra day trip from Lisbon'}
+    ],
+    rim: [
+      {name:'Ulaznice za Koloseum i Forum', ratio:1.3, q:'Colosseum Roman Forum tickets'},
+      {name:'Obilazak Vatikanskih muzeja', ratio:1.4, q:'Vatican Museums tour'},
+      {name:'Šetnja istorijskim centrom Rima', ratio:0.7, q:'Rome historic center walking tour'}
+    ],
+    barselona: [
+      {name:'Ulaznica za Sagrada Familiju', ratio:1.2, q:'Sagrada Familia tickets'},
+      {name:'Obilazak Park Guelja', ratio:0.8, q:'Park Guell tour Barcelona'},
+      {name:'Šetnja bulevarom Las Ramblas', ratio:0.6, q:'Las Ramblas walking tour Barcelona'}
+    ],
+    budva: [
+      {name:'Obilazak Starog grada Budve', ratio:0.7, q:'Budva old town walking tour'},
+      {name:'Izlet do Svetog Stefana', ratio:1.0, q:'Sveti Stefan tour Budva'},
+      {name:'Krstarenje Budvanskom rivijerom', ratio:1.3, q:'Budva riviera boat cruise'}
+    ],
+    bec: [
+      {name:'Ulaznica za dvorac Šenbrun', ratio:1.2, q:'Schönbrunn Palace tickets Vienna'},
+      {name:'Obilazak katedrale Sv. Stefana', ratio:0.6, q:'St. Stephens Cathedral tour Vienna'},
+      {name:'Koncert klasične muzike u Beču', ratio:1.5, q:'classical music concert Vienna'}
+    ],
+    solun: [
+      {name:'Obilazak Bele kule', ratio:0.65, q:'White Tower Thessaloniki tour'},
+      {name:'Šetnja Gornjim gradom (Ano Poli)', ratio:0.8, q:'Ano Poli walking tour Thessaloniki'},
+      {name:'Obilazak arheoloških nalazišta Soluna', ratio:1.2, q:'Thessaloniki archaeological sites tour'}
+    ],
+    budimpesta: [
+      {name:'Krstarenje Dunavom', ratio:1.0, q:'Danube river cruise Budapest'},
+      {name:'Ulaznica za termalna kupatila Segedin', ratio:1.2, q:'Szechenyi Baths tickets Budapest'},
+      {name:'Obilazak zgrade Parlamenta', ratio:0.9, q:'Hungarian Parliament tour Budapest'}
+    ],
+    prag: [
+      {name:'Obilazak Praškog grada', ratio:1.1, q:'Prague Castle tour'},
+      {name:'Šetnja Karlovim mostom i Starim gradom', ratio:0.65, q:'Charles Bridge Old Town walking tour Prague'},
+      {name:'Obilazak Astronomskog sata i Starog grada', ratio:0.9, q:'Astronomical Clock Old Town tour Prague'}
+    ],
+    zagreb: [
+      {name:'Obilazak Gornjeg grada', ratio:0.7, q:'Zagreb Upper Town walking tour'},
+      {name:'Šetnja Trgom bana Jelačića', ratio:0.5, q:'Ban Jelačić Square tour Zagreb'},
+      {name:'Izlet do Plitvičkih jezera', ratio:1.8, q:'Plitvice Lakes day trip from Zagreb'}
+    ]
+  };
   const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
   function render(){
     // Isti razlog kao u initFlightDetail: ne prikazuj/računaj ako ovaj
     // paket nije tražio Aktivnosti (svc.activity === false).
     if (box.hidden || (document.getElementById('activitiesDetail')?.hidden)) return;
     const ctx = builderCtx();
+    const destKey = normalizeSr(ctx.dest);
     let items;
-    if (normalizeSr(ctx.dest) === 'atina'){
+    if (destKey === 'atina'){
       items = ATHENS;
     } else {
       const pkg = computeCustomPackage(Object.assign({}, builderState, {activityCount:2}), ctx);
       const base = Math.max(10, Math.round(pkg.activity.price / 2));
       const card = Array.from(document.querySelectorAll('.popular-dest-card'))
-        .find(c => normalizeSr(c.dataset.dest || '') === normalizeSr(ctx.dest));
+        .find(c => normalizeSr(c.dataset.dest || '') === destKey);
       const img = card && card.querySelector('img') ? card.querySelector('img').src : ATHENS[2].img;
-      items = [
-        {name:'Ulaznice za glavne znamenitosti', price:Math.round(base * 1.1), q:ctx.dest + ' top attractions tickets', img},
-        {name:'Obilazak starog grada', price:Math.round(base * 0.85), q:ctx.dest + ' old town walking tour', img},
-        {name:'Vođena tura po gradu', price:Math.round(base * 1.3), q:ctx.dest + ' guided city tour', img}
-      ];
+      const curated = CITY_ACTIVITIES[destKey];
+      if (curated){
+        items = curated.map(it => ({name: it.name, price: Math.max(5, Math.round(base * it.ratio)), q: it.q, img}));
+      } else {
+        // Generički fallback za destinacije bez posebno pripremljenih aktivnosti —
+        // ime destinacije se ubacuje u naslov da se lista razlikuje od grada do grada.
+        items = [
+          {name:'Ulaznice za glavne znamenitosti \u2013 ' + ctx.dest, price:Math.round(base * 1.1), q:ctx.dest + ' top attractions tickets', img},
+          {name:'Obilazak starog grada \u2013 ' + ctx.dest, price:Math.round(base * 0.85), q:ctx.dest + ' old town walking tour', img},
+          {name:'Vođena tura po gradu \u2013 ' + ctx.dest, price:Math.round(base * 1.3), q:ctx.dest + ' guided city tour', img}
+        ];
+      }
     }
     list.innerHTML = items.map(it => {
       const url = buildAffiliateLink('activity', {dest: it.q});
