@@ -433,6 +433,35 @@ async function handleSendConfirmation(request, env) {
     );
   }
 
+  /*
+   * Rate-limit slanja potvrdnog mejla (cooldown 10 min, max 3 puta po
+   * alertu) — vidi claim_confirmation_send() u
+   * 20260918100006_price_alerts_hardening.sql. Atomično: ako dva poziva
+   * stignu istovremeno, samo jedan prolazi. Bez ovoga bi /go/send-
+   * confirmation mogao da se pozove u petlji i zaspe tuđi inbox mejlovima.
+   */
+  const claimRes = await sbFetch(env, 'rpc/claim_confirmation_send', {
+    method: 'POST',
+    body: JSON.stringify({ p_id: rows[0].id })
+  });
+
+  if (!claimRes.ok) {
+    console.error(
+      '[price-alert-worker] claim_confirmation_send nije uspeo:',
+      await safeResponseText(claimRes)
+    );
+    return new Response('Greška servera.', { status: 500, headers: cors });
+  }
+
+  const claimed = await claimRes.json();
+
+  if (claimed !== true) {
+    return new Response(
+      'Potvrdni mejl je nedavno već poslat (ili je dostignut limit) — proveri inbox ili sačekaj par minuta.',
+      { status: 429, headers: cors }
+    );
+  }
+
   const sent = await sendConfirmationEmail(rows[0], env);
 
   if (!sent) {

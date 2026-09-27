@@ -8,22 +8,26 @@
 - `styles.css` — stilovi za modal i nova dugmad, u istom vizuelnom jeziku kao ostatak sajta
 
 **Backend (novo):**
-- `price_alerts.sql` — SQL migracija (tabela + RLS) — osnovna šema za `price_alerts`
-- `20260918100005_price_alerts_double_optin.sql` — dodaje double opt-in: `pending_confirmation` status (novi default), `confirmation_token`, `confirmed_at`. Pokreni POSLE `price_alerts.sql`.
+- `20260918100002_price_alerts.sql` — SQL migracija (tabela + RLS) — osnovna šema za `price_alerts`
+- `20260918100005_price_alerts_double_optin.sql` — dodaje double opt-in: `pending_confirmation` status (novi default), `confirmation_token`, `confirmed_at`. Pokreni POSLE `20260918100002_price_alerts.sql`.
+- `20260918100006_price_alerts_hardening.sql` — OBAVEZNA zaštita, pokreni POSLE 100005: bez nje javni anon ključ (preko `with check (true)` politike) tehnički može da upiše `status='active'` direktno i zaobiđe double opt-in, ili da unapred podesi `created_at` i zaobiđe rate limit od 5 alertova/24h. Dodaje i `claim_confirmation_send()` — atomičnu proveru (cooldown 10 min, max 3 slanja po alertu) koju `price-alert-worker.js` sad zove pre svakog potvrdnog mejla, da endpoint `/go/send-confirmation` ne može da se zloupotrebi za bombardovanje tuđeg inboxa.
 - `pricing-core.js` — čista (bez DOM-a) kopija formula za cenu, za ponovni izračun na serveru
 - `price-alert-worker.js` — Cloudflare Worker: cron provera + slanje mejla + `/go/unsubscribe` + `/go/confirm-alert` (klik iz potvrdnog mejla) + `/go/send-confirmation` (poziva ga sajt odmah posle insert-a da zatraži slanje potvrdnog mejla)
 - `wrangler` — konfiguracija Worker-a (wrangler.toml)
 
-**Napomena:** `price_alerts-2.sql` i `check-price-alerts.ts` (Supabase Edge Function) su bili napušteni pokušaji iste funkcije, sa drugačijom šemom (`kind`/`tier`/`params`/`current_total`/`active`) koja se kosi sa šemom gore i sa onim što `app.js` sada upisuje. Uklonjeni su iz repoa — ne koristi ih. Ako ipak želiš Edge Function umesto Cloudflare Worker-a, treba ga prepisati protiv `price_alerts.sql` šeme.
+**Napomena:** `price_alerts-2.sql` i `check-price-alerts.ts` (Supabase Edge Function) su bili napušteni pokušaji iste funkcije, sa drugačijom šemom (`kind`/`tier`/`params`/`current_total`/`active`) koja se kosi sa šemom gore i sa onim što `app.js` sada upisuje. Uklonjeni su iz repoa — ne koristi ih. Ako ipak želiš Edge Function umesto Cloudflare Worker-a, treba ga prepisati protiv `20260918100002_price_alerts.sql` šeme.
+
+**Napomena 2:** `supabase_stats_setup.sql` (bez datumskog prefiksa) je stariji, zaboravljeni fajl za istu `site_stats` tabelu kao `20260918100004_site_stats.sql` — čak ubacuje izmišljene startne brojke (182/96) koje su odgovarale starim brojačima na sajtu, a oni su u međuvremenu uklonjeni sa sajta (vidi README.txt). NE pokretati `supabase_stats_setup.sql` — koristi samo `20260918100004_site_stats.sql`. Fajl `supabase_stats_setup.sql` bi trebalo obrisati iz repoa da ne dođe do zabune.
 
 ## Koraci za puštanje u rad
 
 1. **Supabase** — u SQL Editor-u pokreni, tim redosledom:
-   1. `trips.sql` (tabela sačuvanih izleta — preduslov za `share_trip.sql`)
-   2. `price_alerts.sql`
-   3. `20260918100005_price_alerts_double_optin.sql` (double opt-in — zavisi od `price_alerts.sql`)
-   4. `share_trip.sql` (deljenje sačuvanog izleta sa prijateljima; zavisi od `trips.sql`)
-   5. `supabase_site_stats.sql`
+   1. `20260918100001_trips.sql` (tabela sačuvanih izleta — preduslov za `20260918100003_share_trip.sql`)
+   2. `20260918100002_price_alerts.sql`
+   3. `20260918100005_price_alerts_double_optin.sql` (double opt-in — zavisi od `20260918100002_price_alerts.sql`)
+   4. `20260918100006_price_alerts_hardening.sql` (OBAVEZNA zaštita — zavisi od 100005, vidi napomenu gore)
+   5. `20260918100003_share_trip.sql` (deljenje sačuvanog izleta sa prijateljima; zavisi od `20260918100001_trips.sql`)
+   6. `20260918100004_site_stats.sql` (NE `supabase_stats_setup.sql` — vidi Napomena 2 gore)
 2. **Resend (ili sličan servis)** — napravi nalog, verifikuj domen sa kog šalješ mejlove (`alerti@sklopi.rs` ili slično), uzmi API ključ. Supabase Auth NE može ovo da radi — to je samo za auth mejlove.
 3. **Cloudflare Worker:**
    ```
