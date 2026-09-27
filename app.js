@@ -7439,7 +7439,14 @@ document.getElementById('searchForm').addEventListener('submit', function(e){
   trackFunnelEvent('search_submit', {
     destination: document.getElementById('dest').value.trim() || 'Atina'
   });
-  openStartPrefsModal();
+  // PRIVREMENO (dogovoreno): CTA više ne otvara upitnik "Prilagodi svoj
+  // plan" (#startPrefsModal) ni rezultate sa 3 generisane kartice
+  // (runSearch/#resultsBody) — vodi direktno na već postojeću "3 plana"
+  // sekciju za upisanu destinaciju (#destinationPlans, isto dugme kao
+  // "3 plana" u Destination Spotlight-u). Stari kod (openStartPrefsModal)
+  // ostaje ispod, nekorišćen, za slučaj da se ovaj tok vrati.
+  if (window.SKLOPI_showDestPlans) window.SKLOPI_showDestPlans();
+  else openStartPrefsModal();
 });
 
 /* ==========================================================
