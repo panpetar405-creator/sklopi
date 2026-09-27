@@ -1,0 +1,189 @@
+/* ==========================================================
+   SKLOPI — Destination Info Panel styles (dest-info.css)
+   Dodaj u <head> iza styles.css:
+     <link rel="stylesheet" href="dest-info.css">
+   ili copy-paste na dno styles.css.
+========================================================== */
+
+/* ── Skeleton ── */
+.dest-info-skeleton { padding: 4px 0; }
+.di-skel-row {
+  height: 14px; border-radius: 7px;
+  background: linear-gradient(90deg, var(--line) 25%, #f0ebe0 50%, var(--line) 75%);
+  background-size: 200% 100%;
+  animation: diSkelShimmer 1.4s infinite;
+  margin-bottom: 10px; width: 60%;
+}
+.di-skel-row.di-skel-short { width: 38%; }
+.di-skel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.di-skel-card {
+  height: 110px; border-radius: 12px;
+  background: linear-gradient(90deg, var(--line) 25%, #f0ebe0 50%, var(--line) 75%);
+  background-size: 200% 100%;
+  animation: diSkelShimmer 1.4s infinite;
+}
+.di-skel-full { height: 80px; grid-column: span 2; }
+@keyframes diSkelShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Pills row ── */
+.di-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 14px;
+}
+.di-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.di-pill strong { font-weight: 600; }
+.di-pill-icon { font-size: 14px; }
+.di-pill.di-pill-di-green { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+.di-pill.di-pill-di-gold  { background: var(--gold-soft); border-color: var(--gold); color: var(--gold-text); }
+.di-pill.di-pill-di-red   { background: var(--coral-soft); border-color: var(--coral); color: var(--coral-text); }
+
+/* ── Card grid ── */
+.di-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+@media (max-width: 480px) {
+  .di-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Card ── */
+.di-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 0;
+}
+.di-card.di-card-full {
+  grid-column: span 2;
+  margin-bottom: 10px;
+}
+@media (max-width: 480px) {
+  .di-card.di-card-full { grid-column: span 1; }
+}
+
+.di-card-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px;
+}
+.di-card-ic {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.di-ic-aqua   { background: var(--aqua-soft); }
+.di-ic-gold   { background: var(--gold-soft); }
+.di-ic-coral  { background: var(--coral-soft); }
+.di-ic-deep   { background: var(--deep-soft); }
+.di-ic-purple { background: var(--burgundy-soft, #EDE6F7); }
+
+.di-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Rows inside cards ── */
+.di-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+.di-row:last-child { border-bottom: none; padding-bottom: 0; }
+.di-row:first-child { padding-top: 0; }
+.di-label { color: var(--ink-soft); flex-shrink: 0; }
+.di-val { font-weight: 500; text-align: right; color: var(--ink); }
+.di-val.di-green { color: #16a34a; }
+.di-val.di-red   { color: var(--coral-text); }
+.di-val.di-gold  { color: var(--gold-text); }
+.di-val.di-phrase { color: var(--aqua); font-style: italic; font-weight: 600; }
+
+/* ── Weather block ── */
+.di-weather-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.di-weather-emoji { font-size: 30px; line-height: 1; }
+.di-temp {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--ink); line-height: 1;
+}
+.di-temp-desc { font-size: 12px; color: var(--ink-soft); margin-top: 3px; }
+
+/* ── Budget tiers ── */
+.di-budget-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+@media (max-width: 480px) {
+  .di-budget-row { grid-template-columns: 1fr; }
+}
+.di-budget-tier {
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+.di-tier-budget  { background: var(--deep-soft); }
+.di-tier-mid     { background: var(--gold-soft); }
+.di-tier-comfort { background: var(--burgundy-soft, #EDE6F7); }
+.di-tier-label {
+  font-size: 12px; font-weight: 600; color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.di-tier-price {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px; font-weight: 700; color: var(--ink);
+  margin-bottom: 3px;
+}
+.di-tier-note { font-size: 11px; color: var(--ink-soft); line-height: 1.4; }
+
+/* ── Must-see ── */
+.di-mustsee { display: flex; flex-direction: column; }
+.di-ms-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.di-ms-item:last-child { border-bottom: none; padding-bottom: 0; }
+.di-ms-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--deep);
+  color: var(--gold-soft);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.di-ms-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+.di-ms-note { font-size: 12px; color: var(--ink-soft); margin-top: 2px; line-height: 1.4; }
+
+/* ── Error ── */
+.di-error {
+  font-size: 14px; color: var(--ink-soft);
+  text-align: center; padding: 20px 0;
+}
+
+/* ── Disclaimer ── */
+.di-disclaimer {
+  margin-top: 6px !important;
+}
