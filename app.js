@@ -9224,6 +9224,45 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
 })();
 
 /* ==========================================================
+   UKUPNA CENA (#totalDetail) — poslednji ekran u razradi paketa
+   (#planBreakdown: let/hotel/auto/aktivnosti/extras), posle kog
+   korisnik više ne treba da ide na "Moj put" da vidi zbir svih
+   troškova. Sabira TAČNO ono što je stvarno uključeno (isto kao
+   #myTrip summary()), preko istog computeCustomPackage() —
+   jedan izvor istine za ukupnu cenu na celom sajtu.
+========================================================== */
+(function initTotalDetail(){
+  const box = document.getElementById('planBreakdown');
+  const rowsEl = document.getElementById('totalDetailRows');
+  const grandEl = document.getElementById('totalDetailGrand');
+  const fineEl = document.getElementById('totalDetailFine');
+  const myTripBtn = document.getElementById('totalDetailMyTripBtn');
+  if (!box || !rowsEl || !grandEl) return;
+  const money = n => currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac';
+  function render(){
+    const ctx = builderCtx();
+    const sel = builderState;
+    const pkg = computeCustomPackage(sel, ctx);
+    const rows = [];
+    if (sel.includeFlight) rows.push(['\u2708', tx('Let'), pkg.flight.price]);
+    if (sel.includeHotel) rows.push(['\u25a3', tx('Hotel'), pkg.hotel.price]);
+    if (sel.activityCount > 0) rows.push(['\u25c7', tx('Aktivnosti'), pkg.activity.price]);
+    if (sel.carPref !== 'none') rows.push(['\u25b1', tx('Prevoz'), pkg.car.price + pkg.carExtras.price]);
+    if (sel.esim) rows.push(['\ud83d\udcf6', tx('eSIM'), pkg.esimCost]);
+    rowsEl.innerHTML = rows.map(r => '<li><span aria-hidden="true">' + r[0] + '</span><b>' + escapeHtml(r[1]) + '</b><em>' + escapeHtml(money(r[2])) + '</em></li>').join('');
+    grandEl.innerHTML = tx('Ukupno: ') + '<b>' + escapeHtml(money(pkg.total)) + '</b>';
+    fineEl.textContent = tx('Ilustrativna procena za ') + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + ', ' + daysLabel(ctx.days) + '.';
+  }
+  myTripBtn?.addEventListener('click', () => {
+    document.getElementById('myTrip')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  document.addEventListener('sklopi:plan-breakdown', render);
+  document.addEventListener('sklopi:plan-changed', () => { if (!box.hidden) render(); });
+  document.addEventListener('sklopi:lang', () => { if (!box.hidden) render(); });
+  document.getElementById('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { if (!box.hidden) render(); }, 0));
+})();
+
+/* ==========================================================
    MOJ PUT (#myTrip) — 13. ekran sa slike. Pregled trenutno izabranog
    plana (builderState + forma): stavke, ukupno, "Pogledaj detalje"
    (otvara builder) i "Preuzmi plan puta" (tekstualni fajl sa procenom
