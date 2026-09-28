@@ -45,8 +45,9 @@ async function handleDestInfo(request, env) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + env.GROQ_API_KEY },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 3000,
+      model: env.GROQ_MODEL || 'openai/gpt-oss-120b',
+      reasoning_effort: 'low',
+      max_tokens: 6000,
       temperature: 0.3,
       response_format: { type: 'json_object' },
       messages: [{ role: 'user', content: prompt }],
