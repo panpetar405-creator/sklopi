@@ -21,9 +21,10 @@ const SCHEMA = {
   timezone_iana: '<IANA timezone id of DEST, e.g. Europe/Athens>',
   timezone: '<short label, e.g. EET (UTC+2)>',
   language: '<the official/main language(s) a tourist will actually hear in DEST, max 2, no regional minority languages>',
+  language_codes: '<JSON array of the ISO 639-1 codes of exactly those languages, e.g. ["de"] or ["el"]>',
   safety_level: '<one short phrase rating how safe DEST is for tourists, in the output language>',
   safety_note: '<one short practical safety tip specific to DEST>',
-  weather: { season_now: '<current season in DEST>', temp_range: '<typical temperature range now, °C>', icon: '<one weather emoji>', description: '<short description>', best_months: '<best months to visit>' },
+  weather: { season_now: '<current season in DEST>', temp_range: '<typical temperature range now, °C>', icon: '<one weather emoji>', description: '<short description>', best_months: '<JSON array of month NUMBERS 1-12 (1=January) that are best to visit, e.g. [5,6,9] — numbers only, no month names>' },
   visa: { required: '<true|false — for holders of the PASSPORT country travelling to DEST\'s country>', type: '<entry rule for PASSPORT holders>', duration: '<allowed stay>', passport_note: '<passport validity rule>', health_note: '<health/insurance note>' },
   daily_cost: {
     budget: { range: '<EUR range per person per day>', note: '<what it covers in DEST>' },
@@ -112,7 +113,7 @@ function norm(x) {
 }
 function makeKey(dest, lang, origin, passport) {
   const month = new Date().toISOString().slice(0, 7);
-  return ['v2', norm(dest), lang, norm(origin) || 'default', norm(passport) || 'auto', month].join('|');
+  return ['v3', norm(dest), lang, norm(origin) || 'default', norm(passport) || 'auto', month].join('|');
 }
 async function cacheGet(env, key) {
   try {
