@@ -223,7 +223,7 @@ Nazad na pretragu
 
 <script src="config.js"></script>
 <script src="affiliate.js?v=1"></script>
-<script src="dest-info.js?v=5"></script>
+<script src="dest-info.js?v=6"></script>
 <script>
 (function(){
 'use strict';
@@ -995,7 +995,7 @@ function renderResults(P){
   $('dpResults').innerHTML = html;
   $('dpResults').hidden = false;
   $('dpEdit').hidden = false;
-  if (window.SklopiDestInfo) SklopiDestInfo.load(dest.name);
+  if (window.SklopiDestInfo) SklopiDestInfo.load(dest.name, c.org ? c.org.name + (c.org.country ? ', ' + c.org.country : '') : '');
   const token = ++renderToken;
   loadFlights(c);
   fillOffers('hotels', c, 'dpHotelBox', 'dpHotelCount', 'dpHotelTrack', 'Ponude smeštaja', 'Booking.com', '', token);

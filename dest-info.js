@@ -90,7 +90,8 @@
   }
 
   /* ── Helpers ── */
-  function getOrigin() { var o = el('origin'); return o ? o.value.trim().slice(0, 80) : ''; }
+  var _originOverride = '';   // destinacija.html nema #origin polje, pa polazak stiže preko load(dest, origin)
+  function getOrigin() { if (_originOverride) return _originOverride.slice(0, 80); var o = el('origin'); return o ? o.value.trim().slice(0, 80) : ''; }
   function getPassport() { try { return (localStorage.getItem('sklopi_passport') || '').slice(0, 60); } catch (e) { return ''; } }
   function keyOf(dest) { return dest + '|' + getLang() + '|' + getOrigin() + '|' + getPassport(); }
   function esc(s) {
@@ -471,7 +472,7 @@
 
   document.addEventListener('sklopi:lang', function () { if (_currentDest) { showSkeleton(false); loadDestInfo(_currentDest); } });
 
-  window.SklopiDestInfo = { load: function (dest) { _currentDest = dest; _currentKey = keyOf(dest); loadDestInfo(dest); } };
+  window.SklopiDestInfo = { load: function (dest, origin) { if (origin) _originOverride = String(origin).trim(); _currentDest = dest; _currentKey = keyOf(dest); loadDestInfo(dest); } };
 
   /* ── Init ── */
   if (document.readyState === 'loading') {
