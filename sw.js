@@ -11,12 +11,12 @@
 // promeni ovaj string (npr. v2, v3...) — to je jedini način da postojeći
 // korisnici (i ti sam/a kad testiraš) odmah dobiju novu verziju, jer se
 // SW fajl inače retko menja pa se ne re-instalira sam od sebe.
-const CACHE_VERSION = 'sklopi-shell-v3';
+const CACHE_VERSION = 'sklopi-shell-v4';
 // app.js i styles.css su kritični za funkcionalnost i menjaju se često —
 // za njih se mreža uvek probom prva (network-first), keš je samo rezerva
 // za slab/nestabilan signal ili offline rad. Bez ovoga bi stari keš mogao
 // da nastavi da se servira i posle uspešnog deploy-a nove verzije.
-const NETWORK_FIRST = ['/app.js', '/styles.css'];
+const NETWORK_FIRST = ['/app.js', '/styles.css', '/dest-info.js', '/dest-info.css', '/i18n-data.js', '/i18n-extra.js'];
 const APP_SHELL = [
   '/',
   '/index.html',
