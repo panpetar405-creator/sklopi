@@ -45,17 +45,60 @@ const SCHEMA = {
   food: [1,2,3,4,5].map((n) => ({ dish: '<traditional dish or drink #' + n + ' of DEST>', note: '<where to eat it and typical price>' })),
 };
 
+
+// ── Dodatni odeljci (učitavaju se tek kad korisnik klikne, poseban AI poziv i poseban keš) ──
+const EXTRA_SCHEMA = {
+  entry: {
+    schengen: '<true if the country of DEST is in the Schengen area, otherwise false>',
+    ees_etias: '<what EES (Entry/Exit System) and ETIAS mean for the PASSPORT holder entering the country of DEST today, and whether/when ETIAS is required; write that no such checks apply if the PASSPORT holder is an EU citizen or DEST is outside Schengen>',
+    customs: '<entry customs limits of DEST\'s country for a traveller coming from ORIGIN: cash declaration threshold, alcohol, tobacco, food/meat/dairy limits>',
+    docs: '<other documents usually needed at entry: ID card or passport validity, proof of accommodation, return ticket>',
+  },
+  driving: {
+    toll: '<road toll or vignette system for passenger cars in the country of DEST and typical prices, or that there are no tolls>',
+    speed: '<speed limits: built-up area / open road / motorway in km/h>',
+    parking: '<parking rules, restricted-traffic or low-emission zones in the city of DEST and a typical parking price>',
+    rules: '<mandatory equipment, blood alcohol limit, headlight rule and insurance/green card for a car registered in the ORIGIN country>',
+  },
+  city_tax: { amount: '<tourist tax per person per night in DEST in EUR, or that there is none>', note: '<who pays it, how it is paid, exemptions>' },
+  day_trips: [1, 2, 3].map((n) => ({ name: '<real place #' + n + ' within about 2 hours of DEST>', time: '<travel time and how to get there>', note: '<why it is worth going>' })),
+};
+
+function extraPrompt(dest, origin, passport, LANG_EN, L, now) {
+  return 'You are a travel expert. DEST = "' + dest + '". ' +
+    'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || 'the country where ORIGIN is located') + '". ' +
+    'PASSPORT may list several passports: use the MOST favourable one for entry rules and say which passport the rule applies to. ' +
+    'Today is ' + now.toISOString().slice(0, 10) + '; give rules valid on that date. ' +
+    'Return ONLY a JSON object with EXACTLY the keys of the schema below, filled with REAL facts about DEST and the country it is in. ' +
+    'The schema values in <angle brackets> are instructions, NOT example data: replace every one of them and never output angle brackets. ' +
+    'If you are not sure about an exact price, limit or rule, do NOT invent a number: say briefly (in the output language) that it should be checked with the official source. ' +
+    'day_trips: 3 items, each an object with all its keys filled. JSON keys must stay EXACTLY as in the schema (English, never translated). ' +
+    'LANGUAGE RULE: every human-readable value must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "nemački", never "njemački"; always use proper diacritics č ć š ž đ)' : '') + ', except proper names. ' +
+    'Schema:\n' + JSON.stringify(EXTRA_SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
+}
+
+function hasText(v) {
+  if (typeof v === 'string') return v.trim().length > 2 && !/[<>]/.test(v);
+  if (Array.isArray(v)) return v.some(hasText);
+  if (v && typeof v === 'object') return Object.keys(v).some((k) => hasText(v[k]));
+  return false;
+}
+function validExtra(o) {
+  return !!(o && typeof o === 'object' && hasText(o.entry) && hasText(o.driving) && hasText(o.city_tax) && Array.isArray(o.day_trips) && o.day_trips.length >= 2 && hasText(o.day_trips));
+}
+
 async function handleDestInfo(request, env, ctx) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: CORS });
 
-  let dest = '', lang = 'sr', origin = '', passport = '';
+  let dest = '', lang = 'sr', origin = '', passport = '', part = 'main';
   try {
     const body = await request.json();
     dest = String(body.dest || '').trim().slice(0, 80);
     lang = String(body.lang || 'sr').trim().slice(0, 5);
     origin = String(body.origin || '').trim().slice(0, 80);
     passport = String(body.passport || '').trim().slice(0, 60);
+    part = body.part === 'extra' ? 'extra' : 'main';
   } catch (e) {}
   if (!dest) return json({ error: 'nedostaje dest' }, 400);
 
@@ -63,17 +106,18 @@ async function handleDestInfo(request, env, ctx) {
   const L = SUPPORTED.includes(lang) ? lang : 'sr';
 
   // ── Keš: isti grad (+ jezik, polazak, pasoš, mesec) se generiše samo jednom ──
-  const cacheKey = makeKey(dest, L, origin, passport);
+  const post = (o) => (part === 'extra' ? o : finalize(o));
+  const cacheKey = makeKey(dest, L, origin, passport) + '|' + part;
   const cached = await cacheGet(env, cacheKey);
-  if (cached) return json(finalize(cached), 200, { 'X-Cache': 'HIT' });
+  if (cached) return json(post(cached), 200, { 'X-Cache': 'HIT' });
   // Ako isti zahtev već traje u ovom Worker-u, čekaj njegov rezultat (bez drugog AI poziva)
   if (INFLIGHT.has(cacheKey)) {
-    try { return json(finalize(await INFLIGHT.get(cacheKey)), 200, { 'X-Cache': 'JOIN' }); }
+    try { return json(post(await INFLIGHT.get(cacheKey)), 200, { 'X-Cache': 'JOIN' }); }
     catch (e) { return json({ error: 'unavailable' }, 503, { 'Retry-After': '5' }); }
   }
   const LANG_EN = { sr: 'Serbian (Latin script)', en: 'English', de: 'German', ru: 'Russian' }[L];
   const now = new Date();
-  const prompt =
+  const mainPrompt =
     'You are a travel expert. DEST = "' + dest + '". ' +
     'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || ('the country where ORIGIN is located')) + '". ' +
     'PASSPORT may list several passports (e.g. "Serbia, Germany" or "Srbija-Nemačka"): treat the traveller as holding all of them and, for visa/entry/health rules, use the MOST favourable one (an EU/Schengen passport means free movement, an ID card is enough) and say which passport the rule applies to. '+
@@ -88,13 +132,14 @@ async function handleDestInfo(request, env, ctx) {
     'KEY RULE: JSON keys must stay EXACTLY as in the schema (English, never translated); every array item must be an object with all its keys filled, no empty or missing fields. ' +
     'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno", "nemački" — never ijekavian/Croatian forms like "njemački"; always write proper diacritics č ć š ž đ, never c/s/z instead)' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
     'Schema:\n' + JSON.stringify(SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
+  const prompt = part === 'extra' ? extraPrompt(dest, origin, passport, LANG_EN, L, now) : mainPrompt;
 
-  const work = generateInfo(env, prompt);
+  const work = generateInfo(env, prompt, part);
   INFLIGHT.set(cacheKey, work);
   try {
     const out = await work;                               // sirovo (sa timezone_iana)
     ctx.waitUntil(cacheSet(env, cacheKey, out));          // greške se nikad ne keširaju
-    return json(finalize(out), 200, { 'X-Cache': 'MISS' });
+    return json(post(out), 200, { 'X-Cache': 'MISS' });
   } catch (e) {
     console.error('[dest-info] neuspeh za', dest, '-', e && e.message);   // detalji samo u logu
     return json({ error: 'unavailable' }, 503, { 'Retry-After': '5' });  // klijent ne vidi Groq detalje
@@ -151,7 +196,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Primarni model, na 429 kratko čekanje pa jedan ponovni pokušaj, zatim rezervni model
 // (drugi model ima svoj TPM limit na Groq-u).
-async function generateInfo(env, prompt) {
+async function generateInfo(env, prompt, part) {
   const models = [
     { name: env.GROQ_MODEL || 'openai/gpt-oss-120b', max: 4000, extra: { reasoning_effort: 'low' } },
     { name: env.GROQ_FALLBACK_MODEL || 'llama-3.3-70b-versatile', max: 3500, extra: {} },
@@ -166,7 +211,7 @@ async function generateInfo(env, prompt) {
           headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + env.GROQ_API_KEY },
           body: JSON.stringify({
             model: m.name, ...m.extra,
-            max_tokens: m.max,       // Groq ovo uračunava u TPM procenu — zato ne 8000
+            max_tokens: part === 'extra' ? 2500 : m.max,       // Groq ovo uračunava u TPM procenu — zato ne 8000
             temperature: 0.3,
             response_format: { type: 'json_object' },
             messages: [{ role: 'user', content: prompt }],
@@ -187,7 +232,7 @@ async function generateInfo(env, prompt) {
       try {
         const out = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
         if (/^BGN$/i.test(String(out.currency || ''))) { out.currency = 'EUR'; out.currency_rate = ''; } // Bugarska: evro od 1.1.2026.
-        if (validInfo(out)) return out;
+        if ((part === 'extra' ? validExtra : validInfo)(out)) return out;
         lastErr = m.name + ' nepotpun JSON';
       } catch (e) { lastErr = m.name + ' neispravan JSON'; }
       // nepotpun/neispravan odgovor: pokušaj ponovo, pa sledeći model

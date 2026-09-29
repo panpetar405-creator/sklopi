@@ -287,7 +287,20 @@
   }
 
   /* ── Dodatni odeljci: ulazak/carina, vožnja, turistička taksa, izleti (učitava se na klik) ── */
-  function xRow(label, val) { return val ? '<div class="di-row"><span class="di-label">' + esc(label) + '</span><span class="di-val">' + esc(val) + '</span></div>' : ''; }
+  function flat(v) {
+    if (v == null) return '';
+    if (Array.isArray(v)) return v.map(flat).filter(Boolean).join('; ');
+    if (typeof v === 'object') return Object.keys(v).map(function (k) { return flat(v[k]); }).filter(Boolean).join('; ');
+    return String(v);
+  }
+  function validExtraShape(o) { return !!(o && typeof o === 'object' && !o.error && (o.entry || o.driving || o.city_tax || o.day_trips) && !o.currency); }
+  function extraError(box) {
+    var L = ui();
+    box.innerHTML = '<p class="di-error">' + esc(L.extra_err) + '</p><p style="text-align:center"><button type="button" id="diExtraRetry" style="padding:8px 18px;border:0;border-radius:10px;background:#0f3b4c;color:#fff;font:inherit;font-weight:600">' + esc(L.extra_retry) + '</button></p>';
+    var rb = el('diExtraRetry');
+    if (rb) rb.addEventListener('click', function () { try { localStorage.removeItem(LS_PREFIX + keyOf(_currentDest) + '|extra'); } catch (e) {} delete _cache[keyOf(_currentDest) + '|extra']; loadExtra(); });
+  }
+  function xRow(label, val) { val = flat(val); return val ? '<div class="di-row"><span class="di-label">' + esc(label) + '</span><span class="di-val">' + esc(val) + '</span></div>' : ''; }
   function xCard(icon, cls, title, inner) {
     return inner ? '<div class="di-card di-card-full"><div class="di-card-head"><span class="di-card-ic ' + cls + '">' + icon + '</span><span class="di-card-title">' + esc(title) + '</span></div>' + inner + '</div>' : '';
   }
@@ -319,7 +332,9 @@
       });
       h += xCard('🗺️', 'di-ic-coral', L.x_trips, tr + '</div>');
     }
+    if (!h) { extraError(box); return false; }
     box.innerHTML = h;
+    return true;
   }
 
   function loadExtra() {
@@ -328,19 +343,14 @@
     if (!dest || !box) return;
     var xk = keyOf(dest) + '|extra';
     var cached = _cache[xk] || lsGet(xk);
-    if (cached) { _cache[xk] = cached; renderExtra(box, cached); return; }
+    if (cached && validExtraShape(cached)) { _cache[xk] = cached; renderExtra(box, cached); return; }
+    delete _cache[xk];
 
     var L = ui();
     box.innerHTML = '<p class="di-error" style="opacity:.8">⏳ ' + esc(L.extra_loading) + '</p>';
     var delays = [2000, 5000];
     function stillCurrent() { return keyOf(_currentDest) + '|extra' === xk && el('diExtra'); }
-    function fail() {
-      if (!stillCurrent()) return;
-      var b = el('diExtra');
-      b.innerHTML = '<p class="di-error">' + esc(L.extra_err) + '</p><p style="text-align:center"><button type="button" id="diExtraRetry" style="padding:8px 18px;border:0;border-radius:10px;background:#0f3b4c;color:#fff;font:inherit;font-weight:600">' + esc(L.extra_retry) + '</button></p>';
-      var rb = el('diExtraRetry');
-      if (rb) rb.addEventListener('click', loadExtra);
-    }
+    function fail() { if (stillCurrent()) extraError(el('diExtra')); }
     function attempt(n) {
       fetch(DEST_INFO_URL, {
         method: 'POST',
@@ -349,10 +359,9 @@
       })
       .then(function (res) { if (!res.ok) { var e = new Error('HTTP ' + res.status); e.status = res.status; throw e; } return res.json(); })
       .then(function (info) {
-        if (!info || typeof info !== 'object' || info.error) throw new Error('prazan odgovor');
-        _cache[xk] = info;
-        lsSet(xk, info);
-        if (stillCurrent()) renderExtra(el('diExtra'), info);
+        if (!validExtraShape(info)) { var se = new Error('neispravan odgovor servera (proveri da je worker.js postavljen)'); se.status = 422; throw se; }
+        if (stillCurrent()) { if (renderExtra(el('diExtra'), info)) { _cache[xk] = info; lsSet(xk, info); } }
+        else { _cache[xk] = info; lsSet(xk, info); }
       })
       .catch(function (err) {
         var retryable = !err.status || err.status === 429 || err.status >= 500;
@@ -392,6 +401,7 @@
   function pick(o, keys) { for (var i = 0; i < keys.length; i++) { if (o[keys[i]]) return String(o[keys[i]]); } return ''; }
   function vals(o) { return Object.keys(o).map(function (k) { return o[k]; }).filter(function (v) { return typeof v === 'string' && v; }); }
   function normPair(it, nameKeys, noteKeys) {
+    if (typeof it === 'string' && /^\s*\{[\s\S]*\}\s*$/.test(it)) { try { it = JSON.parse(it); } catch (e) {} }
     if (typeof it === 'string') return { a: it, b: '' };
     if (!it || typeof it !== 'object') return { a: '', b: '' };
     var v = vals(it);
