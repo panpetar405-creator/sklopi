@@ -44,7 +44,7 @@ const SCHEMA = {
   food: [1,2,3,4,5].map((n) => ({ dish: '<traditional dish or drink #' + n + ' of DEST>', note: '<where to eat it and typical price>' })),
 };
 
-async function handleDestInfo(request, env) {
+async function handleDestInfo(request, env, ctx) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: CORS });
 
@@ -60,6 +60,16 @@ async function handleDestInfo(request, env) {
 
 
   const L = SUPPORTED.includes(lang) ? lang : 'sr';
+
+  // ── Keš: isti grad (+ jezik, polazak, pasoš, mesec) se generiše samo jednom ──
+  const cacheKey = makeKey(dest, L, origin, passport);
+  const cached = await cacheGet(env, cacheKey);
+  if (cached) return json(finalize(cached), 200, { 'X-Cache': 'HIT' });
+  // Ako isti zahtev već traje u ovom Worker-u, čekaj njegov rezultat (bez drugog AI poziva)
+  if (INFLIGHT.has(cacheKey)) {
+    try { return json(finalize(await INFLIGHT.get(cacheKey)), 200, { 'X-Cache': 'JOIN' }); }
+    catch (e) { return json({ error: 'unavailable' }, 503, { 'Retry-After': '5' }); }
+  }
   const LANG_EN = { sr: 'Serbian (Latin script)', en: 'English', de: 'German', ru: 'Russian' }[L];
   const now = new Date();
   const prompt =
@@ -78,43 +88,121 @@ async function handleDestInfo(request, env) {
     'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno")' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
     'Schema:\n' + JSON.stringify(SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
 
-  const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + env.GROQ_API_KEY },
-    body: JSON.stringify({
-      model: env.GROQ_MODEL || 'openai/gpt-oss-120b',
-      reasoning_effort: 'low',
-      max_tokens: 8000,
-      temperature: 0.3,
-      response_format: { type: 'json_object' },
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
-  if (!r.ok) return json({ error: 'Groq HTTP ' + r.status + ': ' + (await r.text()).slice(0, 200) }, 502);
-
-  const data = await r.json();
-  const raw = data.choices?.[0]?.message?.content || '';
+  const work = generateInfo(env, prompt);
+  INFLIGHT.set(cacheKey, work);
   try {
-    const out = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
-    try {
-      out.local_time_now = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: out.timezone_iana }).format(new Date());
-    } catch (e) { delete out.local_time_now; }
-    if (/^BGN$/i.test(String(out.currency || ''))) { out.currency = 'EUR'; out.currency_rate = ''; } // Bugarska: evro od 1.1.2026.
-    delete out.timezone_iana;
-    return json(out);
+    const out = await work;                               // sirovo (sa timezone_iana)
+    ctx.waitUntil(cacheSet(env, cacheKey, out));          // greške se nikad ne keširaju
+    return json(finalize(out), 200, { 'X-Cache': 'MISS' });
   } catch (e) {
-    return json({ error: 'model nije vratio ispravan JSON' }, 502);
+    console.error('[dest-info] neuspeh za', dest, '-', e && e.message);   // detalji samo u logu
+    return json({ error: 'unavailable' }, 503, { 'Retry-After': '5' });  // klijent ne vidi Groq detalje
+  } finally {
+    INFLIGHT.delete(cacheKey);
   }
 }
 
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
+// ── Pomoćne funkcije ─────────────────────────────────────────────
+const INFLIGHT = new Map();
+const CACHE_TTL = 35 * 24 * 3600; // ključ sadrži mesec, pa se info osveži jednom mesečno
+
+function norm(x) {
+  return String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+function makeKey(dest, lang, origin, passport) {
+  const month = new Date().toISOString().slice(0, 7);
+  return [norm(dest), lang, norm(origin) || 'default', norm(passport) || 'auto', month].join('|');
+}
+async function cacheGet(env, key) {
+  try {
+    if (env.DEST_CACHE) return await env.DEST_CACHE.get('di:' + key, 'json');
+    const r = await caches.default.match(new Request('https://dest-info.cache/' + encodeURIComponent(key)));
+    return r ? await r.json() : null;
+  } catch (e) { return null; }
+}
+async function cacheSet(env, key, val) {
+  try {
+    if (env.DEST_CACHE) { await env.DEST_CACHE.put('di:' + key, JSON.stringify(val), { expirationTtl: CACHE_TTL }); return; }
+    await caches.default.put(
+      new Request('https://dest-info.cache/' + encodeURIComponent(key)),
+      new Response(JSON.stringify(val), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=' + CACHE_TTL } })
+    );
+  } catch (e) {}
+}
+
+// Lokalno vreme se računa pri SVAKOM odgovoru (ne sme ostati zamrznuto u kešu)
+function finalize(raw) {
+  const out = { ...raw };
+  try {
+    out.local_time_now = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: out.timezone_iana }).format(new Date());
+  } catch (e) { delete out.local_time_now; }
+  delete out.timezone_iana;
+  return out;
+}
+
+function validInfo(o) {
+  return o && typeof o === 'object' && o.currency && o.visa && o.climate_months &&
+    Array.isArray(o.must_see) && o.must_see.length >= 3 && Array.isArray(o.food) && o.food.length >= 3;
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Primarni model, na 429 kratko čekanje pa jedan ponovni pokušaj, zatim rezervni model
+// (drugi model ima svoj TPM limit na Groq-u).
+async function generateInfo(env, prompt) {
+  const models = [
+    { name: env.GROQ_MODEL || 'openai/gpt-oss-120b', max: 4000, extra: { reasoning_effort: 'low' } },
+    { name: env.GROQ_FALLBACK_MODEL || 'llama-3.3-70b-versatile', max: 3500, extra: {} },
+  ];
+  let lastErr = 'nema odgovora';
+  for (const m of models) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      let r;
+      try {
+        r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + env.GROQ_API_KEY },
+          body: JSON.stringify({
+            model: m.name, ...m.extra,
+            max_tokens: m.max,       // Groq ovo uračunava u TPM procenu — zato ne 8000
+            temperature: 0.3,
+            response_format: { type: 'json_object' },
+            messages: [{ role: 'user', content: prompt }],
+          }),
+        });
+      } catch (e) { lastErr = 'mreža: ' + e.message; break; }
+
+      if (r.status === 429) {
+        lastErr = m.name + ' HTTP 429';
+        const ra = Math.min(parseFloat(r.headers.get('retry-after')) || 2, 4);
+        if (attempt === 0) { await sleep(ra * 1000); continue; }
+        break;                                   // sledeći model
+      }
+      if (!r.ok) { lastErr = m.name + ' HTTP ' + r.status; break; }
+
+      const data = await r.json();
+      const raw = data.choices?.[0]?.message?.content || '';
+      try {
+        const out = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+        if (/^BGN$/i.test(String(out.currency || ''))) { out.currency = 'EUR'; out.currency_rate = ''; } // Bugarska: evro od 1.1.2026.
+        if (validInfo(out)) return out;
+        lastErr = m.name + ' nepotpun JSON';
+      } catch (e) { lastErr = m.name + ' neispravan JSON'; }
+      // nepotpun/neispravan odgovor: pokušaj ponovo, pa sledeći model
+    }
+  }
+  throw new Error(lastErr);
+}
+
+function json(obj, status = 200, extra = {}) {
+  return new Response(JSON.stringify(obj), { status, headers: { ...CORS, 'Content-Type': 'application/json', ...extra } });
 }
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (url.pathname === '/api/dest-info') return handleDestInfo(request, env);
+    if (url.pathname === '/api/dest-info') return handleDestInfo(request, env, ctx);
     if (alertWorker && typeof alertWorker.fetch === 'function') {
       return alertWorker.fetch(request, env, ctx);
     }
