@@ -9149,6 +9149,36 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       return items;
     } catch(e){ return null; }
   }
+  /* Slika za aktivnosti destinacije koja nema karticu među popularnim: Wikipedia slika grada
+     (keš 7 dana), a do tada neutralna slika — nikad slika drugog grada (npr. Santorini za Sofiju). */
+  const ACT_GENERIC_IMG = 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80';
+  const ACT_IMG_KEY = 'sklopi_act_photo_v1', ACT_IMG_TTL = 7 * 24 * 3600 * 1000;
+  const actPhoto = {};
+  async function actWiki(host, title){
+    try {
+      const r = await fetch('https://' + host + '/api/rest_v1/page/summary/' + encodeURIComponent(title));
+      if (!r.ok) return '';
+      const d = await r.json();
+      if (d.type !== 'standard') return '';
+      const th = d.thumbnail && d.thumbnail.source;
+      return th ? th.replace(/\/\d+px-/, '/400px-') : '';
+    } catch(e){ return ''; }
+  }
+  async function actCityPhoto(name, key){
+    if (actPhoto[key] !== undefined) return actPhoto[key];
+    actPhoto[key] = '';
+    let cache = {ts:Date.now(), m:{}};
+    try { const c = JSON.parse(localStorage.getItem(ACT_IMG_KEY) || 'null'); if (c && c.m && Date.now() - c.ts < ACT_IMG_TTL) cache = c; } catch(e){}
+    let url = cache.m[key] || '';
+    if (!url){
+      let names = {}; try { names = DEST_EN_NAMES; } catch(e){}
+      const en = String(names[name] || names[key] || name).split(',')[0].trim();
+      url = await actWiki('en.wikipedia.org', en) || await actWiki('sh.wikipedia.org', name);
+      if (url){ cache.m[key] = url; try { localStorage.setItem(ACT_IMG_KEY, JSON.stringify(cache)); } catch(e){} }
+    }
+    actPhoto[key] = url;
+    return url;
+  }
   function paint(items, ctx){
     list.innerHTML = items.map(it => {
       const url = it.url || buildAffiliateLink('activity', {dest: it.q || ctx.dest});
@@ -9174,8 +9204,13 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       const base = Math.max(10, Math.round(pkg.activity.price / 2));
       const card = Array.from(document.querySelectorAll('.popular-dest-card'))
         .find(c => normalizeSr(c.dataset.dest || '') === destKey);
-      const img = card && card.querySelector('img') ? card.querySelector('img').src : ATHENS[2].img;
+      const img = card && card.querySelector('img') ? card.querySelector('img').src : (actPhoto[destKey] || ACT_GENERIC_IMG);
       fallbackImg = img;
+      if (!(card && card.querySelector('img')) && actPhoto[destKey] === undefined){
+        actCityPhoto(ctx.dest, destKey).then(u => {
+          if (u && !box.hidden && normalizeSr(builderCtx().dest) === destKey) render();
+        }).catch(() => {});
+      }
       const curated = CITY_ACTIVITIES[destKey];
       if (curated){
         items = curated.map(it => ({name: it.name, price: Math.max(5, Math.round(base * it.ratio)), q: it.q, img}));
