@@ -455,10 +455,14 @@
 
     var pp = el('diPassport');
     if (pp) {
-      pp.addEventListener('change', function () {
+      var pt;
+      var savePassport = function () {
         try { localStorage.setItem('sklopi_passport', pp.value.trim().slice(0, 60)); } catch (e) {}
         checkAndLoad();
-      });
+      };
+      pp.addEventListener('input', function () { clearTimeout(pt); pt = setTimeout(savePassport, 1200); });
+      pp.addEventListener('change', function () { clearTimeout(pt); savePassport(); });
+      pp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); clearTimeout(pt); savePassport(); pp.blur(); } });
     }
 
     var disc = el('destInfoDisclaimer');
