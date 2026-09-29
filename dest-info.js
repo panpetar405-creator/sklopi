@@ -53,28 +53,28 @@
       climate:'Klima', now:'Sada', best:'Idealno', visa:'Viza & Ulazak', status:'Status', stay:'Boravak', passport:'Pasoš', health:'Zdravlje',
       costs:'Okvirni dnevni troškovi po osobi', budget:'Budžet', balanced:'Balans', comfort:'Komfor',
       transport:'Prevoz', pub:'Javni', taxi:'Taksi', tip:'Savet', practical:'Praktično', plug:'Adapter', water:'Voda', tipping:'Napojnica', safety:'Bezbednost',
-      mustsee:'Obavezno videti', climate_m:'Klima po mesecima', hi:'Dnevna', lo:'Noćna', rain:'Kiša', sea:'More', getting:'Kako doći', airlines:'Aviokompanije', ftime:'Let', road:'Kopnom', airport:'Aerodrom → centar', food:'Šta jesti', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Korisne fraze', where:'Gde odsesti', for_:'Za koga', emerg:'Hitni brojevi i ambasada', gen:'Opšti', police:'Policija', amb:'Hitna', embassy:'Ambasada', conn:'Internet i novac', roaming:'Roaming', esim:'SIM / eSIM', cash:'Kartica / keš', atm:'Bankomati', scams:'Česte prevare', passport_l:'Pasoš / državljanstvo', passport_ph:'npr. Srbija, Nemačka', passport_auto:'Automatski prema polaznom mestu', apply:'Primeni', same_cur:'ista valuta', pp_second:'Drugi pasoš (opciono)' },
+      mustsee:'Obavezno videti', climate_m:'Klima po mesecima', hi:'Dnevna', lo:'Noćna', rain:'Kiša', sea:'More', getting:'Kako doći', airlines:'Aviokompanije', ftime:'Let', road:'Kopnom', airport:'Aerodrom → centar', food:'Šta jesti', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Korisne fraze', where:'Gde odsesti', for_:'Za koga', emerg:'Hitni brojevi i ambasada', gen:'Opšti', police:'Policija', amb:'Hitna', embassy:'Ambasada', conn:'Internet i novac', roaming:'Roaming', esim:'SIM / eSIM', cash:'Kartica / keš', atm:'Bankomati', scams:'Česte prevare', passport_l:'Pasoš / državljanstvo', passport_ph:'npr. Srbija, Nemačka', passport_auto:'Automatski prema polaznom mestu', apply:'Primeni', same_cur:'ista valuta', pp_second:'Drugi pasoš (opciono)', extra_btn:'Ulazak, vožnja, taksa i izleti', extra_loading:'Učitavam dodatne informacije…', extra_err:'Dodatne informacije trenutno nisu dostupne.', extra_retry:'Pokušaj ponovo', x_entry:'Ulazak i carina', x_ees:'EES / ETIAS', x_docs:'Dokumenta', x_customs:'Carina', x_verify:'Proveri zvanično ↗', x_drive:'Vožnja kolima', x_toll:'Putarine / vinjeta', x_speed:'Brzine', x_parking:'Parking i zone', x_rules:'Pravila i oprema', x_tax:'Turistička taksa', x_trips:'Izleti iz grada' },
     en: { sub_pre:'About the destination — ', sub_sub:'Everything you need to know before you go.',
       error:'Destination info is not available right now.', detail:'Details: ',
       disclaimer:'Info is AI-generated for orientation only — always check with the embassy and your airline before travelling.',
       climate:'Climate', now:'Now', best:'Best time', visa:'Visa & Entry', status:'Status', stay:'Stay', passport:'Passport', health:'Health',
       costs:'Approx. daily costs per person', budget:'Budget', balanced:'Balanced', comfort:'Comfort',
       transport:'Transport', pub:'Public', taxi:'Taxi', tip:'Tip', practical:'Practical', plug:'Plug', water:'Water', tipping:'Tipping', safety:'Safety',
-      mustsee:'Must-see', climate_m:'Climate by month', hi:'Day', lo:'Night', rain:'Rain', sea:'Sea', getting:'Getting there', airlines:'Airlines', ftime:'Flight', road:'By road', airport:'Airport → centre', food:'What to eat', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Useful phrases', where:'Where to stay', for_:'Best for', emerg:'Emergency & embassy', gen:'General', police:'Police', amb:'Ambulance', embassy:'Embassy', conn:'Internet & money', roaming:'Roaming', esim:'SIM / eSIM', cash:'Card / cash', atm:'ATMs', scams:'Common scams', passport_l:'Passport / citizenship', passport_ph:'e.g. Serbia, Germany', passport_auto:'Automatic, based on departure city', apply:'Apply', same_cur:'same currency', pp_second:'Second passport (optional)' },
+      mustsee:'Must-see', climate_m:'Climate by month', hi:'Day', lo:'Night', rain:'Rain', sea:'Sea', getting:'Getting there', airlines:'Airlines', ftime:'Flight', road:'By road', airport:'Airport → centre', food:'What to eat', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Useful phrases', where:'Where to stay', for_:'Best for', emerg:'Emergency & embassy', gen:'General', police:'Police', amb:'Ambulance', embassy:'Embassy', conn:'Internet & money', roaming:'Roaming', esim:'SIM / eSIM', cash:'Card / cash', atm:'ATMs', scams:'Common scams', passport_l:'Passport / citizenship', passport_ph:'e.g. Serbia, Germany', passport_auto:'Automatic, based on departure city', apply:'Apply', same_cur:'same currency', pp_second:'Second passport (optional)', extra_btn:'Entry, driving, city tax & day trips', extra_loading:'Loading more info…', extra_err:'More info is not available right now.', extra_retry:'Try again', x_entry:'Entry & customs', x_ees:'EES / ETIAS', x_docs:'Documents', x_customs:'Customs', x_verify:'Check official source ↗', x_drive:'Driving', x_toll:'Tolls / vignette', x_speed:'Speed limits', x_parking:'Parking & zones', x_rules:'Rules & equipment', x_tax:'Tourist tax', x_trips:'Day trips' },
     de: { sub_pre:'Über das Reiseziel — ', sub_sub:'Alles, was du vor der Abreise wissen musst.',
       error:'Reiseziel-Infos sind gerade nicht verfügbar.', detail:'Details: ',
       disclaimer:'Die Infos sind KI-generiert und dienen nur zur Orientierung — prüfe vor der Reise immer bei der Botschaft und deiner Fluggesellschaft.',
       climate:'Klima', now:'Jetzt', best:'Beste Zeit', visa:'Visum & Einreise', status:'Status', stay:'Aufenthalt', passport:'Reisepass', health:'Gesundheit',
       costs:'Ungefähre Tageskosten pro Person', budget:'Budget', balanced:'Ausgewogen', comfort:'Komfort',
       transport:'Verkehr', pub:'Öffentlich', taxi:'Taxi', tip:'Tipp', practical:'Praktisches', plug:'Steckdose', water:'Wasser', tipping:'Trinkgeld', safety:'Sicherheit',
-      mustsee:'Sehenswürdigkeiten', climate_m:'Klima nach Monat', hi:'Tag', lo:'Nacht', rain:'Regen', sea:'Meer', getting:'Anreise', airlines:'Fluggesellschaften', ftime:'Flug', road:'Auf dem Landweg', airport:'Flughafen → Zentrum', food:'Was essen', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Nützliche Redewendungen', where:'Wo übernachten', for_:'Geeignet für', emerg:'Notfall & Botschaft', gen:'Allgemein', police:'Polizei', amb:'Rettung', embassy:'Botschaft', conn:'Internet & Geld', roaming:'Roaming', esim:'SIM / eSIM', cash:'Karte / Bargeld', atm:'Geldautomaten', scams:'Häufige Betrugsmaschen', passport_l:'Reisepass / Staatsbürgerschaft', passport_ph:'z. B. Serbien, Deutschland', passport_auto:'Automatisch nach Abflugort', apply:'Übernehmen', same_cur:'gleiche Währung', pp_second:'Zweiter Pass (optional)' },
+      mustsee:'Sehenswürdigkeiten', climate_m:'Klima nach Monat', hi:'Tag', lo:'Nacht', rain:'Regen', sea:'Meer', getting:'Anreise', airlines:'Fluggesellschaften', ftime:'Flug', road:'Auf dem Landweg', airport:'Flughafen → Zentrum', food:'Was essen', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Nützliche Redewendungen', where:'Wo übernachten', for_:'Geeignet für', emerg:'Notfall & Botschaft', gen:'Allgemein', police:'Polizei', amb:'Rettung', embassy:'Botschaft', conn:'Internet & Geld', roaming:'Roaming', esim:'SIM / eSIM', cash:'Karte / Bargeld', atm:'Geldautomaten', scams:'Häufige Betrugsmaschen', passport_l:'Reisepass / Staatsbürgerschaft', passport_ph:'z. B. Serbien, Deutschland', passport_auto:'Automatisch nach Abflugort', apply:'Übernehmen', same_cur:'gleiche Währung', pp_second:'Zweiter Pass (optional)', extra_btn:'Einreise, Autofahren, Ortstaxe & Ausflüge', extra_loading:'Weitere Infos werden geladen…', extra_err:'Weitere Infos sind gerade nicht verfügbar.', extra_retry:'Erneut versuchen', x_entry:'Einreise & Zoll', x_ees:'EES / ETIAS', x_docs:'Dokumente', x_customs:'Zoll', x_verify:'Offizielle Quelle prüfen ↗', x_drive:'Autofahren', x_toll:'Maut / Vignette', x_speed:'Tempolimits', x_parking:'Parken & Zonen', x_rules:'Regeln & Ausrüstung', x_tax:'Touristensteuer', x_trips:'Ausflüge' },
     ru: { sub_pre:'О направлении — ', sub_sub:'Всё, что нужно знать перед поездкой.',
       error:'Информация о направлении сейчас недоступна.', detail:'Подробности: ',
       disclaimer:'Информация создана ИИ и носит ознакомительный характер — перед поездкой всегда проверяйте в посольстве и у авиакомпании.',
       climate:'Климат', now:'Сейчас', best:'Лучшее время', visa:'Виза и въезд', status:'Статус', stay:'Срок пребывания', passport:'Паспорт', health:'Здоровье',
       costs:'Примерные расходы в день на человека', budget:'Бюджет', balanced:'Баланс', comfort:'Комфорт',
       transport:'Транспорт', pub:'Общественный', taxi:'Такси', tip:'Совет', practical:'Практика', plug:'Розетка', water:'Вода', tipping:'Чаевые', safety:'Безопасность',
-      mustsee:'Обязательно посмотреть', climate_m:'Климат по месяцам', hi:'День', lo:'Ночь', rain:'Дождь', sea:'Море', getting:'Как добраться', airlines:'Авиакомпании', ftime:'Перелёт', road:'По суше', airport:'Аэропорт → центр', food:'Что попробовать', months:['Я','Ф','М','А','М','И','И','А','С','О','Н','Д'], phrases:'Полезные фразы', where:'Где остановиться', for_:'Подходит', emerg:'Экстренные номера и посольство', gen:'Общий', police:'Полиция', amb:'Скорая', embassy:'Посольство', conn:'Интернет и деньги', roaming:'Роуминг', esim:'SIM / eSIM', cash:'Карта / наличные', atm:'Банкоматы', scams:'Частые мошенничества', passport_l:'Паспорт / гражданство', passport_ph:'напр. Сербия, Германия', passport_auto:'Автоматически по городу вылета', apply:'Применить', same_cur:'та же валюта', pp_second:'Второй паспорт (необязательно)' }
+      mustsee:'Обязательно посмотреть', climate_m:'Климат по месяцам', hi:'День', lo:'Ночь', rain:'Дождь', sea:'Море', getting:'Как добраться', airlines:'Авиакомпании', ftime:'Перелёт', road:'По суше', airport:'Аэропорт → центр', food:'Что попробовать', months:['Я','Ф','М','А','М','И','И','А','С','О','Н','Д'], phrases:'Полезные фразы', where:'Где остановиться', for_:'Подходит', emerg:'Экстренные номера и посольство', gen:'Общий', police:'Полиция', amb:'Скорая', embassy:'Посольство', conn:'Интернет и деньги', roaming:'Роуминг', esim:'SIM / eSIM', cash:'Карта / наличные', atm:'Банкоматы', scams:'Частые мошенничества', passport_l:'Паспорт / гражданство', passport_ph:'напр. Сербия, Германия', passport_auto:'Автоматически по городу вылета', apply:'Применить', same_cur:'та же валюта', pp_second:'Второй паспорт (необязательно)', extra_btn:'Въезд, вождение, туристический сбор и поездки', extra_loading:'Загружаю дополнительную информацию…', extra_err:'Дополнительная информация сейчас недоступна.', extra_retry:'Повторить', x_entry:'Въезд и таможня', x_ees:'EES / ETIAS', x_docs:'Документы', x_customs:'Таможня', x_verify:'Проверить официальный источник ↗', x_drive:'Вождение', x_toll:'Платные дороги / виньетка', x_speed:'Ограничения скорости', x_parking:'Парковка и зоны', x_rules:'Правила и оборудование', x_tax:'Туристический сбор', x_trips:'Поездки из города' }
   };
   function getLang() {
     try { if (typeof window.getLang === 'function') return window.getLang(); } catch (e) {}
@@ -112,31 +112,42 @@
     }
     return String(v || '');
   }
+  function uniq(arr) { var s = {}; return arr.filter(function (x) { var k = String(x).toLowerCase(); if (!x || s[k]) return false; s[k] = 1; return true; }); }
   function fmtLanguages(d) {
     if (Array.isArray(d.language_codes) && d.language_codes.length) {
       try {
         var dn = new Intl.DisplayNames([intlLoc()], { type: 'language' });
-        var names = d.language_codes.slice(0, 2).map(function (c) { return dn.of(String(c).toLowerCase()); }).filter(Boolean);
+        var names = uniq(d.language_codes.slice(0, 3).map(function (c) { return dn.of(String(c).toLowerCase()); })).slice(0, 2);
         if (names.length) return names.join(', ');
       } catch (e) {}
     }
-    return String(d.language || '');
+    return uniq(String(d.language || '').split(',').map(function (x) { return x.trim(); })).join(', ');
   }
 
   /* ── Helpers ── */
   var _originOverride = '';   // destinacija.html nema #origin polje, pa polazak stiže preko load(dest, origin)
   function getOrigin() { if (_originOverride) return _originOverride.slice(0, 80); var o = el('origin'); return o ? o.value.trim().slice(0, 80) : ''; }
-  function getPassport() {
-    // Samo poznate zemlje (max 2). Sve ostalo (stari slobodan unos, grad...) se ignoriše.
+  // Pasoš važi samo za destinaciju za koju je izabran (i najviše 6 sati). Nova pretraga = "Automatski".
+  var PP_KEY = 'sklopi_passport', PP_TTL = 6 * 3600 * 1000;
+  function normDest(x) { return String(x || '').trim().toLowerCase(); }
+  function getPassport(dest) {
     try {
-      var names = enNames();
-      var seen = {};
-      return String(localStorage.getItem('sklopi_passport') || '').split(',').map(function (x) { return x.trim(); })
+      var o = JSON.parse(localStorage.getItem(PP_KEY) || 'null');
+      if (!o || typeof o !== 'object' || !o.v) return '';            // stari zapisi (običan tekst) se ignorišu
+      if (o.d !== normDest(dest || _currentDest) || Date.now() - (o.t || 0) > PP_TTL) return '';
+      var names = enNames(), seen = {};
+      return String(o.v).split(',').map(function (x) { return x.trim(); })
         .filter(function (x) { if (!x || seen[x] || names.indexOf(x) < 0) return false; seen[x] = 1; return true; })
         .slice(0, 2).join(', ');
     } catch (e) { return ''; }
   }
-  function keyOf(dest) { return dest + '|' + getLang() + '|' + getOrigin() + '|' + getPassport(); }
+  function setPassport(list) {
+    try {
+      if (list.length) localStorage.setItem(PP_KEY, JSON.stringify({ v: list.join(', '), d: normDest(_currentDest), t: Date.now() }));
+      else localStorage.removeItem(PP_KEY);
+    } catch (e) {}
+  }
+  function keyOf(dest) { return dest + '|' + getLang() + '|' + getOrigin() + '|' + getPassport(dest); }
   function esc(s) {
     return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
@@ -273,6 +284,84 @@
   }
   function lsSet(k, d) {
     try { localStorage.setItem(LS_PREFIX + k, JSON.stringify({ t: Date.now(), d: d })); } catch (e) {}
+  }
+
+  /* ── Dodatni odeljci: ulazak/carina, vožnja, turistička taksa, izleti (učitava se na klik) ── */
+  function xRow(label, val) { return val ? '<div class="di-row"><span class="di-label">' + esc(label) + '</span><span class="di-val">' + esc(val) + '</span></div>' : ''; }
+  function xCard(icon, cls, title, inner) {
+    return inner ? '<div class="di-card di-card-full"><div class="di-card-head"><span class="di-card-ic ' + cls + '">' + icon + '</span><span class="di-card-title">' + esc(title) + '</span></div>' + inner + '</div>' : '';
+  }
+  function renderExtra(box, d) {
+    var L = ui(), en = d.entry || {}, dr = d.driving || {}, tx = d.city_tax || {};
+    var trips = normList(d.day_trips, ['name','place','title'], ['note','why','description']);
+    var tripsTime = Array.isArray(d.day_trips) ? d.day_trips : [];
+    var h = '';
+
+    var links = '';
+    if (en.schengen === true || String(en.schengen).toLowerCase() === 'true') {
+      links += '<a href="https://travel-europe.europa.eu/etias_en" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">ETIAS ↗</a> · ' +
+               '<a href="https://travel-europe.europa.eu/ees_en" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">EES ↗</a> · ';
+    }
+    links += '<a href="https://www.google.com/search?q=' + encodeURIComponent(_currentDest + ' entry requirements ' + getPassport()) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">' + esc(L.x_verify) + '</a>';
+    var entryInner = xRow(L.x_ees, en.ees_etias) + xRow(L.x_customs, en.customs) + xRow(L.x_docs, en.docs);
+    if (entryInner) entryInner += '<div class="di-tier-note" style="margin-top:8px">' + links + '</div>';
+    h += xCard('🛃', 'di-ic-deep', L.x_entry, entryInner);
+
+    h += xCard('🚗', 'di-ic-aqua', L.x_drive, xRow(L.x_toll, dr.toll) + xRow(L.x_speed, dr.speed) + xRow(L.x_parking, dr.parking) + xRow(L.x_rules, dr.rules));
+    h += xCard('🏷️', 'di-ic-gold', L.x_tax, xRow(tx.amount ? L.x_tax : '', tx.amount) + (tx.note ? '<div class="di-tier-note" style="margin-top:6px">' + esc(tx.note) + '</div>' : ''));
+
+    if (trips.length) {
+      var tr = '<div class="di-mustsee">';
+      trips.forEach(function (t, i) {
+        var time = tripsTime[i] && typeof tripsTime[i] === 'object' ? String(tripsTime[i].time || '') : '';
+        var meta = [time, t.b].filter(Boolean).join(' · ');
+        tr += '<div class="di-ms-item"><span class="di-ms-num">' + (i + 1) + '</span><div><div class="di-ms-name">' + esc(t.a) + '</div>' + (meta ? '<div class="di-ms-note">' + esc(meta) + '</div>' : '') + '</div></div>';
+      });
+      h += xCard('🗺️', 'di-ic-coral', L.x_trips, tr + '</div>');
+    }
+    box.innerHTML = h;
+  }
+
+  function loadExtra() {
+    var dest = _currentDest;
+    var box = el('diExtra');
+    if (!dest || !box) return;
+    var xk = keyOf(dest) + '|extra';
+    var cached = _cache[xk] || lsGet(xk);
+    if (cached) { _cache[xk] = cached; renderExtra(box, cached); return; }
+
+    var L = ui();
+    box.innerHTML = '<p class="di-error" style="opacity:.8">⏳ ' + esc(L.extra_loading) + '</p>';
+    var delays = [2000, 5000];
+    function stillCurrent() { return keyOf(_currentDest) + '|extra' === xk && el('diExtra'); }
+    function fail() {
+      if (!stillCurrent()) return;
+      var b = el('diExtra');
+      b.innerHTML = '<p class="di-error">' + esc(L.extra_err) + '</p><p style="text-align:center"><button type="button" id="diExtraRetry" style="padding:8px 18px;border:0;border-radius:10px;background:#0f3b4c;color:#fff;font:inherit;font-weight:600">' + esc(L.extra_retry) + '</button></p>';
+      var rb = el('diExtraRetry');
+      if (rb) rb.addEventListener('click', loadExtra);
+    }
+    function attempt(n) {
+      fetch(DEST_INFO_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dest: dest, lang: getLang(), origin: getOrigin(), passport: getPassport(), part: 'extra' })
+      })
+      .then(function (res) { if (!res.ok) { var e = new Error('HTTP ' + res.status); e.status = res.status; throw e; } return res.json(); })
+      .then(function (info) {
+        if (!info || typeof info !== 'object' || info.error) throw new Error('prazan odgovor');
+        _cache[xk] = info;
+        lsSet(xk, info);
+        if (stillCurrent()) renderExtra(el('diExtra'), info);
+      })
+      .catch(function (err) {
+        var retryable = !err.status || err.status === 429 || err.status >= 500;
+        if (retryable && n < delays.length) { setTimeout(function () { if (stillCurrent()) attempt(n + 1); }, delays[n]); return; }
+        console.warn('[sklopi][dest-info][extra] greška:', err);
+        fail();
+      });
+    }
+    attempt(0);
   }
 
   /* ── Skeleton ── */
@@ -533,22 +622,29 @@
 
     /* ── Fraze ── */
     var ph = normList(d.phrases, ['sr','phrase','reader','source','text'], ['local','translation','foreign']);
+    ph = ph.filter(function (p) { return p.b && p.b.trim().toLowerCase() !== p.a.trim().toLowerCase(); });   // bez prevoda (isti jezik) nema kartice
     if (ph.length) {
       html += '<div class="di-card di-card-full">';
       html += '<div class="di-card-head"><span class="di-card-ic di-ic-purple">💬</span><span class="di-card-title">' + L.phrases + '</span></div>';
       ph.forEach(function (p) {
-        html += '<div class="di-row"><span class="di-label">' + esc(p.a) + '</span><span class="di-val di-phrase">' + esc(p.b) + '</span></div>';
+        html += '<div class="di-row" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="di-label" style="max-width:100%">' + esc(p.a) + '</span><span class="di-val di-phrase" style="text-align:left;max-width:100%;overflow-wrap:anywhere">' + esc(p.b) + '</span></div>';
       });
       html += '</div>';
     }
 
+    html += '<div id="diExtra" style="margin-top:12px"><button type="button" id="diExtraBtn" style="width:100%;padding:12px;border:0;border-radius:14px;background:#0f3b4c;color:#fff;font:inherit;font-weight:600">➕ ' + esc(L.extra_btn) + '</button></div>';
+
     ct.innerHTML = html;
     ct.hidden = false;
+
+    var xb = el('diExtraBtn');
+    if (xb) xb.addEventListener('click', loadExtra);
+    if (_currentDest && (_cache[keyOf(_currentDest) + '|extra'] || lsGet(keyOf(_currentDest) + '|extra'))) loadExtra();   // već učitano ranije: prikaži odmah
 
     var sel = el('diPassportSel'), sel2 = el('diPassportSel2');
     var applyPassport = function () {
       var list = [sel && sel.value, sel2 && sel2.value].filter(function (x, i, a) { return x && a.indexOf(x) === i; });
-      try { if (list.length) localStorage.setItem('sklopi_passport', list.join(', ')); else localStorage.removeItem('sklopi_passport'); } catch (e) {}
+      setPassport(list);
       if (!_currentDest) return;
       var k = keyOf(_currentDest);
       if (k === _currentKey) return;
