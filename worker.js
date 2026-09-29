@@ -17,10 +17,10 @@ const SUPPORTED = ['sr', 'en', 'de', 'ru'];
 const SCHEMA = {
   flag: '<flag emoji of the country where DEST is located>',
   currency: '<ISO currency code used in DEST, e.g. the local currency>',
-  currency_rate: '<approximate rate: 1 <DEST currency> ≈ N <currency of ORIGIN country>>',
+  currency_rate: '<approximate rate: 1 <DEST currency> ≈ N <currency of ORIGIN country>; if both use the same currency output exactly the single word SAME>',
   timezone_iana: '<IANA timezone id of DEST, e.g. Europe/Athens>',
   timezone: '<short label, e.g. EET (UTC+2)>',
-  language: '<main local language(s) of DEST>',
+  language: '<the official/main language(s) a tourist will actually hear in DEST, max 2, no regional minority languages>',
   safety_level: '<one short phrase rating how safe DEST is for tourists, in the output language>',
   safety_note: '<one short practical safety tip specific to DEST>',
   weather: { season_now: '<current season in DEST>', temp_range: '<typical temperature range now, °C>', icon: '<one weather emoji>', description: '<short description>', best_months: '<best months to visit>' },
@@ -77,7 +77,7 @@ async function handleDestInfo(request, env, ctx) {
     'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || ('the country where ORIGIN is located')) + '". ' +
     'PASSPORT may list several passports (e.g. "Serbia, Germany" or "Srbija-Nemačka"): treat the traveller as holding all of them and, for visa/entry/health rules, use the MOST favourable one (an EU/Schengen passport means free movement, an ID card is enough) and say which passport the rule applies to. '+
     'ORIGIN is the departure city: flights, road distance, airport transfers and travel time are for ORIGIN → DEST (e.g. Athens → Sofia), not from Serbia. Roaming is for a typical mobile plan of the FIRST passport country listed (state that assumption in one short phrase). '+
-    'Currency facts as of 2026: Bulgaria uses the euro (EUR) since 1 January 2026, Croatia since 2023; never output BGN for Bulgaria. If the DEST currency equals the ORIGIN country currency, set currency_rate to a short phrase meaning "same currency" instead of a rate. '+
+    'Currency facts as of 2026: Bulgaria uses the euro (EUR) since 1 January 2026, Croatia since 2023; never output BGN for Bulgaria. If the DEST currency equals the ORIGIN country currency, set currency_rate to exactly the word SAME (nothing else) instead of a rate. '+
     'Everything that depends on the traveller (visa/entry rules, embassy, roaming, currency_rate, flights and routes, road distance) must be correct for that ORIGIN and PASSPORT — never assume Serbia unless ORIGIN/PASSPORT say so. ' +
     'Return ONLY a JSON object with EXACTLY the keys of the schema below, filled with REAL facts about DEST and the country it is in. ' +
     'The schema values in <angle brackets> are instructions, NOT example data: replace every one of them; never output angle brackets and never reuse data of another city or country. ' +
@@ -85,7 +85,7 @@ async function handleDestInfo(request, env, ctx) {
     'Today is ' + now.toISOString().slice(0, 10) + ' (use it for season_now). must_see: 5 items, phrases: 5 items, food: 5 items, neighborhoods: 4 items, scams: 4 items, airport_to_center: 2-4 options, ' +
     'climate_months: arrays of exactly 12 numbers Jan→Dec (sea = null if no sea). ' +
     'KEY RULE: JSON keys must stay EXACTLY as in the schema (English, never translated); every array item must be an object with all its keys filled, no empty or missing fields. ' +
-    'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno")' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
+    'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno", "nemački" — never ijekavian/Croatian forms like "njemački"; always write proper diacritics č ć š ž đ, never c/s/z instead)' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
     'Schema:\n' + JSON.stringify(SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
 
   const work = generateInfo(env, prompt);
@@ -112,7 +112,7 @@ function norm(x) {
 }
 function makeKey(dest, lang, origin, passport) {
   const month = new Date().toISOString().slice(0, 7);
-  return [norm(dest), lang, norm(origin) || 'default', norm(passport) || 'auto', month].join('|');
+  return ['v2', norm(dest), lang, norm(origin) || 'default', norm(passport) || 'auto', month].join('|');
 }
 async function cacheGet(env, key) {
   try {
