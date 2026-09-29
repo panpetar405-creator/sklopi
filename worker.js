@@ -32,12 +32,12 @@ const SCHEMA = {
   },
   transport: { public: '<local public transport and fare>', taxi: '<typical airport–centre taxi price in DEST>', tip: '<one tip>' },
   practical: { plug: '<socket type and voltage used in DEST>', water: '<is tap water drinkable>', tip_custom: '<tipping custom in DEST>' },
-  must_see: [{ name: '<real landmark in DEST>', note: '<short tip>' }],
-  phrases: [{ sr: '<everyday phrase in the reader language>', local: '<same phrase in the local language of DEST>' }],
+  must_see: [1,2,3,4,5].map((n) => ({ name: '<real landmark #' + n + ' in DEST>', note: '<short tip>' })),
+  phrases: [1,2,3,4,5].map((n) => ({ sr: '<everyday phrase #' + n + ' in the reader language>', local: '<same phrase in the local language of DEST>' })),
   climate_months: { hi: '<12 numbers Jan→Dec, avg daytime max °C in DEST>', lo: '<12 numbers, avg night min °C>', rain: '<12 numbers, mm of rain per month>', sea: '<12 numbers sea temperature °C, or null if DEST has no sea>' },
   getting_there: { airlines: '<airlines flying Belgrade → DEST>', flight_time: '<flight duration from Belgrade, direct or with stop>', by_road: '<by car/bus/train from Serbia: km and hours, or "not practical">', tip: '<booking tip>' },
   airport_to_center: [{ mode: '<Metro/Bus/Train/Taxi at DEST airport>', price: '<price>', duration: '<duration>' }],
-  food: [{ dish: '<traditional dish or drink of DEST>', note: '<where to eat it and typical price>' }],
+  food: [1,2,3,4,5].map((n) => ({ dish: '<traditional dish or drink #' + n + ' of DEST>', note: '<where to eat it and typical price>' })),
 };
 
 async function handleDestInfo(request, env) {
@@ -63,6 +63,7 @@ async function handleDestInfo(request, env) {
     'Everything (currency, language, flag, plug type, dishes, phrases, landmarks, transport) must be correct for DEST specifically. ' +
     'Today is ' + now.toISOString().slice(0, 10) + ' (use it for season_now). must_see: 5 items, phrases: 5 items, food: 5 items, airport_to_center: 2-4 options, ' +
     'climate_months: arrays of exactly 12 numbers Jan→Dec (sea = null if no sea). ' +
+    'KEY RULE: JSON keys must stay EXACTLY as in the schema (English, never translated); every array item must be an object with all its keys filled, no empty or missing fields. ' +
     'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno")' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
     'Schema:\n' + JSON.stringify(SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
 

@@ -204,6 +204,22 @@
     }
   }
 
+  /* ── Normalizacija stavki (model ume da vrati string ili drugačije ključeve na en/de/ru) ── */
+  function pick(o, keys) { for (var i = 0; i < keys.length; i++) { if (o[keys[i]]) return String(o[keys[i]]); } return ''; }
+  function vals(o) { return Object.keys(o).map(function (k) { return o[k]; }).filter(function (v) { return typeof v === 'string' && v; }); }
+  function normPair(it, nameKeys, noteKeys) {
+    if (typeof it === 'string') return { a: it, b: '' };
+    if (!it || typeof it !== 'object') return { a: '', b: '' };
+    var v = vals(it);
+    var a = pick(it, nameKeys) || v[0] || '';
+    var b = pick(it, noteKeys) || (v[0] === a ? v[1] : v[0]) || '';
+    return { a: a, b: b === a ? '' : b };
+  }
+  function normList(arr, nameKeys, noteKeys) {
+    if (!Array.isArray(arr)) return [];
+    return arr.map(function (it) { return normPair(it, nameKeys, noteKeys); }).filter(function (p) { return p.a; });
+  }
+
   /* ── Render ── */
   function renderPanel(d) {
     var ct = el('destInfoContent');
@@ -297,7 +313,7 @@
     html += '</div>'; /* /di-grid */
 
     /* ── Must-see ── */
-    var ms = d.must_see || [];
+    var ms = normList(d.must_see, ['name','landmark','title','attraction','sight'], ['note','tip','description','desc']);
     if (ms.length) {
       html += '<div class="di-card di-card-full">';
       html += '<div class="di-card-head"><span class="di-card-ic di-ic-aqua">🎡</span><span class="di-card-title">' + L.mustsee + '</span></div>';
@@ -305,8 +321,8 @@
       ms.forEach(function (item, i) {
         html += '<div class="di-ms-item">';
         html += '<span class="di-ms-num">' + (i + 1) + '</span>';
-        html += '<div><div class="di-ms-name">' + esc(item.name) + '</div>';
-        if (item.note) html += '<div class="di-ms-note">' + esc(item.note) + '</div>';
+        html += '<div><div class="di-ms-name">' + esc(item.a) + '</div>';
+        if (item.b) html += '<div class="di-ms-note">' + esc(item.b) + '</div>';
         html += '</div></div>';
       });
       html += '</div></div>';
@@ -354,22 +370,22 @@
     }
 
     /* ── Šta jesti ── */
-    var fd = d.food || [];
+    var fd = normList(d.food, ['dish','name','food','title'], ['note','tip','description','desc']);
     if (fd.length) {
       html += '<div class="di-card di-card-full"><div class="di-card-head"><span class="di-card-ic di-ic-gold">🍽️</span><span class="di-card-title">' + L.food + '</span></div><div class="di-mustsee">';
       fd.forEach(function (f, i) {
-        html += '<div class="di-ms-item"><span class="di-ms-num">' + (i + 1) + '</span><div><div class="di-ms-name">' + esc(f.dish) + '</div>' + (f.note ? '<div class="di-ms-note">' + esc(f.note) + '</div>' : '') + '</div></div>';
+        html += '<div class="di-ms-item"><span class="di-ms-num">' + (i + 1) + '</span><div><div class="di-ms-name">' + esc(f.a) + '</div>' + (f.b ? '<div class="di-ms-note">' + esc(f.b) + '</div>' : '') + '</div></div>';
       });
       html += '</div></div>';
     }
 
     /* ── Fraze ── */
-    var ph = d.phrases || [];
+    var ph = normList(d.phrases, ['sr','phrase','reader','source','text'], ['local','translation','foreign']);
     if (ph.length) {
       html += '<div class="di-card di-card-full">';
       html += '<div class="di-card-head"><span class="di-card-ic di-ic-purple">💬</span><span class="di-card-title">' + L.phrases + '</span></div>';
       ph.forEach(function (p) {
-        html += '<div class="di-row"><span class="di-label">' + esc(p.sr) + '</span><span class="di-val di-phrase">' + esc(p.local) + '</span></div>';
+        html += '<div class="di-row"><span class="di-label">' + esc(p.a) + '</span><span class="di-val di-phrase">' + esc(p.b) + '</span></div>';
       });
       html += '</div>';
     }
