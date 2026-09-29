@@ -9474,7 +9474,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     if (sel.includeHotel) lines.push('Booking.com (hotel): ' + buildAffiliateLink('hotel', linkCtx));
     if (sel.activityCount > 0) lines.push('Viator (aktivnosti): ' + buildAffiliateLink('activity', {dest:ctx.dest}));
     lines.push('', affDisc());
-    const url = URL.createObjectURL(new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'}));
+    const url = URL.createObjectURL(new Blob(['\uFEFF' + lines.join('\r\n')], {type:'text/plain;charset=utf-8'}));
     const link = document.createElement('a');
     link.href = url; link.download = 'sklopi-plan-puta.txt';
     document.body.appendChild(link); link.click(); link.remove();
