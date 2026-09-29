@@ -122,17 +122,15 @@
     }
 
     // Direktno na input promenu (debounce)
-    var debounce;
-    destInput.addEventListener('input', function () {
-      clearTimeout(debounce);
-      debounce = setTimeout(checkAndLoad, 600);
-    });
+    // Namerno NE učitavamo dok korisnik kuca ("Ati", "Atin"...) — svaki takav
+    // poziv troši AI tokene. Učitava se na submit, izbor iz autocomplete-a
+    // (change) i kad se otvore planovi.
+    destInput.addEventListener('change', function () { setTimeout(checkAndLoad, 300); });
 
     // Promena polaznog mesta -> nove informacije (viza, ambasada, roaming zavise od toga)
     var originInput = el('origin');
     if (originInput) {
       var od;
-      originInput.addEventListener('input', function () { clearTimeout(od); od = setTimeout(checkAndLoad, 1500); });
       originInput.addEventListener('change', function () { clearTimeout(od); od = setTimeout(checkAndLoad, 400); });
     }
 
@@ -165,9 +163,14 @@
     if (titleEl) titleEl.textContent = u.sub_pre + dest;
     if (subEl) subEl.textContent = u.sub_sub;
 
-    // Iz keša ako već imamo
+    // Iz keša ako već imamo (memorija, pa localStorage 7 dana)
     var cacheKey = keyOf(dest);
+    if (!_cache[cacheKey]) {
+      var stored = lsGet(cacheKey);
+      if (stored) _cache[cacheKey] = stored;
+    }
     if (_cache[cacheKey]) {
+      showSkeleton(false);
       renderPanel(_cache[cacheKey]);
       return;
     }
@@ -176,28 +179,57 @@
 
     var myReq = ++_reqId;
 
-    fetch(DEST_INFO_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dest: dest, lang: getLang(), origin: getOrigin(), passport: getPassport() })
-    })
-    .then(function (res) {
-      if (!res.ok) { return res.text().then(function (t) { throw new Error('HTTP ' + res.status + ': ' + t.slice(0, 300)); }); }
-      return res.json();
-    })
-    .then(function (info) {
-      if (myReq !== _reqId) return; // zastareo zahtev
-      if (!info || typeof info !== 'object' || info.error) throw new Error((info && info.error) || 'prazan odgovor');
-      _cache[cacheKey] = info;
-      showSkeleton(false);
-      renderPanel(info);
-    })
-    .catch(function (err) {
-      if (myReq !== _reqId) return;
-      console.warn('[sklopi][dest-info] greška:', err);
-      showSkeleton(false);
-      showError(String(err && err.message || err));
-    });
+    // Do 3 pokušaja; na 429/502/503/504 čekamo 2s pa 5s (AI servis je povremeno zauzet)
+    var delays = [2000, 5000];
+    function attempt(n) {
+      fetch(DEST_INFO_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dest: dest, lang: getLang(), origin: getOrigin(), passport: getPassport() })
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          return res.text().then(function (t) {
+            var e = new Error('HTTP ' + res.status + ': ' + t.slice(0, 300));
+            e.status = res.status;
+            throw e;
+          });
+        }
+        return res.json();
+      })
+      .then(function (info) {
+        if (myReq !== _reqId) return; // zastareo zahtev
+        if (!info || typeof info !== 'object' || info.error) throw new Error((info && info.error) || 'prazan odgovor');
+        _cache[cacheKey] = info;
+        lsSet(cacheKey, info);
+        showSkeleton(false);
+        renderPanel(info);
+      })
+      .catch(function (err) {
+        if (myReq !== _reqId) return;
+        var retryable = !err.status || err.status === 429 || err.status >= 500;
+        if (retryable && n < delays.length) {
+          setTimeout(function () { if (myReq === _reqId) attempt(n + 1); }, delays[n]);
+          return;
+        }
+        console.warn('[sklopi][dest-info] greška:', err);   // detalji samo u konzoli
+        showSkeleton(false);
+        showError();
+      });
+    }
+    attempt(0);
+  }
+
+  /* ── localStorage keš (7 dana) ── */
+  var LS_PREFIX = 'sklopi_di:', LS_TTL = 7 * 24 * 3600 * 1000;
+  function lsGet(k) {
+    try {
+      var r = JSON.parse(localStorage.getItem(LS_PREFIX + k) || 'null');
+      return r && r.t && (Date.now() - r.t) < LS_TTL ? r.d : null;
+    } catch (e) { return null; }
+  }
+  function lsSet(k, d) {
+    try { localStorage.setItem(LS_PREFIX + k, JSON.stringify({ t: Date.now(), d: d })); } catch (e) {}
   }
 
   /* ── Skeleton ── */
@@ -210,12 +242,17 @@
     if (disc) disc.hidden = show;
   }
 
-  function showError(detail) {
+  function showError() {
     var u2 = ui();
     var ct = el('destInfoContent');
     if (ct) {
       ct.hidden = false;
-      ct.innerHTML = '<p class="di-error">' + esc(u2.error) + '</p><p class="di-error" style="font-size:12px;opacity:.7">' + esc(u2.detail) + esc(detail || '') + '</p>';
+      var retry = { sr:'Pokušaj ponovo', en:'Try again', de:'Erneut versuchen', ru:'Повторить' }[curLang()];
+      var wait = { sr:'Pokušaj ponovo za minut.', en:'Please try again in a minute.', de:'Bitte in einer Minute erneut versuchen.', ru:'Повторите попытку через минуту.' }[curLang()];
+      ct.innerHTML = '<p class="di-error">' + esc(u2.error) + ' ' + esc(wait) + '</p>' +
+        '<p style="text-align:center"><button type="button" id="diRetryBtn" style="padding:8px 18px;border:0;border-radius:10px;background:#0f3b4c;color:#fff;font:inherit;font-weight:600">' + esc(retry) + '</button></p>';
+      var b = el('diRetryBtn');
+      if (b) b.addEventListener('click', function () { if (_currentDest) { showSkeleton(false); loadDestInfo(_currentDest); } });
     }
   }
 
