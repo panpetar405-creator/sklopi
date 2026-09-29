@@ -101,12 +101,14 @@
     // Update naslova sekcije
     var titleEl = el('destInfoTitle');
     var subEl = el('destInfoSub');
-    if (titleEl) titleEl.textContent = 'O destinaciji — ' + dest;
-    if (subEl) subEl.textContent = 'Sve što treba da znaš pre polaska u ' + dest + '.';
+    var u = ui();
+    if (titleEl) titleEl.textContent = u.sub_pre + dest;
+    if (subEl) subEl.textContent = u.sub_sub + dest + '.';
 
     // Iz keša ako već imamo
-    if (_cache[dest]) {
-      renderPanel(_cache[dest]);
+    var cacheKey = dest + '|' + getLang();
+    if (_cache[cacheKey]) {
+      renderPanel(_cache[cacheKey]);
       return;
     }
 
@@ -117,7 +119,7 @@
     fetch(DEST_INFO_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dest: dest })
+      body: JSON.stringify({ dest: dest, lang: getLang() })
     })
     .then(function (res) {
       if (!res.ok) { return res.text().then(function (t) { throw new Error('HTTP ' + res.status + ': ' + t.slice(0, 300)); }); }
@@ -126,7 +128,7 @@
     .then(function (info) {
       if (myReq !== _reqId) return; // zastareo zahtev
       if (!info || typeof info !== 'object' || info.error) throw new Error((info && info.error) || 'prazan odgovor');
-      _cache[dest] = info;
+      _cache[cacheKey] = info;
       showSkeleton(false);
       renderPanel(info);
     })
@@ -149,10 +151,11 @@
   }
 
   function showError(detail) {
+    var u2 = ui();
     var ct = el('destInfoContent');
     if (ct) {
       ct.hidden = false;
-      ct.innerHTML = '<p class="di-error">Nije uspelo učitavanje info o destinaciji. Pokušaj ponovo osvežavanjem stranice.</p><p class="di-error" style="font-size:12px;opacity:.7">Detalji: ' + esc(detail || '') + '</p>';
+      ct.innerHTML = '<p class="di-error">' + esc(u2.error) + '</p><p class="di-error" style="font-size:12px;opacity:.7">' + esc(u2.detail) + esc(detail || '') + '</p>';
     }
   }
 
@@ -279,7 +282,7 @@
     ct.hidden = false;
 
     var disc = el('destInfoDisclaimer');
-    if (disc) disc.hidden = false;
+    if (disc) { disc.hidden = false; disc.textContent = '⚠️ ' + ui().disclaimer.replace(/^⚠️\s*/, ''); }
   }
 
   /* ── Init ── */

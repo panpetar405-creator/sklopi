@@ -32,13 +32,22 @@ async function handleDestInfo(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: CORS });
 
-  let dest = '';
-  try { dest = String((await request.json()).dest || '').trim().slice(0, 80); } catch (e) {}
+  let dest = '', lang = 'sr';
+  try {
+    const body = await request.json();
+    dest = String(body.dest || '').trim().slice(0, 80);
+    lang = String(body.lang || 'sr').trim().slice(0, 5);
+  } catch (e) {}
   if (!dest) return json({ error: 'nedostaje dest' }, 400);
 
+  var LANG_NAMES = { sr: 'srpskom', en: 'engleskom', de: 'nemačkom', ru: 'ruskom' };
+  var langName = LANG_NAMES[lang] || LANG_NAMES.sr;
+
   const prompt =
-    'Ti si travel ekspert koji pomaže srpskim turistima. Za destinaciju "' + dest + '" vrati SAMO JSON objekat ' +
-    'sa TAČNO ovom strukturom (primer je za Rim, prilagodi sve za ' + dest + '; must_see 5 stavki, phrases 5 stavki):\n' +
+    'Ti si travel ekspert. Za destinaciju "' + dest + '" vrati SAMO JSON objekat ' +
+    'sa TAČNO ovom strukturom (primer je za Rim, prilagodi sve za ' + dest + '; must_see 5 stavki, phrases 5 stavki). ' +
+    'SAV tekst u vrednostima (opisi, napomene, imena, fraze) napiši na ' + langName + ' jeziku, ' +
+    'osim lokalnog izraza u phrases[].local, koji ostaje na jeziku te zemlje:\n' +
     JSON.stringify(EXAMPLE) + '\nSva polja su obavezna. Vrati SAMO JSON.';
 
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
