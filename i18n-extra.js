@@ -4,6 +4,17 @@
    i18n-data.js ne briše ove prevode. tx('srpski tekst') vraća prevod za trenutni jezik. */
 (function(){
   var ROWS = [
+    ["x_fx01","Auto u ","Car in ","Автомобиль в "],
+    ["x_fx02","/ dan","/ day","/ день"],
+    ["x_fx03","uklj. gorivo i putarine","incl. fuel and tolls","вкл. топливо и платные дороги"],
+    ["x_fx04","Gorivo i putarine: ","Fuel and tolls: ","Топливо и платные дороги: "],
+    ["x_fx05","Gorivo i putarine (auto)","Fuel and tolls (car)","Топливо и платные дороги (авто)"],
+    ["x_fx06","Boravišna taksa","Tourist tax","Туристический сбор"],
+    ["x_fx07","Ukupna cena tvog puta","Total price of your trip","Общая стоимость вашей поездки"],
+    ["x_fx08","Sve stavke koje si izabrao/la, sabrane na jedno mesto.","Everything you selected, gathered in one place.","Всё, что вы выбрали, собрано в одном месте."],
+    ["x_fx09","Sačuvaj u Moj put","Save to My trip","Сохранить в «Моя поездка»"],
+    ["x_fx10","Ilustrativna procena — tačna cena i dostupnost potvrđuju se kod partnera pre rezervacije.","Illustrative estimate — the exact price and availability are confirmed with the partner before booking.","Ориентировочная оценка — точная цена и наличие подтверждаются у партнёра перед бронированием."],
+    ["x_fx11","Auto","Car","Автомобиль"],
     ["x_9bd979","PUTOVANJE PO TVOM UKUSU","TRAVEL YOUR WAY","ПУТЕШЕСТВИЕ ПО ВАШЕМУ ВКУСУ"],
     ["x_76e5d6","Sklopi put<br>koji ti odgovara.","Build a trip<br>that fits you.","Соберите поездку,<br>которая вам подходит."],
     ["x_76f374","Reći nam gde ideš, koliko imaš i kakav put želiš.","Tell us where you're going, how much you have and what kind of trip you want.","Скажите, куда едете, какой у вас бюджет и какая поездка вам нужна."],
@@ -234,6 +245,17 @@
   ];
   /* Nemački (DE): ključ -> prevod; ako ključa nema, koristi se engleski. */
   var DE = {
+ "x_fx01": "Auto in ",
+ "x_fx02": "/ Tag",
+ "x_fx03": "inkl. Kraftstoff und Maut",
+ "x_fx04": "Kraftstoff und Maut: ",
+ "x_fx05": "Kraftstoff und Maut (Auto)",
+ "x_fx06": "Kurtaxe",
+ "x_fx07": "Gesamtpreis deiner Reise",
+ "x_fx08": "Alles, was du ausgewählt hast, an einem Ort.",
+ "x_fx09": "In „Meine Reise“ speichern",
+ "x_fx10": "Unverbindliche Schätzung — genauer Preis und Verfügbarkeit werden vor der Buchung beim Partner bestätigt.",
+ "x_fx11": "Auto",
  "x_378715": "Reise zusammenstellen",
  "x_ae778a": "Meine Reise zusammenstellen",
  "x_cc951e": "Wochenende",

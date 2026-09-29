@@ -16,7 +16,7 @@ const CACHE_VERSION = 'sklopi-shell-v4';
 // za njih se mreža uvek probom prva (network-first), keš je samo rezerva
 // za slab/nestabilan signal ili offline rad. Bez ovoga bi stari keš mogao
 // da nastavi da se servira i posle uspešnog deploy-a nove verzije.
-const NETWORK_FIRST = ['/app.js', '/styles.css', '/dest-info.js', '/dest-info.css', '/i18n-data.js', '/i18n-extra.js'];
+const NETWORK_FIRST = ['/app.js', '/styles.css'];
 const APP_SHELL = [
   '/',
   '/index.html',

@@ -7652,9 +7652,9 @@ function renderBuilder(){
   const rows = [];
   if (builderState.includeFlight) rows.push([badge('flight'), t('builder_flight_label'), pkg.flight.price]);
   if (builderState.includeHotel) rows.push([badge('hotel'), 'Hotel', pkg.hotel.price]);
-  if (builderState.carPref !== 'none') rows.push([badge('car'), 'Auto', pkg.car.price]);
+  if (builderState.carPref !== 'none') rows.push([badge('car'), tx('Auto'), pkg.car.price]);
   if (builderState.activityCount > 0) rows.push([badge('activity'), t('builder_activities_label'), pkg.activity.price]);
-  if (pkg.carExtras.price > 0) rows.push(['⛽', 'Gorivo i putarine (auto)', pkg.carExtras.price]);
+  if (pkg.carExtras.price > 0) rows.push(['⛽', tx('Gorivo i putarine (auto)'), pkg.carExtras.price]);
   if (builderState.insurance) rows.push(['🛡️', t('f_insurance_name'), pkg.insuranceCost]);
   if (builderState.putarina) rows.push(['🛣️', t('f_tolls_name'), pkg.putarinaCost]);
   if (builderState.touristTax && builderState.includeHotel) rows.push(['🏛️', t('f_tax_name'), pkg.touristTaxCost]);
@@ -9329,11 +9329,11 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
     const sel = trip.sel, ctx = tripCtx();
     const pkg = computeCustomPackage(sel, ctx);
     const rows = [];
-    if (sel.includeFlight) rows.push(['\u2708', 'Let', pkg.flight.price]);
-    if (sel.includeHotel) rows.push(['\u25a3', 'Hotel', pkg.hotel.price]);
-    if (sel.includeHotel && sel.touristTax) rows.push(['\ud83c\udfdb\ufe0f', 'Boravišna taksa', pkg.touristTaxCost]);
-    if (sel.activityCount > 0) rows.push(['\u25c7', 'Aktivnosti', pkg.activity.price]);
-    rows.push(['\u25b1', 'Prevoz', sel.carPref === 'none' ? 0 : pkg.car.price + pkg.carExtras.price]);
+    if (sel.includeFlight) rows.push(['\u2708', tx('Let'), pkg.flight.price]);
+    if (sel.includeHotel) rows.push(['\u25a3', tx('Hotel'), pkg.hotel.price]);
+    if (sel.includeHotel && sel.touristTax) rows.push(['\ud83c\udfdb\ufe0f', tx('Boravišna taksa'), pkg.touristTaxCost]);
+    if (sel.activityCount > 0) rows.push(['\u25c7', tx('Aktivnosti'), pkg.activity.price]);
+    rows.push(['\u25b1', tx('Prevoz'), sel.carPref === 'none' ? 0 : pkg.car.price + pkg.carExtras.price]);
     if (sel.esim) rows.push(['\ud83d\udcf6', 'eSIM', pkg.esimCost]);
     return {ctx, pkg, rows};
   }
