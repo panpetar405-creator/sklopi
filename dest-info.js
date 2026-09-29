@@ -324,6 +324,13 @@
     if (disc) { disc.hidden = false; disc.textContent = '⚠️ ' + ui().disclaimer.replace(/^⚠️\s*/, ''); }
   }
 
+  /* ── Promena jezika: osveži panel (labele + AI sadržaj) na novom jeziku ── */
+  var _prevOnLangChange = window.onLangChange;
+  window.onLangChange = function () {
+    if (typeof _prevOnLangChange === 'function') _prevOnLangChange.apply(this, arguments);
+    if (_currentDest) loadDestInfo(_currentDest);
+  };
+
   /* ── Init ── */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', watchDest);
