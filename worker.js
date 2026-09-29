@@ -21,7 +21,7 @@ const SCHEMA = {
   timezone_iana: '<IANA timezone id of DEST, e.g. Europe/Athens>',
   timezone: '<short label, e.g. EET (UTC+2)>',
   language: '<main local language(s) of DEST>',
-  safety_level: '<one word/short phrase: Safe / Mostly safe / Be careful>',
+  safety_level: '<one short phrase rating how safe DEST is for tourists, in the output language>',
   safety_note: '<one short practical safety tip specific to DEST>',
   weather: { season_now: '<current season in DEST>', temp_range: '<typical temperature range now, °C>', icon: '<one weather emoji>', description: '<short description>', best_months: '<best months to visit>' },
   visa: { required: '<true|false — for citizens of Serbia travelling to DEST\'s country>', type: '<entry rule for Serbian citizens>', duration: '<allowed stay>', passport_note: '<passport validity rule>', health_note: '<health/insurance note>' },
@@ -63,7 +63,7 @@ async function handleDestInfo(request, env) {
     'Everything (currency, language, flag, plug type, dishes, phrases, landmarks, transport) must be correct for DEST specifically. ' +
     'Today is ' + now.toISOString().slice(0, 10) + ' (use it for season_now). must_see: 5 items, phrases: 5 items, food: 5 items, airport_to_center: 2-4 options, ' +
     'climate_months: arrays of exactly 12 numbers Jan→Dec (sea = null if no sea). ' +
-    'Write EVERY human-readable value in ' + LANG_EN + ' — no other language (except phrases[].local which is the local language of DEST). ' +
+    'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno")' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
     'Schema:\n' + JSON.stringify(SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
 
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {

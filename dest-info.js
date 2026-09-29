@@ -75,7 +75,12 @@
       transport:'Транспорт', pub:'Общественный', taxi:'Такси', tip:'Совет', practical:'Практика', plug:'Розетка', water:'Вода', tipping:'Чаевые', safety:'Безопасность',
       mustsee:'Обязательно посмотреть', climate_m:'Климат по месяцам', hi:'День', lo:'Ночь', rain:'Дождь', sea:'Море', getting:'Как добраться', airlines:'Авиакомпании', ftime:'Перелёт', road:'По суше', airport:'Аэропорт → центр', food:'Что попробовать', months:['Я','Ф','М','А','М','И','И','А','С','О','Н','Д'], phrases:'Полезные фразы' }
   };
-  function getLang() { try { if (typeof window.getLang === 'function') return window.getLang(); } catch (e) {} return 'sr'; }
+  function getLang() {
+    try { if (typeof window.getLang === 'function') return window.getLang(); } catch (e) {}
+    try { var u = new URLSearchParams(location.search).get('lang'); if (u && UI[u]) return u; } catch (e) {}
+    try { var sv = localStorage.getItem('sklopi_lang'); if (sv && UI[sv]) return sv; } catch (e) {}
+    return 'sr';
+  }
   function curLang() { var l = 'sr'; try { l = getLang(); } catch (e) {} return UI[l] ? l : 'sr'; }
   function ui() { return UI[curLang()]; }
   function safeLevel(txt) {
@@ -375,6 +380,8 @@
     var disc = el('destInfoDisclaimer');
     if (disc) { disc.hidden = false; disc.textContent = '⚠️ ' + ui().disclaimer.replace(/^⚠️\s*/, ''); }
   }
+
+  document.addEventListener('sklopi:lang', function () { if (_currentDest) { showSkeleton(false); loadDestInfo(_currentDest); } });
 
   window.SklopiDestInfo = { load: function (dest) { _currentDest = dest; loadDestInfo(dest); } };
 
