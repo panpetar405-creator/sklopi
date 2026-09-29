@@ -9161,7 +9161,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
       const d = await r.json();
       if (d.type !== 'standard') return '';
       const th = d.thumbnail && d.thumbnail.source;
-      return th ? th.replace(/\/\d+px-/, '/400px-') : '';
+      return th || '';   // bez menjanja veličine: Wikimedia vraća grešku kad tražena veličina premašuje original
     } catch(e){ return ''; }
   }
   async function actCityPhoto(name, key){
@@ -9182,7 +9182,7 @@ document.getElementById('builderContinueBtn').addEventListener('click', ()=>{
   function paint(items, ctx){
     list.innerHTML = items.map(it => {
       const url = it.url || buildAffiliateLink('activity', {dest: it.q || ctx.dest});
-      return '<article class="ad-card"><div class="ad-photo"><img src="' + escapeHtml(it.img) + '" alt="" loading="lazy"></div>'
+      return '<article class="ad-card"><div class="ad-photo"><img src="' + escapeHtml(it.img) + '" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'' + ACT_GENERIC_IMG + '\'"></div>'
         + '<div class="ad-info"><h3>' + escapeHtml(tx(it.name)) + '</h3><p class="ad-price">' + tx('od ') + escapeHtml(money(it.price)) + '</p>'
         + '<span class="partner-badge partner-badge--viator">Viator</span></div>'
         + '<a class="ad-book" href="' + escapeHtml(url) + '" target="_blank" rel="noopener sponsored" data-kind="activity" data-price="' + it.price
