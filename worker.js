@@ -11,92 +11,33 @@ const CORS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-// Primer strukture — po jeziku. Model prepisuje jezik primera, pa primer MORA biti na jeziku odgovora
-// (inače se u odgovoru mešaju npr. srpske vrednosti u engleskom prikazu).
-const EXAMPLES = {
-  sr: {
-    flag: '🇮🇹', currency: 'EUR', currency_rate: '1 EUR ≈ 117 RSD',
-    timezone: 'CET (UTC+1)', local_time_now: '14:30', language: 'Italijanski',
-    safety_level: 'Bezbedno', safety_note: 'Pazi na džepare u centru',
-    weather: { season_now: 'Jesen', temp_range: '12–22°C', icon: '🌤️', description: 'Blago i suvo', best_months: 'Apr–Jun, Sep–Okt' },
-    visa: { required: false, type: 'Bez vize (Šengen 90/180)', duration: 'Do 90 dana', passport_note: 'Pasoš mora važiti još 3 meseca po povratku', health_note: 'Preporučena EHIC kartica' },
-    daily_cost: {
-      budget: { range: '30–50 EUR', note: 'Hostel, street food, javni prevoz' },
-      mid: { range: '80–140 EUR', note: '3–4★ hotel, restoran, ulaznice' },
-      comfort: { range: '200–400+ EUR', note: '5★ hotel, fine dining, taksi' },
-    },
-    transport: { public: 'Metro 1.50 EUR', taxi: 'Aerodrom–centar ≈ 48 EUR', tip: 'Metro za centar' },
-    practical: { plug: 'Tip C/F, 230V', water: 'Česmovača pitka', tip_custom: '5–10% u restoranima' },
-    must_see: [{ name: 'Koloseum', note: 'Kupi ulaznicu online unapred' }],
-    phrases: [{ sr: 'Hvala', local: 'Grazie' }],
+// Šema odgovora sa OPISIMA polja (ne sa primerom konkretnog grada — model je ranije kopirao
+// vrednosti iz primera, pa je npr. za Atinu vraćao italijanski jezik i rimska jela).
+const SUPPORTED = ['sr', 'en', 'de', 'ru'];
+const SCHEMA = {
+  flag: '<flag emoji of the country where DEST is located>',
+  currency: '<ISO currency code used in DEST, e.g. the local currency>',
+  currency_rate: '<approximate rate: 1 <currency> ≈ N RSD>',
+  timezone_iana: '<IANA timezone id of DEST, e.g. Europe/Athens>',
+  timezone: '<short label, e.g. EET (UTC+2)>',
+  language: '<main local language(s) of DEST>',
+  safety_level: '<one word/short phrase: Safe / Mostly safe / Be careful>',
+  safety_note: '<one short practical safety tip specific to DEST>',
+  weather: { season_now: '<current season in DEST>', temp_range: '<typical temperature range now, °C>', icon: '<one weather emoji>', description: '<short description>', best_months: '<best months to visit>' },
+  visa: { required: '<true|false — for citizens of Serbia travelling to DEST\'s country>', type: '<entry rule for Serbian citizens>', duration: '<allowed stay>', passport_note: '<passport validity rule>', health_note: '<health/insurance note>' },
+  daily_cost: {
+    budget: { range: '<EUR range per person per day>', note: '<what it covers in DEST>' },
+    mid: { range: '<EUR range>', note: '<...>' },
+    comfort: { range: '<EUR range>', note: '<...>' },
   },
-  en: {
-    flag: '🇮🇹', currency: 'EUR', currency_rate: '1 EUR ≈ 117 RSD',
-    timezone: 'CET (UTC+1)', local_time_now: '14:30', language: 'Italian',
-    safety_level: 'Safe', safety_note: 'Watch out for pickpockets in the centre',
-    weather: { season_now: 'Autumn', temp_range: '12–22°C', icon: '🌤️', description: 'Mild and dry', best_months: 'Apr–Jun, Sep–Oct' },
-    visa: { required: false, type: 'No visa (Schengen 90/180)', duration: 'Up to 90 days', passport_note: 'Passport must be valid for at least 3 months after return', health_note: 'EHIC card recommended' },
-    daily_cost: {
-      budget: { range: '30–50 EUR', note: 'Hostel, street food, public transport' },
-      mid: { range: '80–140 EUR', note: '3–4★ hotel, restaurant meals, attractions' },
-      comfort: { range: '200–400+ EUR', note: '5★ hotel, fine dining, taxis' },
-    },
-    transport: { public: 'Metro 1.50 EUR', taxi: 'Airport–centre ≈ 48 EUR', tip: 'Take the metro to the centre' },
-    practical: { plug: 'Type C/F, 230V', water: 'Tap water is drinkable', tip_custom: '5–10% in restaurants' },
-    must_see: [{ name: 'Colosseum', note: 'Buy your ticket online in advance' }],
-    phrases: [{ sr: 'Thank you', local: 'Grazie' }],
-  },
-  de: {
-    flag: '🇮🇹', currency: 'EUR', currency_rate: '1 EUR ≈ 117 RSD',
-    timezone: 'MEZ (UTC+1)', local_time_now: '14:30', language: 'Italienisch',
-    safety_level: 'Sicher', safety_note: 'Im Zentrum auf Taschendiebe achten',
-    weather: { season_now: 'Herbst', temp_range: '12–22°C', icon: '🌤️', description: 'Mild und trocken', best_months: 'Apr–Jun, Sep–Okt' },
-    visa: { required: false, type: 'Kein Visum (Schengen 90/180)', duration: 'Bis zu 90 Tage', passport_note: 'Der Reisepass muss nach der Rückkehr noch 3 Monate gültig sein', health_note: 'EHIC-Karte empfohlen' },
-    daily_cost: {
-      budget: { range: '30–50 EUR', note: 'Hostel, Streetfood, öffentliche Verkehrsmittel' },
-      mid: { range: '80–140 EUR', note: '3–4★-Hotel, Restaurant, Eintrittskarten' },
-      comfort: { range: '200–400+ EUR', note: '5★-Hotel, gehobene Küche, Taxi' },
-    },
-    transport: { public: 'Metro 1,50 EUR', taxi: 'Flughafen–Zentrum ≈ 48 EUR', tip: 'Mit der Metro ins Zentrum' },
-    practical: { plug: 'Typ C/F, 230V', water: 'Leitungswasser ist trinkbar', tip_custom: '5–10 % im Restaurant' },
-    must_see: [{ name: 'Kolosseum', note: 'Ticket vorab online kaufen' }],
-    phrases: [{ sr: 'Danke', local: 'Grazie' }],
-  },
-  ru: {
-    flag: '🇮🇹', currency: 'EUR', currency_rate: '1 EUR ≈ 117 RSD',
-    timezone: 'CET (UTC+1)', local_time_now: '14:30', language: 'Итальянский',
-    safety_level: 'Безопасно', safety_note: 'В центре остерегайтесь карманников',
-    weather: { season_now: 'Осень', temp_range: '12–22°C', icon: '🌤️', description: 'Мягко и сухо', best_months: 'Апр–июн, сен–окт' },
-    visa: { required: false, type: 'Без визы (Шенген 90/180)', duration: 'До 90 дней', passport_note: 'Паспорт должен быть действителен ещё 3 месяца после возвращения', health_note: 'Рекомендуется карта EHIC' },
-    daily_cost: {
-      budget: { range: '30–50 EUR', note: 'Хостел, уличная еда, общественный транспорт' },
-      mid: { range: '80–140 EUR', note: 'Отель 3–4★, рестораны, билеты' },
-      comfort: { range: '200–400+ EUR', note: 'Отель 5★, высокая кухня, такси' },
-    },
-    transport: { public: 'Метро 1,50 EUR', taxi: 'Аэропорт–центр ≈ 48 EUR', tip: 'В центр на метро' },
-    practical: { plug: 'Тип C/F, 230 В', water: 'Водопроводную воду можно пить', tip_custom: '5–10% в ресторанах' },
-    must_see: [{ name: 'Колизей', note: 'Купите билет онлайн заранее' }],
-    phrases: [{ sr: 'Спасибо', local: 'Grazie' }],
-  },
-};
-
-
-// Dodatna polja (klima po mesecima, kako doći, aerodrom→centar, hrana). Primer je na engleskom,
-// a model piše vrednosti na jeziku odgovora.
-const EXTRA_EXAMPLE = {
-  climate_months: { hi: [12,13,16,19,24,28,31,31,27,22,16,13], lo: [3,4,6,9,13,17,20,20,17,13,8,5], rain: [70,60,60,70,50,35,15,20,60,100,110,85], sea: [14,14,15,16,19,23,25,26,24,21,18,15] },
-  getting_there: {
-    airlines: 'Air Serbia (direct), Wizz Air, ITA Airways',
-    flight_time: 'Belgrade → destination ≈ 1 h 40 min, direct',
-    by_road: 'By car ≈ 1,100 km / 12 h; bus or train with a change',
-    tip: 'Book flights 6-8 weeks ahead'
-  },
-  airport_to_center: [
-    { mode: 'Train', price: '14 EUR', duration: '32 min' },
-    { mode: 'Bus', price: '7 EUR', duration: '50 min' },
-    { mode: 'Taxi', price: '48 EUR fixed', duration: '40 min' }
-  ],
-  food: [ { dish: 'Carbonara', note: 'Trattoria, main course 12-15 EUR' } ]
+  transport: { public: '<local public transport and fare>', taxi: '<typical airport–centre taxi price in DEST>', tip: '<one tip>' },
+  practical: { plug: '<socket type and voltage used in DEST>', water: '<is tap water drinkable>', tip_custom: '<tipping custom in DEST>' },
+  must_see: [{ name: '<real landmark in DEST>', note: '<short tip>' }],
+  phrases: [{ sr: '<everyday phrase in the reader language>', local: '<same phrase in the local language of DEST>' }],
+  climate_months: { hi: '<12 numbers Jan→Dec, avg daytime max °C in DEST>', lo: '<12 numbers, avg night min °C>', rain: '<12 numbers, mm of rain per month>', sea: '<12 numbers sea temperature °C, or null if DEST has no sea>' },
+  getting_there: { airlines: '<airlines flying Belgrade → DEST>', flight_time: '<flight duration from Belgrade, direct or with stop>', by_road: '<by car/bus/train from Serbia: km and hours, or "not practical">', tip: '<booking tip>' },
+  airport_to_center: [{ mode: '<Metro/Bus/Train/Taxi at DEST airport>', price: '<price>', duration: '<duration>' }],
+  food: [{ dish: '<traditional dish or drink of DEST>', note: '<where to eat it and typical price>' }],
 };
 
 async function handleDestInfo(request, env) {
@@ -112,16 +53,18 @@ async function handleDestInfo(request, env) {
   if (!dest) return json({ error: 'nedostaje dest' }, 400);
 
 
-  const L = EXAMPLES[lang] ? lang : 'sr';
+  const L = SUPPORTED.includes(lang) ? lang : 'sr';
   const LANG_EN = { sr: 'Serbian (Latin script)', en: 'English', de: 'German', ru: 'Russian' }[L];
+  const now = new Date();
   const prompt =
-    'You are a travel expert. For the destination "' + dest + '" return ONLY a JSON object ' +
-    'with EXACTLY this structure (the example is for Rome; adapt every value to ' + dest + '; must_see: 5 items, phrases: 5 items, food: 5 items, airport_to_center: 2-4 options, climate_months: arrays of exactly 12 numbers Jan→Dec, in °C and mm, sea = null if the place has no sea). ' +
-    'For getting_there assume the traveller departs from Belgrade, Serbia. ' +
-    'Write EVERY human-readable value (descriptions, notes, names, visa text, season names, safety level) in ' + LANG_EN + ' — no other language. ' +
-    'In phrases[], the field "sr" holds the everyday phrase in ' + LANG_EN + ' (the reader\'s language) and "local" holds the same phrase in the destination country\'s local language. ' +
-    'Keep the keys exactly as in the example:\n' +
-    JSON.stringify(Object.assign({}, EXAMPLES[L], EXTRA_EXAMPLE)) + '\nAll fields are required. Return ONLY JSON.';
+    'You are a travel expert helping travellers from Serbia. DEST = "' + dest + '". ' +
+    'Return ONLY a JSON object with EXACTLY the keys of the schema below, filled with REAL facts about DEST and the country it is in. ' +
+    'The schema values in <angle brackets> are instructions, NOT example data: replace every one of them; never output angle brackets and never reuse data of another city or country. ' +
+    'Everything (currency, language, flag, plug type, dishes, phrases, landmarks, transport) must be correct for DEST specifically. ' +
+    'Today is ' + now.toISOString().slice(0, 10) + ' (use it for season_now). must_see: 5 items, phrases: 5 items, food: 5 items, airport_to_center: 2-4 options, ' +
+    'climate_months: arrays of exactly 12 numbers Jan→Dec (sea = null if no sea). ' +
+    'Write EVERY human-readable value in ' + LANG_EN + ' — no other language (except phrases[].local which is the local language of DEST). ' +
+    'Schema:\n' + JSON.stringify(SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
 
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -140,7 +83,12 @@ async function handleDestInfo(request, env) {
   const data = await r.json();
   const raw = data.choices?.[0]?.message?.content || '';
   try {
-    return json(JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1)));
+    const out = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+    try {
+      out.local_time_now = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: out.timezone_iana }).format(new Date());
+    } catch (e) { delete out.local_time_now; }
+    delete out.timezone_iana;
+    return json(out);
   } catch (e) {
     return json({ error: 'model nije vratio ispravan JSON' }, 502);
   }
