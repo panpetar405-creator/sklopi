@@ -52,30 +52,31 @@
       climate:'Klima', now:'Sada', best:'Idealno', visa:'Viza & Ulazak', status:'Status', stay:'Boravak', passport:'Pasoš', health:'Zdravlje',
       costs:'Okvirni dnevni troškovi po osobi', budget:'Budžet', balanced:'Balans', comfort:'Komfor',
       transport:'Prevoz', pub:'Javni', taxi:'Taksi', tip:'Savet', practical:'Praktično', plug:'Adapter', water:'Voda', tipping:'Napojnica', safety:'Bezbednost',
-      mustsee:'Obavezno videti', phrases:'Korisne fraze' },
+      mustsee:'Obavezno videti', climate_m:'Klima po mesecima', hi:'Dnevna', lo:'Noćna', rain:'Kiša', sea:'More', getting:'Kako doći', airlines:'Aviokompanije', ftime:'Let', road:'Kopnom', airport:'Aerodrom → centar', food:'Šta jesti', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Korisne fraze' },
     en: { sub_pre:'About the destination — ', sub_sub:'Everything you need to know before you go.',
       error:'Destination info is not available right now.', detail:'Details: ',
       disclaimer:'Info is AI-generated for orientation only — always check with the embassy and your airline before travelling.',
       climate:'Climate', now:'Now', best:'Best time', visa:'Visa & Entry', status:'Status', stay:'Stay', passport:'Passport', health:'Health',
       costs:'Approx. daily costs per person', budget:'Budget', balanced:'Balanced', comfort:'Comfort',
       transport:'Transport', pub:'Public', taxi:'Taxi', tip:'Tip', practical:'Practical', plug:'Plug', water:'Water', tipping:'Tipping', safety:'Safety',
-      mustsee:'Must-see', phrases:'Useful phrases' },
+      mustsee:'Must-see', climate_m:'Climate by month', hi:'Day', lo:'Night', rain:'Rain', sea:'Sea', getting:'Getting there', airlines:'Airlines', ftime:'Flight', road:'By road', airport:'Airport → centre', food:'What to eat', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Useful phrases' },
     de: { sub_pre:'Über das Reiseziel — ', sub_sub:'Alles, was du vor der Abreise wissen musst.',
       error:'Reiseziel-Infos sind gerade nicht verfügbar.', detail:'Details: ',
       disclaimer:'Die Infos sind KI-generiert und dienen nur zur Orientierung — prüfe vor der Reise immer bei der Botschaft und deiner Fluggesellschaft.',
       climate:'Klima', now:'Jetzt', best:'Beste Zeit', visa:'Visum & Einreise', status:'Status', stay:'Aufenthalt', passport:'Reisepass', health:'Gesundheit',
       costs:'Ungefähre Tageskosten pro Person', budget:'Budget', balanced:'Ausgewogen', comfort:'Komfort',
       transport:'Verkehr', pub:'Öffentlich', taxi:'Taxi', tip:'Tipp', practical:'Praktisches', plug:'Steckdose', water:'Wasser', tipping:'Trinkgeld', safety:'Sicherheit',
-      mustsee:'Sehenswürdigkeiten', phrases:'Nützliche Redewendungen' },
+      mustsee:'Sehenswürdigkeiten', climate_m:'Klima nach Monat', hi:'Tag', lo:'Nacht', rain:'Regen', sea:'Meer', getting:'Anreise', airlines:'Fluggesellschaften', ftime:'Flug', road:'Auf dem Landweg', airport:'Flughafen → Zentrum', food:'Was essen', months:['J','F','M','A','M','J','J','A','S','O','N','D'], phrases:'Nützliche Redewendungen' },
     ru: { sub_pre:'О направлении — ', sub_sub:'Всё, что нужно знать перед поездкой.',
       error:'Информация о направлении сейчас недоступна.', detail:'Подробности: ',
       disclaimer:'Информация создана ИИ и носит ознакомительный характер — перед поездкой всегда проверяйте в посольстве и у авиакомпании.',
       climate:'Климат', now:'Сейчас', best:'Лучшее время', visa:'Виза и въезд', status:'Статус', stay:'Срок пребывания', passport:'Паспорт', health:'Здоровье',
       costs:'Примерные расходы в день на человека', budget:'Бюджет', balanced:'Баланс', comfort:'Комфорт',
       transport:'Транспорт', pub:'Общественный', taxi:'Такси', tip:'Совет', practical:'Практика', plug:'Розетка', water:'Вода', tipping:'Чаевые', safety:'Безопасность',
-      mustsee:'Обязательно посмотреть', phrases:'Полезные фразы' }
+      mustsee:'Обязательно посмотреть', climate_m:'Климат по месяцам', hi:'День', lo:'Ночь', rain:'Дождь', sea:'Море', getting:'Как добраться', airlines:'Авиакомпании', ftime:'Перелёт', road:'По суше', airport:'Аэропорт → центр', food:'Что попробовать', months:['Я','Ф','М','А','М','И','И','А','С','О','Н','Д'], phrases:'Полезные фразы' }
   };
-  function curLang() { var l = 'sr'; try { l = (typeof getLang === 'function' ? getLang() : 'sr'); } catch (e) {} return UI[l] ? l : 'sr'; }
+  function getLang() { try { if (typeof window.getLang === 'function') return window.getLang(); } catch (e) {} return 'sr'; }
+  function curLang() { var l = 'sr'; try { l = getLang(); } catch (e) {} return UI[l] ? l : 'sr'; }
   function ui() { return UI[curLang()]; }
   function safeLevel(txt) {
     var x = String(txt || '').toLowerCase();
@@ -306,6 +307,57 @@
       html += '</div></div>';
     }
 
+
+    /* ── Klima po mesecima ── */
+    var cm = d.climate_months;
+    if (cm && cm.hi && cm.hi.length === 12) {
+      var maxHi = Math.max.apply(null, cm.hi), minLo = Math.min.apply(null, (cm.lo || cm.hi).concat([0]));
+      var maxRain = Math.max.apply(null, (cm.rain || [1]).concat([1]));
+      html += '<div class="di-card di-card-full"><div class="di-card-head"><span class="di-card-ic di-ic-aqua">📅</span><span class="di-card-title">' + L.climate_m + '</span></div>';
+      html += '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;height:120px">';
+      for (var i = 0; i < 12; i++) {
+        var h = Math.max(6, Math.round((cm.hi[i] - minLo) / Math.max(1, maxHi - minLo) * 100));
+        var rn = cm.rain ? Math.round(cm.rain[i] / maxRain * 100) : 0;
+        html += '<div title="' + esc(L.months[i] + ': ' + cm.hi[i] + '° / ' + (cm.lo ? cm.lo[i] : '') + '° · ' + (cm.rain ? cm.rain[i] + ' mm' : '')) + '" style="display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:10px">' +
+          '<span>' + esc(cm.hi[i]) + '°</span><div style="width:100%;height:' + h + '%;background:linear-gradient(#f59e0b,#38bdf8);border-radius:4px 4px 0 0"></div>' +
+          '<div style="width:60%;height:3px;margin-top:2px;background:#0ea5e9;opacity:' + (0.15 + rn / 120) + ';border-radius:2px"></div></div>';
+      }
+      html += '</div><div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;text-align:center;font-size:11px;margin-top:4px;opacity:.7">';
+      for (var j = 0; j < 12; j++) html += '<span>' + esc(L.months[j]) + '</span>';
+      html += '</div>';
+      if (cm.sea && cm.sea.length === 12) {
+        html += '<div class="di-row" style="margin-top:8px"><span class="di-label">🌊 ' + L.sea + '</span><span class="di-val">' + cm.sea.map(function (t, k) { return esc(L.months[k] + ' ' + t + '°'); }).join(' · ') + '</span></div>';
+      }
+      html += '<div class="di-tier-note" style="margin-top:6px">▮ ' + L.hi + ' °C · ▬ ' + L.rain + ' (mm)</div></div>';
+    }
+
+    /* ── Kako doći + Aerodrom → centar ── */
+    var gt = d.getting_there || {}, a2c = d.airport_to_center || [];
+    if (gt.airlines || gt.flight_time || a2c.length) {
+      html += '<div class="di-grid">';
+      html += '<div class="di-card"><div class="di-card-head"><span class="di-card-ic di-ic-deep">✈️</span><span class="di-card-title">' + L.getting + '</span></div>';
+      if (gt.airlines)    html += '<div class="di-row"><span class="di-label">' + L.airlines + '</span><span class="di-val">' + esc(gt.airlines) + '</span></div>';
+      if (gt.flight_time) html += '<div class="di-row"><span class="di-label">' + L.ftime + '</span><span class="di-val">' + esc(gt.flight_time) + '</span></div>';
+      if (gt.by_road)     html += '<div class="di-row"><span class="di-label">' + L.road + '</span><span class="di-val">' + esc(gt.by_road) + '</span></div>';
+      if (gt.tip)         html += '<div class="di-row"><span class="di-label">💡 ' + L.tip + '</span><span class="di-val">' + esc(gt.tip) + '</span></div>';
+      html += '</div>';
+      html += '<div class="di-card"><div class="di-card-head"><span class="di-card-ic di-ic-coral">🚆</span><span class="di-card-title">' + L.airport + '</span></div>';
+      a2c.forEach(function (o) {
+        html += '<div class="di-row"><span class="di-label">' + esc(o.mode) + '</span><span class="di-val">' + esc(o.price || '') + (o.duration ? ' · ' + esc(o.duration) : '') + '</span></div>';
+      });
+      html += '</div></div>';
+    }
+
+    /* ── Šta jesti ── */
+    var fd = d.food || [];
+    if (fd.length) {
+      html += '<div class="di-card di-card-full"><div class="di-card-head"><span class="di-card-ic di-ic-gold">🍽️</span><span class="di-card-title">' + L.food + '</span></div><div class="di-mustsee">';
+      fd.forEach(function (f, i) {
+        html += '<div class="di-ms-item"><span class="di-ms-num">' + (i + 1) + '</span><div><div class="di-ms-name">' + esc(f.dish) + '</div>' + (f.note ? '<div class="di-ms-note">' + esc(f.note) + '</div>' : '') + '</div></div>';
+      });
+      html += '</div></div>';
+    }
+
     /* ── Fraze ── */
     var ph = d.phrases || [];
     if (ph.length) {
@@ -324,12 +376,7 @@
     if (disc) { disc.hidden = false; disc.textContent = '⚠️ ' + ui().disclaimer.replace(/^⚠️\s*/, ''); }
   }
 
-  /* ── Promena jezika: osveži panel (labele + AI sadržaj) na novom jeziku ── */
-  var _prevOnLangChange = window.onLangChange;
-  window.onLangChange = function () {
-    if (typeof _prevOnLangChange === 'function') _prevOnLangChange.apply(this, arguments);
-    if (_currentDest) loadDestInfo(_currentDest);
-  };
+  window.SklopiDestInfo = { load: function (dest) { _currentDest = dest; loadDestInfo(dest); } };
 
   /* ── Init ── */
   if (document.readyState === 'loading') {

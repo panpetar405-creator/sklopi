@@ -80,6 +80,25 @@ const EXAMPLES = {
   },
 };
 
+
+// Dodatna polja (klima po mesecima, kako doći, aerodrom→centar, hrana). Primer je na engleskom,
+// a model piše vrednosti na jeziku odgovora.
+const EXTRA_EXAMPLE = {
+  climate_months: { hi: [12,13,16,19,24,28,31,31,27,22,16,13], lo: [3,4,6,9,13,17,20,20,17,13,8,5], rain: [70,60,60,70,50,35,15,20,60,100,110,85], sea: [14,14,15,16,19,23,25,26,24,21,18,15] },
+  getting_there: {
+    airlines: 'Air Serbia (direct), Wizz Air, ITA Airways',
+    flight_time: 'Belgrade → destination ≈ 1 h 40 min, direct',
+    by_road: 'By car ≈ 1,100 km / 12 h; bus or train with a change',
+    tip: 'Book flights 6-8 weeks ahead'
+  },
+  airport_to_center: [
+    { mode: 'Train', price: '14 EUR', duration: '32 min' },
+    { mode: 'Bus', price: '7 EUR', duration: '50 min' },
+    { mode: 'Taxi', price: '48 EUR fixed', duration: '40 min' }
+  ],
+  food: [ { dish: 'Carbonara', note: 'Trattoria, main course 12-15 EUR' } ]
+};
+
 async function handleDestInfo(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: CORS });
@@ -97,11 +116,12 @@ async function handleDestInfo(request, env) {
   const LANG_EN = { sr: 'Serbian (Latin script)', en: 'English', de: 'German', ru: 'Russian' }[L];
   const prompt =
     'You are a travel expert. For the destination "' + dest + '" return ONLY a JSON object ' +
-    'with EXACTLY this structure (the example is for Rome; adapt every value to ' + dest + '; must_see: 5 items, phrases: 5 items). ' +
+    'with EXACTLY this structure (the example is for Rome; adapt every value to ' + dest + '; must_see: 5 items, phrases: 5 items, food: 5 items, airport_to_center: 2-4 options, climate_months: arrays of exactly 12 numbers Jan→Dec, in °C and mm, sea = null if the place has no sea). ' +
+    'For getting_there assume the traveller departs from Belgrade, Serbia. ' +
     'Write EVERY human-readable value (descriptions, notes, names, visa text, season names, safety level) in ' + LANG_EN + ' — no other language. ' +
     'In phrases[], the field "sr" holds the everyday phrase in ' + LANG_EN + ' (the reader\'s language) and "local" holds the same phrase in the destination country\'s local language. ' +
     'Keep the keys exactly as in the example:\n' +
-    JSON.stringify(EXAMPLES[L]) + '\nAll fields are required. Return ONLY JSON.';
+    JSON.stringify(Object.assign({}, EXAMPLES[L], EXTRA_EXAMPLE)) + '\nAll fields are required. Return ONLY JSON.';
 
   const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -109,7 +129,7 @@ async function handleDestInfo(request, env) {
     body: JSON.stringify({
       model: env.GROQ_MODEL || 'openai/gpt-oss-120b',
       reasoning_effort: 'low',
-      max_tokens: 6000,
+      max_tokens: 8000,
       temperature: 0.3,
       response_format: { type: 'json_object' },
       messages: [{ role: 'user', content: prompt }],

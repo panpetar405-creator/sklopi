@@ -24,6 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@600;700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=45">
+<link rel="stylesheet" href="dest-info.css?v=1">
 <style>
 
 [hidden]{display:none !important;}
@@ -222,6 +223,7 @@ Nazad na pretragu
 
 <script src="config.js"></script>
 <script src="affiliate.js?v=1"></script>
+<script src="dest-info.js?v=3"></script>
 <script>
 (function(){
 'use strict';
@@ -875,7 +877,11 @@ function renderResults(P){
       (c.oVia ? esc(org.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.oVia) + '. ' : '') +
       (c.dVia ? esc(dest.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.dVia) + '. ' : '') + '</p>'
     : '';
-  let html = '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
+  let html = '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
+    '<p class="dp-note dp-note-top" id="destInfoSub"></p>' +
+    '<div class="dest-info-skeleton" id="destInfoSkeleton" hidden><div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div><div class="di-skel-grid"><div class="di-skel-card"></div><div class="di-skel-card"></div></div></div>' +
+    '<div id="destInfoContent" hidden></div><p class="dp-note di-disclaimer" id="destInfoDisclaimer" hidden></p></div>';
+  html += '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
     simNote + viaNote + '<div id="dpFlightList" aria-live="polite"></div></div>';
 
   /* --- smeštaj --- */
@@ -989,6 +995,7 @@ function renderResults(P){
   $('dpResults').innerHTML = html;
   $('dpResults').hidden = false;
   $('dpEdit').hidden = false;
+  if (window.SklopiDestInfo) SklopiDestInfo.load(dest.name);
   const token = ++renderToken;
   loadFlights(c);
   fillOffers('hotels', c, 'dpHotelBox', 'dpHotelCount', 'dpHotelTrack', 'Ponude smeštaja', 'Booking.com', '', token);
