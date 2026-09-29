@@ -17,14 +17,14 @@ const SUPPORTED = ['sr', 'en', 'de', 'ru'];
 const SCHEMA = {
   flag: '<flag emoji of the country where DEST is located>',
   currency: '<ISO currency code used in DEST, e.g. the local currency>',
-  currency_rate: '<approximate rate: 1 <currency> ≈ N RSD>',
+  currency_rate: '<approximate rate: 1 <DEST currency> ≈ N <currency of ORIGIN country>>',
   timezone_iana: '<IANA timezone id of DEST, e.g. Europe/Athens>',
   timezone: '<short label, e.g. EET (UTC+2)>',
   language: '<main local language(s) of DEST>',
   safety_level: '<one short phrase rating how safe DEST is for tourists, in the output language>',
   safety_note: '<one short practical safety tip specific to DEST>',
   weather: { season_now: '<current season in DEST>', temp_range: '<typical temperature range now, °C>', icon: '<one weather emoji>', description: '<short description>', best_months: '<best months to visit>' },
-  visa: { required: '<true|false — for citizens of Serbia travelling to DEST\'s country>', type: '<entry rule for Serbian citizens>', duration: '<allowed stay>', passport_note: '<passport validity rule>', health_note: '<health/insurance note>' },
+  visa: { required: '<true|false — for holders of the PASSPORT country travelling to DEST\'s country>', type: '<entry rule for PASSPORT holders>', duration: '<allowed stay>', passport_note: '<passport validity rule>', health_note: '<health/insurance note>' },
   daily_cost: {
     budget: { range: '<EUR range per person per day>', note: '<what it covers in DEST>' },
     mid: { range: '<EUR range>', note: '<...>' },
@@ -35,8 +35,12 @@ const SCHEMA = {
   must_see: [1,2,3,4,5].map((n) => ({ name: '<real landmark #' + n + ' in DEST>', note: '<short tip>' })),
   phrases: [1,2,3,4,5].map((n) => ({ sr: '<everyday phrase #' + n + ' in the reader language>', local: '<same phrase in the local language of DEST>' })),
   climate_months: { hi: '<12 numbers Jan→Dec, avg daytime max °C in DEST>', lo: '<12 numbers, avg night min °C>', rain: '<12 numbers, mm of rain per month>', sea: '<12 numbers sea temperature °C, or null if DEST has no sea>' },
-  getting_there: { airlines: '<airlines flying Belgrade → DEST>', flight_time: '<flight duration from Belgrade, direct or with stop>', by_road: '<by car/bus/train from Serbia: km and hours, or "not practical">', tip: '<booking tip>' },
+  getting_there: { airlines: '<airlines flying ORIGIN → DEST>', flight_time: '<flight duration from ORIGIN, direct or with stop>', by_road: '<by car/bus/train from ORIGIN: km and hours, or "not practical">', tip: '<booking tip>' },
   airport_to_center: [{ mode: '<Metro/Bus/Train/Taxi at DEST airport>', price: '<price>', duration: '<duration>' }],
+  emergency: { general: '<general emergency number in DEST\'s country>', police: '<police number>', ambulance: '<ambulance number>', embassy: '<embassy or consulate of the PASSPORT country in DEST\'s country: city/address or phone if known, otherwise where to find it; if PASSPORT country has none there, say which embassy handles it>' },
+  connectivity: { roaming: '<roaming situation for a phone from ORIGIN country in DEST\'s country (EU roaming, extra charges, etc.)>', esim: '<practical local SIM / eSIM option for tourists in DEST\'s country>', cash: '<card vs cash habits in DEST>', atm: '<ATM tips and fee warnings in DEST>' },
+  neighborhoods: [1,2,3,4].map((n) => ({ area: '<real district #' + n + ' of DEST to stay in>', for: '<who it suits>', price: '<typical hotel price per night in EUR>', note: '<one short reason>' })),
+  scams: [1,2,3,4].map((n) => ({ title: '<common tourist scam or trap #' + n + ' in DEST>', note: '<how to avoid it>' })),
   food: [1,2,3,4,5].map((n) => ({ dish: '<traditional dish or drink #' + n + ' of DEST>', note: '<where to eat it and typical price>' })),
 };
 
@@ -44,11 +48,13 @@ async function handleDestInfo(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: CORS });
 
-  let dest = '', lang = 'sr';
+  let dest = '', lang = 'sr', origin = '', passport = '';
   try {
     const body = await request.json();
     dest = String(body.dest || '').trim().slice(0, 80);
     lang = String(body.lang || 'sr').trim().slice(0, 5);
+    origin = String(body.origin || '').trim().slice(0, 80);
+    passport = String(body.passport || '').trim().slice(0, 60);
   } catch (e) {}
   if (!dest) return json({ error: 'nedostaje dest' }, 400);
 
@@ -57,11 +63,13 @@ async function handleDestInfo(request, env) {
   const LANG_EN = { sr: 'Serbian (Latin script)', en: 'English', de: 'German', ru: 'Russian' }[L];
   const now = new Date();
   const prompt =
-    'You are a travel expert helping travellers from Serbia. DEST = "' + dest + '". ' +
+    'You are a travel expert. DEST = "' + dest + '". ' +
+    'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || ('the country where ORIGIN is located')) + '". ' +
+    'Everything that depends on the traveller (visa/entry rules, embassy, roaming, currency_rate, flights and routes, road distance) must be correct for that ORIGIN and PASSPORT — never assume Serbia unless ORIGIN/PASSPORT say so. ' +
     'Return ONLY a JSON object with EXACTLY the keys of the schema below, filled with REAL facts about DEST and the country it is in. ' +
     'The schema values in <angle brackets> are instructions, NOT example data: replace every one of them; never output angle brackets and never reuse data of another city or country. ' +
     'Everything (currency, language, flag, plug type, dishes, phrases, landmarks, transport) must be correct for DEST specifically. ' +
-    'Today is ' + now.toISOString().slice(0, 10) + ' (use it for season_now). must_see: 5 items, phrases: 5 items, food: 5 items, airport_to_center: 2-4 options, ' +
+    'Today is ' + now.toISOString().slice(0, 10) + ' (use it for season_now). must_see: 5 items, phrases: 5 items, food: 5 items, neighborhoods: 4 items, scams: 4 items, airport_to_center: 2-4 options, ' +
     'climate_months: arrays of exactly 12 numbers Jan→Dec (sea = null if no sea). ' +
     'KEY RULE: JSON keys must stay EXACTLY as in the schema (English, never translated); every array item must be an object with all its keys filled, no empty or missing fields. ' +
     'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno")' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
