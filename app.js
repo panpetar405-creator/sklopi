@@ -9637,6 +9637,32 @@ const DEFAULT_POPULAR_DEST_POOL = [
   {dest:'Lisabon', name:'Lisabon', desc:'Vidikovci, tramvaji i Atlantski vazduh.', meta:'Portugal · 3h', price:'od 299 €', category:'city', image:'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=500&q=82'}
 ];
 const POPULAR_DEST_IMAGES = Object.fromEntries(DEFAULT_POPULAR_DEST_POOL.map(x => [normalizeSr(x.dest), x.image]));
+/* Oznake po destinaciji — jedna destinacija može biti u više kategorija
+   (npr. Barselona = city + sea + weekend). Ključevi: sea (More), city (City break),
+   nature (Priroda), weekend (Vikend = kratak let/vožnja). Čipovi filtriraju po ovome. */
+const POPULAR_DEST_TAGS = {
+  'atina':['city','sea'], 'istanbul':['city','weekend'], 'krf':['sea','nature'],
+  'pariz':['city','weekend'], 'lisabon':['city','sea'], 'rim':['city','weekend'],
+  'barselona':['city','sea','weekend'], 'budva':['sea','weekend'], 'bec':['city','weekend'],
+  'solun':['city','sea','weekend'], 'budimpesta':['city','weekend'], 'prag':['city','weekend'],
+  'zagreb':['city','weekend'], 'dubrovnik':['sea','city','weekend'], 'santorini':['sea'],
+  'kotor':['sea','nature','weekend'], 'plitvicka jezera':['nature','weekend'], 'bled':['nature','weekend'],
+  'ohrid':['nature','weekend'], 'durmitor':['nature'], 'split':['sea','city','weekend'],
+  'ljubljana':['city','weekend'], 'venecija':['city','weekend']
+};
+function popularTagsFor(key){ return POPULAR_DEST_TAGS[normalizeSr(key || '')] || []; }
+// Dodatne destinacije za filtere (kartice iz DEFAULT_POPULAR_DEST_POOL imaju slike; ove dobijaju
+// rezervnu sliku dok se ne doda prava — dopuni image/price kad budeš imao podatke).
+const EXTRA_POPULAR_DEST_POOL = ['Dubrovnik','Santorini','Kotor','Plitvička Jezera','Bled','Ohrid','Durmitor','Split','Ljubljana','Venecija']
+  .map(n => ({dest:n, name:n}));
+const POPULAR_FILTER_POOL = DEFAULT_POPULAR_DEST_POOL.concat(
+  ['Rim','Barselona','Budva','Beč','Solun','Budimpešta','Prag','Zagreb'].map(n => ({dest:n, name:n})),
+  EXTRA_POPULAR_DEST_POOL);
+let _popularFilter = 'sea';
+function popularActiveFilter(){
+  const a = document.querySelector('[data-popular-filter].is-active');
+  return a ? a.dataset.popularFilter : _popularFilter;
+}
 const POPULAR_DEST_META = {
   'atina':['Grčka · 1h 20m','od 247 €','city'], 'istanbul':['Turska · 2h','od 199 €','city'],
   'krf':['Grčka · 1h 20m','od 229 €','nature'], 'pariz':['Francuska · 2h 30m','od 349 €','city'],
@@ -9644,7 +9670,11 @@ const POPULAR_DEST_META = {
   'barselona':['Španija · 2h 40m','od 289 €','city'], 'budva':['Crna Gora · 1h 10m','od 159 €','weekend'],
   'bec':['Austrija · 1h 25m','od 219 €','city'], 'beč':['Austrija · 1h 25m','od 219 €','city'],
   'solun':['Grčka · 1h 15m','od 189 €','weekend'], 'budimpesta':['Mađarska · 1h 30m','od 179 €','city'],
-  'prag':['Češka · 1h 45m','od 259 €','city'], 'zagreb':['Hrvatska · 1h','od 169 €','weekend']
+  'prag':['Češka · 1h 45m','od 259 €','city'], 'zagreb':['Hrvatska · 1h','od 169 €','weekend'],
+  'dubrovnik':['Hrvatska','','sea'], 'santorini':['Grčka','','sea'], 'kotor':['Crna Gora','','sea'],
+  'plitvicka jezera':['Hrvatska','','nature'], 'bled':['Slovenija','','nature'], 'ohrid':['Severna Makedonija','','nature'],
+  'durmitor':['Crna Gora','','nature'], 'split':['Hrvatska','','sea'], 'ljubljana':['Slovenija','','city'],
+  'venecija':['Italija','','city']
 };
 // Kartice "Popularne destinacije": naziv države i "od" su fiksni na srpskom u podacima -- prevodi se pri prikazu.
 function popularMetaLabel(m){
@@ -9661,7 +9691,7 @@ function popularCardData(card){
     desc: card.desc || (card.descKey ? t(card.descKey) : ''),
     meta: popularMetaLabel(card.meta || meta[0]),
     price: popularPriceLabel(card.price || meta[1]),
-    category: card.category || meta[2] || 'all',
+    category: (popularTagsFor(card.dest || card.name).join(' ')) || card.category || meta[2] || 'all',
     image: card.image || POPULAR_DEST_IMAGES[key] || 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=500&q=82'
   };
 }
@@ -9693,8 +9723,31 @@ function renderDefaultPopularDestinations(){
   if (!grid || !head) return;
   head.textContent = t('h2_popular_dest');
   if (eyebrow) eyebrow.textContent = t('eyebrow_ideas');
-  grid.innerHTML = DEFAULT_POPULAR_DEST_POOL.map(c => popularCardHtml(c)).join('');
+  const f = popularActiveFilter();
+  const cards = f === 'all' ? DEFAULT_POPULAR_DEST_POOL : popularCardsForFilter(f, '');
+  grid.innerHTML = cards.map(c => popularCardHtml(c)).join('');
   attachPopularDestCardHandlers(grid);
+}
+// Kartice za izabrani čip: prvo regionalne preporuke za grad polaska koje imaju tu oznaku,
+// pa dopuna iz šireg pool-a (bez samog polazišta). Dnevna rotacija ostaje.
+function popularCardsForFilter(filter, originRaw, limit){
+  limit = limit || 5;
+  const has = c => popularTagsFor(c.dest).indexOf(filter) !== -1;
+  const originKey = normalizeSr(String(originRaw || '').split(',')[0].trim());
+  const norm = normalizeSr((originRaw || '').trim());
+  let regional = [];
+  if (norm){
+    for (const key in REGIONAL_POPULAR_DESTINATIONS){
+      if (norm === key || norm.startsWith(key + ' ') || norm.startsWith(key + ',') || norm.includes(' ' + key)){
+        regional = REGIONAL_POPULAR_DESTINATIONS[key].cards.filter(has);
+        break;
+      }
+    }
+  }
+  const out = dailyPick(regional, limit, 'pf-r|' + filter + '|' + norm);
+  const seen = new Set(out.map(c => normalizeSr(c.dest)));
+  const rest = POPULAR_FILTER_POOL.filter(c => has(c) && !seen.has(normalizeSr(c.dest)) && normalizeSr(c.dest) !== originKey);
+  return out.concat(dailyPick(rest, limit - out.length, 'pf|' + filter));
 }
 function renderRegionalPopularDestinations(originRaw){
   const grid = document.getElementById('popularDestGrid');
@@ -9718,6 +9771,14 @@ function renderRegionalPopularDestinations(originRaw){
     renderDefaultPopularDestinations();
     return;
   }
+  const activeFilter = popularActiveFilter();
+  if (activeFilter !== 'all'){
+    head.textContent = t('h2_popular_dest');
+    if (eyebrow) eyebrow.textContent = t('eyebrow_ideas');
+    grid.innerHTML = popularCardsForFilter(activeFilter, originRaw).map(c => popularCardHtml(c)).join('');
+    attachPopularDestCardHandlers(grid);
+    return;
+  }
   head.textContent = 'Popularno kod putnika iz ' + bucket.genitiv;
   if (eyebrow) eyebrow.textContent = 'Predlozi prilagođeni tvom polasku';
   const picks = dailyPick(bucket.cards, bucket.show || bucket.cards.length, matchedKey);
@@ -9735,7 +9796,7 @@ function applyPopularDestFilters(){
     const hay = normalizeSr(card.textContent || '');
     const category = card.dataset.category || 'all';
     const matchesQuery = !query || card.dataset.search === '1' || hay.includes(query);
-    const matchesFilter = active === 'all' || category === active;
+    const matchesFilter = active === 'all' || category.split(' ').indexOf(active) !== -1;
     card.hidden = !(matchesQuery && matchesFilter);
   });
 }
@@ -9746,10 +9807,12 @@ function renderPopularSearchResults(rawQuery){
   if (!grid) return;
   const q = (rawQuery || '').trim();
   if (!q){
+    popularDestFilters.forEach(b => b.classList.toggle('is-active', b.dataset.popularFilter === _popularFilter));
     renderRegionalPopularDestinations((document.getElementById('origin') || {}).value || '');
     return;
   }
-  popularDestFilters.forEach(b => b.classList.toggle('is-active', b.dataset.popularFilter === 'all'));
+  // tokom pretrage nijedan čip nije aktivan — prikazuju se svi pogoci
+  popularDestFilters.forEach(b => b.classList.remove('is-active'));
   const matches = matchPopularDestinations(q).slice(0, 8);
   if (!matches.length){
     grid.innerHTML = '<div class="popular-empty"><p>' + escapeHtml(tx('Nema rezultata za') + ' „' + q + '“') + '</p>'
@@ -9763,7 +9826,7 @@ function renderPopularSearchResults(rawQuery){
   }
   grid.innerHTML = matches.map(d => {
     const meta = POPULAR_DEST_META[normalizeSr(d.name)];
-    return popularCardHtml({dest:d.name, name:d.name, meta: meta ? meta[0] : (d.extra || ''), price: meta ? meta[1] : '', category: meta ? meta[2] : 'all'});
+    return popularCardHtml({dest:d.name, name:d.name, meta: meta ? meta[0] : (d.extra || ''), price: meta ? meta[1] : '', category: popularTagsFor(d.name).join(' ') || (meta ? meta[2] : 'all')});
   }).join('');
   grid.querySelectorAll('.popular-dest-card').forEach(c => { c.dataset.search = '1'; });
   attachPopularDestCardHandlers(grid);
@@ -9780,7 +9843,9 @@ popularDestSearch?.addEventListener('keydown', (e) => {
 });
 popularDestFilters.forEach(btn => btn.addEventListener('click', () => {
   popularDestFilters.forEach(b => b.classList.toggle('is-active', b === btn));
-  applyPopularDestFilters();
+  _popularFilter = btn.dataset.popularFilter;
+  if ((popularDestSearch?.value || '').trim()) applyPopularDestFilters();
+  else renderRegionalPopularDestinations((document.getElementById('origin') || {}).value || '');
 }));
 
 let _originRegionalTimer = null;
