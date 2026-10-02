@@ -1,0 +1,36 @@
+name: Build (fontovi, ?v= žigovi, sitemap)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-assets
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Preuzmi fontove (Sora + Inter)
+        run: node fetch-fonts.mjs
+      - name: Upiši ?v=hash i BUILD u sw.js
+        run: node stamp-assets.mjs
+      - name: Generiši sitemap.xml
+        run: node generate-sitemap.mjs
+      - name: Provera
+        run: node check-assets.mjs
+      - name: Commit
+        run: |
+          git config user.name  "sklopi-build-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "Nema promena." && exit 0
+          git commit -m "build: fontovi, ?v= žigovi, sitemap"
+          git push
