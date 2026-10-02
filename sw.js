@@ -11,7 +11,7 @@
 // promeni ovaj string (npr. v2, v3...) — to je jedini način da postojeći
 // korisnici (i ti sam/a kad testiraš) odmah dobiju novu verziju, jer se
 // SW fajl inače retko menja pa se ne re-instalira sam od sebe.
-const CACHE_VERSION = 'sklopi-shell-v5';
+const CACHE_VERSION = 'sklopi-shell-v6';
 // app.js i styles.css su kritični za funkcionalnost i menjaju se često —
 // za njih se mreža uvek probom prva (network-first), keš je samo rezerva
 // za slab/nestabilan signal ili offline rad. Bez ovoga bi stari keš mogao
