@@ -7,7 +7,8 @@ import { rateLimit, clientIp, tooManyRequests } from './rate-limit.js';
 const alertWorker = alertMod.default || alertMod;
 
 const CORS = {
-  'Access-Control-Allow-Origin': '*', // bolje: tvoj domen, npr. 'https://sklopi.rs'
+  'Access-Control-Allow-Origin': 'https://sklopi.rs', // sajt zove /api/dest-info sa istog domena; CORS je potreban samo za druge izvore
+  'Vary': 'Origin',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };

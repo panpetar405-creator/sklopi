@@ -30,6 +30,10 @@ const ACT_LIMIT_IP = 15;
 const ACT_LIMIT_GLOBAL = 120;
 const IMG_LIMIT_IP = 5;
 const IMG_LIMIT_GLOBAL = 30;
+// Slanje potvrdnog mejla (Resend + Supabase upiti): po IP-u i ukupno.
+const CONFIRM_LIMIT_IP = 4;
+const CONFIRM_LIMIT_GLOBAL = 30;
+const CONFIRM_MAX_BODY = 2048;    // bajtova; legitimno telo je ~200
 const VIATOR_MAX_BODY = 16384;    // bajtova; slike: 40 stavki ≈ 6 KB
 
 // Proverava dva limita (po IP-u i ukupno). Vraća 429 Response ili null ako je sve u redu.
@@ -104,6 +108,12 @@ export default {
         return corsPreflightResponse(env);
       }
       if (request.method === 'POST') {
+        const cors = corsHeaders(env);
+        if (parseInt(request.headers.get('content-length') || '0', 10) > CONFIRM_MAX_BODY) {
+          return new Response('Payload prevelik.', { status: 413, headers: cors });
+        }
+        const limited = await viatorLimited(request, env, cors, 'CONFIRM', CONFIRM_LIMIT_IP, CONFIRM_LIMIT_GLOBAL);
+        if (limited) return limited;
         return handleSendConfirmation(request, env);
       }
     }
@@ -123,9 +133,12 @@ export default {
       }
     }
 
-    return new Response('SKLOPI price-alert worker.', {
-      status: 200
-    });
+    // Sve što nije API/Worker ruta: statički fajlovi (ako ih je Worker dobio) ili pravi 404.
+    // Ranije je ovde stajao 200 "SKLOPI price-alert worker." za svaku nepoznatu putanju.
+    if ((request.method === 'GET' || request.method === 'HEAD') && env.ASSETS && typeof env.ASSETS.fetch === 'function') {
+      return env.ASSETS.fetch(request);
+    }
+    return new Response('Not found', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
   },
 
   async scheduled(event, env, ctx) {
@@ -492,6 +505,13 @@ async function handleSendConfirmation(request, env) {
   }
 
   const { email, dest, date_from, date_to, threshold } = body || {};
+
+  if (typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return new Response('Neispravan email.', { status: 400, headers: cors });
+  }
+  if (String(dest).length > 120 || String(date_from).length > 32 || String(date_to).length > 32 || String(threshold).length > 24) {
+    return new Response('Neispravna polja.', { status: 400, headers: cors });
+  }
 
   if (!email || !dest || !date_from || !date_to || !threshold) {
     return new Response(

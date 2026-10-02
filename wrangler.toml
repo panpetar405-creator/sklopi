@@ -3,8 +3,8 @@ main = "worker.js"
 compatibility_date = "2025-09-01"
 
 # Servira glavni sajt (index.html, app.js, styles.css, itd.) direktno sa
-# statičkih fajlova. Zahtevi koji ne pogode nijedan fajl (npr. eventualni
-# API pozivi) idu ka price-alert-worker.js skripti iznad.
+# statičkih fajlova. Zahtevi koji ne pogode nijedan fajl (API rute /api/*, /go/*)
+# idu u worker.js; sve ostalo nepoznato dobija 404.
 [assets]
 directory = "."
 binding = "ASSETS"
@@ -22,6 +22,8 @@ crons = ["0 8 * * *"]
 [vars]
 SUPABASE_URL = "https://qmiyaaepdvmgwesagnar.supabase.co"
 ALERT_FROM_EMAIL = "SKLOPI <alerti@sklopi.rs>"
+# CORS za /go/destination-images (destination-images.js). Dodaj/ukloni domene po potrebi.
+ALLOWED_ORIGINS = "https://sklopi.rs,https://www.sklopi.rs,https://sklopi.panpetar405.workers.dev"
 SITE_URL = "https://sklopi.panpetar405.workers.dev"
 
 # Rate limiting (vidi rate-limit.js). Limit je PO CLOUDFLARE LOKACIJI i nije striktno
@@ -83,6 +85,21 @@ namespace_id = "1007"
 [[ratelimits]]
 name = "RL_IMG_GLOBAL"
 namespace_id = "1008"
+  [ratelimits.simple]
+  limit = 30
+  period = 60
+
+# Slanje potvrdnog mejla za price alerts — /go/send-confirmation (Resend + Supabase).
+[[ratelimits]]
+name = "RL_CONFIRM_IP"
+namespace_id = "1009"
+  [ratelimits.simple]
+  limit = 4
+  period = 60
+
+[[ratelimits]]
+name = "RL_CONFIRM_GLOBAL"
+namespace_id = "1010"
   [ratelimits.simple]
   limit = 30
   period = 60
