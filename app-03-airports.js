@@ -2268,11 +2268,14 @@ function logAirportDbMiss(cityRaw, field){
     delete misses[keys[0]]; // kad lista preraste, izbaci najređi zapis
   }
   saveAirportMisses(misses);
-  if (typeof sb !== 'undefined' && sb){
-    sb.from('airport_db_misses').insert({city, field, normalized:norm})
-      .then(({error}) => {
-        if (error) console.warn('[sklopi] Deljeno logovanje promašaja AIRPORT_DB nije uspelo (tabela verovatno ne postoji još):', error.message);
-      });
+  if (typeof ensureSb === 'function'){
+    ensureSb().then((client) => {
+      if (!client) return;
+      return client.from('airport_db_misses').insert({city, field, normalized:norm})
+        .then(({error}) => {
+          if (error) console.warn('[sklopi] Deljeno logovanje promašaja AIRPORT_DB nije uspelo (tabela verovatno ne postoji još):', error.message);
+        });
+    }).catch(() => {});
   }
 }
 /* Konzolni prečac za vlasnika sajta: otvori konzolu i pozovi

@@ -16,23 +16,73 @@
    potvrđena — ako se config.js zove drugačije, ispravi te dve linije
    odmah ispod.
 ========================================================== */
+/* ---- Supabase biblioteka se učitava TEK KAD ZATREBA (lazy). ----
+   Ranije je supabase-js stajao kao <script defer> u index.html pa se
+   skidao i izvršavao za svakog posetioca, iako ga koristi samo prijava,
+   sačuvani izleti, alerti i deljeni brojač. Sada:
+   - sb je null dok se biblioteka ne učita; ensureSb() je učitava (jednom) i vraća klijent;
+   - _SB_CONFIGURED kaže da li je Supabase uopšte podešen (config.js) — to se
+     koristi za UI ("Prijava nije dostupna"), a ne sb;
+   - ako već postoji sačuvana sesija ili je ovo povratak sa magic-linka,
+     biblioteka se učitava odmah da se prijava prepozna. */
 let sb = null;
-try {
-  if (window.supabase && window.SKLOPI_SUPABASE_URL && window.SKLOPI_SUPABASE_KEY) {
-    sb = window.supabase.createClient(window.SKLOPI_SUPABASE_URL, window.SKLOPI_SUPABASE_KEY);
-  } else {
-    console.warn('[sklopi] Supabase konfiguracija (config.js) nije pronađena — nalozi i sačuvani izleti su isključeni, ostatak sajta radi normalno.');
-  }
-} catch (err) {
-  console.warn('[sklopi] Supabase inicijalizacija nije uspela:', err.message);
-  sb = null;
+const _SB_CONFIGURED = !!(window.SKLOPI_SUPABASE_URL && window.SKLOPI_SUPABASE_KEY);
+const _SB_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+let _sbPromise = null;
+if (!_SB_CONFIGURED) {
+  console.warn('[sklopi] Supabase konfiguracija (config.js) nije pronađena — nalozi i sačuvani izleti su isključeni, ostatak sajta radi normalno.');
+}
+function _sbShouldLoadEarly(){
+  try {
+    const loc = String(window.location.hash || '') + '&' + String(window.location.search || '');
+    if (/[#&?](access_token|refresh_token|error_description)=/.test(loc) || /[?&]code=/.test(loc)) return true;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && /^sb-.+-auth-token$/.test(k)) return true;
+    }
+  } catch (_) { /* localStorage može biti blokiran */ }
+  return false;
+}
+function ensureSb(){
+  if (sb) return Promise.resolve(sb);
+  if (!_SB_CONFIGURED) return Promise.resolve(null);
+  if (_sbPromise) return _sbPromise;
+  _sbPromise = new Promise((resolve) => {
+    const init = () => {
+      try {
+        sb = window.supabase.createClient(window.SKLOPI_SUPABASE_URL, window.SKLOPI_SUPABASE_KEY);
+        sb.auth.onAuthStateChange((_event, session) => {
+          _cachedUser = session ? session.user : null;
+          renderSavedTrips();
+          renderAccountMenu();
+        });
+        resolve(sb);
+      } catch (err) {
+        console.warn('[sklopi] Supabase inicijalizacija nije uspela:', err.message);
+        sb = null; _sbPromise = null;
+        resolve(null);
+      }
+    };
+    if (window.supabase) { init(); return; }
+    const s = document.createElement('script');
+    s.src = _SB_CDN;
+    s.async = true;
+    s.onload = init;
+    s.onerror = () => {
+      console.warn('[sklopi] Supabase biblioteka nije učitana (mreža/CDN) — nalozi i alerti trenutno nisu dostupni.');
+      _sbPromise = null;
+      resolve(null);
+    };
+    document.head.appendChild(s);
+  });
+  return _sbPromise;
 }
 
 /* ---- Deljeni (globalni) brojači — tabela "site_stats", jedan red (id=1).
    Ako Supabase nije dostupan ili tabela/funkcije ne postoje, ostajemo na
    lokalnom (localStorage) brojaču koji je već učitan preko loadStats(). ---- */
 async function loadStatsFromSupabase(){
-  if (!sb) return;
+  if (!(await ensureSb())) return;
   try{
     const { data, error } = await sb.from('site_stats').select('searches,clicks,last_dest').eq('id', 1).single();
     if (error) throw error;
@@ -46,13 +96,26 @@ async function loadStatsFromSupabase(){
     console.warn('[sklopi] Deljena statistika nije dostupna (tabela site_stats?), ostajem na lokalnoj:', err.message);
   }
 }
-loadStatsFromSupabase();
+/* Brojači (#statSearches...) učitavamo tek kad su na ekranu; ako elementa nema
+   u HTML-u, ništa se ne učitava (prvi RPC iz bumpSearchStat ionako osvežava state). */
+(function lazyLoadStats(){
+  const el = document.getElementById('statSearches');
+  if (!el || !_SB_CONFIGURED) return;
+  if (typeof IntersectionObserver === 'undefined') { window.addEventListener('load', () => setTimeout(loadStatsFromSupabase, 4000)); return; }
+  const io = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) { io.disconnect(); loadStatsFromSupabase(); }
+  }, { rootMargin: '400px' });
+  io.observe(el);
+})();
 
 /* ---- Trenutni korisnik (keširano da ne zovemo getSession na svaki klik) ---- */
 let _cachedUser = undefined; // undefined = još nije provereno, null = nije prijavljen
 async function getCurrentUser(){
-  if (!sb) return null;
+  if (!_SB_CONFIGURED) return null;
   if (_cachedUser !== undefined) return _cachedUser;
+  // Bez sačuvane sesije niko nije prijavljen — ne učitavaj biblioteku samo zbog ove provere.
+  if (!sb && !_sbPromise && !_sbShouldLoadEarly()) return null;
+  if (!(await ensureSb())) return null;
   try {
     const { data, error } = await sb.auth.getSession();
     if (error) { console.warn('[sklopi] getSession greška:', error.message); _cachedUser = null; return null; }
@@ -65,13 +128,8 @@ async function getCurrentUser(){
   }
 }
 
-if (sb) {
-  sb.auth.onAuthStateChange((_event, session) => {
-    _cachedUser = session ? session.user : null;
-    renderSavedTrips();
-    renderAccountMenu();
-  });
-}
+// Sačuvana sesija / povratak sa magic-linka: učitaj biblioteku odmah da se prijava prepozna.
+if (_SB_CONFIGURED && _sbShouldLoadEarly()) ensureSb();
 
 /* ==========================================================
    NALOG — prijava linkom na email (magic link), bez lozinke.
@@ -85,6 +143,7 @@ let _authBarExpanded = false;
 // gore desno), umesto da skroluje na sekciju "Sačuvani izleti" na sredini
 // sajta.
 function promptLogin(message){
+  ensureSb(); // unapred učitaj biblioteku dok korisnik kuca email
   _authBarExpanded = true;
   renderAccountMenu();
   const dropdown = document.getElementById('authDropdown');
@@ -96,7 +155,7 @@ function promptLogin(message){
 function renderAuthBar(user){
   const bar = document.getElementById('authBar');
   if (!bar) return;
-  if (!sb) { bar.innerHTML = ''; return; }
+  if (!_SB_CONFIGURED) { bar.innerHTML = ''; return; }
 
   if (user) {
     bar.innerHTML = `
@@ -127,6 +186,7 @@ function renderAuthBar(user){
       sendBtn.disabled = true;
       sendBtn.textContent = 'Šaljem…';
       try {
+        if (!(await ensureSb())) throw new Error('Supabase nije dostupan');
         const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
         if (error) throw error;
         showToast('Link za prijavu je poslat na ' + email + ' — proveri inbox.');
@@ -141,7 +201,7 @@ function renderAuthBar(user){
   } else {
     bar.innerHTML = `<button type="button" class="btn-alert" id="authOpenBtn">${tx('Prijavi se da sačuvaš izlete')}</button>`;
     const openBtn = document.getElementById('authOpenBtn');
-    if (openBtn) openBtn.addEventListener('click', () => { _authBarExpanded = true; renderAuthBar(user); });
+    if (openBtn) openBtn.addEventListener('click', () => { ensureSb(); _authBarExpanded = true; renderAuthBar(user); });
   }
 }
 
@@ -154,7 +214,7 @@ async function renderSavedTrips(){
   const user = await getCurrentUser();
   renderAuthBar(user);
 
-  if (!sb) {
+  if (!_SB_CONFIGURED) {
     listEl.innerHTML = '<p class="saved-empty">Sačuvani izleti trenutno nisu dostupni.</p>';
     return;
   }
@@ -306,7 +366,7 @@ function loadSavedTrip(tripId){
 }
 
 async function deleteSavedTrip(tripId){
-  if (!sb) return;
+  if (!(await ensureSb())) return;
   try {
     const { error } = await sb.from('trips').delete().eq('id', tripId);
     if (error) throw error;
@@ -454,7 +514,7 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
   if (!document.getElementById('alertConsent').checked){ showToast(t('alert_consent_required')); return; }
   if (!_pendingAlert){ requestCloseAlertModal(); return; }
 
-  if (!sb) {
+  if (!(await ensureSb())) {
     showToast('Alerti trenutno nisu dostupni — pokušaj kasnije.');
     return;
   }
@@ -509,7 +569,7 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
 function renderAccountMenu(){
   const dropdown = document.getElementById('authDropdown');
   if (!dropdown) return;
-  if (!sb) {
+  if (!_SB_CONFIGURED) {
     dropdown.innerHTML = `<div class="auth-dropdown-inner">
          <p class="auth-hint">Prijava trenutno nije dostupna.</p>
        </div>`;
@@ -563,6 +623,7 @@ function renderAccountMenu(){
       sendBtn.disabled = true;
       sendBtn.textContent = 'Šaljem…';
       try {
+        if (!(await ensureSb())) throw new Error('Supabase nije dostupan');
         const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
         if (error) throw error;
         showToast('Link za prijavu je poslat na ' + email + ' — proveri inbox.');

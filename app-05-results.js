@@ -1643,7 +1643,7 @@ function updateStats(){
    sve posetioce), a ako ne uspe (sb nedostupan, tabela/funkcija ne postoji,
    mreža) — padni nazad na lokalni brojač kao do sad. ---- */
 async function bumpSearchStat(destLabel){
-  if (typeof sb !== 'undefined' && sb){
+  if (typeof ensureSb === 'function' && await ensureSb()){
     try{
       const { data, error } = await sb.rpc('increment_search_stat', { p_dest: destLabel });
       if (error) throw error;
@@ -1664,7 +1664,7 @@ async function bumpSearchStat(destLabel){
   updateStats();
 }
 async function bumpClickStat(){
-  if (typeof sb !== 'undefined' && sb){
+  if (typeof ensureSb === 'function' && await ensureSb()){
     try{
       const { data, error } = await sb.rpc('increment_click_stat');
       if (error) throw error;

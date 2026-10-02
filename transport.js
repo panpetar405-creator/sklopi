@@ -416,31 +416,58 @@ async function _tcHydrate(el){
     '<div class="tc-meta">' + notes.map(escapeHtml).join('<br>') + '</div>' + extra;
   _tcDrawMap(mapId, r);
 }
-// Iscrtava rutu preko Leaflet-a (OSM tajlovi, bez ključa). Ako Leaflet nije
-// učitan (CDN blokiran, offline...) samo uklonimo prazan kontejner — brojevi
-// (km/vreme/gorivo) i dalje rade nezavisno od ovoga.
+// Leaflet (JS + CSS) se učitava TEK kad prvi put treba mapa rute za auto — ranije je
+// bio u <head>/<script> index.html-a za svakog posetioca. Ako CDN ne odgovori
+// (blokiran, offline...) mapa se jednostavno ne prikazuje; brojevi (km/vreme/gorivo)
+// rade nezavisno od ovoga.
+const _TC_LEAFLET_JS  = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';
+const _TC_LEAFLET_JS_SRI  = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+const _TC_LEAFLET_CSS = 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';
+const _TC_LEAFLET_CSS_SRI = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+let _tcLeafletPromise = null;
+function _tcLoadLeaflet(){
+  if (typeof L !== 'undefined') return Promise.resolve(true);
+  if (_tcLeafletPromise) return _tcLeafletPromise;
+  _tcLeafletPromise = new Promise((resolve) => {
+    let cssDone = false, jsDone = false, jsOk = false;
+    const finish = () => { if (cssDone && jsDone) { if (!(jsOk && typeof L !== 'undefined')) _tcLeafletPromise = null; resolve(jsOk && typeof L !== 'undefined'); } };
+    const css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = _TC_LEAFLET_CSS; css.integrity = _TC_LEAFLET_CSS_SRI; css.crossOrigin = 'anonymous';
+    css.onload = css.onerror = () => { cssDone = true; finish(); }; // bez CSS-a mapa je samo ružnija, ne pokvarena
+    document.head.appendChild(css);
+    const js = document.createElement('script');
+    js.src = _TC_LEAFLET_JS; js.integrity = _TC_LEAFLET_JS_SRI; js.crossOrigin = 'anonymous'; js.async = true;
+    js.onload = () => { jsDone = true; jsOk = true; finish(); };
+    js.onerror = () => { jsDone = true; jsOk = false; finish(); };
+    document.head.appendChild(js);
+  });
+  return _tcLeafletPromise;
+}
+// Iscrtava rutu preko Leaflet-a (OSM tajlovi, bez ključa).
 function _tcDrawMap(mapId, r){
+  const dropBox = () => { const box = document.getElementById(mapId); if (box) box.remove(); };
   try {
-    if (typeof L === 'undefined' || !r.path || r.path.length < 2) {
-      const box = document.getElementById(mapId);
-      if (box) box.remove();
-      return;
-    }
-    requestAnimationFrame(() => {
-      const box = document.getElementById(mapId);
-      if (!box) return;
-      const map = L.map(mapId, {zoomControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, boxZoom:false, keyboard:false, tap:false});
-      // OSM tajlovi zahtevaju vidljivu atribuciju — ostaje uključena (samo je stilizujemo sitnije, vidi styles.css .tc-map).
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom:18, attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
-      }).addTo(map);
-      const lineStyle = r.approx ? {color:'#C9A45C', weight:3, dashArray:'6,7'} : {color:'#C9A45C', weight:4};
-      const line = L.polyline(r.path, lineStyle).addTo(map);
-      const dot = (latlng) => L.circleMarker(latlng, {radius:6, color:'#fff', weight:2, fillColor:'#3A2E5C', fillOpacity:1});
-      dot(r.from).addTo(map);
-      dot(r.to).addTo(map);
-      map.invalidateSize();
-      map.fitBounds(line.getBounds(), {padding:[18, 18]});
+    if (!r.path || r.path.length < 2) { dropBox(); return; }
+    _tcLoadLeaflet().then((ok) => {
+      if (!ok) { dropBox(); return; }
+      requestAnimationFrame(() => {
+        try {
+          const box = document.getElementById(mapId);
+          if (!box) return;
+          const map = L.map(mapId, {zoomControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, boxZoom:false, keyboard:false, tap:false});
+          // OSM tajlovi zahtevaju vidljivu atribuciju — ostaje uključena (samo je stilizujemo sitnije, vidi styles.css .tc-map).
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom:18, attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+          }).addTo(map);
+          const lineStyle = r.approx ? {color:'#C9A45C', weight:3, dashArray:'6,7'} : {color:'#C9A45C', weight:4};
+          const line = L.polyline(r.path, lineStyle).addTo(map);
+          const dot = (latlng) => L.circleMarker(latlng, {radius:6, color:'#fff', weight:2, fillColor:'#3A2E5C', fillOpacity:1});
+          dot(r.from).addTo(map);
+          dot(r.to).addTo(map);
+          map.invalidateSize();
+          map.fitBounds(line.getBounds(), {padding:[18, 18]});
+        } catch (e){ dropBox(); }
+      });
     });
   } catch (e){ /* mapa je samo ilustracija — greška ovde ne sme da obori figure/cenu iznad */ }
 }
