@@ -1,29 +1,55 @@
 # Fajlovi koji NE smeju da se objave na sajtu.
 # wrangler.toml ima [assets] directory = ".", pa se bez ovoga objavljuje ceo repo.
-# Sintaksa je kao u .gitignore. Stavi ovaj fajl u koren repoa (pored wrangler.toml).
-# Posle deploy-a proveri da /wrangler.toml i /price-alert-worker.js vraćaju 404.
+# Sintaksa je kao u .gitignore. Fajl mora da stoji u korenu repoa (pored wrangler.toml).
+#
+# NE stavljati ovde: _headers (Cloudflare ga čita, ali ga ne servira; ako se
+# ignoriše, zaglavlja prestaju da važe), kao ni index.html, *.html, app.js, styles.css,
+# i18n-data.js, i18n-extra.js, dest-*.js, transport*.js, price-mix.js, affiliate.js,
+# config.js, contact.js, cookies.js, sw.js, manifest.json, slike, robots.txt, sitemap.xml
+# — njih pregledač stvarno učitava.
+#
+# Posle dodavanja NOVOG server fajla u koren: dopiši ga ovde i pokreni `npm run check:assets`.
 
-# Worker i konfiguracija
-wrangler.toml
+# ── Worker kod (izvršava se samo na Cloudflare-u) ──
+worker.js
+worker-dest-info.js
 price-alert-worker.js
-pricing-core.js
+viator-activities.js
 destination-images.js
+pricing-core.js
+rate-limit.js
+
+# ── Konfiguracija, zavisnosti, tajne ──
+wrangler.toml
 package.json
 package-lock.json
-.gitignore
+node_modules/
 .dev.vars
 .env
+.env.*
+.gitignore
+.assetsignore
+assetsignore.txt
 
-# SQL i dokumentacija
+# ── SQL i dokumentacija ──
 *.sql
 *.md
+README.txt
 
-# Alati za prevode i provere, i njihovi ulazni fajlovi
+# ── Alati za prevode i provere + CI ──
 *.mjs
+translate.yml
+.github/
+scripts/
+
+# ── Izvori prevoda (pregledač koristi izgrađeni i18n-data.js, ne ove fajlove) ──
 sr.json
 en.json
+de.json
 ru.json
 languages.json
 _glossary.json
 _notes.json
+_state.json
 transport-sr-keys.json
+locales/
