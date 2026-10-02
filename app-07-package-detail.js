@@ -50,7 +50,7 @@
   const CFG = window.SKLOPI_DEST_PLANS || {def:'Atina', arch:{}, cities:{}};
   const $ = id => document.getElementById(id);
   const qs = s => document.querySelector(s);
-  const ph = (id, w) => 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&w=' + w + '&q=82';
+  const ph = (id, w) => id.indexOf('img/') === 0 ? id : 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&w=' + w + '&q=82';
   const GENERIC_PHOTO = ph('1467269204594-9661b134dd2b', 1200);
   let curCity = CFG.def, curEntry = CFG.cities[CFG.def], curPlans = [], shownCity = null;
 

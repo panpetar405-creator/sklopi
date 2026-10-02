@@ -46,7 +46,7 @@ window.SKLOPI_DEST_PLANS = (function(){
     cities: {
       'Atina': {arch:'city', country:'Grčka', acc:'tvoju Atinu', ru:'в Афины', photo:'1603565816030-6b389eeb23cb',
         fixed:[529, 689, 449],
-        photos:['1603565816030-6b389eeb23cb','1530841377377-3ff06c0ca713','1555881400-74d7acaacd8b'],
+        photos:['1603565816030-6b389eeb23cb','img/atina-plaka-1400.webp','img/atina-akropolj-1200.webp'],
         forWho1:'Za koga: prvi put u Atini / city break',
         reasons:[H,'Odlična mediteranska kuhinja','Provod i život i smeštaj',W]},
       'Istanbul': {arch:'city', country:'Turska', acc:'tvoj Istanbul', ru:'в Стамбул', photo:'1524231757912-21f4fe3a7200', reasons:[H,FOOD,MARKET,ARCH]},
