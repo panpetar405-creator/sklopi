@@ -139,29 +139,78 @@ export default {
    GET /api/flights?origin=BEG&destination=ATH&departure_date=2026-10-01
        &return_date=2026-10-08&adults=2
 
+   Validacija (validateFlightParams): IATA 3 slova, pravi datumi (ne u prošlosti,
+   do 330 dana unapred, povratak >= polazak), adults se zakucava na 1..9.
+
    Test mode (duffel_test_... ključ) vraća sandbox ponude
    ("Duffel Airways") — pravi podaci tek sa live ključem.
 ========================================================== */
+const FLIGHT_MAX_ADULTS = 9;       // Duffel dozvoljava najviše 9 putnika po zahtevu
+const FLIGHT_MAX_DAYS_AHEAD = 330; // Duffel ne vraća ponude dalje od ~330 dana
+const IATA_RE = /^[A-Z]{3}$/;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+// Pravi kalendarski datum (odbija 2026-02-31, 2026-13-01...). Vraća ms (UTC ponoć) ili null.
+function parseIsoDate(str) {
+  if (!DATE_RE.test(str)) return null;
+  const ms = Date.parse(str + 'T00:00:00Z');
+  if (!Number.isFinite(ms)) return null;
+  return new Date(ms).toISOString().slice(0, 10) === str ? ms : null;
+}
+
+// Vraća { ok: true, value } ili { ok: false, error }.
+// adults se ZAKUCAVA (clamp) na 1..9; sve ostalo se strogo validira.
+function validateFlightParams(url, nowMs = Date.now()) {
+  const q = url.searchParams;
+  const origin = String(q.get('origin') || '').trim().toUpperCase();
+  const destination = String(q.get('destination') || '').trim().toUpperCase();
+  const departureDate = String(q.get('departure_date') || '').trim();
+  const returnDate = String(q.get('return_date') || '').trim();
+
+  if (!IATA_RE.test(origin) || !IATA_RE.test(destination)) {
+    return { ok: false, error: 'origin i destination moraju biti IATA kodovi aerodroma (3 slova, npr. BEG).' };
+  }
+  if (origin === destination) {
+    return { ok: false, error: 'origin i destination ne smeju biti isti.' };
+  }
+
+  const todayMs = Date.parse(new Date(nowMs).toISOString().slice(0, 10) + 'T00:00:00Z');
+  const earliest = todayMs - 86400000;                         // tolerancija 1 dan zbog vremenskih zona
+  const latest = todayMs + FLIGHT_MAX_DAYS_AHEAD * 86400000;
+
+  const dep = parseIsoDate(departureDate);
+  if (dep === null) return { ok: false, error: 'departure_date mora biti ispravan datum u formatu YYYY-MM-DD.' };
+  if (dep < earliest) return { ok: false, error: 'departure_date ne sme biti u prošlosti.' };
+  if (dep > latest) return { ok: false, error: 'departure_date je predaleko u budućnosti (najviše ' + FLIGHT_MAX_DAYS_AHEAD + ' dana).' };
+
+  if (returnDate) {
+    const ret = parseIsoDate(returnDate);
+    if (ret === null) return { ok: false, error: 'return_date mora biti ispravan datum u formatu YYYY-MM-DD.' };
+    if (ret < dep) return { ok: false, error: 'return_date ne sme biti pre departure_date.' };
+    if (ret > latest) return { ok: false, error: 'return_date je predaleko u budućnosti (najviše ' + FLIGHT_MAX_DAYS_AHEAD + ' dana).' };
+  }
+
+  let adults = 1;
+  const rawAdults = q.get('adults');
+  if (rawAdults !== null && rawAdults.trim() !== '') {
+    const n = Number(rawAdults);
+    if (!Number.isFinite(n)) return { ok: false, error: 'adults mora biti broj.' };
+    adults = Math.min(FLIGHT_MAX_ADULTS, Math.max(1, Math.trunc(n)));
+  }
+
+  return { ok: true, value: { origin, destination, departureDate, returnDate: returnDate || null, adults } };
+}
+
 async function handleFlightSearch(url, env) {
   const cors = corsHeaders(env);
-  const origin = url.searchParams.get('origin');
-  const destination = url.searchParams.get('destination');
-  const departureDate = url.searchParams.get('departure_date');
-  const returnDate = url.searchParams.get('return_date');
-  const adults = Math.max(1, Number(url.searchParams.get('adults') || '1'));
-
-  if (!origin || !destination || !departureDate) {
-    return new Response(
-      JSON.stringify({
-        error:
-          'Nedostaju obavezni parametri: origin, destination, departure_date.'
-      }),
-      {
-        status: 400,
-        headers: { ...cors, 'content-type': 'application/json; charset=utf-8' }
-      }
-    );
+  const v = validateFlightParams(url);
+  if (!v.ok) {
+    return new Response(JSON.stringify({ error: v.error }), {
+      status: 400,
+      headers: { ...cors, 'content-type': 'application/json; charset=utf-8' }
+    });
   }
+  const { origin, destination, departureDate, returnDate, adults } = v.value;
 
   const slices = [{ origin, destination, departure_date: departureDate }];
   if (returnDate) {
@@ -198,7 +247,7 @@ async function handleFlightSearch(url, env) {
         JSON.stringify(payload)
       );
       return new Response(
-        JSON.stringify({ error: 'Duffel API greška.', details: payload }),
+        JSON.stringify({ error: 'Duffel API greška.' }),
         {
           status: 502,
           headers: {
