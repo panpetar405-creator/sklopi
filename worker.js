@@ -2,6 +2,7 @@
 // Dodaje rutu /api/dest-info, a sve ostalo (cron, alerti, ostale rute)
 // prosleđuje postojećem price-alert-worker.js kao do sada.
 import * as alertMod from './price-alert-worker.js';
+import { rateLimit, clientIp, tooManyRequests } from './rate-limit.js';
 
 const alertWorker = alertMod.default || alertMod;
 
@@ -14,6 +15,11 @@ const CORS = {
 // Šema odgovora sa OPISIMA polja (ne sa primerom konkretnog grada — model je ranije kopirao
 // vrednosti iz primera, pa je npr. za Atinu vraćao italijanski jezik i rimska jela).
 const SUPPORTED = ['sr', 'en', 'de', 'ru'];
+const MAX_BODY = 2048;                                   // bajtova; legitimno telo je ~200
+const SAFE_TEXT = /^[\p{L}\p{M}\p{N} .,'’()\/&-]+$/u;          // vidi handleDestInfo
+// Limiti važe kad NEMA [[ratelimits]] bindinga (fallback); sa bindingom važe vrednosti iz wrangler.toml.
+const DEST_LIMIT_IP = 6;        // AI poziva po IP-u u minuti (keš pogoci ne računaju)
+const DEST_LIMIT_GLOBAL = 40;   // AI poziva ukupno u minuti, po lokaciji
 const SCHEMA = {
   flag: '<flag emoji of the country where DEST is located>',
   currency: '<ISO currency code used in DEST, e.g. the local currency>',
@@ -91,9 +97,15 @@ async function handleDestInfo(request, env, ctx) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: CORS });
 
+  // Telo zahteva je malo (dest/lang/origin/passport) — veće odbijamo pre parsiranja.
+  const declared = parseInt(request.headers.get('content-length') || '0', 10);
+  if (declared > MAX_BODY) return json({ error: 'payload_too_large' }, 413);
+
   let dest = '', lang = 'sr', origin = '', passport = '', part = 'main';
   try {
-    const body = await request.json();
+    const raw = await request.text();
+    if (raw.length > MAX_BODY) return json({ error: 'payload_too_large' }, 413);
+    const body = JSON.parse(raw);
     dest = String(body.dest || '').trim().slice(0, 80);
     lang = String(body.lang || 'sr').trim().slice(0, 5);
     origin = String(body.origin || '').trim().slice(0, 80);
@@ -101,6 +113,11 @@ async function handleDestInfo(request, env, ctx) {
     part = body.part === 'extra' ? 'extra' : 'main';
   } catch (e) {}
   if (!dest) return json({ error: 'nedostaje dest' }, 400);
+  // dest/origin/passport ulaze u AI prompt: dozvoljena su samo slova, cifre, razmak i .,'’-()/&
+  // (sprečava ubacivanje instrukcija u prompt i nasumične ključeve koji zaobilaze keš).
+  if (!SAFE_TEXT.test(dest) || (origin && !SAFE_TEXT.test(origin)) || (passport && !SAFE_TEXT.test(passport))) {
+    return json({ error: 'neispravan unos' }, 400);
+  }
 
 
   const L = SUPPORTED.includes(lang) ? lang : 'sr';
@@ -115,6 +132,15 @@ async function handleDestInfo(request, env, ctx) {
     try { return json(post(await INFLIGHT.get(cacheKey)), 200, { 'X-Cache': 'JOIN' }); }
     catch (e) { return json({ error: 'unavailable' }, 503, { 'Retry-After': '5' }); }
   }
+  // ── Rate limit: samo za KEŠ PROMAŠAJE (to je jedino što troši AI/Groq pozive).
+  // Pogoci u kešu i spajanje na već aktivan zahtev ne broje se.
+  const ip = clientIp(request);
+  const rlIp = await rateLimit(env, { binding: 'RL_DEST_IP', name: 'dest-ip', key: ip, limit: DEST_LIMIT_IP, windowSec: 60 });
+  if (!rlIp.ok) return tooManyRequests(rlIp.retryAfter, CORS);
+  // Zaštita budžeta: gornja granica AI poziva za sve posetioce zajedno (po lokaciji).
+  const rlAll = await rateLimit(env, { binding: 'RL_DEST_GLOBAL', name: 'dest-global', key: 'all', limit: DEST_LIMIT_GLOBAL, windowSec: 60 });
+  if (!rlAll.ok) return tooManyRequests(rlAll.retryAfter, CORS);
+
   const LANG_EN = { sr: 'Serbian (Latin script)', en: 'English', de: 'German', ru: 'Russian' }[L];
   const now = new Date();
   const mainPrompt =

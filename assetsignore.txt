@@ -34,3 +34,6 @@ scripts/
 .github/
 de.json
 _state.json
+
+# Rate limiting helper (samo Worker)
+rate-limit.js

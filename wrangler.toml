@@ -23,3 +23,21 @@ crons = ["0 8 * * *"]
 SUPABASE_URL = "https://qmiyaaepdvmgwesagnar.supabase.co"
 ALERT_FROM_EMAIL = "SKLOPI <alerti@sklopi.rs>"
 SITE_URL = "https://sklopi.panpetar405.workers.dev"
+
+# Rate limiting (vidi rate-limit.js). Limit je PO CLOUDFLARE LOKACIJI i nije striktno
+# tačan — štiti od petlji i zloupotrebe, ne služi za tačno brojanje.
+# period sme da bude samo 10 ili 60; namespace_id je proizvoljan ceo broj, jedinstven na nalogu.
+# Broji se samo AI poziv /api/dest-info (keš pogoci su besplatni).
+[[ratelimits]]
+name = "RL_DEST_IP"
+namespace_id = "1001"
+  [ratelimits.simple]
+  limit = 6
+  period = 60
+
+[[ratelimits]]
+name = "RL_DEST_GLOBAL"
+namespace_id = "1002"
+  [ratelimits.simple]
+  limit = 40
+  period = 60
