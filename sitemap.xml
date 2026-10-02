@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- AUTOMATSKI GENERISANO (generate-sitemap.mjs) — ne menjaj ručno. Pokretanje: npm run sitemap -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
@@ -6,8 +7,6 @@
     <lastmod>2026-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <!-- Jedina stranica sa 4 jezika (sr/en/ru/de, preko ?lang=) — ostale
-         stranice u ovom sitemap-u postoje samo na srpskom. -->
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/?lang=ru"/>
@@ -38,6 +37,134 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
   </url>
   <url>
+    <loc>https://sklopi.rs/vodic-barselona.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-bec.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-beograd.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-bled.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-budimpesta.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-budva.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-budva.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-budva-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-budva.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-herceg-novi.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-istanbul.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-istanbul.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-istanbul-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-istanbul.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-krf.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-krf.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-krf-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-krf.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-lisabon.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-lisabon.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-lisabon-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-lisabon.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-pariz.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-pariz.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-pariz-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-pariz.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-pataja.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-rim.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-solun.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-solun.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-solun-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-solun.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-split.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-split.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-split-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-split.html"/>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-zagreb.html</loc>
+    <lastmod>2026-09-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sklopi.rs/vodic-atina-de.html</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/vodic-atina-en.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/vodic-atina-ru.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-atina-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
+  </url>
+  <url>
     <loc>https://sklopi.rs/vodic-atina-en.html</loc>
     <lastmod>2026-09-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -60,101 +187,66 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
   </url>
   <url>
-    <loc>https://sklopi.rs/vodic-atina-de.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <loc>https://sklopi.rs/vodic-budva-de.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
-    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sklopi.rs/vodic-atina-en.html"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://sklopi.rs/vodic-atina-ru.html"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-atina-de.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-atina.html"/>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-budva.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-budva-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-budva.html"/>
   </url>
   <url>
-    <loc>https://sklopi.rs/vodic-budva.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <loc>https://sklopi.rs/vodic-istanbul-de.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-istanbul.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-istanbul-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-istanbul.html"/>
   </url>
   <url>
-    <loc>https://sklopi.rs/vodic-split.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://sklopi.rs/vodic-krf-de.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-krf.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-krf-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-krf.html"/>
   </url>
   <url>
-    <loc>https://sklopi.rs/vodic-solun.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://sklopi.rs/vodic-lisabon-de.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-lisabon.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-lisabon-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-lisabon.html"/>
   </url>
   <url>
-    <loc>https://sklopi.rs/vodic-istanbul.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://sklopi.rs/vodic-pariz-de.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-pariz.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-pariz-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-pariz.html"/>
   </url>
   <url>
-    <loc>https://sklopi.rs/vodic-krf.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://sklopi.rs/vodic-solun-de.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-solun.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-solun-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-solun.html"/>
   </url>
   <url>
-    <loc>https://sklopi.rs/vodic-pariz.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://sklopi.rs/vodic-split-de.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-split.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://sklopi.rs/vodic-split-de.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sklopi.rs/vodic-split.html"/>
   </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-lisabon.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-rim.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-barselona.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-bec.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-beograd.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-budimpesta.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-zagreb.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://sklopi.rs/vodic-herceg-novi.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <!-- privatnost.html, uslovi-koriscenja.html i kolacici.html namerno NISU ovde:
-       sve tri imaju <meta name="robots" content="noindex">, pa slanje "noindex"
-       stranica u sitemap Google ionako ignoriše — bolje ih odmah izostaviti. -->
 </urlset>
