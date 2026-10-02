@@ -272,14 +272,34 @@ function json(obj, status = 200, extra = {}) {
   return new Response(JSON.stringify(obj), { status, headers: { ...CORS, 'Content-Type': 'application/json', ...extra } });
 }
 
+// SEO: sajt je dostupan i na *.workers.dev adresi. Da Google ne indeksira duplikat sklopi.rs-a,
+// svaki odgovor sa te adrese dobija X-Robots-Tag: noindex, a /robots.txt zabranjuje indeksiranje.
+function isNonCanonicalHost(url) {
+  return /\.workers\.dev$/i.test(url.hostname);
+}
+
+async function routeRequest(request, env, ctx) {
+  const url = new URL(request.url);
+  if (url.pathname === '/api/dest-info') return handleDestInfo(request, env, ctx);
+  if (alertWorker && typeof alertWorker.fetch === 'function') {
+    return alertWorker.fetch(request, env, ctx);
+  }
+  return env.ASSETS.fetch(request);
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (url.pathname === '/api/dest-info') return handleDestInfo(request, env, ctx);
-    if (alertWorker && typeof alertWorker.fetch === 'function') {
-      return alertWorker.fetch(request, env, ctx);
+    if (isNonCanonicalHost(url) && url.pathname === '/robots.txt') {
+      return new Response('User-agent: *\nDisallow: /\n', {
+        headers: { 'Content-Type': 'text/plain; charset=UTF-8', 'X-Robots-Tag': 'noindex, nofollow' },
+      });
     }
-    return env.ASSETS.fetch(request);
+    const res = await routeRequest(request, env, ctx);
+    if (!isNonCanonicalHost(url)) return res;
+    const out = new Response(res.body, res);
+    out.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    return out;
   },
   async scheduled(event, env, ctx) {
     if (alertWorker && typeof alertWorker.scheduled === 'function') {

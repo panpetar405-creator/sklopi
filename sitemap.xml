@@ -4,7 +4,7 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://sklopi.rs/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/"/>
@@ -15,19 +15,19 @@
   </url>
   <url>
     <loc>https://sklopi.rs/destinacija.html</loc>
-    <lastmod>2026-09-24</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodici.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-atina.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
@@ -38,19 +38,19 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-barselona.html</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-bec.html</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-beograd.html</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -62,13 +62,13 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-budimpesta.html</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-budva.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-budva.html"/>
@@ -77,13 +77,13 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-herceg-novi.html</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-istanbul.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-istanbul.html"/>
@@ -92,7 +92,7 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-krf.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-krf.html"/>
@@ -101,7 +101,7 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-lisabon.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-lisabon.html"/>
@@ -110,7 +110,7 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-pariz.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-pariz.html"/>
@@ -125,13 +125,13 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-rim.html</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-solun.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-solun.html"/>
@@ -140,7 +140,7 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-split.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-split.html"/>
@@ -149,13 +149,13 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-zagreb.html</loc>
-    <lastmod>2026-09-27</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-atina-de.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
@@ -166,7 +166,7 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-atina-en.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
@@ -177,7 +177,7 @@
   </url>
   <url>
     <loc>https://sklopi.rs/vodic-atina-ru.html</loc>
-    <lastmod>2026-09-18</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
     <xhtml:link rel="alternate" hreflang="sr" href="https://sklopi.rs/vodic-atina.html"/>
