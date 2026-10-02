@@ -7,21 +7,31 @@
    jedan registrovan 'fetch' handler), a uzgred daje i osnovnu
    otpornost na slab/nestabilan signal.
 */
-// VAŽNO: pri svakom deploy-u koji menja app.js/styles.css/index.html,
+// VAŽNO: pri svakom deploy-u koji menja app-*.js/styles.css/index.html,
 // promeni ovaj string (npr. v2, v3...) — to je jedini način da postojeći
 // korisnici (i ti sam/a kad testiraš) odmah dobiju novu verziju, jer se
 // SW fajl inače retko menja pa se ne re-instalira sam od sebe.
-const CACHE_VERSION = 'sklopi-shell-v6';
+const CACHE_VERSION = 'sklopi-shell-v7';
 // app.js i styles.css su kritični za funkcionalnost i menjaju se često —
 // za njih se mreža uvek probom prva (network-first), keš je samo rezerva
 // za slab/nestabilan signal ili offline rad. Bez ovoga bi stari keš mogao
 // da nastavi da se servira i posle uspešnog deploy-a nove verzije.
-const NETWORK_FIRST = ['/app.js', '/styles.css', '/i18n-data.js', '/i18n-extra.js', '/dest-info.js', '/dest-info.css'];
+const NETWORK_FIRST = ['/app-01-core.js', '/app-02-market-passengers.js', '/app-03-airports.js', '/app-04-pricing-engine.js', '/app-05-results.js', '/app-06-form.js', '/app-07-package-detail.js', '/app-08-popular-airports.js', '/app-09-account.js', '/app-10-planner-init.js', '/app-11-sections-hero.js', '/styles.css', '/i18n-data.js', '/i18n-extra.js', '/dest-info.js', '/dest-info.css'];
 const APP_SHELL = [
   '/',
   '/index.html',
   '/styles.css',
-  '/app.js',
+  '/app-01-core.js',
+  '/app-02-market-passengers.js',
+  '/app-03-airports.js',
+  '/app-04-pricing-engine.js',
+  '/app-05-results.js',
+  '/app-06-form.js',
+  '/app-07-package-detail.js',
+  '/app-08-popular-airports.js',
+  '/app-09-account.js',
+  '/app-10-planner-init.js',
+  '/app-11-sections-hero.js',
   '/manifest.json'
 ];
 

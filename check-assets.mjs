@@ -46,8 +46,11 @@ const mustHide = [
 const mustHideRe = [/\.sql$/, /\.md$/, /\.mjs$/, /(^|\/)\.env(\..*)?$/, /(^|\/)\.dev\.vars$/];
 
 // 2) Ovo MORA biti javno (pregledač ga učitava).
+// app.js je razbijen na app-01-…app-11-*.js (redosled učitavanja je u index.html).
+const APP_PARTS = files.filter((f) => /^app-\d+-.+\.js$/.test(f));
+if (APP_PARTS.length === 0) { console.error('✗ nema app-*.js fajlova'); process.exit(1); }
 const mustServe = [
-  'index.html', 'app.js', 'styles.css', 'i18n-data.js', 'i18n-extra.js', 'config.js', 'contact.js',
+  'index.html', ...APP_PARTS, 'styles.css', 'i18n-data.js', 'i18n-extra.js', 'config.js', 'contact.js',
   'cookies.js', 'affiliate.js', 'price-mix.js', 'transport.js', 'transport-i18n.js', 'dest-info.js',
   'dest-info.css', 'dest-plans.js', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
 ];
