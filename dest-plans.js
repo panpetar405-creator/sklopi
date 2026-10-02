@@ -6,7 +6,6 @@
    - acc:  "3 plana za <acc>" (srpski, akuzativ)     - ru: "... поездки <ru>" (ruski predlog + grad)
    - reasons: 4 kratka razloga za "Zašto <grad>?"
    - photo: Unsplash ID (bez parametara) — bez njega se koristi slika sa kartice destinacije
-   - rating: true samo ako ocenu (u HTML-u) stvarno imaš; za ostale gradove se ne prikazuje
    - fixed: fiksne cene po osobi [plan1, plan2, plan3]; bez toga se cena računa iz builder-a
      (computeCustomPackage) za trenutni polazak, datume i broj putnika. */
 window.SKLOPI_DEST_PLANS = (function(){
@@ -46,7 +45,7 @@ window.SKLOPI_DEST_PLANS = (function(){
     arch: {city:[cityFirst, comfort, value], sea:[seaFirst, comfort, value], trip:[tripFirst, comfort, value]},
     cities: {
       'Atina': {arch:'city', country:'Grčka', acc:'tvoju Atinu', ru:'в Афины', photo:'1603565816030-6b389eeb23cb',
-        rating:true, fixed:[529, 689, 449],
+        fixed:[529, 689, 449],
         photos:['1603565816030-6b389eeb23cb','1530841377377-3ff06c0ca713','1555881400-74d7acaacd8b'],
         forWho1:'Za koga: prvi put u Atini / city break',
         reasons:[H,'Odlična mediteranska kuhinja','Provod i život i smeštaj',W]},

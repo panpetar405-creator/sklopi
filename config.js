@@ -33,3 +33,8 @@ window.SKLOPI_AFF_IDS = {
                           // Prazno = običan omio.com link bez oznake "partnerski".
                           // Kad upišeš link, dugme dobija oznaku + sponsored, a napomena o proviziji dobija i Omio.
 };
+
+// Datum kad su pravila o pasošu, vizi i zelenoj karti POSLEDNJI PUT stvarno proverena
+// uz izvore (MUP, ambasade, AMSS). Prikazuje se korisnicima kao „Pravila ažurirana“.
+// Menjaj ga SAMO kad zaista proveriš — datum je tvrdnja pred korisnikom. Format: GGGG-MM-DD.
+window.SKLOPI_TRAVEL_RULES_UPDATED = '2026-10-03';

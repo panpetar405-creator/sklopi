@@ -1633,9 +1633,10 @@ function updateStats(){
   const elSearches = document.getElementById('statSearches');
   const elClicks = document.getElementById('statClicks');
   const elLast = document.getElementById('statLast');
-  if (elSearches) elSearches.textContent = Math.max(state.searches, STAT_DISPLAY_FLOOR.searches);
-  if (elClicks) elClicks.textContent = Math.max(state.clicks, STAT_DISPLAY_FLOOR.clicks);
-  if (elLast) elLast.textContent = cityLabelWithPrefix(state.lastDest || STAT_LAST_DEST_FALLBACK);
+  // Samo stvarne vrednosti (bez izmišljenog minimuma). Dok nema podataka, prikaži crticu.
+  if (elSearches) elSearches.textContent = state.searches > 0 ? state.searches : '—';
+  if (elClicks) elClicks.textContent = state.clicks > 0 ? state.clicks : '—';
+  if (elLast) elLast.textContent = state.lastDest ? cityLabelWithPrefix(state.lastDest) : '—';
   saveStats();
 }
 

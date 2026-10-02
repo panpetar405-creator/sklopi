@@ -720,7 +720,8 @@ function fillPassportSection(destVal, country){
       + '<b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b>'
       + '<br>' + escapeHtml(rule.why)
       + (rule.confident ? '' : '<br><span style="opacity:0.75">(opšte pravilo, ne potvrđeno za ovu zemlju)</span>')
-      + '</div>';
+      + '</div>'
+      + travelRulesUpdatedHtml();
   }
   if (rule.noPassportNeeded){
     if (expiryInput) expiryInput.disabled = true;
@@ -757,7 +758,8 @@ function fillGreenCardSection(destVal, country){
     + '<div class="passport-rule-box" style="margin-top:10px;">'
     + (rule.status !== 'unknown' ? '<b>' + escapeHtml(destVal + (country ? ' · ' + country : '')) + '</b><br>' : '')
     + '<span style="opacity:0.75">' + escapeHtml(t('green_card_scope_note')) + '</span>'
-    + '</div>';
+    + '</div>'
+    + travelRulesUpdatedHtml();
 }
 function switchDocsTab(which){
   const passTab = document.getElementById('docsTabPassport');

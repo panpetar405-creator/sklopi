@@ -279,8 +279,6 @@
     if (c.reasons.length) set('.destination-reference-reason .eyebrow', whyTitle(k));
     set('#destinationPlansBtn span', plansTitle(k));
     set('#destinationPlansTitle', plansTitle(k));
-    const rating = qs('.destination-reference-rating');
-    if (rating) rating.hidden = !c.rating;   // ocena je upisana samo u HTML-u (Atina); za ostale nemamo podatke
     const ul = qs('.destination-reference-reason ul');
     if (ul) ul.innerHTML = c.reasons.map(r => '<li>' + escapeHtml(tx(r)) + '</li>').join('');
     curPlans = buildPlans(k);

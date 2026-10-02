@@ -413,3 +413,58 @@ window.onLangChange = function(lang){
   updateCtaBanner();
 };
 
+
+/* ==========================================================
+   PRISTUPAČNOST DIJALOGA — fokus, Escape, Tab zamka
+   Modali (alert, deljenje, dokumenta, match, start-prefs) se otvaraju
+   dodavanjem klase .open. Ovde to pratimo jednim posmatračem pa:
+   - pri otvaranju fokus ide na sam dijalog (čitač ekrana ga najavi preko
+     aria-label/labelledby; tastatura ne iskače na mobilnom),
+   - Tab/Shift+Tab ostaju unutar dijaloga,
+   - Escape klikne na njegovo X dugme (zatvaranje ostaje kroz postojeći
+     guardOverlayRequestClose put, pa istorija ostaje čista),
+   - pri zatvaranju fokus se vraća na element koji je dijalog otvorio.
+   startPrefsModal već ima svoj Escape handler (app-10 gore) — ovde nema duplog.
+========================================================== */
+(function initDialogA11y(){
+  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const DIALOGS = [
+    { id:'alertModal',      close:'alertModalClose',     esc:true },
+    { id:'shareModal',      close:'shareModalClose',     esc:true },
+    { id:'documentsModal',  close:'documentsModalClose', esc:true },
+    { id:'matchModal',      close:'matchModalClose',     esc:true },
+    { id:'startPrefsModal', close:'startPrefsClose',     esc:false }
+  ];
+  const isShown = (n) => n.offsetParent !== null || n === document.activeElement;
+  DIALOGS.forEach((cfg) => {
+    const el = document.getElementById(cfg.id);
+    if (!el) return;
+    let opener = null, wasOpen = false;
+    new MutationObserver(() => {
+      const open = el.classList.contains('open');
+      if (open && !wasOpen){
+        wasOpen = true;
+        opener = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
+        setTimeout(() => { if (el.classList.contains('open')) el.focus({ preventScroll:true }); }, 30);
+      } else if (!open && wasOpen){
+        wasOpen = false;
+        const back = opener; opener = null;
+        if (back && document.contains(back) && typeof back.focus === 'function') back.focus({ preventScroll:true });
+      }
+    }).observe(el, { attributes:true, attributeFilter:['class'] });
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && cfg.esc){
+        const b = document.getElementById(cfg.close);
+        if (b){ e.preventDefault(); e.stopPropagation(); b.click(); }
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const f = Array.prototype.slice.call(el.querySelectorAll(FOCUSABLE)).filter(isShown);
+      if (!f.length){ e.preventDefault(); return; }
+      const first = f[0], last = f[f.length - 1], cur = document.activeElement;
+      if (e.shiftKey && (cur === first || cur === el)){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && cur === last){ e.preventDefault(); first.focus(); }
+    });
+  });
+})();

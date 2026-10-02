@@ -4,6 +4,7 @@
    i18n-data.js ne briše ove prevode. tx('srpski tekst') vraća prevod za trenutni jezik. */
 (function(){
   var ROWS = [
+    ["x_a11y_skip","Preskoči na sadržaj","Skip to content","Перейти к содержимому"],
     ["x_fx01","Auto u ","Car in ","Автомобиль в "],
     ["x_fx02","/ dan","/ day","/ день"],
     ["x_fx03","uklj. gorivo i putarine","incl. fuel and tolls","вкл. топливо и платные дороги"],
@@ -40,8 +41,6 @@
     ["x_3843f4","Atina","Athens","Афины"],
     ["x_a8d9e7","Grčka","Greece","Греция"],
     ["x_f4aa87","Atina — Akropolj","Athens — Acropolis","Афины — Акрополь"],
-    ["x_c9e223","Ocena 4.7 od 5","Rated 4.7 out of 5","Оценка 4,7 из 5"],
-    ["x_632281","(1.240 recenzija)","(1,240 reviews)","(1 240 отзывов)"],
     ["x_c0b571","Šta možeš uključiti u put","What you can include in your trip","Что можно включить в поездку"],
     ["x_cae640","Let","Flight","Перелёт"],
     ["x_26e287","Hotel","Hotel","Отель"],
@@ -295,9 +294,8 @@
  "x_3b0a32": "Städtetrip",
  "x_8a443d": "Natur",
  "x_f4aa87": "Athen – Akropolis",
- "x_c9e223": "Bewertet mit 4,7 von 5",
- "x_632281": "(1.240 Bewertungen)",
  "x_c0b571": "Was du in deine Reise aufnehmen kannst",
+ "x_a11y_skip": "Zum Inhalt springen",
  "x_8853f9": "Warum Athen?",
  "x_54fb29": "Reiche Geschichte und Kultur",
  "x_d83b62": "Hervorragende mediterrane Küche",

@@ -464,7 +464,8 @@ function updateStatLastPreview(destRaw){
   const statLastEl = document.getElementById('statLast');
   if (!statLastEl) return;
   const typed = (destRaw || '').trim();
-  statLastEl.textContent = cityLabelWithPrefix(typed || state.lastDest || STAT_LAST_DEST_FALLBACK);
+  const lastShown = typed || state.lastDest;
+  statLastEl.textContent = lastShown ? cityLabelWithPrefix(lastShown) : '—';
 }
 function pickCtaDestFromTyping(){
   const originVal = (document.getElementById('origin') || {}).value || '';

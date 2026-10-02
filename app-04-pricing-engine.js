@@ -255,12 +255,6 @@ function iconSvg(type){
 ========================================================== */
 const state = { searches:0, clicks:0, lastDest:null };
 const STATS_STORAGE_KEY = 'sklopi_stats_v1';
-/* ---- Minimalne "prikazane" vrednosti za brojače — stvarni state ispod
-   se i dalje normalno broji i čuva, ali se na ekranu NIKAD ne prikazuje
-   0 (ili prazna poslednja destinacija), da sajt ne deluje prazno/nov
-   novom posetiocu ili posle brisanja localStorage-a. ---- */
-const STAT_DISPLAY_FLOOR = { searches: 182, clicks: 96 };
-const STAT_LAST_DEST_FALLBACK = 'Atina';
 function loadStats(){
   try{
     const raw = localStorage.getItem(STATS_STORAGE_KEY);
@@ -1491,6 +1485,16 @@ function addDaysToDate(date, days){
   const d = new Date(date);
   d.setDate(d.getDate() + days);
   return d;
+}
+/* Napomena „Pravila ažurirana: …“ ispod pasoš/zelena karta pravila. Datum dolazi iz
+   config.js (SKLOPI_TRAVEL_RULES_UPDATED); ako ga nema ili nije validan, ne prikazuje se ništa. */
+function travelRulesUpdatedHtml(){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(window.SKLOPI_TRAVEL_RULES_UPDATED || '');
+  if (!m) return '';
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  if (isNaN(d)) return '';
+  return '<p class="travel-updated">Pravila ažurirana: <time datetime="' + m[0] + '">' + fmtDateSr(d)
+    + '</time> Uslovi ulaska se menjaju — proveri kod ambasade ili MUP-a pre puta.</p>';
 }
 function fmtDateSr(d){
   return d.getDate() + '. ' + d.toLocaleString('sr-Latn', {month:'long'}) + ' ' + d.getFullYear() + '.';
