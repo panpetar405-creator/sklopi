@@ -31,6 +31,11 @@
 
 [hidden]{display:none !important;}
 /* ---- dinamički deo stranice destinacije (prefiks dp-, kao ostatak) ---- */
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100000;background:#0b4a54;color:#fff;padding:10px 16px;border-radius:10px;font:700 14px/1.2 'Inter',sans-serif;text-decoration:none;}
+.skip-link:focus{top:12px;outline:3px solid #f5c04e;outline-offset:2px;}
+#main:focus{outline:none;}
+.travel-updated{margin:10px 0 0;color:#5c7077;font-size:12.5px;line-height:1.45;}
+.travel-updated time{font-weight:700;}
 .dp-search{margin-top:18px;}
 .dp-form{display:grid;gap:12px;}
 .dp-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
@@ -136,6 +141,7 @@
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Preskoči na sadržaj</a>
 
 <!-- ====== TOPBAR (identičan onom sa index.html) ====== -->
 <div class="topbar-wrap">
@@ -169,6 +175,7 @@ Nazad na pretragu
 </div>
 
 <!-- ====== HERO / FORMA / REZULTATI (dinamički, popunjava JS) ====== -->
+<main id="main" tabindex="-1">
 <div class="dp-hero">
 <div class="dp-hero-inner">
 <p class="hero-kicker"><span class="dash" style="width:20px;height:2px;background:var(--gold-soft);display:inline-block;margin-right:8px;"></span>PAŽLJIVO OSMIŠLJENA PUTOVANJA</p>
@@ -215,6 +222,7 @@ Nazad na pretragu
 </div>
 
 <!-- ====== FOOTER (identičan onom sa index.html) ====== -->
+</main>
 <footer id="about">
 <div class="footer-inner">
 <div class="footer-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><g transform="rotate(-18 12 12)"><rect x="4" y="5" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="7" r="1.4" fill="var(--deep)"/><circle cx="20" cy="7" r="1.4" fill="var(--deep)"/><line x1="12" y1="5" x2="12" y2="9" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="10.5" width="16" height="4" rx="2" fill="#fff"/><circle cx="4" cy="12.5" r="1.4" fill="var(--deep)"/><circle cx="20" cy="12.5" r="1.4" fill="var(--deep)"/><line x1="12" y1="10.5" x2="12" y2="14.5" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="var(--deep)"/><circle cx="20" cy="18" r="1.4" fill="var(--deep)"/><line x1="12" y1="16" x2="12" y2="20" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/></g></svg></div>SKLOPI<em>.</em></div>
@@ -498,6 +506,14 @@ function greenCard(country){
 /* ---------- "Da li si sve pokrio?" — isti checklist kao na naslovnoj (app.js),
    ovde nad lokalnim passportText/greenCard/DATA.visa jer ova stranica ne
    učitava app.js. Namerno konzervativno: samo prikazuje postojeća pravila. ---------- */
+function travelRulesUpdatedHtml(){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(window.SKLOPI_TRAVEL_RULES_UPDATED || '');
+  if (!m) return '';
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  if (isNaN(d)) return '';
+  return '<p class="travel-updated">Pravila ažurirana: <time datetime="' + m[0] + '">' + d.getDate() + '. ' +
+    d.toLocaleString('sr-Latn', {month:'long'}) + ' ' + d.getFullYear() + '.</time> Uslovi ulaska se menjaju — proveri kod ambasade ili MUP-a pre puta.</p>';
+}
 function travelChecklistHtml(country, includeCar){
   const items = [];
   const c = country || '';
@@ -521,7 +537,7 @@ function travelChecklistHtml(country, includeCar){
     '<li class="tc-item ' + (i.ok ? 'tc-ok' : 'tc-todo') + '"><span class="tc-ic">' + i.icon + '</span><div><b>' + esc(i.title) + '</b><p>' + esc(i.text) + '</p></div></li>'
   ).join('');
   return '<div class="travel-checklist"><div class="tc-head"><span class="tc-title">🧳 Da li si sve pokrio?</span><span class="tc-score">' +
-    doneCount + '/' + items.length + '</span></div><ul class="tc-list">' + rows + '</ul></div>';
+    doneCount + '/' + items.length + '</span></div><ul class="tc-list">' + rows + '</ul>' + travelRulesUpdatedHtml() + '</div>';
 }
 
 /* ---------- prikaz ---------- */

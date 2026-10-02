@@ -163,10 +163,11 @@ html,body{background:#123A44;margin:0;}
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
+<a class="skip-link" href="#main" data-i18n="x_a11y_skip">Preskoči na sadržaj</a>
 <noscript><style>#appSplash{display:none!important;}</style></noscript>
 <div id="appSplash" class="app-splash" role="status" aria-live="polite" aria-label="Učitavanje">
   <div class="app-splash-inner">
-    <img class="app-splash-mark" src="app-icon-192.png?v=5" width="96" height="96" aria-hidden="true" style="border-radius:6px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1) both,splashFloat 2.4s ease-in-out .7s infinite;">
+    <img class="app-splash-mark" src="app-icon-192.png?v=5" width="96" height="96" alt="" aria-hidden="true" style="border-radius:6px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1) both,splashFloat 2.4s ease-in-out .7s infinite;">
     <div class="app-splash-track"><span class="app-splash-fill"></span></div>
   </div>
 </div>
@@ -216,11 +217,12 @@ html,body{background:#123A44;margin:0;}
 <a href="#about" data-i18n="nav_about">O nama</a>
 </nav></div></div>
 </div>
+<main id="main" tabindex="-1">
 <div class="hero hero-reference" id="searchForm-wrap">
 <div class="hero-reference-shell">
   <div class="hero-reference-visual">
     <picture>
-      <source srcset="hero-sklopi.webp" type="image/webp">
+      <source srcset="hero-sklopi-800.webp 800w, hero-sklopi.webp 1400w" sizes="(max-width: 760px) 100vw, 1180px" type="image/webp">
       <img src="hero-sklopi.jpg" width="1400" height="1050" alt="Putnica posmatra zalazak sunca iznad primorskog gradića, sa mapom, kamerom i šoljom na stolu" loading="eager" fetchpriority="high" data-i18n-alt="x_9ec990">
     </picture>
     <div class="hero-reference-visual-overlay"></div>
@@ -359,9 +361,6 @@ html,body{background:#123A44;margin:0;}
         <div>
           <h2 id="destinationSpotlightTitle" data-i18n="x_3843f4">Atina</h2>
           <p data-i18n="x_a8d9e7">Grčka</p>
-        </div>
-        <div class="destination-reference-rating" aria-label="Ocena 4.7 od 5" data-i18n-aria-label="x_c9e223">
-          <span aria-hidden="true">★</span> 4.7 <small data-i18n="x_632281">(1.240 recenzija)</small>
         </div>
       </div>
 
@@ -688,7 +687,7 @@ html,body{background:#123A44;margin:0;}
 <div class="promo-banner">
 <div class="promo-banner-card">
 <div class="promo-banner-photo">
-<img src="banner-jezero-planina.jpg" data-i18n-alt="alt_banner_lake" alt="Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor" loading="lazy">
+<picture><source srcset="banner-jezero-planina-800.webp 800w, banner-jezero-planina.webp 1600w" sizes="(max-width: 760px) 100vw, 560px" type="image/webp"><img src="banner-jezero-planina.jpg" width="1600" height="640" decoding="async" data-i18n-alt="alt_banner_lake" alt="Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor" loading="lazy"></picture>
 </div>
 <div class="promo-banner-cap">
 <p class="promo-banner-kicker" data-i18n="promo_banner_kicker">Trenutak za sebe</p>
@@ -730,7 +729,7 @@ html,body{background:#123A44;margin:0;}
 <label class="q-radio-line"><input type="radio" name="flightPrefRadio" value="direct" checked> <span data-i18n="chip_direct">Direktan</span></label>
 <label class="q-radio-line"><input type="radio" name="flightPrefRadio" value="cheapest"> <span data-i18n="chip_cheapest">Najjeftiniji, sa presedanjem</span></label>
 <label class="q-radio-line"><input type="radio" name="flightPrefRadio" value="airline"> <span data-i18n="chip_airline">Određena kompanija</span></label>
-<input type="text" id="airlineName" class="q-text-field" data-i18n-placeholder="placeholder_airline" placeholder="npr. Lufthansa" style="display:none;">
+<input type="text" id="airlineName" class="q-text-field" aria-label="Određena kompanija" data-i18n-aria-label="chip_airline" data-i18n-placeholder="placeholder_airline" placeholder="npr. Lufthansa" style="display:none;">
 </div>
 </div>
 </div>
@@ -786,8 +785,8 @@ html,body{background:#123A44;margin:0;}
 </label>
 <div class="q-sub">
 <div class="q-sub-inner">
-<span class="q-field-label" data-i18n="q_activities_count">Broj aktivnosti</span>
-<input type="number" id="actCountInput" class="q-text-field q-num-field" min="0" max="10" value="2">
+<span class="q-field-label" id="actCountLbl" data-i18n="q_activities_count">Broj aktivnosti</span>
+<input type="number" id="actCountInput" aria-labelledby="actCountLbl" class="q-text-field q-num-field" min="0" max="10" value="2">
 </div>
 </div>
 </div>
@@ -846,13 +845,13 @@ html,body{background:#123A44;margin:0;}
 <label class="q-row-head" style="cursor:default;">
 <span class="q-checkbox-spacer"></span>
 <span class="q-txt">
-<span class="q-name" data-i18n-html="builder_budget_label_html">Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></span>
+<span class="q-name" id="budgetLbl" data-i18n-html="builder_budget_label_html">Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></span>
 <span class="q-desc" data-i18n="q_budget_desc">Reci nam okvirni budžet da uporedimo</span>
 </span>
 </label>
 <div class="q-sub-inner" style="padding-left:53px;">
 <div class="builder-budget-row">
-<span>€</span><input type="number" id="budgetInput" class="q-text-field" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
+<span>€</span><input type="number" id="budgetInput" aria-labelledby="budgetLbl" class="q-text-field" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
 </div>
 </div>
 </div>
@@ -1009,6 +1008,7 @@ html,body{background:#123A44;margin:0;}
 </div>
 </div>
 </div>
+</main>
 <footer id="about">
 <div class="footer-photo"><img src="img/banner-obala-zalazak-1400.webp" alt="Obala i zalazak sunca — SKLOPI planiranje putovanja" loading="lazy"></div>
 <svg class="footer-mark-v2" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 19l6-10 4 6 2-3 6 7H3z" fill="currentColor"/></svg>
@@ -1079,7 +1079,7 @@ html,body{background:#123A44;margin:0;}
 <label class="q-radio-line"><input type="radio" name="spFlightPrefRadio" value="direct" checked> <span data-i18n="chip_direct">Direktan</span></label>
 <label class="q-radio-line"><input type="radio" name="spFlightPrefRadio" value="cheapest"> <span data-i18n="chip_cheapest">Najjeftiniji</span></label>
 <label class="q-radio-line"><input type="radio" name="spFlightPrefRadio" value="airline"> <span data-i18n="chip_airline">Određena kompanija</span></label>
-<input type="text" id="spAirlineName" class="q-text-field" data-i18n-placeholder="placeholder_airline" placeholder="npr. Lufthansa" style="display:none;">
+<input type="text" id="spAirlineName" class="q-text-field" aria-label="Određena kompanija" data-i18n-aria-label="chip_airline" data-i18n-placeholder="placeholder_airline" placeholder="npr. Lufthansa" style="display:none;">
 </div>
 </div>
 
@@ -1129,8 +1129,8 @@ html,body{background:#123A44;margin:0;}
 </label>
 <div class="q-sub">
 <div class="q-sub-inner">
-<span class="q-field-label" data-i18n="q_activities_count">Broj aktivnosti</span>
-<input type="number" id="spActCountInput" class="q-text-field q-num-field" min="0" max="10" value="2">
+<span class="q-field-label" id="spActCountLbl" data-i18n="q_activities_count">Broj aktivnosti</span>
+<input type="number" id="spActCountInput" aria-labelledby="spActCountLbl" class="q-text-field q-num-field" min="0" max="10" value="2">
 </div>
 </div>
 </div>
@@ -1159,13 +1159,13 @@ html,body{background:#123A44;margin:0;}
 <div class="q-row-head q-row-head--static">
 <span class="q-checkbox-spacer"></span>
 <span class="q-txt">
-<span class="q-name" data-i18n-html="builder_budget_label_html">Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></span>
+<span class="q-name" id="spBudgetLbl" data-i18n-html="builder_budget_label_html">Budžet <span style="font-weight:400;font-size:12px;color:var(--ink-soft);">(opciono)</span></span>
 <span class="q-desc" data-i18n="q_budget_desc">Reci nam okvirni budžet da uporedimo</span>
 </span>
 </div>
 <div class="q-sub-inner" style="padding-left:53px;">
 <div class="builder-budget-row">
-<span>€</span><input type="number" id="spBudgetInput" class="q-text-field" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
+<span>€</span><input type="number" id="spBudgetInput" aria-labelledby="spBudgetLbl" class="q-text-field" data-i18n-placeholder="placeholder_budget" placeholder="npr. 700" min="0" max="50000" step="1">
 </div>
 </div>
 </div>
