@@ -9692,20 +9692,63 @@ function popularCardData(card){
     meta: popularMetaLabel(card.meta || meta[0]),
     price: popularPriceLabel(card.price || meta[1]),
     category: (popularTagsFor(card.dest || card.name).join(' ')) || card.category || meta[2] || 'all',
-    image: card.image || POPULAR_DEST_IMAGES[key] || 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=500&q=82'
+    image: card.image || POPULAR_DEST_IMAGES[key] || ''
   };
 }
 function popularCardHtml(card){
   const c = popularCardData(card);
-  return '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '" data-category="' + escapeHtml(c.category) + '">'
-    + '<span class="pd-thumb"><img src="' + escapeHtml(c.image) + '" alt="' + escapeHtml(c.name) + '" loading="lazy"></span>'
+  const noImg = !c.image;   // bez svoje slike → slika se učitava kao u ostalim sekcijama (popularFillImages)
+  return '<button type="button" class="popular-dest-card" data-dest="' + escapeHtml(c.dest) + '" data-category="' + escapeHtml(c.category) + '"' + (noImg ? ' data-noimg="1"' : '') + '>'
+    + '<span class="pd-thumb"' + (noImg ? ' style="background:#e4eef1"' : '') + '><img ' + (noImg ? '' : 'src="' + escapeHtml(c.image) + '" ') + 'alt="' + (noImg ? '' : escapeHtml(c.name)) + '" loading="lazy"></span>'
     + '<span class="pd-copy"><span class="pd-name">' + escapeHtml(c.name) + '</span>'
     + '<span class="pd-meta">' + escapeHtml(c.meta) + '</span>'
     + '<span class="pd-price">' + escapeHtml(c.price) + '</span></span>'
     + '<span class="pd-arrow" aria-hidden="true">›</span>'
     + '</button>';
 }
+/* Slike kartica bez sopstvene slike — isti izvori kao u ostalim sekcijama:
+   1) urednička fotografija grada (SKLOPI_destPhoto, ista kao u planovima),
+   2) već učitana slika iz sekcije „Destinacije“ / zajednički keš,
+   3) Viator (ako je Worker podešen) pa Wikipedia. */
+const POPULAR_WIKI_TITLES = {
+  'Split':'Split,_Croatia', 'Plitvička Jezera':'Plitvice_Lakes_National_Park', 'Durmitor':'Durmitor',
+  'Kotor':'Kotor', 'Bled':'Bled', 'Ohrid':'Ohrid', 'Budva':'Budva', 'Zagreb':'Zagreb', 'Dubrovnik':'Dubrovnik',
+  'Santorini':'Santorini', 'Ljubljana':'Ljubljana', 'Istanbul':'Istanbul'
+};
+async function popularFillImages(grid){
+  const cards = Array.from(grid.querySelectorAll('.popular-dest-card[data-noimg="1"]'));
+  if (!cards.length) return;
+  const put = (card, url) => {
+    if (!url || !card.isConnected) return;
+    const img = card.querySelector('.pd-thumb img');
+    if (!img) return;
+    img.alt = card.dataset.dest || ''; img.src = url; card.dataset.noimg = '0';
+  };
+  const cache = destReadImgCache(WIKI_IMG_CACHE_KEY, WIKI_IMG_TTL);
+  const need = [];
+  cards.forEach(card => {
+    const d = card.dataset.dest;
+    const url = (window.SKLOPI_destPhoto && window.SKLOPI_destPhoto(d, 300)) || _destImgMap[d] || cache.m[d];
+    if (url) put(card, url); else need.push(card);
+  });
+  let next = 0;
+  async function worker(){
+    while (next < need.length){
+      const card = need[next++], d = card.dataset.dest;
+      let url = '';
+      try {
+        if (destImgEndpoint()) url = await destFetchOneImage({dest:d, row:''});
+        if (!url) url = await fetchWikiImage(POPULAR_WIKI_TITLES[d] || destWikiTitle({dest:d}));
+      } catch(e){}
+      if (url){ cache.m[d] = url; _destImgMap[d] = url; put(card, url); }
+    }
+  }
+  await Promise.all(Array.from({length: Math.min(4, need.length)}, worker));
+  destWriteImgCache(WIKI_IMG_CACHE_KEY, cache);
+}
 function attachPopularDestCardHandlers(grid){
+  // odloženo: DEST_* podaci i pomoćnici su definisani niže u fajlu
+  setTimeout(() => popularFillImages(grid), 0);
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
       document.getElementById('dest').value = card.dataset.dest;
