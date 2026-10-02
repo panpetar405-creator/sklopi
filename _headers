@@ -57,3 +57,17 @@
 # Slike: imena nisu heširana, zato samo 7 dana.
 /img/*
   Cache-Control: public, max-age=604800
+
+# Hero i baner slike u korenu (imena nisu heširana, zato 7 dana, kao /img/*).
+/hero-sklopi.webp
+  Cache-Control: public, max-age=604800
+/hero-sklopi-800.webp
+  Cache-Control: public, max-age=604800
+/hero-sklopi.jpg
+  Cache-Control: public, max-age=604800
+/banner-jezero-planina.webp
+  Cache-Control: public, max-age=604800
+/banner-jezero-planina-800.webp
+  Cache-Control: public, max-age=604800
+/banner-jezero-planina.jpg
+  Cache-Control: public, max-age=604800
