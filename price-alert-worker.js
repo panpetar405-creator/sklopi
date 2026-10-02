@@ -18,6 +18,12 @@
 
 import { computeAlertPrice } from './pricing-core.js';
 import { handleDestinationActivities } from './viator-activities.js';
+import { rateLimit, clientIp, tooManyRequests } from './rate-limit.js';
+
+// Fallback limiti (važe samo ako nema [[ratelimits]] bindinga; inače važi wrangler.toml).
+// Svaki /api/flights poziv je plaćen/ograničen Duffel poziv, pa je limit strog.
+const FLIGHTS_LIMIT_IP = 8;       // pretraga u minuti po IP-u
+const FLIGHTS_LIMIT_GLOBAL = 60;  // pretraga u minuti ukupno, po lokaciji
 
 const TIER_LABELS = {
   budget: 'Budget',
@@ -71,6 +77,12 @@ export default {
         return corsPreflightResponse(env);
       }
       if (request.method === 'GET') {
+        const cors = corsHeaders(env);
+        const ip = clientIp(request);
+        const rlIp = await rateLimit(env, { binding: 'RL_FLIGHTS_IP', name: 'flights-ip', key: ip, limit: FLIGHTS_LIMIT_IP, windowSec: 60 });
+        if (!rlIp.ok) return tooManyRequests(rlIp.retryAfter, cors);
+        const rlAll = await rateLimit(env, { binding: 'RL_FLIGHTS_GLOBAL', name: 'flights-global', key: 'all', limit: FLIGHTS_LIMIT_GLOBAL, windowSec: 60 });
+        if (!rlAll.ok) return tooManyRequests(rlAll.retryAfter, cors);
         return handleFlightSearch(url, env);
       }
     }

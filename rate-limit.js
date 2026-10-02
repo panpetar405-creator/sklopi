@@ -53,10 +53,11 @@ export async function rateLimit(env, { binding, name, key, limit, windowSec = 60
   }
 }
 
-/** 429 odgovor; headers = CORS zaglavlja te rute. */
+/** 429 odgovor; headers = CORS zaglavlja te rute (mogu već imati svoj content-type). */
 export function tooManyRequests(retryAfter, headers = {}) {
-  return new Response(JSON.stringify({ error: 'rate_limited', retry_after: retryAfter }), {
-    status: 429,
-    headers: { ...headers, 'Content-Type': 'application/json; charset=utf-8', 'Retry-After': String(retryAfter) },
-  });
+  const h = new Headers(headers);
+  h.set('Content-Type', 'application/json; charset=utf-8');
+  h.set('Retry-After', String(retryAfter));
+  h.set('Cache-Control', 'no-store');
+  return new Response(JSON.stringify({ error: 'rate_limited', retry_after: retryAfter }), { status: 429, headers: h });
 }

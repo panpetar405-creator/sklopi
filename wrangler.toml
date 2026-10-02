@@ -41,3 +41,18 @@ namespace_id = "1002"
   [ratelimits.simple]
   limit = 40
   period = 60
+
+# /api/flights — svaki poziv ide na Duffel, zato je limit stroži.
+[[ratelimits]]
+name = "RL_FLIGHTS_IP"
+namespace_id = "1003"
+  [ratelimits.simple]
+  limit = 8
+  period = 60
+
+[[ratelimits]]
+name = "RL_FLIGHTS_GLOBAL"
+namespace_id = "1004"
+  [ratelimits.simple]
+  limit = 60
+  period = 60
