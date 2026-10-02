@@ -8,7 +8,8 @@
     "i18n:build": "node translate.mjs --build",
     "i18n:test": "node selftest.mjs",
     "i18n:todo": "node find-hardcoded.mjs",
-    "check:assets": "node check-assets.mjs"
+    "check:assets": "node check-assets.mjs",
+    "fetch:images": "node fetch-missing-images.mjs"
   },
   "engines": {
     "node": ">=18"

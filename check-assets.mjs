@@ -60,6 +60,20 @@ for (const f of files) {
 for (const f of mustServe) {
   if (files.includes(f) && ignored(f)) { console.error('✗ IGNORISANO a pregledač ga treba: ' + f); bad++; }
 }
+
+// 3) Svaka lokalna slika na koju HTML/JS/CSS upućuje mora da postoji.
+import { existsSync } from 'node:fs';
+const refRe = /(?:^|["'(=\s])((?:\.\/)?img\/[A-Za-z0-9_.-]+\.(?:webp|jpe?g|png|svg))/g;
+const missingImgs = new Map();
+for (const f of files.filter((x) => /\.(html|js|css)$/.test(x) && !ignored(x))) {
+  const txt = readFileSync(join(root, f), 'utf8');
+  for (const m of txt.matchAll(refRe)) {
+    const ref = m[1].replace(/^\.\//, '');
+    if (!existsSync(join(root, ref))) { if (!missingImgs.has(ref)) missingImgs.set(ref, new Set()); missingImgs.get(ref).add(f); }
+  }
+}
+for (const [ref, from] of missingImgs) { console.error('✗ SLIKA FALI: ' + ref + '  (u: ' + [...from].join(', ') + ')'); bad++; }
+
 const pub = files.filter((f) => !ignored(f));
 console.log('Javno: ' + pub.length + ' fajlova, ignorisano: ' + (files.length - pub.length));
 const rest = pub.filter((f) => !/\.(html|png|webp|jpe?g|svg|ico)$/i.test(f)).sort();
