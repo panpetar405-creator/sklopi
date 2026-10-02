@@ -72,8 +72,9 @@
 /banner-jezero-planina.jpg
   Cache-Control: public, max-age=604800
 
-# SEO: ista aplikacija je dostupna i na *.workers.dev adresi — to je duplikat sklopi.rs-a.
-# noindex tu drži Google dalje od te kopije. (NE zabranjuj je u robots.txt: kad je crawl blokiran,
-# Google ne vidi noindex i može da zadrži sam URL u rezultatima.) Pravilo važi samo za workers.dev host.
-https://:worker.:subdomain.workers.dev/*
-  X-Robots-Tag: noindex
+# SEO — UKLJUČI TEK KAD sklopi.rs RADI (povezan sa workerom).
+# Do tada je *.workers.dev jedina adresa sajta, pa bi noindex isključio ceo sajt iz Google-a.
+# Kad domen proradi, skini "#" sa naredna dva reda: workers.dev kopija se tada ne indeksira.
+# NE zabranjuj je u robots.txt (Google tad ne vidi noindex).
+# https://:worker.:subdomain.workers.dev/*
+#   X-Robots-Tag: noindex
