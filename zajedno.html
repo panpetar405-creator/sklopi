@@ -10,9 +10,8 @@
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <meta name="theme-color" content="#123A44">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@600;700;800&family=DM+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=45">
+<link rel="stylesheet" href="fonts.css?v=0f858672">
+<link rel="stylesheet" href="styles.css?v=443320a7">
 <!--
   Ova stranica ranije nije koristila styles.css — imala je sopstvenu,
   potpuno drugačiju paletu i fontove (Fraunces/Work Sans, krem/bordo).
@@ -36,6 +35,7 @@
 .zj-empty{padding:14px 0;font-size:13.5px;color:var(--ink-soft);font-style:italic;}
 .zj-form{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px;}
 .zj-field{margin-bottom:16px;}
+.zj-hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;}
 .zj-field label{display:block;font-size:12.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);font-weight:600;margin-bottom:7px;}
 .zj-input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;color:var(--ink);background:#fff;min-height:46px;padding:10px 12px;border:1px solid var(--line-form);border-radius:10px;}
 .zj-input:focus-visible{outline:2px solid var(--gold-text);outline-offset:1px;}
@@ -113,14 +113,13 @@ textarea.zj-input{min-height:76px;resize:vertical;font-family:'Inter',sans-serif
 <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"/></svg>
 </a>
 
-<script src="config.js"></script>
-<script src="contact.js"></script>
+<script src="config.js?v=60059670"></script>
+<script src="contact.js?v=60aecad3"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ==========================================================
    Javna stranica za deljeni aranžman — bez logina, bez app.js.
-   Sav pristup bazi ide preko dve RPC funkcije (get_shared_trip,
-   get_trip_responses, add_trip_response) definisane u
+   ČITANJE ide preko RPC funkcija (get_shared_trip, get_trip_responses) definisanih u
    supabase/share_trip.sql — vidi taj fajl za objašnjenje zašto
    NEMA direktnog .from('trips').select() ovde.
    (Ovo je samo redizajn markup-a/CSS-a — poslovna logika ispod
@@ -229,6 +228,11 @@ function renderTrip(trip){
           <label for="rsvpComment">Komentar (opciono)</label>
           <textarea class="zj-input" id="rsvpComment" maxlength="300" placeholder="npr. meni odgovara samo drugi vikend u oktobru"></textarea>
         </div>
+        <div class="zj-hp" aria-hidden="true">
+          <label for="rsvpWebsite">Ne popunjavaj ovo polje</label>
+          <input type="text" id="rsvpWebsite" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <div id="rsvpCaptcha" style="margin-bottom:14px;"></div>
         <button type="button" class="btn-primary q-submit" id="rsvpSubmit" style="width:100%;">Pošalji odgovor</button>
         <p class="zj-msg" id="rsvpMsg"></p>
       </div>
@@ -246,7 +250,39 @@ function renderTrip(trip){
   });
 
   document.getElementById('rsvpSubmit').addEventListener('click', submitResponse);
+  formShownAt = Date.now();
+  initCaptcha();
 }
+
+/* ---- Anti-spam (vidi price-alert-worker.js → handleTripResponse) ----
+   Upis ide preko Worker-a (/go/trip-response), ne direktno u bazu. Šaljemo i honeypot (skriveno polje)
+   i vreme od prikaza forme. Cloudflare Turnstile se uključuje samo ako je u config.js postavljen
+   SKLOPI_TURNSTILE_SITEKEY (a na Worker-u TURNSTILE_SECRET). */
+let formShownAt = Date.now();
+let captchaToken = '';
+let captchaWidgetId = null;
+function initCaptcha(){
+  const key = window.SKLOPI_TURNSTILE_SITEKEY;
+  const box = document.getElementById('rsvpCaptcha');
+  if (!key || !box) return;
+  const render = () => {
+    captchaWidgetId = window.turnstile.render(box, {
+      sitekey: key,
+      callback: t => { captchaToken = t; },
+      'expired-callback': () => { captchaToken = ''; },
+      'error-callback': () => { captchaToken = ''; }
+    });
+  };
+  if (window.turnstile) return render();
+  const s = document.createElement('script');
+  s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+  s.async = true;
+  s.onload = render;
+  document.head.appendChild(s);
+}
+const RSVP_URL = ((window.SKLOPI_ALERT_WORKER_URL || '') + '/go/trip-response');
+const RSVP_COOLDOWN_MS = 15000;
+let lastSubmitAt = 0;
 
 function renderResponses(list){
   const tallyEl = document.getElementById('rsvpTally');
@@ -286,15 +322,35 @@ async function submitResponse(){
   if (!name){ msgEl.textContent = 'Unesi svoje ime.'; msgEl.className = 'zj-msg err'; return; }
   if (!selectedResponse){ msgEl.textContent = 'Izaberi jednu od tri opcije iznad.'; msgEl.className = 'zj-msg err'; return; }
 
+  if (window.SKLOPI_TURNSTILE_SITEKEY && !captchaToken){ msgEl.textContent = 'Sačekaj da se završi provera ("Nisam robot") pa pošalji ponovo.'; msgEl.className = 'zj-msg err'; return; }
+  if (Date.now() - lastSubmitAt < RSVP_COOLDOWN_MS){ msgEl.textContent = 'Sačekaj nekoliko sekundi pre sledećeg slanja.'; msgEl.className = 'zj-msg err'; return; }
+
   btn.disabled = true;
-  const { error } = await sb.rpc('add_trip_response', {
-    p_token: token, p_name: name, p_response: selectedResponse, p_comment: comment || null
-  });
+  lastSubmitAt = Date.now();
+  let result = null, netErr = false;
+  try {
+    const r = await fetch(RSVP_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        token, name, response: selectedResponse, comment: comment || null,
+        hp: document.getElementById('rsvpWebsite').value,
+        elapsed: Date.now() - formShownAt,
+        cf_token: captchaToken || undefined
+      })
+    });
+    result = await r.json().catch(() => null);
+    if (!r.ok && !result) result = {message: r.status === 429 ? 'Previše pokušaja. Pokušaj malo kasnije.' : 'Greška servera.'};
+    if (!r.ok && result && !result.message) result.message = 'Greška servera.';
+    if (!r.ok) result.failed = true;
+  } catch (e) { netErr = true; }
   btn.disabled = false;
+  if (window.turnstile && captchaWidgetId !== null){ try { window.turnstile.reset(captchaWidgetId); } catch(e){} captchaToken = ''; }
 
-  if (error){ msgEl.textContent = 'Greška: ' + error.message; msgEl.className = 'zj-msg err'; return; }
+  if (netErr){ lastSubmitAt = 0; msgEl.textContent = 'Nema veze sa serverom. Proveri internet i pokušaj ponovo.'; msgEl.className = 'zj-msg err'; return; }
+  if (result && result.failed){ lastSubmitAt = 0; msgEl.textContent = result.message; msgEl.className = 'zj-msg err'; return; }
 
-  msgEl.textContent = 'Hvala, odgovor je zabeležen!';
+  msgEl.textContent = (result && result.status === 'updated') ? 'Odgovor je ažuriran!' : 'Hvala, odgovor je zabeležen!';
   msgEl.className = 'zj-msg ok';
   document.getElementById('rsvpComment').value = '';
   await refreshResponses();
