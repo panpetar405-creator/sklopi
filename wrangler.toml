@@ -56,3 +56,33 @@ namespace_id = "1004"
   [ratelimits.simple]
   limit = 60
   period = 60
+
+# Viator — /go/destination-activities (1 poziv po zahtevu) i /go/destination-images (do 40 poziva
+# po zahtevu, zato je limit mnogo stroži).
+[[ratelimits]]
+name = "RL_ACT_IP"
+namespace_id = "1005"
+  [ratelimits.simple]
+  limit = 15
+  period = 60
+
+[[ratelimits]]
+name = "RL_ACT_GLOBAL"
+namespace_id = "1006"
+  [ratelimits.simple]
+  limit = 120
+  period = 60
+
+[[ratelimits]]
+name = "RL_IMG_IP"
+namespace_id = "1007"
+  [ratelimits.simple]
+  limit = 5
+  period = 60
+
+[[ratelimits]]
+name = "RL_IMG_GLOBAL"
+namespace_id = "1008"
+  [ratelimits.simple]
+  limit = 30
+  period = 60

@@ -19,11 +19,31 @@
 import { computeAlertPrice } from './pricing-core.js';
 import { handleDestinationActivities } from './viator-activities.js';
 import { rateLimit, clientIp, tooManyRequests } from './rate-limit.js';
+import destinationImages from './destination-images.js';
 
 // Fallback limiti (važe samo ako nema [[ratelimits]] bindinga; inače važi wrangler.toml).
 // Svaki /api/flights poziv je plaćen/ograničen Duffel poziv, pa je limit strog.
 const FLIGHTS_LIMIT_IP = 8;       // pretraga u minuti po IP-u
 const FLIGHTS_LIMIT_GLOBAL = 60;  // pretraga u minuti ukupno, po lokaciji
+// Viator: aktivnosti = 1 Viator poziv po zahtevu; slike = do 40 poziva po zahtevu (keš promašaji).
+const ACT_LIMIT_IP = 15;
+const ACT_LIMIT_GLOBAL = 120;
+const IMG_LIMIT_IP = 5;
+const IMG_LIMIT_GLOBAL = 30;
+const VIATOR_MAX_BODY = 16384;    // bajtova; slike: 40 stavki ≈ 6 KB
+
+// Proverava dva limita (po IP-u i ukupno). Vraća 429 Response ili null ako je sve u redu.
+async function viatorLimited(request, env, cors, prefix, limIp, limAll) {
+  const ip = clientIp(request);
+  const a = await rateLimit(env, { binding: 'RL_' + prefix + '_IP', name: prefix.toLowerCase() + '-ip', key: ip, limit: limIp, windowSec: 60 });
+  if (!a.ok) return tooManyRequests(a.retryAfter, cors);
+  const b = await rateLimit(env, { binding: 'RL_' + prefix + '_GLOBAL', name: prefix.toLowerCase() + '-global', key: 'all', limit: limAll, windowSec: 60 });
+  if (!b.ok) return tooManyRequests(b.retryAfter, cors);
+  return null;
+}
+function bodyTooLarge(request) {
+  return parseInt(request.headers.get('content-length') || '0', 10) > VIATOR_MAX_BODY;
+}
 
 const TIER_LABELS = {
   budget: 'Budget',
@@ -40,8 +60,24 @@ export default {
         return corsPreflightResponse(env);
       }
       if (request.method === 'POST') {
+        const cors = corsHeaders(env);
+        if (bodyTooLarge(request)) return new Response('Payload prevelik.', { status: 413, headers: cors });
+        const limited = await viatorLimited(request, env, cors, 'ACT', ACT_LIMIT_IP, ACT_LIMIT_GLOBAL);
+        if (limited) return limited;
         return handleDestinationActivities(request, env, ctx, corsHeaders);
       }
+    }
+
+    // Slike za kartice destinacija (Viator). Klijent (app.js → destImgEndpoint) ovu rutu
+    // već poziva; modul destination-images.js ima svoj CORS (ALLOWED_ORIGINS) i metode.
+    if (url.pathname === '/go/destination-images') {
+      if (request.method === 'POST') {
+        const cors = corsHeaders(env);
+        if (bodyTooLarge(request)) return new Response('Payload prevelik.', { status: 413, headers: cors });
+        const limited = await viatorLimited(request, env, cors, 'IMG', IMG_LIMIT_IP, IMG_LIMIT_GLOBAL);
+        if (limited) return limited;
+      }
+      return destinationImages.fetch(request, env, ctx);
     }
 
     if (
