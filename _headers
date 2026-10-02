@@ -1,8 +1,29 @@
+# Cloudflare Workers Assets — zaglavlja za statičke fajlove.
+# (API odgovori iz worker.js ne prolaze kroz ovaj fajl; oni imaju svoja zaglavlja u kodu.)
+# Pravila se SABIRAJU: /* važi za sve, a niže navedeni obrasci dodaju svoja zaglavlja.
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Resource-Policy: same-site
+  # HSTS: 1 godina + podomeni. BEZ "preload" namerno (preload je teško povući nazad);
+  # dodaj ga tek kad si 100% siguran da svi podomeni rade preko HTTPS-a.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+  # CSP deo 1 — ODMAH na snazi. Ne može da polomi učitavanje resursa:
+  # zabranjuje samo ugrađivanje sajta u tuđe okvire, <object>/<embed>, tuđi <base> i slanje formi na tuđe adrese.
+  Content-Security-Policy: frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'
+
+  # CSP deo 2 — puna politika, za sada SAMO PRIJAVLJUJE (Report-Only): ništa ne blokira,
+  # ali u konzoli pregledača (F12 → Console, "[Report Only]") vidiš šta bi bilo blokirano.
+  # Prođi kroz sajt (pretraga, detalji paketa, mapa, zajedno.html, cookie baner → GA),
+  # i kad nema prijava, promeni ime zaglavlja u "Content-Security-Policy".
+  # 'unsafe-inline' je potreban jer index.html ima inline <script>/<style> i onclick atribute;
+  # kasnije se može skinuti prelaskom na nonce/hash (veći posao).
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://qmiyaaepdvmgwesagnar.supabase.co wss://qmiyaaepdvmgwesagnar.supabase.co https://api.open-meteo.com https://geocoding-api.open-meteo.com https://archive-api.open-meteo.com https://router.project-osrm.org https://en.wikipedia.org https://sh.wikipedia.org https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; manifest-src 'self'; worker-src 'self'; frame-src https://challenges.cloudflare.com; upgrade-insecure-requests
 
 /*.html
   Content-Type: text/html; charset=UTF-8
@@ -12,8 +33,27 @@
   Content-Type: text/html; charset=UTF-8
   Cache-Control: no-cache
 
+# Svi .js/.css se traže sa ?v=<hash> (stamp-assets.mjs), ali server ne zna za query, pa ostaje
+# podrazumevana revalidacija (ETag) — bezbedno čak i kad neka stranica zaboravi ?v=.
 /*.js
   Content-Type: application/javascript; charset=UTF-8
 
 /*.css
   Content-Type: text/css; charset=UTF-8
+
+# SW mora uvek sveže, inače se nova verzija ne primeti.
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+
+/manifest.json
+  Cache-Control: no-cache
+
+# Fontovi se ne menjaju: ako ikad zameniš fajl, daj mu NOVO ime (npr. inter-latin-2.woff2) i ažuriraj fonts.css.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# Slike: imena nisu heširana, zato samo 7 dana.
+/img/*
+  Cache-Control: public, max-age=604800
