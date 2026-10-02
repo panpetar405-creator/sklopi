@@ -52,7 +52,7 @@ if (APP_PARTS.length === 0) { console.error('✗ nema app-*.js fajlova'); proces
 const mustServe = [
   'index.html', ...APP_PARTS, 'styles.css', 'i18n-data.js', 'i18n-extra.js', 'config.js', 'contact.js',
   'cookies.js', 'affiliate.js', 'price-mix.js', 'transport.js', 'transport-i18n.js', 'dest-info.js',
-  'dest-info.css', 'dest-plans.js', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
+  'dest-info.css', 'dest-plans.js', 'fonts.css', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
 ];
 
 let bad = 0;
@@ -76,6 +76,18 @@ for (const f of files.filter((x) => /\.(html|js|css)$/.test(x) && !ignored(x))) 
   }
 }
 for (const [ref, from] of missingImgs) { console.error('✗ SLIKA FALI: ' + ref + '  (u: ' + [...from].join(', ') + ')'); bad++; }
+
+// 3b) Svaki woff2 iz fonts.css mora da postoji (npm run fetch:fonts ih preuzima).
+if (existsSync(join(root, 'fonts.css'))) {
+  const fcss = readFileSync(join(root, 'fonts.css'), 'utf8');
+  for (const m of fcss.matchAll(/url\(([^)]+\.woff2)\)/g)) {
+    if (!existsSync(join(root, m[1]))) { console.error('✗ FONT FALI: ' + m[1] + '  (pokreni: npm run fetch:fonts)'); bad++; }
+  }
+}
+// 3c) Nijedna stranica ne sme da vuče Google Fonts (self-host).
+for (const f of files.filter((x) => /\.html$/.test(x) && !ignored(x))) {
+  if (/fonts\.(googleapis|gstatic)\.com/.test(readFileSync(join(root, f), 'utf8'))) { console.error('✗ Google Fonts u: ' + f); bad++; }
+}
 
 const pub = files.filter((f) => !ignored(f));
 console.log('Javno: ' + pub.length + ' fajlova, ignorisano: ' + (files.length - pub.length));

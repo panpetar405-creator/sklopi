@@ -103,3 +103,20 @@ namespace_id = "1010"
   [ratelimits.simple]
   limit = 30
   period = 60
+
+# RSVP odgovori na deljenim aranžmanima — /go/trip-response (anti-spam; vidi price-alert-worker.js).
+# Opciono: `wrangler secret put TURNSTILE_SECRET` (+ SKLOPI_TURNSTILE_SITEKEY u config.js) uključuje captcha;
+# `wrangler secret put RSVP_SALT` (bilo koji dug nasumičan tekst) za salt IP hash-a.
+[[ratelimits]]
+name = "RL_RSVP_IP"
+namespace_id = "1011"
+  [ratelimits.simple]
+  limit = 5
+  period = 60
+
+[[ratelimits]]
+name = "RL_RSVP_GLOBAL"
+namespace_id = "1012"
+  [ratelimits.simple]
+  limit = 60
+  period = 60

@@ -9,7 +9,13 @@
     "i18n:test": "node selftest.mjs",
     "i18n:todo": "node find-hardcoded.mjs",
     "check:assets": "node check-assets.mjs",
-    "fetch:images": "node fetch-missing-images.mjs"
+    "fetch:images": "node fetch-missing-images.mjs",
+    "fetch:fonts": "node fetch-fonts.mjs",
+    "stamp": "node stamp-assets.mjs",
+    "stamp:check": "node stamp-assets.mjs --check",
+    "sitemap": "node generate-sitemap.mjs",
+    "sitemap:check": "node generate-sitemap.mjs --check",
+    "predeploy": "npm run stamp && npm run sitemap && npm run check:assets"
   },
   "engines": {
     "node": ">=18"

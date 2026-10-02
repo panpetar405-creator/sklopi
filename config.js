@@ -7,6 +7,10 @@ window.SKLOPI_SUPABASE_KEY = 'sb_publishable_09taoChvrqBGyieWjp_CRQ_oS4b-Qqt';
 // sa *.workers.dev adresom worker-a dok Route ne bude spreman — isto
 // poznato ograničenje kao i za unsubUrl u samom workeru.
 window.SKLOPI_ALERT_WORKER_URL = 'https://sklopi.rs';
+// Cloudflare Turnstile (captcha) za RSVP na zajedno.html. PRAZNO = isključeno (rade honeypot + rate limit).
+// Uključivanje: dash.cloudflare.com → Turnstile → dodaj sajt → upiši SITE KEY ovde,
+// a SECRET na Worker-u: `npx wrangler secret put TURNSTILE_SECRET`. Oba moraju zajedno, inače forma ne prolazi.
+window.SKLOPI_TURNSTILE_SITEKEY = '';
 // TODO: zameni pravim GA4 Measurement ID-jem (Admin → Data Streams u GA)
 // pre produkcije. Dok je ovo 'G-XXXXXXXXXX', cookies.js NEĆE učitati GA
 // (vidi loadGA() tamo) — nema slanja događaja na nepostojeći nalog.

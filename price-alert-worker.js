@@ -34,6 +34,12 @@ const IMG_LIMIT_GLOBAL = 30;
 const CONFIRM_LIMIT_IP = 4;
 const CONFIRM_LIMIT_GLOBAL = 30;
 const CONFIRM_MAX_BODY = 2048;    // bajtova; legitimno telo je ~200
+// RSVP na deljenim aranžmanima (/go/trip-response): po IP-u i ukupno; u bazi važe dodatni limiti
+// (20260918100007_trip_responses_antispam.sql).
+const RSVP_LIMIT_IP = 5;
+const RSVP_LIMIT_GLOBAL = 60;
+const RSVP_MAX_BODY = 2048;
+const RSVP_MIN_FILL_MS = 2000;    // ljudi ne popune formu za manje od 2 s
 const VIATOR_MAX_BODY = 16384;    // bajtova; slike: 40 stavki ≈ 6 KB
 
 // Proverava dva limita (po IP-u i ukupno). Vraća 429 Response ili null ako je sve u redu.
@@ -115,6 +121,23 @@ export default {
         const limited = await viatorLimited(request, env, cors, 'CONFIRM', CONFIRM_LIMIT_IP, CONFIRM_LIMIT_GLOBAL);
         if (limited) return limited;
         return handleSendConfirmation(request, env);
+      }
+    }
+
+    // RSVP odgovor prijatelja na deljeni aranžman. Jedini put za upis: anon ključ više NE sme da
+    // poziva add_trip_response (vidi SQL migraciju 20260918100007).
+    if (url.pathname === '/go/trip-response') {
+      if (request.method === 'OPTIONS') {
+        return corsPreflightResponse(env);
+      }
+      if (request.method === 'POST') {
+        const cors = corsHeaders(env);
+        if (parseInt(request.headers.get('content-length') || '0', 10) > RSVP_MAX_BODY) {
+          return new Response('Payload prevelik.', { status: 413, headers: cors });
+        }
+        const limited = await viatorLimited(request, env, cors, 'RSVP', RSVP_LIMIT_IP, RSVP_LIMIT_GLOBAL);
+        if (limited) return limited;
+        return handleTripResponse(request, env);
       }
     }
 
@@ -599,6 +622,107 @@ async function handleSendConfirmation(request, env) {
   }
 
   return new Response('OK', { status: 200, headers: cors });
+}
+
+/* ==========================================================
+   RSVP NA DELJENOM ARANŽMANU — POST /go/trip-response
+   Telo: {token, name, response, comment?, hp?, elapsed?, cf_token?}
+   Slojevi zaštite (redom):
+     1) rate limit po IP-u + ukupno (viatorLimited, pre ovog handlera)
+     2) Origin provera (samo naši domeni; zaustavlja tuđe sajtove u pregledaču, NE curl)
+     3) honeypot polje `hp` — popunjeno = bot; odgovaramo lažnim "OK" da ne zna da je uhvaćen
+     4) `elapsed` (ms od prikaza forme) < 2 s = bot
+     5) Cloudflare Turnstile — samo ako je postavljen secret TURNSTILE_SECRET
+     6) baza: limit po aranžmanu / po IP hash-u, jedno ime, bez linkova (add_trip_response_v2)
+   Sirovi IP se ne čuva; u bazu ide salted SHA-256.
+========================================================== */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const RSVP_HTTP = { ok: 200, updated: 200, invalid: 400, spam: 400, invalid_token: 404, name_taken: 409, rate_limited: 429, full: 403 };
+
+function rsvpJson(env, status, body) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders(env), 'content-type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
+  });
+}
+
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+}
+
+async function verifyTurnstile(env, token, ip) {
+  try {
+    const form = new FormData();
+    form.append('secret', env.TURNSTILE_SECRET);
+    form.append('response', token);
+    if (ip && ip !== 'unknown') form.append('remoteip', ip);
+    const r = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body: form });
+    const j = await r.json();
+    return !!j.success;
+  } catch (e) {
+    console.error('[rsvp] turnstile greška:', e && e.message);
+    return false;
+  }
+}
+
+async function handleTripResponse(request, env) {
+  const origin = request.headers.get('Origin');
+  if (origin) {
+    const allowed = String(env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+    if (allowed.length && !allowed.includes(origin)) return rsvpJson(env, 403, { status: 'forbidden', message: 'Zahtev nije dozvoljen.' });
+  }
+
+  let body;
+  try {
+    const raw = await request.text();
+    if (raw.length > RSVP_MAX_BODY) return rsvpJson(env, 413, { status: 'invalid', message: 'Zahtev je prevelik.' });
+    body = JSON.parse(raw);
+  } catch {
+    return rsvpJson(env, 400, { status: 'invalid', message: 'Neispravan zahtev.' });
+  }
+  body = body && typeof body === 'object' ? body : {};
+  const { token, name, response, comment, hp, elapsed, cf_token } = body;
+
+  // 3) honeypot: pravi korisnik ga nikad ne vidi. Lažan uspeh, ništa se ne upisuje.
+  if (typeof hp === 'string' && hp.trim() !== '') return rsvpJson(env, 200, { status: 'ok' });
+
+  if (typeof token !== 'string' || !UUID_RE.test(token) ||
+      typeof name !== 'string' || typeof response !== 'string' ||
+      (comment != null && typeof comment !== 'string')) {
+    return rsvpJson(env, 400, { status: 'invalid', message: 'Neispravan zahtev.' });
+  }
+
+  // 4) prebrzo popunjeno
+  if (typeof elapsed !== 'number' || !isFinite(elapsed) || elapsed < RSVP_MIN_FILL_MS) {
+    return rsvpJson(env, 429, { status: 'rate_limited', message: 'Sačekaj sekund-dve pa pošalji ponovo.' });
+  }
+
+  const ip = clientIp(request);
+
+  // 5) Turnstile (opciono)
+  if (env.TURNSTILE_SECRET) {
+    if (typeof cf_token !== 'string' || !cf_token || !(await verifyTurnstile(env, cf_token, ip))) {
+      return rsvpJson(env, 403, { status: 'captcha', message: 'Provera nije prošla. Osveži stranicu i pokušaj ponovo.' });
+    }
+  }
+
+  // 6) baza
+  const ipHash = await sha256Hex(ip + ':' + (env.RSVP_SALT || env.SUPABASE_URL || 'sklopi'));
+  const res = await sbFetch(env, 'rpc/add_trip_response_v2', {
+    method: 'POST',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({ p_token: token, p_name: name, p_response: response, p_comment: comment || null, p_ip_hash: ipHash })
+  });
+  if (!res.ok) {
+    console.error('[rsvp] add_trip_response_v2 nije uspeo:', await safeResponseText(res));
+    return rsvpJson(env, 500, { status: 'error', message: 'Greška servera. Pokušaj ponovo kasnije.' });
+  }
+  let out;
+  try { out = await res.json(); } catch { out = null; }
+  const st = out && out.status;
+  if (!st || !(st in RSVP_HTTP)) return rsvpJson(env, 500, { status: 'error', message: 'Greška servera. Pokušaj ponovo kasnije.' });
+  return rsvpJson(env, RSVP_HTTP[st], { status: st, ...(out.message ? { message: out.message } : {}) });
 }
 
 function corsHeaders(env) {
