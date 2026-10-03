@@ -14,39 +14,37 @@
    menja pri deploy-u. Nov BUILD = nov shell keš; stari se briše pri aktivaciji. */
 
 /* STAMP:BEGIN (generiše stamp-assets.mjs — ne menjaj ručno) */
-const BUILD = '6bea0983';
+const BUILD = '642ad758';
 const PRECACHE = [
   "/",
   "/affiliate.js?v=85396c00",
   "/app-01-core.js?v=e9b26749",
   "/app-02-market-passengers.js?v=3eb1af24",
   "/app-03-airports.js?v=81b29008",
-  "/app-04-pricing-engine.js?v=9b76f571",
-  "/app-05-results.js?v=b3a12e3a",
+  "/app-04-pricing-engine.js?v=fafc7a3c",
+  "/app-05-results.js?v=108b871e",
   "/app-06-form.js?v=063f29ad",
-  "/app-07-package-detail.js?v=d7ce7d36",
-  "/app-08-popular-airports.js?v=2a3d8292",
-  "/app-09-account.js?v=06a7b9f0",
-  "/app-10-planner-init.js?v=60217c33",
+  "/app-07-package-detail.js?v=e93df599",
+  "/app-08-popular-airports.js?v=d096eddd",
+  "/app-09-account.js?v=66e7d256",
+  "/app-10-planner-init.js?v=3f5e04ee",
   "/app-11-sections-hero.js?v=981569dd",
-  "/config.js?v=60059670",
+  "/config.js?v=60b28611",
   "/contact.js?v=60aecad3",
   "/cookies.js?v=ac951772",
   "/dest-info.css?v=67d8e547",
   "/dest-info.js?v=1e4b68c0",
-  "/dest-plans.js?v=61bc54bb",
+  "/dest-plans.js?v=587b0ad9",
   "/fonts.css?v=0f858672",
-  "/fonts/inter-latin-ext.woff2",
-  "/fonts/inter-latin.woff2",
-  "/fonts/sora-latin.woff2",
-  "/i18n-data.js?v=cd6a20ce",
-  "/i18n-extra.js?v=70dadd4a",
+  "/i18n-data.js?v=68298f84",
+  "/i18n-extra.js?v=8f66ceaf",
   "/index.html",
   "/manifest.json",
   "/price-mix.js?v=5e3c1012",
-  "/styles.css?v=443320a7",
+  "/styles.css?v=bdc0b83f",
   "/transport-i18n.js?v=f616fd98",
-  "/transport.js?v=dcc41813"
+  "/transport.js?v=dcc41813",
+  "/ux-refactor.css?v=a70bca62"
 ];
 /* STAMP:END */
 

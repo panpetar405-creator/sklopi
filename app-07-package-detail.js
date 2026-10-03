@@ -328,18 +328,10 @@
   };
 
   buildBtn?.addEventListener('click', () => {
-    const dest = document.getElementById('dest');
-    // Dispatch-uj 'input' SAMO ako se vrednost stvarno menja — u suprotnom
-    // isti (već unet/sačuvan) grad opet pokrene fetchLocationSuggestions
-    // i lista predloga se ponovo otvori dok se skroluje nazad na formu,
-    // iako korisnik ništa nije kucao niti menjao destinaciju.
-    if (dest && dest.value !== curCity) {
-      dest.value = curCity;
-      dest.dispatchEvent(new Event('input', {bubbles:true}));
-    }
-    const search = document.getElementById('searchForm');
-    if (search) search.scrollIntoView({behavior:'smooth', block:'center'});
-    setTimeout(() => document.getElementById('origin')?.focus(), 500);
+    const check = validateSearchInputs();
+    if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
+    const cp = document.getElementById('customPlanner');
+    if (cp){ cp.hidden = false; cp.scrollIntoView({behavior:'smooth', block:'start'}); }
   });
 
   // Popuni destinaciju plana u pretragu i skroluj na formu (koristi se za "Rezerviši paket").
@@ -519,6 +511,10 @@
     guardOverlayOpen('planBreakdown', closePlanBreakdown);
     document.dispatchEvent(new Event('sklopi:plan-breakdown'));
     breakdown.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  $('planDetailCustomize')?.addEventListener('click', () => {
+    const cp = document.getElementById('customPlanner');
+    if (cp){ cp.hidden = false; cp.scrollIntoView({behavior:'smooth', block:'start'}); }
   });
   $('currencySwitchBtn')?.addEventListener('click', () => setTimeout(() => { render(); if (detail && !detail.hidden) renderPlanDetail(); }, 0));
   render();
