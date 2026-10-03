@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=bdc0b83f" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=c455c548" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=2591cde3" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -219,8 +219,7 @@ html,body{background:#123A44;margin:0;}
 <a data-i18n="nav_partners" href="#partners">Partneri</a></nav></div></div>
 </div>
 <main id="main" tabindex="-1">
-
-<div class="hero hero-reference" id="searchForm-wrap">
+<div class="hero hero-reference ux-compact" id="searchForm-wrap">
 <div class="hero-reference-shell">
 <div class="hero-reference-visual">
 <picture>
@@ -249,7 +248,7 @@ html,body{background:#123A44;margin:0;}
 <span class="hero-reference-formhint" data-i18n="x_c84571">Jedan pregled. Jedna procenjena cena.</span>
 </div>
 <div class="hero-reference-form">
-<form class="ticket" id="searchForm">
+<form class="ticket" id="searchForm" novalidate="">
 <div class="stub" id="originStub">
 <label data-i18n="label_origin" for="origin">Polazak</label>
 <input aria-autocomplete="list" aria-controls="originSuggestions" aria-expanded="false" autocomplete="off" data-i18n-placeholder="placeholder_origin" id="origin" maxlength="60" placeholder="npr. Beograd, Niš, Podgorica" required="" role="combobox" type="text" value=""/>
@@ -319,8 +318,8 @@ html,body{background:#123A44;margin:0;}
 </div>
 </form>
 <div class="ticket-submit-row">
-<button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="x_ae778a">Sklopi moj put</span></button>
-</div>
+<button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="ux_hero_go">Kreni</span></button>
+</div><div class="trip-defaults" id="tripDefaults"><span class="trip-defaults-text" id="tripDefaultsText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsEdit" type="button">Promeni</button></div>
 <button aria-haspopup="dialog" class="match-trigger" data-i18n-html="match_trigger" data-i18n-title="ux_match_hint" id="matchTriggerBtn" type="button"></button>
 <div class="transport-row">
 <label class="toggle" data-t="flight">
@@ -469,7 +468,7 @@ html,body{background:#123A44;margin:0;}
 <p class="dest-plan-for" data-i18n="x_4d624e">Za koga: maksimalno rastezanje budžeta</p>
 </div>
 </article>
-</div>
+</div><div class="trip-defaults trip-defaults--plans" id="tripDefaultsPlans"><span class="trip-defaults-text" id="tripDefaultsPlansText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsPlansEdit" type="button">Promeni</button></div>
 </section><section aria-labelledby="planDetailTitle" class="section plan-detail-section" hidden="" id="planDetail">
 <article class="plan-detail-card">
 <div class="plan-detail-photo">
@@ -1308,7 +1307,7 @@ html,body{background:#123A44;margin:0;}
 </a>
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
-<script defer="" src="i18n-data.js?v=41d42eb9"></script>
+<script defer="" src="i18n-data.js?v=f8ee145f"></script>
 <script defer="" src="i18n-extra.js?v=8f66ceaf"></script>
 <script defer="" src="dest-plans.js?v=8160bb4e"></script>
 <script defer="" src="app-01-core.js?v=e9b26749"></script>
@@ -1316,9 +1315,9 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-03-airports.js?v=81b29008"></script>
 <script defer="" src="app-04-pricing-engine.js?v=fafc7a3c"></script>
 <script defer="" src="app-05-results.js?v=108b871e"></script>
-<script defer="" src="app-06-form.js?v=4cc6139b"></script>
+<script defer="" src="app-06-form.js?v=2c37b986"></script>
 <script defer="" src="app-07-package-detail.js?v=05de74fc"></script>
-<script defer="" src="app-08-popular-airports.js?v=d096eddd"></script>
+<script defer="" src="app-08-popular-airports.js?v=dacac49a"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
 <script defer="" src="app-11-sections-hero.js?v=981569dd"></script>
@@ -1328,6 +1327,6 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="transport-i18n.js?v=f616fd98"></script>
 <script defer="" src="contact.js?v=60aecad3"></script>
 <script defer="" src="cookies.js?v=ac951772"></script>
-<script defer="" src="app-12-ux-refactor.js?v=5d037a80"></script>
+<script defer="" src="app-12-ux-refactor.js?v=f4ec42e0"></script>
 </body>
 </html>

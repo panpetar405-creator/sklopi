@@ -81,3 +81,20 @@
   .match-trigger .ac-sub{max-width:220px}
   #planDetail .plan-detail-body{padding:18px}
 }
+
+/* ===== Hero sa jednim poljem (korak 1) ===== */
+.hero-reference.ux-compact:not(.ux-expanded) .hero-benefits,
+.hero-reference.ux-compact:not(.ux-expanded) .hero-reference-formhead,
+.hero-reference.ux-compact:not(.ux-expanded) .transport-row,
+.hero-reference.ux-compact:not(.ux-expanded) #searchForm #originStub,
+.hero-reference.ux-compact:not(.ux-expanded) #searchForm #dateStub,
+.hero-reference.ux-compact:not(.ux-expanded) #searchForm #paxStub,
+.hero-reference.ux-compact:not(.ux-expanded) #searchForm .go{display:none}
+.hero-reference.ux-compact:not(.ux-expanded) #searchForm.ticket{grid-template-columns:1fr}
+.hero-reference.ux-compact:not(.ux-expanded) #searchForm .stub{border-right:none;border-bottom:none}
+.trip-defaults{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 2px 0;padding:10px 14px;border:1px solid rgba(18,58,68,.12);border-radius:14px;background:#f6fbfc;color:var(--ink-soft,#53666b);font-size:13px;line-height:1.4}
+.trip-defaults[hidden]{display:none}
+.trip-defaults-text{min-width:0;overflow-wrap:anywhere}
+.trip-defaults-edit{flex:0 0 auto;min-height:36px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:#0b5a6b;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.trip-defaults--plans{margin:14px 0 0;background:#fff}
+body.ux-plans-open #destinationPlansBtn{display:none}

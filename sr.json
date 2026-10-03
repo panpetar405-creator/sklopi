@@ -1073,5 +1073,8 @@
   "ux_price_alert_title": "Prati cenu",
   "ux_price_alert_text": "Javi mi ako procenjena cena padne.",
   "ux_detail_trust": "Procena nije konačna ponuda. Rezervacija i konačna cena potvrđuju se kod partnera.",
-  "ux_match_hint": "Pronađi destinaciju prema svojim željama"
+  "ux_match_hint": "Pronađi destinaciju prema svojim željama",
+  "ux_hero_go": "Kreni",
+  "ux_defaults_from": "Polazak:",
+  "ux_defaults_change": "Promeni"
 }

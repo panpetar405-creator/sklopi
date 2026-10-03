@@ -1073,5 +1073,8 @@
   "ux_price_alert_title": "Track the price",
   "ux_price_alert_text": "Let me know if the estimated price drops.",
   "ux_detail_trust": "This is an estimate, not a final offer. Booking and the final price are confirmed with the partner.",
-  "ux_match_hint": "Find a destination that fits your wishes"
+  "ux_match_hint": "Find a destination that fits your wishes",
+  "ux_hero_go": "Go",
+  "ux_defaults_from": "From:",
+  "ux_defaults_change": "Change"
 }

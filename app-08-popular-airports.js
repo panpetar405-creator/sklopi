@@ -9,10 +9,13 @@
 ========================================================== */
 document.querySelectorAll('.popular-dest-card').forEach(card => {
   card.addEventListener('click', () => {
-    document.getElementById('dest').value = card.dataset.dest;
+document.getElementById('dest').value = card.dataset.dest;
+    // klik na karticu = odmah 3 plana za tu destinaciju (isti tok kao dugme "Kreni")
+    trackFunnelEvent('search_submit', { destination: card.dataset.dest });
+    try { bumpSearchStat(card.dataset.dest); } catch(err){}
     if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest, {generic:true, loose:true});
-    if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
-    runSearch(false);
+    if (window.SKLOPI_showDestPlans) window.SKLOPI_showDestPlans();
+    else runSearch(false);
   });
 });
 
@@ -248,9 +251,12 @@ function attachPopularDestCardHandlers(grid){
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
       document.getElementById('dest').value = card.dataset.dest;
+      // klik na karticu = odmah 3 plana za tu destinaciju (isti tok kao dugme "Kreni")
+      trackFunnelEvent('search_submit', { destination: card.dataset.dest });
+      try { bumpSearchStat(card.dataset.dest); } catch(err){}
       if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(card.dataset.dest, {generic:true, loose:true});
-      if (!isMobileResults()) document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
-      runSearch(false);
+      if (window.SKLOPI_showDestPlans) window.SKLOPI_showDestPlans();
+      else runSearch(false);
     });
   });
   applyPopularDestFilters();

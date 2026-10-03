@@ -275,25 +275,21 @@ async function runSearch(shouldScroll, autoReveal){
   }, 700);
 }
 
-document.getElementById('searchForm').addEventListener('submit', function(e){
+document.getElementById('searchForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  // Ista provera kao za pravu pretragu (runSearch) — bez ovoga je moguće
-  // otvoriti "Prilagodi svoj plan" i dobiti pun paket/3 plana a da polazak,
-  // datumi ili broj putnika nikad nisu upisani/potvrđeni (pravi bag: video
-  // se npr. sa "Blagaj" bez ijednog drugog polja i bez izabranog leta).
+  // Kreni: provera da mesto postoji + validacija, pa ODMAH 3 plana za destinaciju (bez dodatnog klika
+  // na spotlight). Polazak/datumi/putnici dolaze iz podrazumevanih vrednosti (vidi app-12), a korisnik ih
+  // menja u redu "Polazak · datumi · putnici → Promeni".
+  const placeCheck = await verifyFormPlaces();
+  if (!placeCheck.ok){ showToast(placeCheck.msg); focusSearchField(placeCheck.focus); openPlaceSuggestions(placeCheck.focus); return; }
   const check = validateSearchInputs();
   if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
-  trackFunnelEvent('search_submit', {
-    destination: document.getElementById('dest').value.trim() || 'Atina'
-  });
-  // PRIVREMENO (dogovoreno): CTA više ne otvara upitnik "Prilagodi svoj
-  // plan" (#startPrefsModal) ni rezultate sa 3 generisane kartice
-  // (runSearch/#resultsBody) — vodi na spotlight karticu za upisanu
-  // destinaciju (#destinationSpotlight). Tek klik na njeno dugme "3 plana —
-  // <grad>" otvara stvarnu listu ponuda (#destinationPlans) — dva odvojena
-  // koraka, ne oba odjednom. Stari kod (openStartPrefsModal) ostaje ispod,
-  // nekorišćen, za slučaj da se ovaj tok vrati.
-  if (window.SKLOPI_revealSpotlight) window.SKLOPI_revealSpotlight();
+  const destVal = document.getElementById('dest').value.trim();
+  trackFunnelEvent('search_submit', { destination: destVal || 'Atina' });
+  try { bumpSearchStat(destVal); } catch(err){}
+  if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(destVal, {generic:true, loose:true});
+  if (window.SKLOPI_showDestPlans) window.SKLOPI_showDestPlans();
+  else if (window.SKLOPI_revealSpotlight) window.SKLOPI_revealSpotlight();
   else openStartPrefsModal();
 });
 

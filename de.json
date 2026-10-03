@@ -1073,5 +1073,8 @@
   "ux_price_alert_title": "Preis beobachten",
   "ux_price_alert_text": "Sag mir Bescheid, wenn der geschätzte Preis sinkt.",
   "ux_detail_trust": "Das ist eine Schätzung, kein verbindliches Angebot. Buchung und Endpreis werden beim Partner bestätigt.",
-  "ux_match_hint": "Finde ein Reiseziel nach deinen Wünschen"
+  "ux_match_hint": "Finde ein Reiseziel nach deinen Wünschen",
+  "ux_hero_go": "Los geht’s",
+  "ux_defaults_from": "Abflug:",
+  "ux_defaults_change": "Ändern"
 }
