@@ -134,7 +134,7 @@
   "pd_prague_desc": "Arhitektura, pivnice i šetnja starim gradom — popularan gradski izlet.",
   "pd_budapest_name": "Budimpešta, Mađarska",
   "pd_budapest_desc": "Kupatila, arhitektura i kratak let ili vožnja — praktičan gradski izlet.",
-  "cta_right": "Ceo izlet.<br>Jedna cena.",
+  "cta_right": "Ceo izlet.<br>Jedna procena.",
   "eyebrow_faq": "Pitanja",
   "h2_faq": "Pre nego što rezervišeš",
   "sub_faq": "Odgovori na najčešća pitanja o cenama, rezervaciji i promenama.",
@@ -1067,5 +1067,11 @@
   "ux_customize_title": "Prilagodi svoj plan",
   "ux_customize_sub": "Promeni samo ono što ti je važno. Procena će se osvežiti prema tvojim izborima.",
   "val_dest_unknown": "Ne prepoznajemo „{name}\". Izaberi mesto sa liste predloga.",
-  "val_origin_unknown": "Ne prepoznajemo polazište „{name}\". Izaberi mesto sa liste predloga."
+  "val_origin_unknown": "Ne prepoznajemo polazište „{name}\". Izaberi mesto sa liste predloga.",
+  "ux_plan_summary": "Pregled plana",
+  "ux_show_items": "Prikaži stavke",
+  "ux_price_alert_title": "Prati cenu",
+  "ux_price_alert_text": "Javi mi ako procenjena cena padne.",
+  "ux_detail_trust": "Procena nije konačna ponuda. Rezervacija i konačna cena potvrđuju se kod partnera.",
+  "ux_match_hint": "Pronađi destinaciju prema svojim željama"
 }

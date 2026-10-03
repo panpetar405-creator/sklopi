@@ -29,3 +29,55 @@
 .destination-notfound{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#fff7e6;border:1px solid #f3d9a4;color:#6b4a00;font-size:13px;line-height:1.5}
 .destination-notfound[hidden]{display:none}
 .destination-notfound button{margin:0 0 0 2px;padding:0;border:0;background:none;color:#0b5a6b;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+
+/* SKLOPI UX v3 — clean information hierarchy, progressive disclosure. */
+.match-trigger{
+  display:flex;align-items:center;gap:12px;width:100%;margin:12px auto 0;padding:14px 16px;
+  border:1px solid rgba(7,59,71,.14);border-radius:16px;background:#fff;color:var(--ink,#123A44);
+  cursor:pointer;text-align:left;box-shadow:0 8px 22px rgba(18,58,68,.05);
+  font:inherit;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.match-trigger:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(18,58,68,.08);border-color:rgba(13,123,139,.3)}
+.match-trigger .ac-ic{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;border-radius:11px;background:var(--hero-aqua-soft,#e8f4f6);color:var(--hero-aqua,#0d7b8b)}
+.match-trigger .ac-ic svg{width:20px;height:20px}
+.match-trigger .ac-title{display:block;font-weight:750;font-size:14px}
+.match-trigger .ac-sub{display:block;margin-top:2px;color:var(--ink-soft,#64777d);font-size:12px;line-height:1.4}
+.match-trigger .match-preview-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.match-trigger .match-preview-chip{padding:4px 7px;border-radius:999px;background:#f4f7f8;font-size:11px;color:#53666b}
+.match-trigger .ac-cta{margin-left:auto;display:flex;align-items:center;gap:5px;white-space:nowrap;color:#0d6371;font-weight:750;font-size:12px}
+.match-trigger .ac-arrow{font-size:17px}
+
+/* Homepage: remove secondary marketing layers from the first decision path.
+   Functionality remains in the DOM and is still reachable from its own flows. */
+#what-you-can-include,.promo-banner,.cta-banner{display:none}   /* skriveno kao u UX v3; za vraćanje obriši ovo pravilo */
+
+/* Make the active plan read like one compact decision card. */
+#planDetail .plan-detail-card{overflow:hidden}
+#planDetail .plan-detail-body{padding-bottom:20px}
+.ux-plan-summary-label{margin:0 0 4px;color:var(--ink-soft,#64777d);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+#planDetail .plan-detail-list{margin-top:12px}
+#planDetail .plan-detail-list li{min-height:52px}
+#planDetail .plan-detail-customize,
+#planDetail .plan-detail-more{min-height:44px}
+#planDetail .plan-detail-more{margin-top:8px}
+
+/* Price Alert belongs beside the total, not inside a generic extras list. */
+#extrasDetail .ex-card:has(#exAlertBtn){border-color:rgba(13,123,139,.18);background:linear-gradient(180deg,#fff,#f7fbfc)}
+#totalDetail .mt-total{margin-bottom:8px}
+#totalDetail .ux-price-alert-inline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 0;padding:12px 14px;border:1px solid rgba(13,123,139,.16);border-radius:14px;background:#f6fbfc}
+#totalDetail .ux-price-alert-inline p{margin:0;color:var(--ink-soft,#64777d);font-size:12px;line-height:1.4}
+#totalDetail .ux-price-alert-inline .ex-btn{flex:0 0 auto}
+
+/* Clearer distinction between exploration content and the booking path. */
+#guidesTeaser{scroll-margin-top:90px}
+#popular-destinations,#how-it-works{scroll-margin-top:90px}
+
+@media (min-width:761px){
+  .hero-reference-form .match-trigger{max-width:720px}
+}
+@media (max-width:760px){
+  .match-trigger{padding:12px 13px}
+  .match-trigger .ac-cta{font-size:11px}
+  .match-trigger .ac-sub{max-width:220px}
+  #planDetail .plan-detail-body{padding:18px}
+}

@@ -139,7 +139,7 @@
   "pd_prague_desc": "Architektur, Bierlokale und ein Spaziergang durch die Altstadt – ein beliebter Städtetrip.",
   "pd_budapest_name": "Budapest, Ungarn",
   "pd_budapest_desc": "Thermalbäder, Architektur und ein kurzer Flug oder eine kurze Fahrt – ein praktischer Städtetrip.",
-  "cta_right": "Eine Reise.<br>Ein Preis.",
+  "cta_right": "Die ganze Reise.<br>Eine Schätzung.",
   "eyebrow_faq": "Fragen",
   "h2_faq": "Bevor du buchst",
   "sub_faq": "Antworten auf die häufigsten Fragen zu Preisen, Buchung und Änderungen.",
@@ -1067,5 +1067,11 @@
   "ux_customize_title": "Deinen Plan anpassen",
   "ux_customize_sub": "Ändere nur, was dir wichtig ist. Die Schätzung wird entsprechend aktualisiert.",
   "val_dest_unknown": "„{name}“ kennen wir nicht. Bitte wähle einen Ort aus den Vorschlägen.",
-  "val_origin_unknown": "Den Abflugort „{name}“ kennen wir nicht. Bitte wähle einen Ort aus den Vorschlägen."
+  "val_origin_unknown": "Den Abflugort „{name}“ kennen wir nicht. Bitte wähle einen Ort aus den Vorschlägen.",
+  "ux_plan_summary": "Reiseübersicht",
+  "ux_show_items": "Leistungen anzeigen",
+  "ux_price_alert_title": "Preis beobachten",
+  "ux_price_alert_text": "Sag mir Bescheid, wenn der geschätzte Preis sinkt.",
+  "ux_detail_trust": "Das ist eine Schätzung, kein verbindliches Angebot. Buchung und Endpreis werden beim Partner bestätigt.",
+  "ux_match_hint": "Finde ein Reiseziel nach deinen Wünschen"
 }

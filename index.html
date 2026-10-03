@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=bdc0b83f" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=63431039" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=c455c548" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -186,7 +186,7 @@ html,body{background:#123A44;margin:0;}
   var shownAt = Date.now();
   window.addEventListener('load', function(){
     var elapsed = Date.now() - shownAt;
-    var minShow = 1000; /* dovoljno da se animacija sklapanja (telo + tačka) odigra do kraja */
+    var minShow = 250; /* ne zadržavaj korisnika zbog animacije; sakrij čim je aplikacija spremna */
     setTimeout(hide, Math.max(0, minShow - elapsed));
   });
   setTimeout(hide, 4000); /* sigurnosni fallback ako 'load' ne okine */
@@ -219,6 +219,7 @@ html,body{background:#123A44;margin:0;}
 <a data-i18n="nav_partners" href="#partners">Partneri</a></nav></div></div>
 </div>
 <main id="main" tabindex="-1">
+
 <div class="hero hero-reference" id="searchForm-wrap">
 <div class="hero-reference-shell">
 <div class="hero-reference-visual">
@@ -320,6 +321,7 @@ html,body{background:#123A44;margin:0;}
 <div class="ticket-submit-row">
 <button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="x_ae778a">Sklopi moj put</span></button>
 </div>
+<button aria-haspopup="dialog" class="match-trigger" data-i18n-html="match_trigger" data-i18n-title="ux_match_hint" id="matchTriggerBtn" type="button"></button>
 <div class="transport-row">
 <label class="toggle" data-t="flight">
 <input type="checkbox"/>
@@ -334,7 +336,7 @@ html,body{background:#123A44;margin:0;}
 <label class="toggle" data-t="car">
 <input type="checkbox"/>
 <span class="tt-icon"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24"><path d="M4.2 16.2v-3.6a2 2 0 01.4-1.2l1.9-2.6A2 2 0 018 8h8a2 2 0 011.6.8l1.9 2.6a2 2 0 01.4 1.2v3.6"></path><path d="M4.2 16.2h15.6M4.2 16.2v1.8M19.8 16.2v1.8"></path><circle cx="7.8" cy="16.2" r="1.35"></circle><circle cx="16.2" cy="16.2" r="1.35"></circle></svg></span>
-<span class="tt-label" data-i18n="toggle_car">R &amp; C</span>
+<span class="tt-label" data-i18n="f_car_name">Auto</span>
 </label>
 <label class="toggle" data-t="activity">
 <input type="checkbox"/>
@@ -346,19 +348,7 @@ html,body{background:#123A44;margin:0;}
 <div class="hero-spacer"></div>
 </div>
 </div>
-</div><section aria-labelledby="howItWorksTitle" class="section how-it-works-section" id="how-it-works">
-<div class="section-head how-it-works-head">
-<div class="eyebrow" data-i18n="ux_how_eyebrow">Jednostavno od ideje do plana</div>
-<h2 data-i18n="ux_how_title" id="howItWorksTitle">Kako radi SKLOPI</h2>
-<p data-i18n="ux_how_sub">Unesi osnovne podatke, uporedi tri kombinacije i zatim prilagodi samo ono što ti je važno.</p>
-</div>
-<div class="how-it-works-grid">
-<article class="how-step"><span class="how-step-no">01</span><div><h3 data-i18n="ux_step1_title">Unesi put</h3><p data-i18n="ux_step1_text">Polazak, destinacija, datumi i broj putnika.</p></div></article>
-<article class="how-step"><span class="how-step-no">02</span><div><h3 data-i18n="ux_step2_title">Uporedi 3 plana</h3><p data-i18n="ux_step2_text">Budžet, balans i komfor — sa procenom cene po osobi.</p></div></article>
-<article class="how-step"><span class="how-step-no">03</span><div><h3 data-i18n="ux_step3_title">Prilagodi i rezerviši</h3><p data-i18n="ux_step3_text">Promeni let, hotel, auto ili aktivnosti, pa nastavi kod partnera.</p></div></article>
-</div>
-<p class="how-it-works-note" data-i18n="ux_how_note">SKLOPI ne naplaćuje rezervaciju. Cene su ilustrativne procene dok ne potvrdiš dostupnost kod partnera.</p>
-</section><div class="section popular-reference-section" id="popular-destinations">
+</div><div class="section popular-reference-section" id="popular-destinations">
 <div class="popular-reference-head">
 <div>
 <div class="eyebrow" data-i18n="eyebrow_ideas" id="popularDestEyebrow">Ideje za sledeći izlet</div>
@@ -492,6 +482,7 @@ html,body{background:#123A44;margin:0;}
 <p class="plan-detail-meta" id="planDetailMeta">Atina • 4 dana</p>
 <p class="plan-detail-price" id="planDetailPrice">449 € <span>/ osoba</span></p>
 <p class="plan-detail-est" id="planDetailEst">Procena: ~420–480 €</p>
+<div class="ux-plan-summary-label" data-i18n="ux_plan_summary">Pregled plana</div>
 <h3 class="plan-detail-sub" data-i18n="x_bd4d65">Šta je uključeno?</h3>
 <ul class="plan-detail-list" id="planDetailList">
 <li><span aria-hidden="true" class="pdl-ic">✈</span><div><b>Let</b><small>Povratna karta • Ekonomija</small></div></li>
@@ -501,7 +492,7 @@ html,body{background:#123A44;margin:0;}
 </ul>
 <p class="dest-plan-airport-note" hidden="" id="planDetailAirport"></p>
 <p class="plan-detail-for" id="planDetailFor"></p>
-<button class="btn-secondary plan-detail-customize" data-i18n="ux_customize_plan" id="planDetailCustomize" type="button">Prilagodi ovaj plan</button><button class="btn-secondary plan-detail-more" data-i18n="x_ffaea9" id="planDetailMore" type="button">Pogledaj detalje</button>
+<button class="btn-secondary plan-detail-customize" data-i18n="ux_customize_plan" id="planDetailCustomize" type="button">Prilagodi ovaj plan</button><button class="btn-secondary plan-detail-more" data-i18n="ux_show_items" id="planDetailMore" type="button">Prikaži stavke</button>
 <p class="plan-detail-note" data-i18n="x_636428">Cene su procene i mogu da se promene u zavisnosti od raspoloživosti.</p>
 </div>
 </article>
@@ -860,18 +851,30 @@ html,body{background:#123A44;margin:0;}
 <p data-i18n="builder_placeholder_text">Ovde ćeš videti procenjenu cenu čim počneš da biraš — promeni bilo koju opciju levo.</p>
 </div>
 </div>
-</div><div class="section" id="what-you-can-include"><div class="section-head feature-strip-head"><div class="eyebrow" data-i18n="ux_include_eyebrow">Sve na jednom mestu</div><h2 data-i18n="ux_include_title">Šta možeš uključiti u put</h2><p data-i18n="ux_include_sub">Biraj samo usluge koje su ti potrebne.</p></div>
-<div class="feature-strip">
-<div aria-haspopup="dialog" class="feature f-flight" data-feature="flight" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"></path></svg></div><div class="feature-text"><div class="name" data-i18n="toggle_flight">Letovi</div><div class="sub" data-i18n="f_flight_sub">Najbolje cene</div></div></div>
-<div aria-haspopup="dialog" class="feature f-hotel" data-feature="hotel" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"></path></svg></div><div class="feature-text"><div class="name" data-i18n="toggle_hotel">Smeštaj</div><div class="sub" data-i18n="f_hotel_sub">Provereni objekti</div></div></div>
-<div aria-haspopup="dialog" class="feature f-car" data-feature="car" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M6 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M15 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M6 12h12"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_car_name">Auto</div><div class="sub" data-i18n="f_car_sub">Pouzdani rent‑a‑car</div></div></div>
-<div aria-haspopup="dialog" class="feature f-tolls" data-feature="tolls" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M4 20L11 4h2l7 16M8 15h8"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_tolls_name">Putarine</div><div class="sub" data-i18n="f_tolls_sub">Tačna kalkulacija</div></div></div>
-<div aria-haspopup="dialog" class="feature f-activity" data-feature="activity" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_activity_name">Aktivnosti</div><div class="sub" data-i18n="f_activity_sub">Top doživljaji</div></div></div>
-<div aria-haspopup="dialog" class="feature f-insurance" data-feature="insurance" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_insurance_name">Osiguranje</div><div class="sub" data-i18n="f_insurance_sub">Sigurnost na putu</div></div></div>
-<div aria-haspopup="dialog" class="feature f-esim" data-feature="esim" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M6 8.5a8.5 8.5 0 0112 0M8.7 11.2a4.7 4.7 0 016.6 0M11.4 13.9a1 1 0 011.2 0"></path><circle cx="12" cy="17.5" fill="currentColor" r="1.1" stroke="none"></circle></svg></div><div class="feature-text"><div class="name">eSIM</div><div class="sub" data-i18n="f_esim_sub">Internet od sletanja</div></div></div>
-<div aria-haspopup="dialog" class="feature f-transfer" data-feature="transfer" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" viewbox="0 0 24 24"><circle cx="5" cy="19" r="2"></circle><circle cx="19" cy="5" r="2"></circle><path d="M7 17.5L17 6.5" stroke-dasharray="2.2 2.6"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_transfer_name">Transferi</div><div class="sub" data-i18n="f_transfer_sub">Od aerodroma do smeštaja</div></div></div>
+</div><section aria-labelledby="howItWorksTitle" class="section how-it-works-section" id="how-it-works">
+<div class="section-head how-it-works-head">
+<div class="eyebrow" data-i18n="ux_how_eyebrow">Jednostavno od ideje do plana</div>
+<h2 data-i18n="ux_how_title" id="howItWorksTitle">Kako radi SKLOPI</h2>
+<p data-i18n="ux_how_sub">Unesi osnovne podatke, uporedi tri kombinacije i zatim prilagodi samo ono što ti je važno.</p>
 </div>
-</div><div class="section business-strip" id="partners">
+<div class="how-it-works-grid">
+<article class="how-step"><span class="how-step-no">01</span><div><h3 data-i18n="ux_step1_title">Unesi put</h3><p data-i18n="ux_step1_text">Polazak, destinacija, datumi i broj putnika.</p></div></article>
+<article class="how-step"><span class="how-step-no">02</span><div><h3 data-i18n="ux_step2_title">Uporedi 3 plana</h3><p data-i18n="ux_step2_text">Budžet, balans i komfor — sa procenom cene po osobi.</p></div></article>
+<article class="how-step"><span class="how-step-no">03</span><div><h3 data-i18n="ux_step3_title">Prilagodi i rezerviši</h3><p data-i18n="ux_step3_text">Promeni let, hotel, auto ili aktivnosti, pa nastavi kod partnera.</p></div></article>
+</div>
+<p class="how-it-works-note" data-i18n="ux_how_note">SKLOPI ne naplaćuje rezervaciju. Cene su ilustrativne procene dok ne potvrdiš dostupnost kod partnera.</p>
+</section><section aria-labelledby="guidesTeaserTitle" class="section guides-teaser-section" id="guidesTeaser">
+<div class="ad-head">
+<h2 data-i18n="x_b89ec1" id="guidesTeaserTitle">Vodiči i saveti</h2>
+<p data-i18n="x_140209">Otkrij korisne savete, vodiče i inspiraciju za sledeće putovanje.</p>
+</div>
+<div class="gd-list">
+<a class="gd-card" href="vodic-atina.html"><span class="gd-thumb"><img alt="Akropolj u Atini — vodič za 4 dana" loading="lazy" src="img/atina-akropolj-300.webp"/></span><span class="gd-info"><b data-i18n="x_3ed543">Atina za 4 dana</b><small data-i18n="x_ccf0cf">Kompletan vodič kroz grad</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
+<a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Peščana plaža u Grčkoj sa bistrim morem" loading="lazy" src="img/krf-uvala-300.webp"/></span><span class="gd-info"><b data-i18n="x_9c2f13">Grčka – najlepše plaže</b><small data-i18n="x_c0e0e3">Top destinacije i saveti</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
+<a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Spakovan kofer i putna torba za odmor" loading="lazy" src="img/kofer-putna-torba-300.webp"/></span><span class="gd-info"><b data-i18n="x_3795c2">Šta poneti na put?</b><small data-i18n="x_7ec6b1">Spisak za savršeno putovanje</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
+<a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Novčanik i planiranje budžeta za putovanje" loading="lazy" src="img/novcanik-budzet-300.webp"/></span><span class="gd-info"><b data-i18n="x_455108">Kako uštedeti na putovanju?</b><small data-i18n="x_51467e">Praktični saveti</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
+</div>
+</section><div class="section business-strip" id="partners">
 <div class="partners-row">
 <span class="partners-label" data-i18n="partners_label">Rezervacija ide direktno preko partnera</span>
 <div class="partners-card">
@@ -901,38 +904,6 @@ html,body{background:#123A44;margin:0;}
 <div class="auth-bar" id="authBar"></div>
 <div id="savedTripsList"></div>
 <div class="compare-wrap" id="compareWrap" style="display:none;"></div>
-</div><section aria-labelledby="guidesTeaserTitle" class="section guides-teaser-section" id="guidesTeaser">
-<div class="ad-head">
-<h2 data-i18n="x_b89ec1" id="guidesTeaserTitle">Vodiči i saveti</h2>
-<p data-i18n="x_140209">Otkrij korisne savete, vodiče i inspiraciju za sledeće putovanje.</p>
-</div>
-<div class="gd-list">
-<a class="gd-card" href="vodic-atina.html"><span class="gd-thumb"><img alt="Akropolj u Atini — vodič za 4 dana" loading="lazy" src="img/atina-akropolj-300.webp"/></span><span class="gd-info"><b data-i18n="x_3ed543">Atina za 4 dana</b><small data-i18n="x_ccf0cf">Kompletan vodič kroz grad</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
-<a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Peščana plaža u Grčkoj sa bistrim morem" loading="lazy" src="img/krf-uvala-300.webp"/></span><span class="gd-info"><b data-i18n="x_9c2f13">Grčka – najlepše plaže</b><small data-i18n="x_c0e0e3">Top destinacije i saveti</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
-<a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Spakovan kofer i putna torba za odmor" loading="lazy" src="img/kofer-putna-torba-300.webp"/></span><span class="gd-info"><b data-i18n="x_3795c2">Šta poneti na put?</b><small data-i18n="x_7ec6b1">Spisak za savršeno putovanje</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
-<a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Novčanik i planiranje budžeta za putovanje" loading="lazy" src="img/novcanik-budzet-300.webp"/></span><span class="gd-info"><b data-i18n="x_455108">Kako uštedeti na putovanju?</b><small data-i18n="x_51467e">Praktični saveti</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
-</div>
-</section><div class="promo-banner">
-<div class="promo-banner-card">
-<div class="promo-banner-photo">
-<picture><source sizes="(max-width: 760px) 100vw, 560px" srcset="banner-jezero-planina-800.webp 800w, banner-jezero-planina.webp 1600w" type="image/webp"/><img alt="Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor" data-i18n-alt="alt_banner_lake" decoding="async" height="640" loading="lazy" src="banner-jezero-planina.jpg" width="1600"/></picture>
-</div>
-<div class="promo-banner-cap">
-<p class="promo-banner-kicker" data-i18n="promo_banner_kicker">Trenutak za sebe</p>
-<p class="promo-banner-quote" data-i18n="promo_banner_quote">Neka mesta jednostavno nemaju cenu.</p>
-</div>
-</div>
-</div><div class="cta-banner">
-<div class="cta-photo">
-<img alt="Popularna evropska destinacija u sumrak" data-i18n-alt="alt_banner_europe" loading="lazy" src="img/banner-evropska-destinacija-1600.webp"/>
-</div>
-<div class="cta-inner">
-<div class="cta-left">
-<h3 id="ctaTitle">Sledeća destinacija te čeka.</h3>
-<p id="ctaDesc">Istorija, dobra hrana i nezaboravni doživljaji — a sad je lakše nego ikad da sve to isplaniraš.</p>
-</div>
-<div class="cta-right" data-i18n-html="cta_right">Ceo izlet.<br/>Jedna cena.</div>
-</div>
 </div><div class="section" id="faq">
 <div class="section-head faq-head-v2">
 <h2 data-i18n="x_7fc434">Česta pitanja</h2>
@@ -983,11 +954,39 @@ html,body{background:#123A44;margin:0;}
 <b>SKLOPI</b>
 </div>
 </div>
+</div><div class="section" id="what-you-can-include"><div class="section-head feature-strip-head"><div class="eyebrow" data-i18n="ux_include_eyebrow">Sve na jednom mestu</div><h2 data-i18n="ux_include_title">Šta možeš uključiti u put</h2><p data-i18n="ux_include_sub">Biraj samo usluge koje su ti potrebne.</p></div>
+<div class="feature-strip">
+<div aria-haspopup="dialog" class="feature f-flight" data-feature="flight" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"></path></svg></div><div class="feature-text"><div class="name" data-i18n="toggle_flight">Letovi</div><div class="sub" data-i18n="f_flight_sub">Najbolje cene</div></div></div>
+<div aria-haspopup="dialog" class="feature f-hotel" data-feature="hotel" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M3 21V6l7-3 7 3v15M3 21h18M9 21v-6h4v6"></path></svg></div><div class="feature-text"><div class="name" data-i18n="toggle_hotel">Smeštaj</div><div class="sub" data-i18n="f_hotel_sub">Provereni objekti</div></div></div>
+<div aria-haspopup="dialog" class="feature f-car" data-feature="car" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M6 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M15 16v2.5a1 1 0 001 1h1a1 1 0 001-1V16M6 12h12"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_car_name">Auto</div><div class="sub" data-i18n="f_car_sub">Pouzdani rent‑a‑car</div></div></div>
+<div aria-haspopup="dialog" class="feature f-tolls" data-feature="tolls" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M4 20L11 4h2l7 16M8 15h8"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_tolls_name">Putarine</div><div class="sub" data-i18n="f_tolls_sub">Tačna kalkulacija</div></div></div>
+<div aria-haspopup="dialog" class="feature f-activity" data-feature="activity" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_activity_name">Aktivnosti</div><div class="sub" data-i18n="f_activity_sub">Top doživljaji</div></div></div>
+<div aria-haspopup="dialog" class="feature f-insurance" data-feature="insurance" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_insurance_name">Osiguranje</div><div class="sub" data-i18n="f_insurance_sub">Sigurnost na putu</div></div></div>
+<div aria-haspopup="dialog" class="feature f-esim" data-feature="esim" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M6 8.5a8.5 8.5 0 0112 0M8.7 11.2a4.7 4.7 0 016.6 0M11.4 13.9a1 1 0 011.2 0"></path><circle cx="12" cy="17.5" fill="currentColor" r="1.1" stroke="none"></circle></svg></div><div class="feature-text"><div class="name">eSIM</div><div class="sub" data-i18n="f_esim_sub">Internet od sletanja</div></div></div>
+<div aria-haspopup="dialog" class="feature f-transfer" data-feature="transfer" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.7" viewbox="0 0 24 24"><circle cx="5" cy="19" r="2"></circle><circle cx="19" cy="5" r="2"></circle><path d="M7 17.5L17 6.5" stroke-dasharray="2.2 2.6"></path></svg></div><div class="feature-text"><div class="name" data-i18n="f_transfer_name">Transferi</div><div class="sub" data-i18n="f_transfer_sub">Od aerodroma do smeštaja</div></div></div>
 </div>
-
-
-
-</main>
+</div><div class="promo-banner">
+<div class="promo-banner-card">
+<div class="promo-banner-photo">
+<picture><source sizes="(max-width: 760px) 100vw, 560px" srcset="banner-jezero-planina-800.webp 800w, banner-jezero-planina.webp 1600w" type="image/webp"/><img alt="Drvena kuća uz jezero u planini u sumrak — idilična destinacija za odmor" data-i18n-alt="alt_banner_lake" decoding="async" height="640" loading="lazy" src="banner-jezero-planina.jpg" width="1600"/></picture>
+</div>
+<div class="promo-banner-cap">
+<p class="promo-banner-kicker" data-i18n="promo_banner_kicker">Trenutak za sebe</p>
+<p class="promo-banner-quote" data-i18n="promo_banner_quote">Neka mesta jednostavno nemaju cenu.</p>
+</div>
+</div>
+</div><div class="cta-banner">
+<div class="cta-photo">
+<img alt="Popularna evropska destinacija u sumrak" data-i18n-alt="alt_banner_europe" loading="lazy" src="img/banner-evropska-destinacija-1600.webp"/>
+</div>
+<div class="cta-inner">
+<div class="cta-left">
+<h3 id="ctaTitle">Sledeća destinacija te čeka.</h3>
+<p id="ctaDesc">Istorija, dobra hrana i nezaboravni doživljaji — a sad je lakše nego ikad da sve to isplaniraš.</p>
+</div>
+<div class="cta-right" data-i18n-html="cta_right">Ceo izlet.<br/>Jedna procena.</div>
+</div>
+</div></main>
 <footer id="about">
 <div class="footer-photo"><img alt="Obala i zalazak sunca — SKLOPI planiranje putovanja" loading="lazy" src="img/banner-obala-zalazak-1400.webp"/></div>
 <svg aria-hidden="true" class="footer-mark-v2" fill="none" viewbox="0 0 24 24"><path d="M3 19l6-10 4 6 2-3 6 7H3z" fill="currentColor"></path></svg>
@@ -1005,7 +1004,7 @@ html,body{background:#123A44;margin:0;}
 <hr class="footer-divider"/>
 <nav class="flinks-v2">
 <a data-i18n="x_aa5516" href="#about">O nama</a>
-<a data-i18n="x_2a0e5c" href="#faq">Kako funkcioniše</a>
+<a data-i18n="x_2a0e5c" href="#how-it-works">Kako funkcioniše</a>
 <a data-i18n="x_16960e" href="#partners">Partneri</a>
 <a data-contact="mail" data-i18n="footer_contact" href="#">Kontakt</a>
 </nav>
@@ -1309,9 +1308,9 @@ html,body{background:#123A44;margin:0;}
 </a>
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
-<script defer="" src="i18n-data.js?v=d0de0f66"></script>
+<script defer="" src="i18n-data.js?v=41d42eb9"></script>
 <script defer="" src="i18n-extra.js?v=8f66ceaf"></script>
-<script defer="" src="dest-plans.js?v=587b0ad9"></script>
+<script defer="" src="dest-plans.js?v=8160bb4e"></script>
 <script defer="" src="app-01-core.js?v=e9b26749"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
 <script defer="" src="app-03-airports.js?v=81b29008"></script>
@@ -1329,5 +1328,6 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="transport-i18n.js?v=f616fd98"></script>
 <script defer="" src="contact.js?v=60aecad3"></script>
 <script defer="" src="cookies.js?v=ac951772"></script>
+<script defer="" src="app-12-ux-refactor.js?v=5d037a80"></script>
 </body>
 </html>

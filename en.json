@@ -134,7 +134,7 @@
   "pd_prague_desc": "Architecture, beer halls and a walk through the old town — a popular city break.",
   "pd_budapest_name": "Budapest, Hungary",
   "pd_budapest_desc": "Baths, architecture and a short flight or drive — a practical city break.",
-  "cta_right": "One trip.<br>One price.",
+  "cta_right": "The whole trip.<br>One estimate.",
   "eyebrow_faq": "Questions",
   "h2_faq": "Before you book",
   "sub_faq": "Answers to the most common questions about prices, booking and changes.",
@@ -1067,5 +1067,11 @@
   "ux_customize_title": "Customize your plan",
   "ux_customize_sub": "Change only what matters to you. The estimate updates with your choices.",
   "val_dest_unknown": "We don’t recognise “{name}”. Please pick a place from the suggestions.",
-  "val_origin_unknown": "We don’t recognise the departure place “{name}”. Please pick a place from the suggestions."
+  "val_origin_unknown": "We don’t recognise the departure place “{name}”. Please pick a place from the suggestions.",
+  "ux_plan_summary": "Plan overview",
+  "ux_show_items": "Show items",
+  "ux_price_alert_title": "Track the price",
+  "ux_price_alert_text": "Let me know if the estimated price drops.",
+  "ux_detail_trust": "This is an estimate, not a final offer. Booking and the final price are confirmed with the partner.",
+  "ux_match_hint": "Find a destination that fits your wishes"
 }
