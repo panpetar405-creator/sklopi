@@ -51,9 +51,23 @@
   const $ = id => document.getElementById(id);
   const qs = s => document.querySelector(s);
   const ph = (id, w) => id.indexOf('img/') === 0 ? id : 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&w=' + w + '&q=82';
-  const GENERIC_PHOTO = ph('1467269204594-9661b134dd2b', 1200);
+  // Neutralna pozadina (ne fotografija konkretnog mesta) za gradove bez slike — da nepoznat ili
+  // izmišljen unos ne dobije tuđe, prepoznatljivo mesto.
+  const GENERIC_PHOTO = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
+    + '<stop offset="0" stop-color="#14707f"/><stop offset="1" stop-color="#123A44"/></linearGradient></defs>'
+    + '<rect width="1200" height="800" fill="url(#g)"/><g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="14" stroke-linecap="round">'
+    + '<path d="M600 520c-70-90-110-150-110-205a110 110 0 0 1 220 0c0 55-40 115-110 205z"/><circle cx="600" cy="315" r="38"/></g></svg>');
   let curCity = CFG.def, curEntry = CFG.cities[CFG.def], curPlans = [], shownCity = null;
 
+  // Skida navodnike/zagrade/tačke sa krajeva ("Dubrovnik" -> Dubrovnik) i duple razmake.
+  function cleanName(name){
+    // navodnici/apostrofi i interpunkcija se skidaju samo sa krajeva (Val d'Isère ostaje netaknut)
+    return String(name || '')
+      .replace(/^[\s.,;:!?()\[\]{}\-\u201C\u201D\u201E\u201F\u2018\u2019\u00AB\u00BB"'`]+/, '')
+      .replace(/[\s.,;:!?()\[\]{}\-\u201C\u201D\u201E\u201F\u2018\u2019\u00AB\u00BB"'`]+$/, '')
+      .replace(/\s+/g, ' ').trim();
+  }
   function cityKey(name){
     const n = normalizeSr(String(name || '').trim());
     return n ? (Object.keys(CFG.cities).find(k => normalizeSr(k) === n) || null) : null;
@@ -62,7 +76,7 @@
   // ili slobodan unos, o.loose) -> opšta stavka: isti šablon plana, cena iz builder-a, bez izmišljenih detalja.
   function resolveDest(name, o){
     o = o || {};
-    const raw = String(name || '').trim(), k = cityKey(raw);
+    const raw = cleanName(name), k = cityKey(raw);
     if (k) return {k, c:CFG.cities[k]};
     if (!o.generic || raw.length < 2) return null;
     const n = normalizeSr(raw);
@@ -267,10 +281,10 @@
      Gradovi iz AIRPORT_DB / popularnih / urednički (c.known) se uvek smatraju stvarnim. */
   const aiInfo = {}, aiTried = {};
   const LBL = {
-    sr:{sights:'Znamenitosti: ', food:'Lokalna kuhinja: ', nf:q => 'Ne prepoznajemo „' + q + '". Proveri naziv.', dym:'Misliš li na'},
-    en:{sights:'Sights: ', food:'Local food: ', nf:q => 'We don\u2019t recognise \u201c' + q + '\u201d. Please check the name.', dym:'Did you mean'},
-    de:{sights:'Sehenswürdigkeiten: ', food:'Küche: ', nf:q => '\u201e' + q + '\u201c kennen wir nicht. Bitte Namen prüfen.', dym:'Meintest du'},
-    ru:{sights:'Достопримечательности: ', food:'Кухня: ', nf:q => 'Мы не нашли «' + q + '». Проверьте название.', dym:'Вы имели в виду'}
+    sr:{unk:'Ne možemo da proverimo ovo mesto.', retry:'Pokušaj ponovo', sights:'Znamenitosti: ', food:'Lokalna kuhinja: ', nf:q => 'Ne prepoznajemo „' + q + '". Proveri naziv.', dym:'Misliš li na'},
+    en:{unk:'We couldn\u2019t verify this place.', retry:'Try again', sights:'Sights: ', food:'Local food: ', nf:q => 'We don\u2019t recognise \u201c' + q + '\u201d. Please check the name.', dym:'Did you mean'},
+    de:{unk:'Wir konnten diesen Ort nicht prüfen.', retry:'Erneut versuchen', sights:'Sehenswürdigkeiten: ', food:'Küche: ', nf:q => '\u201e' + q + '\u201c kennen wir nicht. Bitte Namen prüfen.', dym:'Meintest du'},
+    ru:{unk:'Не удалось проверить это место.', retry:'Повторить', sights:'Достопримечательности: ', food:'Кухня: ', nf:q => 'Мы не нашли «' + q + '». Проверьте название.', dym:'Вы имели в виду'}
   };
   const lbl = () => LBL[getLang()] || LBL.en;
   const aiKey = k => k + '|' + getLang();
@@ -301,6 +315,7 @@
     names.forEach(nm => { const d = lev(q, normalizeSr(nm)); if (d < bd){ bd = d; best = nm; } });
     return bd >= 1 && bd <= (q.length <= 5 ? 1 : 2) ? best : '';
   }
+  const sugOk = (k, sug) => !!sug && normalizeSr(sug) !== normalizeSr(k);
   function noticeEl(){
     let el = $('destinationNotFound');
     if (!el){
@@ -326,14 +341,22 @@
     const tried = aiTried[aiKey(k)];
     // upozorenje samo kad AI kaže "ne postoji", ili AI nije odgovorio a imamo lokalni predlog
     const aiSaysFake = !!(ai && !ai.real);
-    const fake = !!(c.generic && !c.known && (aiSaysFake || (tried === 'fail' && localSuggest(k))));
+    const fake = !!(c.generic && !c.known && (aiSaysFake || tried === 'fail'));
     if (!fake){ el.hidden = true; el.textContent = ''; return; }
     const sug = (ai && ai.suggestion) || localSuggest(k);
     el.textContent = '';
     const L = lbl();
     if (aiSaysFake) el.appendChild(document.createTextNode(L.nf(k)));
-    if (sug && normalizeSr(sug) !== normalizeSr(k)){
-      if (el.textContent) el.appendChild(document.createTextNode(' '));
+    else if (tried === 'fail'){
+      el.appendChild(document.createTextNode(L.unk + ' '));
+      const rb = document.createElement('button');
+      rb.type = 'button'; rb.textContent = L.retry;
+      rb.addEventListener('click', () => { delete aiTried[aiKey(k)]; render(); });
+      el.appendChild(rb);
+      if (sugOk(k, (ai && ai.suggestion) || localSuggest(k))) el.appendChild(document.createTextNode(' \u00B7 '));
+    }
+    if (sugOk(k, sug)){
+      if (el.textContent && tried !== 'fail') el.appendChild(document.createTextNode(' '));
       el.appendChild(document.createTextNode(L.dym + ' '));
       const b = document.createElement('button');
       b.type = 'button'; b.textContent = sug + '?';

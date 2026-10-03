@@ -674,7 +674,10 @@
   var _peekBusy = {};
   function isFake(info) { return !!info && (info.real_place === false || String(info.real_place).toLowerCase() === 'false'); }
   function peekInfo(dest) {
-    dest = String(dest || '').trim();
+    dest = String(dest || '')
+      .replace(/^[\s\u201C\u201D\u201E\u201F\u2018\u2019\u00AB\u00BB"'`]+/, '')
+      .replace(/[\s\u201C\u201D\u201E\u201F\u2018\u2019\u00AB\u00BB"'`]+$/, '')
+      .replace(/\s+/g, ' ').trim();
     if (dest.length < 2) return Promise.resolve(null);
     var k = keyOf(dest);
     if (!_cache[k]) { var st = lsGet(k); if (st) _cache[k] = st; }
