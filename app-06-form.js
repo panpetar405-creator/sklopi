@@ -71,6 +71,8 @@ function validateSearchInputs(extra){
   const datesConfirmed = !document.getElementById('dateDisplayBtn')?.classList.contains('is-empty');
   const paxConfirmed = !document.getElementById('paxDisplayBtn')?.classList.contains('is-empty');
   if (!dest) return {ok:false, focus:'dest', msg:t('val_dest_missing')};
+  if (placeStatus(dest) === false) return {ok:false, focus:'dest', msg:tf('val_dest_unknown', {name: placeBaseName(dest)})};
+  if (origin && flight && placeStatus(origin) === false) return {ok:false, focus:'origin', msg:tf('val_origin_unknown', {name: placeBaseName(origin)})};
   if (flight && !origin) return {ok:false, focus:'origin', msg:t('val_origin_missing')};
   if (!datesConfirmed || !isDate(from) || !isDate(to)) return {ok:false, focus:'form', msg:t('val_dates_missing')};
   if (to <= from) return {ok:false, focus:'form', msg:t('val_return_before_departure')};
@@ -79,6 +81,139 @@ function validateSearchInputs(extra){
   if (!(flight || hotel || car || activity)) return {ok:false, focus:'form', msg:t('val_no_service')};
   return {ok:true};
 }
+/* ==========================================================
+   POLJA "Destinacija" i "Polazak": dozvoljeni znaci + provera da mesto postoji.
+   1) Pri kucanju/lepljenju se zadržavaju samo slova (svi alfabeti), razmak, crtica, apostrof, tačka i zarez
+      — brojevi i simboli nestaju odmah; maksimalno 60 znakova.
+   2) Pretraga se ne pokreće dok mesto nije potvrđeno: prvo lokalna lista (aerodromi, popularne destinacije),
+      pa geokoder (isti Open-Meteo koji pravi predloge). Izmišljen ili pogrešno ukucan naziv se odbija uz
+      predlog "Misliš li na ...?". Ako mreža nije dostupna, NE blokiramo (ne kažnjavamo korisnika zbog servisa).
+========================================================== */
+const PLACE_ALLOWED_RE = /[^\p{L}\p{M}\s'\u2019.,\-]/gu;
+function sanitizePlaceText(v){
+  return String(v || '').replace(PLACE_ALLOWED_RE, '').replace(/\s{2,}/g, ' ').replace(/^[\s.,\-'\u2019]+/, '').slice(0, 60);
+}
+const _CYR = {'а':'a','б':'b','в':'v','г':'g','д':'d','ђ':'dj','е':'e','ж':'z','з':'z','и':'i','ј':'j','к':'k','л':'l','љ':'lj','м':'m','н':'n','њ':'nj','о':'o','п':'p','р':'r','с':'s','т':'t','ћ':'c','у':'u','ф':'f','х':'h','ц':'c','ч':'c','џ':'dz','ш':'s','ё':'e','й':'j','ы':'i','э':'e','ю':'ju','я':'ja','щ':'s','ъ':'','ь':''};
+function placeNorm(s){
+  const base = String(s || '').toLowerCase().replace(/[а-яёђјљњћџ]/g, c => _CYR[c] != null ? _CYR[c] : c);
+  return normalizeSr(base).replace(/[^a-z0-9]+/g, ' ').trim();
+}
+function placeBaseName(raw){ return sanitizePlaceText(raw).split(',')[0].trim(); }
+
+const _placeCache = Object.create(null);    // norm → true | false (samo pouzdani odgovori)
+const _placeSuggest = Object.create(null);  // norm → predlog ispravnog naziva
+let _placeLocalSet = null;
+function placeKnownLocally(raw){
+  const q = placeNorm(raw);
+  if (!q) return false;
+  if (!_placeLocalSet){
+    _placeLocalSet = new Set();
+    const add = n => { const k = placeNorm(n); if (k) _placeLocalSet.add(k); };
+    try { Object.keys(AIRPORT_DB).forEach(add); } catch(e){}
+    try { POPULAR_DESTINATIONS.forEach(d => add(d.name)); } catch(e){}
+    try { MATCH_DESTINATIONS.forEach(d => add(d.name)); } catch(e){}
+    try { Object.keys(DEST_EN_NAMES).forEach(k => { add(k); add(String(DEST_EN_NAMES[k]).split(',')[0]); }); } catch(e){}
+  }
+  return _placeLocalSet.has(q);
+}
+function placeStatus(raw){                    // true / false / undefined (još nije provereno)
+  const name = placeBaseName(raw), q = placeNorm(name);
+  if (q.length < 2) return undefined;
+  if (placeKnownLocally(name)) return true;
+  return _placeCache[q];
+}
+function placeSuggestion(raw){ return _placeSuggest[placeNorm(placeBaseName(raw))] || ''; }
+
+async function verifyPlace(raw){              // true / false / null (nije moguće proveriti)
+  const name = placeBaseName(raw), q = placeNorm(name);
+  if (q.length < 2) return false;
+  const known = placeStatus(name);
+  if (known !== undefined) return known;
+  const nonLatin = /[^\u0000-\u024F\s'\u2019.\-]/.test(name);
+  let reached = false, ok = false, sug = '';
+  const eat = (list) => {
+    for (const r of list){
+      const rn = placeNorm(r && r.name);
+      if (rn && rn === q) ok = true;
+      else if (!sug && r && r.name) sug = r.name;
+    }
+    if (nonLatin && list.length) ok = true;   // ćirilica/ruski: poređenje po slovima nije pouzdano → dovoljan je pogodak
+  };
+  const jobs = ['sr', 'en', null].map(async lang => {
+    try {
+      const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 3500);
+      const res = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(name)
+        + '&count=10' + (lang ? '&language=' + lang : '') + '&format=json', {signal: ctl.signal});
+      clearTimeout(to);
+      if (!res.ok) return;
+      reached = true;
+      const data = await res.json();
+      eat(data.results || []);
+    } catch(e){}
+  });
+  if (typeof API_BASE !== 'undefined' && API_BASE){
+    jobs.push((async () => {
+      try {
+        const res = await fetch(API_BASE + '/api/locations?q=' + encodeURIComponent(name));
+        if (!res.ok) return;
+        reached = true;
+        const json = await res.json();
+        eat((json.results || []).map(r => ({name: r.cityName})));
+      } catch(e){}
+    })());
+  }
+  await Promise.all(jobs);
+  if (ok){ _placeCache[q] = true; return true; }
+  if (!reached) return null;
+  _placeCache[q] = false;
+  if (sug) _placeSuggest[q] = sug;
+  return false;
+}
+window.SKLOPI_verifyPlace = verifyPlace;
+window.SKLOPI_placeStatus = placeStatus;
+window.SKLOPI_placeSuggestion = placeSuggestion;
+
+// Provera oba polja pre pretrage. {ok:true} ili {ok:false, msg, focus}
+async function verifyFormPlaces(){
+  const dest = (document.getElementById('dest') || {}).value || '';
+  const origin = (document.getElementById('origin') || {}).value || '';
+  if (dest.trim() && (await verifyPlace(dest)) === false)
+    return {ok:false, focus:'dest', msg:tf('val_dest_unknown', {name: placeBaseName(dest)})};
+  if (origin.trim() && (await verifyPlace(origin)) === false)
+    return {ok:false, focus:'origin', msg:tf('val_origin_unknown', {name: placeBaseName(origin)})};
+  return {ok:true};
+}
+function openPlaceSuggestions(which){
+  const id = which === 'origin' ? 'origin' : 'dest', list = id === 'origin' ? 'originSuggestions' : 'destSuggestions';
+  const el = document.getElementById(id);
+  if (el && typeof fetchLocationSuggestions === 'function'){
+    const sug = placeSuggestion(el.value);
+    fetchLocationSuggestions(sug || placeBaseName(el.value), list);
+  }
+}
+
+(function installPlaceGuards(){
+  ['dest', 'origin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('maxlength', '60');
+    // capture: radi PRE ostalih 'input' slušalaca (predlozi, spotlight), pa oni vide već očišćen tekst
+    el.addEventListener('input', () => {
+      const before = el.value, clean = sanitizePlaceText(before);
+      if (clean !== before){
+        const pos = el.selectionStart, shift = before.length - clean.length;
+        el.value = clean;
+        try { const p = Math.max(0, (pos == null ? clean.length : pos) - shift); el.setSelectionRange(p, p); } catch(e){}
+      }
+    }, true);
+    // tiha provera u pozadini — da keš bude spreman kad korisnik stigne do dugmeta
+    let timer = null;
+    const quiet = () => { clearTimeout(timer); timer = setTimeout(() => { if (el.value.trim().length >= 3) verifyPlace(el.value); }, 700); };
+    el.addEventListener('input', quiet);
+    el.addEventListener('change', () => { if (el.value.trim()) verifyPlace(el.value); });
+  });
+})();
+
 function focusSearchField(which){
   const el = which === 'dest' || which === 'origin' ? document.getElementById(which) : null;
   const form = document.getElementById('searchForm');
@@ -87,6 +222,8 @@ function focusSearchField(which){
 }
 
 async function runSearch(shouldScroll, autoReveal){
+  const placeCheck = await verifyFormPlaces();   // izmišljen/nepostojeći naziv mesta se ne pretražuje
+  if (!placeCheck.ok){ showToast(placeCheck.msg); focusSearchField(placeCheck.focus); openPlaceSuggestions(placeCheck.focus); return; }
   const check = validateSearchInputs();
   if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
   const dest = document.getElementById('dest').value.trim();

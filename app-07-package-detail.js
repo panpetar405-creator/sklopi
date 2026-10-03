@@ -340,10 +340,11 @@
     if (!el) return;
     const tried = aiTried[aiKey(k)];
     // upozorenje samo kad AI kaže "ne postoji", ili AI nije odgovorio a imamo lokalni predlog
-    const aiSaysFake = !!(ai && !ai.real);
-    const fake = !!(c.generic && !c.known && (aiSaysFake || tried === 'fail'));
+    const ps = window.SKLOPI_placeStatus ? window.SKLOPI_placeStatus(k) : undefined;
+    const aiSaysFake = !!(ai && !ai.real) || ps === false;
+    const fake = !!(c.generic && !c.known && ps !== true && (aiSaysFake || tried === 'fail'));
     if (!fake){ el.hidden = true; el.textContent = ''; return; }
-    const sug = (ai && ai.suggestion) || localSuggest(k);
+    const sug = (window.SKLOPI_placeSuggestion && window.SKLOPI_placeSuggestion(k)) || (ai && ai.suggestion) || localSuggest(k);
     el.textContent = '';
     const L = lbl();
     if (aiSaysFake) el.appendChild(document.createTextNode(L.nf(k)));
@@ -369,7 +370,14 @@
     const key = aiKey(k);
     if (aiTried[key] || typeof window.SKLOPI_destInfoPeek !== 'function') return;
     aiTried[key] = 'pending';
-    window.SKLOPI_destInfoPeek(k).then(res => {
+    // 1) geokoder potvrđuje da mesto postoji (jeftino, bez AI); 2) tek onda AI informacije
+    const verify = window.SKLOPI_verifyPlace ? window.SKLOPI_verifyPlace(k) : Promise.resolve(null);
+    verify.then(v => {
+      if (v === false){ aiTried[key] = 'ok'; if (curCity === k) render(); return null; }
+      return window.SKLOPI_destInfoPeek(k).then(res => ({res}));
+    }).then(box => {
+      if (!box) return;
+      const res = box.res;
       if (res){ aiInfo[key] = res; aiTried[key] = 'ok'; }
       else { aiTried[key] = 'fail'; setTimeout(() => { if (aiTried[key] === 'fail') delete aiTried[key]; }, 30000); }
       if (curCity === k) render();
@@ -387,7 +395,8 @@
     }
     const set = (sel, txt) => { const el = qs(sel); if (el) el.textContent = txt; };
     const ai = c.generic ? aiInfo[aiKey(k)] : null;
-    const reasons = (ai && !ai.real) ? [] : aiReasons(ai).concat(c.reasons || []).slice(0, 4);
+    const ps = c.generic && !c.known && window.SKLOPI_placeStatus ? window.SKLOPI_placeStatus(k) : undefined;   // geokoder: true/false/undefined
+    const reasons = ((ai && !ai.real) || ps === false) ? [] : aiReasons(ai).concat(c.reasons || []).slice(0, 4);
     const cn = c.country ? countryLabel(c.country) : ((ai && ai.real && ai.country) || '');
     set('.destination-reference-location', cn);
     set('.destination-reference-title-row p', cn);

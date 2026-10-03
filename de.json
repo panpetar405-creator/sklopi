@@ -1065,5 +1065,7 @@
   "ux_include_sub": "Wähle nur die Leistungen, die du brauchst.",
   "ux_customize_plan": "Plan anpassen",
   "ux_customize_title": "Deinen Plan anpassen",
-  "ux_customize_sub": "Ändere nur, was dir wichtig ist. Die Schätzung wird entsprechend aktualisiert."
+  "ux_customize_sub": "Ändere nur, was dir wichtig ist. Die Schätzung wird entsprechend aktualisiert.",
+  "val_dest_unknown": "„{name}“ kennen wir nicht. Bitte wähle einen Ort aus den Vorschlägen.",
+  "val_origin_unknown": "Den Abflugort „{name}“ kennen wir nicht. Bitte wähle einen Ort aus den Vorschlägen."
 }

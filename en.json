@@ -1065,5 +1065,7 @@
   "ux_include_sub": "Choose only the services you need.",
   "ux_customize_plan": "Customize this plan",
   "ux_customize_title": "Customize your plan",
-  "ux_customize_sub": "Change only what matters to you. The estimate updates with your choices."
+  "ux_customize_sub": "Change only what matters to you. The estimate updates with your choices.",
+  "val_dest_unknown": "We don’t recognise “{name}”. Please pick a place from the suggestions.",
+  "val_origin_unknown": "We don’t recognise the departure place “{name}”. Please pick a place from the suggestions."
 }

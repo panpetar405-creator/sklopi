@@ -1065,5 +1065,7 @@
   "ux_include_sub": "Biraj samo usluge koje su ti potrebne.",
   "ux_customize_plan": "Prilagodi ovaj plan",
   "ux_customize_title": "Prilagodi svoj plan",
-  "ux_customize_sub": "Promeni samo ono što ti je važno. Procena će se osvežiti prema tvojim izborima."
+  "ux_customize_sub": "Promeni samo ono što ti je važno. Procena će se osvežiti prema tvojim izborima.",
+  "val_dest_unknown": "Ne prepoznajemo „{name}\". Izaberi mesto sa liste predloga.",
+  "val_origin_unknown": "Ne prepoznajemo polazište „{name}\". Izaberi mesto sa liste predloga."
 }
