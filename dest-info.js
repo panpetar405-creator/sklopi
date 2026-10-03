@@ -668,6 +668,45 @@
     if (disc) { disc.hidden = false; disc.textContent = '⚠️ ' + ui().disclaimer.replace(/^⚠️\s*/, ''); }
   }
 
+  /* ── Tihi dohvat (bez panela): koristi ga spotlight za gradove koje nismo ručno uredili.
+     Isti keš (memorija + localStorage) i isti ključ kao loadDestInfo — pa kasnije otvaranje
+     panela "O destinaciji" ne pravi drugi AI poziv. Jedan pokušaj, bez čekanja; greška → null. ── */
+  var _peekBusy = {};
+  function isFake(info) { return !!info && (info.real_place === false || String(info.real_place).toLowerCase() === 'false'); }
+  function peekInfo(dest) {
+    dest = String(dest || '').trim();
+    if (dest.length < 2) return Promise.resolve(null);
+    var k = keyOf(dest);
+    if (!_cache[k]) { var st = lsGet(k); if (st) _cache[k] = st; }
+    if (_cache[k]) return Promise.resolve(_cache[k]);
+    if (_peekBusy[k]) return _peekBusy[k];
+    _peekBusy[k] = fetch(DEST_INFO_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dest: dest, lang: getLang(), origin: getOrigin(), passport: getPassport(dest) })
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (info) {
+        if (!info || typeof info !== 'object' || info.error) return null;
+        if (!isFake(info)) { _cache[k] = info; lsSet(k, info); }   // izmišljen grad ne keširamo
+        return info;
+      })
+      .catch(function () { return null; })
+      .then(function (v) { delete _peekBusy[k]; return v; });
+    return _peekBusy[k];
+  }
+  window.SKLOPI_destInfoPeek = function (dest) {
+    return peekInfo(dest).then(function (info) {
+      if (!info) return null;
+      return {
+        real: !isFake(info),
+        suggestion: typeof info.suggestion === 'string' ? info.suggestion.trim().slice(0, 60) : '',
+        country: typeof info.country === 'string' ? info.country.trim().slice(0, 60) : '',
+        sights: normList(info.must_see, ['name','landmark','title','attraction','sight'], ['note','tip','description','desc']).slice(0, 3).map(function (x) { return x.a; }),
+        food: normList(info.food, ['dish','name','title'], ['note','tip','description','desc']).slice(0, 2).map(function (x) { return x.a; })
+      };
+    });
+  };
+
   document.addEventListener('sklopi:lang', function () { if (_currentDest) { showSkeleton(false); loadDestInfo(_currentDest); } });
 
   window.SklopiDestInfo = { load: function (dest, origin) { if (origin) _originOverride = String(origin).trim(); _currentDest = dest; _currentKey = keyOf(dest); loadDestInfo(dest); } };

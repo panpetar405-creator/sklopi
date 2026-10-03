@@ -26,3 +26,6 @@
   .how-it-works-section{padding-top:20px;padding-bottom:26px}
   .feature-strip-head{padding-left:4px;padding-right:4px}
 }
+.destination-notfound{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#fff7e6;border:1px solid #f3d9a4;color:#6b4a00;font-size:13px;line-height:1.5}
+.destination-notfound[hidden]{display:none}
+.destination-notfound button{margin:0 0 0 2px;padding:0;border:0;background:none;color:#0b5a6b;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}

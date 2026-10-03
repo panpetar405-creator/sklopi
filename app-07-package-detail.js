@@ -69,8 +69,9 @@
     const md = MATCH_DESTINATIONS.find(d => normalizeSr(d.name) === n);
     const hit = md || POPULAR_DESTINATIONS.find(d => normalizeSr(d.name) === n);
     if (!hit && !o.loose) return null;
+    const known = !!hit || !!(typeof airportInfoFor === 'function' && airportInfoFor(raw));
     return {k: hit ? hit.name : raw.charAt(0).toUpperCase() + raw.slice(1),
-            c:{arch: archFor(md), country: hit ? (hit.extra || '') : '', reasons: reasonsFor(md), generic:true}};
+            c:{arch: archFor(md), country: hit ? (hit.extra || '') : '', reasons: reasonsFor(md), generic:true, known}};
   }
   // Šablon plana i "Zašto <grad>?" iz podataka koje sajt već ima (MATCH_DESTINATIONS: vibes, distance, family,
   // nightlife) — samo ono što tamo piše, bez izmišljanja; gradovi bez tih podataka nemaju blok "Zašto".
@@ -259,6 +260,99 @@
     .map(qs).filter(Boolean);
   managed.forEach(el => { el.removeAttribute('data-i18n'); el.removeAttribute('data-i18n-alt'); });
 
+  /* ---- Bilo koja destinacija = prave informacije ----
+     Grad koji nije u dest-plans.js dobija "Zašto <grad>?" iz AI info (/api/dest-info, isti keš kao panel
+     "O destinaciji"): znamenitosti i kuhinja. Ako AI kaže da mesto ne postoji (ili je greška u kucanju),
+     prikazujemo upozorenje i predlog ("Misliš li na ...?") umesto izmišljenog sadržaja.
+     Gradovi iz AIRPORT_DB / popularnih / urednički (c.known) se uvek smatraju stvarnim. */
+  const aiInfo = {}, aiTried = {};
+  const LBL = {
+    sr:{sights:'Znamenitosti: ', food:'Lokalna kuhinja: ', nf:q => 'Ne prepoznajemo „' + q + '". Proveri naziv.', dym:'Misliš li na'},
+    en:{sights:'Sights: ', food:'Local food: ', nf:q => 'We don\u2019t recognise \u201c' + q + '\u201d. Please check the name.', dym:'Did you mean'},
+    de:{sights:'Sehenswürdigkeiten: ', food:'Küche: ', nf:q => '\u201e' + q + '\u201c kennen wir nicht. Bitte Namen prüfen.', dym:'Meintest du'},
+    ru:{sights:'Достопримечательности: ', food:'Кухня: ', nf:q => 'Мы не нашли «' + q + '». Проверьте название.', dym:'Вы имели в виду'}
+  };
+  const lbl = () => LBL[getLang()] || LBL.en;
+  const aiKey = k => k + '|' + getLang();
+  function aiReasons(ai){
+    if (!ai || !ai.real) return [];
+    const L = lbl(), out = [];
+    if (ai.sights && ai.sights.length) out.push(L.sights + ai.sights.slice(0, 2).join(', '));
+    if (ai.food && ai.food.length) out.push(L.food + ai.food.slice(0, 2).join(', '));
+    return out;
+  }
+  // Najbliži poznat naziv (Levenshtein) — radi i kad AI nije dostupan.
+  function lev(a, b){
+    const m = a.length, n = b.length; if (Math.abs(m - n) > 2) return 9;
+    let prev = Array.from({length:n + 1}, (_, j) => j);
+    for (let i = 1; i <= m; i++){
+      const cur = [i];
+      for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = cur;
+    }
+    return prev[n];
+  }
+  function localSuggest(raw){
+    const q = normalizeSr(String(raw || '').trim());
+    if (q.length < 4) return '';
+    const names = new Set(Object.keys(CFG.cities));
+    try { POPULAR_DESTINATIONS.forEach(d => names.add(d.name)); } catch(e){}
+    let best = '', bd = 9;
+    names.forEach(nm => { const d = lev(q, normalizeSr(nm)); if (d < bd){ bd = d; best = nm; } });
+    return bd >= 1 && bd <= (q.length <= 5 ? 1 : 2) ? best : '';
+  }
+  function noticeEl(){
+    let el = $('destinationNotFound');
+    if (!el){
+      const host = qs('.destination-reference-body'), act = qs('.destination-reference-actions');
+      if (!host) return null;
+      el = document.createElement('p');
+      el.id = 'destinationNotFound'; el.className = 'destination-notfound'; el.hidden = true;
+      el.setAttribute('role', 'status');
+      host.insertBefore(el, act || null);
+    }
+    return el;
+  }
+  function applySuggestion(name){
+    const dest = $('dest');
+    if (!dest) return;
+    dest.value = name;
+    dest.dispatchEvent(new Event('input', {bubbles:true}));
+    dest.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+  function updateNotice(k, c, ai){
+    const el = noticeEl();
+    if (!el) return;
+    const tried = aiTried[aiKey(k)];
+    // upozorenje samo kad AI kaže "ne postoji", ili AI nije odgovorio a imamo lokalni predlog
+    const aiSaysFake = !!(ai && !ai.real);
+    const fake = !!(c.generic && !c.known && (aiSaysFake || (tried === 'fail' && localSuggest(k))));
+    if (!fake){ el.hidden = true; el.textContent = ''; return; }
+    const sug = (ai && ai.suggestion) || localSuggest(k);
+    el.textContent = '';
+    const L = lbl();
+    if (aiSaysFake) el.appendChild(document.createTextNode(L.nf(k)));
+    if (sug && normalizeSr(sug) !== normalizeSr(k)){
+      if (el.textContent) el.appendChild(document.createTextNode(' '));
+      el.appendChild(document.createTextNode(L.dym + ' '));
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = sug + '?';
+      b.addEventListener('click', () => applySuggestion(sug));
+      el.appendChild(b);
+    }
+    el.hidden = !el.childNodes.length;
+  }
+  function enrichGeneric(k){
+    const key = aiKey(k);
+    if (aiTried[key] || typeof window.SKLOPI_destInfoPeek !== 'function') return;
+    aiTried[key] = 'pending';
+    window.SKLOPI_destInfoPeek(k).then(res => {
+      if (res){ aiInfo[key] = res; aiTried[key] = 'ok'; }
+      else { aiTried[key] = 'fail'; setTimeout(() => { if (aiTried[key] === 'fail') delete aiTried[key]; }, 30000); }
+      if (curCity === k) render();
+    });
+  }
+
   function render(){
     const k = curCity, c = curEntry;
     if (!c || !$('destPlansList')) return;
@@ -269,18 +363,20 @@
       img.alt = n;
     }
     const set = (sel, txt) => { const el = qs(sel); if (el) el.textContent = txt; };
-    const cn = c.country ? countryLabel(c.country) : '';
+    const ai = c.generic ? aiInfo[aiKey(k)] : null;
+    const reasons = (ai && !ai.real) ? [] : aiReasons(ai).concat(c.reasons || []).slice(0, 4);
+    const cn = c.country ? countryLabel(c.country) : ((ai && ai.real && ai.country) || '');
     set('.destination-reference-location', cn);
     set('.destination-reference-title-row p', cn);
     [qs('.destination-reference-location'), qs('.destination-reference-title-row p')].forEach(el => { if (el) el.hidden = !cn; });
     const rb = qs('.destination-reference-reason');
-    if (rb) rb.hidden = !c.reasons.length;   // "Zašto <grad>?" samo za urednički pripremljene gradove
+    if (rb) rb.hidden = !reasons.length;     // "Zašto <grad>?": urednički tekst, ili AI info za ostale gradove
     set('#destinationSpotlightTitle', n);
-    if (c.reasons.length) set('.destination-reference-reason .eyebrow', whyTitle(k));
+    if (reasons.length) set('.destination-reference-reason .eyebrow', whyTitle(k));
     set('#destinationPlansBtn span', plansTitle(k));
     set('#destinationPlansTitle', plansTitle(k));
     const ul = qs('.destination-reference-reason ul');
-    if (ul) ul.innerHTML = c.reasons.map(r => '<li>' + escapeHtml(tx(r)) + '</li>').join('');
+    if (ul) ul.innerHTML = reasons.map(r => '<li>' + escapeHtml(tx(r)) + '</li>').join('');
     curPlans = buildPlans(k);
     $('destPlansList').innerHTML = curPlans.map(cardHtml).join('');
     // Ove kartice se računaju i prikazuju ČIM se otvori destinacija, pre
@@ -297,6 +393,8 @@
       estNote.hidden = datesConfirmed && paxConfirmed;
     }
     shownCity = k;
+    updateNotice(k, c, ai);
+    if (c.generic) enrichGeneric(k);
   }
   function setCity(name, o){
     const r = resolveDest(name, o);

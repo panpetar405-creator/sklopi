@@ -22,6 +22,9 @@ const SAFE_TEXT = /^[\p{L}\p{M}\p{N} .,'’()\/&-]+$/u;          // vidi handleD
 const DEST_LIMIT_IP = 6;        // AI poziva po IP-u u minuti (keš pogoci ne računaju)
 const DEST_LIMIT_GLOBAL = 40;   // AI poziva ukupno u minuti, po lokaciji
 const SCHEMA = {
+  country: '<name of the country where DEST is located, in the output language>',
+  real_place: '<true if DEST is a real city, town, island, region or country that tourists can visit; false if it is a misspelling, a made-up name or not a place>',
+  suggestion: '<if DEST looks like a misspelling of a real place: the correctly spelled name of that place; otherwise an empty string>',
   flag: '<flag emoji of the country where DEST is located>',
   currency: '<ISO currency code used in DEST, e.g. the local currency>',
   currency_rate: '<approximate rate: 1 <DEST currency> ≈ N <currency of ORIGIN country>; if both use the same currency output exactly the single word SAME>',
