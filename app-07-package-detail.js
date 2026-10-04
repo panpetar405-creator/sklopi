@@ -787,12 +787,12 @@
     const noOwnAirport = svc.flight && apInfo && !apInfo.hasAirport && apInfo.nearest;
     const airportNote = noOwnAirport ? airportNoteText(apInfo) : '';
     const plans = [
-      {title:'Plan 1 \u2013 Najbolji izbor', sel:a, flex:false},
-      {title:'Plan 2 \u2013 Više komfora', flex:true, sel:Object.assign({}, a, {
+      {title:'Plan 1 \u2013 Balans', sel:a, flex:false},
+      {title:'Plan 2 \u2013 Komfor', flex:true, sel:Object.assign({}, a, {
         flightPref:'direct', hotelStars:Math.min(5, a.hotelStars + 1),
         carPref: svc.car ? (a.carPref === 'none' ? 'small' : a.carPref) : 'none',
         activityCount: svc.activity ? Math.min(10, a.activityCount + 1) : 0})},
-      {title:'Plan 3 \u2013 Najviše za novac', flex:false, sel:Object.assign({}, a, {
+      {title:'Plan 3 \u2013 Budžet', flex:false, sel:Object.assign({}, a, {
         flightPref:'cheapest', hotelStars:Math.max(3, a.hotelStars - 1),
         carPref:'none', activityCount: svc.activity ? Math.max(1, a.activityCount - 1) : 0})}
     ];
@@ -819,7 +819,7 @@
       const rooms = p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(c.nights) + ')';
       if (typeof window.SKLOPI_openPlan !== 'function') return;
       window.SKLOPI_openPlan({
-        title:p.title, price:p.price, badge:['Najbolji izbor','Više komfora','Najviše za novac'][i],
+        title:p.title, price:p.price, badge:['Popularno','Više komfora','Najpovoljnije'][i],
         badgeCls:i === 1 ? 'plan-detail-badge--comfort' : '',
         photo:photos[i].replace('w=400', 'w=1200'), alt:p.title,
         flightPref:p.sel.flightPref, hotelStars:p.sel.hotelStars, prioritizeLocation:!!builderState.prioritizeLocation,

@@ -15,27 +15,27 @@ window.SKLOPI_DEST_PLANS = (function(){
       SPA = 'Termalna kupatila', CAFE = 'Kafei i gradska šetnja', MARKET = 'Pijace i shopping',
       PRICE = 'Povoljno za vikend', VIEW = 'Vidikovci i panorame', SHORT = 'Blizu — kratak let ili vožnja';
   var U = 'https://images.unsplash.com/photo-';
-  var comfort = {key:'comfort', title:'Komforniji odmor', price:0, badge:'Više komfora', badgeCls:'plan-detail-badge--comfort',
+  var comfort = {key:'comfort', title:'Komfor', price:0, badge:'Više komfora', badgeCls:'plan-detail-badge--comfort',
       flightPref:'direct', hotelStars:4, prioritizeLocation:false, carPref:'small', activityCount:3,
       feats:[['\u2708','Fleksibilan let'],['\u25a3','4\u2605 hotel u mirnijem delu'],['\u25b1','Auto + 3 aktivnosti']],
       flightT:'Fleksibilan let', flightS:'Povratna karta \u2022 Fleksibilan termin', hotelS:'4\u2605 \u2022 Mirniji deo',
       actS:'3 pažljivo odabrane ture', carS:'Auto (mali)', forWho:'Za koga: želiš više komfora i slobode'};
-  var value = {key:'best-value', title:'Najviše za novac', badge:'Najpovoljnije', badgeCls:'',
+  var value = {key:'best-value', title:'Budžet', badge:'Najpovoljnije', badgeCls:'',
       flightPref:'cheapest', hotelStars:3, prioritizeLocation:true, carPref:'none', activityCount:2,
       feats:[['\u2708','Najjeftinija kombinacija'],['\u25a3','3\u2605 hotel'],['\u25b1','Bez auta \u00b7 ključne aktivnosti']],
       flightT:'Najjeftinija kombinacija', flightS:'Povratna karta \u2022 Ekonomija', hotelS:'3\u2605 \u2022 Blizu centra',
       actS:'2 pažljivo odabrane ture', carS:'Bez auta', forWho:'Za koga: maksimalno rastezanje budžeta'};
-  var cityFirst = {key:'city-weekend', title:'Gradski vikend', badge:'Popularno', badgeCls:'plan-detail-badge--popular',
+  var cityFirst = {key:'city-weekend', title:'Balans', badge:'Popularno', badgeCls:'plan-detail-badge--popular',
       flightPref:'direct', hotelStars:4, prioritizeLocation:true, carPref:'none', activityCount:2,
       feats:[['\u2708','Direktan let'],['\u25a3','4\u2605 hotel blizu centra'],['\u25c7','2 aktivnosti'],['\u25b1','Bez auta']],
       flightT:'Direktan let', flightS:'Povratna karta \u2022 Ekonomija', hotelS:'4\u2605 \u2022 Blizu centra',
       actS:'2 pažljivo odabrane ture', carS:'Bez auta', forWho:'Za koga: prvi put u gradu / city break'};
-  var seaFirst = {key:'sea-holiday', title:'Odmor uz more', badge:'Popularno', badgeCls:'plan-detail-badge--popular',
+  var seaFirst = {key:'sea-holiday', title:'Balans', badge:'Popularno', badgeCls:'plan-detail-badge--popular',
       flightPref:'direct', hotelStars:4, prioritizeLocation:true, carPref:'small', activityCount:2,
       feats:[['\u2708','Direktan let'],['\u25a3','4\u2605 hotel blizu plaže'],['\u25b1','Auto + 2 aktivnosti']],
       flightT:'Direktan let', flightS:'Povratna karta \u2022 Ekonomija', hotelS:'4\u2605 \u2022 Blizu plaže',
       actS:'2 pažljivo odabrane ture', carS:'Auto (mali)', forWho:'Za koga: klasičan odmor uz more'};
-  var tripFirst = {key:'best-choice', title:'Najbolji izbor', badge:'Popularno', badgeCls:'plan-detail-badge--popular',
+  var tripFirst = {key:'best-choice', title:'Balans', badge:'Popularno', badgeCls:'plan-detail-badge--popular',
       flightPref:'direct', hotelStars:4, prioritizeLocation:true, carPref:'none', activityCount:2,
       feats:[['\u2708','Direktan let'],['\u25a3','4\u2605 hotel blizu centra'],['\u25c7','2 aktivnosti'],['\u25b1','Bez auta']],
       flightT:'Direktan let', flightS:'Povratna karta \u2022 Ekonomija', hotelS:'4\u2605 \u2022 Blizu centra',
