@@ -193,6 +193,13 @@ function popularMetaLabel(m){
   return parts.length > 1 ? [countryLabel(parts[0])].concat(parts.slice(1)).join(' \u00B7 ') : String(m || '');
 }
 function popularPriceLabel(pr){ return String(pr || '').replace(/^od\s+/i, () => tx('od ')); }
+// Lokalne slike za dodate destinacije (skida ih download-popular-images.sh u img/). Ako fajla još nema,
+// kartica se tiho vraća na učitavanje slike kao ostale (vidi attachPopularDestCardHandlers).
+const POPULAR_LOCAL_IMG = {
+  'rim':'rim-koloseum', 'dubai':'dubai-burdz-halifa', 'bangkok':'bangkok-hram', 'tokio':'tokio-shibuya',
+  'njujork':'njujork-menhetn', 'kankun':'kankun-plaza', 'marakes':'marakes-medina',
+  'kairo':'kairo-piramide', 'hurgada':'hurgada-more'
+};
 function popularCardData(card){
   const key = normalizeSr(card.dest || '');
   const meta = POPULAR_DEST_META[key] || [card.name || '', '', 'all'];
@@ -203,7 +210,7 @@ function popularCardData(card){
     meta: popularMetaLabel(card.meta || meta[0]),
     price: popularPriceLabel(card.price || meta[1]),
     category: (popularTagsFor(card.dest || card.name).join(' ')) || card.category || meta[2] || 'all',
-    image: card.image || POPULAR_DEST_IMAGES[key] || ''
+    image: card.image || POPULAR_DEST_IMAGES[key] || (POPULAR_LOCAL_IMG[key] ? 'img/' + POPULAR_LOCAL_IMG[key] + '-500.webp' : '')
   };
 }
 function popularCardHtml(card){
@@ -260,6 +267,16 @@ async function popularFillImages(grid){
 function attachPopularDestCardHandlers(grid){
   // odloženo: DEST_* podaci i pomoćnici su definisani niže u fajlu
   setTimeout(() => popularFillImages(grid), 0);
+  // lokalna slika koje nema u img/ → kartica prelazi na isti izvor slika kao ostale (popularFillImages)
+  grid.querySelectorAll('.popular-dest-card .pd-thumb img[src^="img/"]').forEach(img => {
+    img.addEventListener('error', () => {
+      const card = img.closest('.popular-dest-card');
+      if (!card || card.dataset.noimg === '1') return;
+      img.removeAttribute('src'); card.dataset.noimg = '1';
+      const th = card.querySelector('.pd-thumb'); if (th) th.style.background = '#e4eef1';
+      popularFillImages(grid);
+    }, {once:true});
+  });
   grid.querySelectorAll('.popular-dest-card').forEach(card => {
     card.addEventListener('click', () => {
       document.getElementById('dest').value = card.dataset.dest;
