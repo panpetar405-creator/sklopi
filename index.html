@@ -159,7 +159,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/inter-latin-ext.woff2" rel="preload" type="font/woff2"/>
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
-<link href="styles.css?v=bdc0b83f" rel="stylesheet"/>
+<link href="styles.css?v=3318aa4a" rel="stylesheet"/>
 <link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e49cd3a2" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
@@ -360,10 +360,11 @@ html,body{background:#123A44;margin:0;}
 </div>
 </div>
 <div aria-label="Kategorije destinacija" class="popular-reference-chips" data-i18n-aria-label="x_d39ebe" role="tablist">
-<button class="popular-ref-chip is-active" data-i18n="x_d3da97" data-popular-filter="sea" type="button">More</button>
-<button class="popular-ref-chip" data-i18n="x_3b0a32" data-popular-filter="city" type="button">City break</button>
-<button class="popular-ref-chip" data-i18n="x_8a443d" data-popular-filter="nature" type="button">Priroda</button>
-<button class="popular-ref-chip" data-i18n="x_cc951e" data-popular-filter="weekend" type="button">Vikend</button>
+<button class="popular-ref-chip is-active" data-i18n="x_pc_all" data-popular-filter="all" type="button">Sve</button>
+<button class="popular-ref-chip" data-i18n="x_pc_eu" data-popular-filter="europe" type="button">Evropa</button>
+<button class="popular-ref-chip" data-i18n="x_pc_as" data-popular-filter="asia" type="button">Azija</button>
+<button class="popular-ref-chip" data-i18n="x_pc_am" data-popular-filter="america" type="button">Amerika</button>
+<button class="popular-ref-chip" data-i18n="x_pc_af" data-popular-filter="africa" type="button">Afrika</button>
 </div>
 <div class="popular-dest-grid popular-reference-grid" id="popularDestGrid">
 <button class="popular-dest-card" data-category="city sea" data-dest="Atina" type="button"><span class="pd-thumb"><img alt="Atina" loading="lazy" src="img/atina-akropolj-500.webp"/></span><span class="pd-copy"><span class="pd-name">Atina</span><span class="pd-meta">Grčka · 1h 20m</span><span class="pd-price">od 247 €</span></span><span aria-hidden="true" class="pd-arrow">›</span></button>
@@ -1313,7 +1314,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
 <script defer="" src="i18n-data.js?v=f8ee145f"></script>
-<script defer="" src="i18n-extra.js?v=70a570e9"></script>
+<script defer="" src="i18n-extra.js?v=b374248e"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=e9b26749"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
@@ -1322,7 +1323,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-05-results.js?v=108b871e"></script>
 <script defer="" src="app-06-form.js?v=9bbd4299"></script>
 <script defer="" src="app-07-package-detail.js?v=a08a37a0"></script>
-<script defer="" src="app-08-popular-airports.js?v=dacac49a"></script>
+<script defer="" src="app-08-popular-airports.js?v=77f2aea1"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
 <script defer="" src="app-11-sections-hero.js?v=981569dd"></script>

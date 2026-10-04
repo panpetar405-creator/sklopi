@@ -147,17 +147,26 @@ const POPULAR_DEST_TAGS = {
   'zagreb':['city','weekend'], 'dubrovnik':['sea','city','weekend'], 'santorini':['sea'],
   'kotor':['sea','nature','weekend'], 'plitvicka jezera':['nature','weekend'], 'bled':['nature','weekend'],
   'ohrid':['nature','weekend'], 'durmitor':['nature'], 'split':['sea','city','weekend'],
-  'ljubljana':['city','weekend'], 'venecija':['city','weekend']
+  'ljubljana':['city','weekend'], 'venecija':['city','weekend'],
+  // vanevropske destinacije (čipovi Azija / Amerika / Afrika)
+  'dubai':['asia','city'], 'bangkok':['asia','city'], 'tokio':['asia','city'],
+  'njujork':['america','city'], 'kankun':['america','sea'],
+  'marakes':['africa','city'], 'kairo':['africa','city'], 'hurgada':['africa','sea']
 };
+// Kontinent-oznake (čipovi Sve / Evropa / Azija / Amerika / Afrika): sve ostalo je evropsko, Istanbul i u Aziji.
+Object.keys(POPULAR_DEST_TAGS).forEach(k => {
+  if (!/^(dubai|bangkok|tokio|njujork|kankun|marakes|kairo|hurgada)$/.test(k)) POPULAR_DEST_TAGS[k].push('europe');
+});
+POPULAR_DEST_TAGS['istanbul'].push('asia');
 function popularTagsFor(key){ return POPULAR_DEST_TAGS[normalizeSr(key || '')] || []; }
 // Dodatne destinacije za filtere (kartice iz DEFAULT_POPULAR_DEST_POOL imaju slike; ove dobijaju
 // rezervnu sliku dok se ne doda prava — dopuni image/price kad budeš imao podatke).
-const EXTRA_POPULAR_DEST_POOL = ['Dubrovnik','Santorini','Kotor','Plitvička Jezera','Bled','Ohrid','Durmitor','Split','Ljubljana','Venecija']
+const EXTRA_POPULAR_DEST_POOL = ['Dubrovnik','Santorini','Kotor','Plitvička Jezera','Bled','Ohrid','Durmitor','Split','Ljubljana','Venecija','Dubai','Bangkok','Tokio','Njujork','Kankun','Marakeš','Kairo','Hurgada']
   .map(n => ({dest:n, name:n}));
 const POPULAR_FILTER_POOL = DEFAULT_POPULAR_DEST_POOL.concat(
   ['Rim','Barselona','Budva','Beč','Solun','Budimpešta','Prag','Zagreb'].map(n => ({dest:n, name:n})),
   EXTRA_POPULAR_DEST_POOL);
-let _popularFilter = 'sea';
+let _popularFilter = 'all';
 function popularActiveFilter(){
   const a = document.querySelector('[data-popular-filter].is-active');
   return a ? a.dataset.popularFilter : _popularFilter;
@@ -173,7 +182,10 @@ const POPULAR_DEST_META = {
   'dubrovnik':['Hrvatska','','sea'], 'santorini':['Grčka','','sea'], 'kotor':['Crna Gora','','sea'],
   'plitvicka jezera':['Hrvatska','','nature'], 'bled':['Slovenija','','nature'], 'ohrid':['Severna Makedonija','','nature'],
   'durmitor':['Crna Gora','','nature'], 'split':['Hrvatska','','sea'], 'ljubljana':['Slovenija','','city'],
-  'venecija':['Italija','','city']
+  'venecija':['Italija','','city'],
+  'dubai':['Ujedinjeni Arapski Emirati','','city'], 'bangkok':['Tajland','','city'], 'tokio':['Japan','','city'],
+  'njujork':['SAD','','city'], 'kankun':['Meksiko','','sea'],
+  'marakes':['Maroko','','city'], 'kairo':['Egipat','','city'], 'hurgada':['Egipat','','sea']
 };
 // Kartice "Popularne destinacije": naziv države i "od" su fiksni na srpskom u podacima -- prevodi se pri prikazu.
 function popularMetaLabel(m){
@@ -269,14 +281,14 @@ function renderDefaultPopularDestinations(){
   head.textContent = t('h2_popular_dest');
   if (eyebrow) eyebrow.textContent = t('eyebrow_ideas');
   const f = popularActiveFilter();
-  const cards = f === 'all' ? DEFAULT_POPULAR_DEST_POOL : popularCardsForFilter(f, '');
+  const cards = f === 'all' ? DEFAULT_POPULAR_DEST_POOL.concat([{dest:'Rim', name:'Rim'}]) : popularCardsForFilter(f, '');   // Sve = 6 kartica kao na referentnom ekranu
   grid.innerHTML = cards.map(c => popularCardHtml(c)).join('');
   attachPopularDestCardHandlers(grid);
 }
 // Kartice za izabrani čip: prvo regionalne preporuke za grad polaska koje imaju tu oznaku,
 // pa dopuna iz šireg pool-a (bez samog polazišta). Dnevna rotacija ostaje.
 function popularCardsForFilter(filter, originRaw, limit){
-  limit = limit || 5;
+  limit = limit || 6;
   const has = c => popularTagsFor(c.dest).indexOf(filter) !== -1;
   const originKey = normalizeSr(String(originRaw || '').split(',')[0].trim());
   const norm = normalizeSr((originRaw || '').trim());
