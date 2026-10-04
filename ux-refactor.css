@@ -143,3 +143,23 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 @media (max-width:600px){
   .how-it-works-photo{aspect-ratio:16/9}
 }
+
+/* ---------- Ekran 4: Izaberi svoj plan (Budžet / Balans / Komfor) ---------- */
+.dest-plans-head h2{font-size:28px;line-height:1.1;letter-spacing:-.03em}
+.dest-plan-tag{margin:4px 0 0;color:#5b757c;font:500 13px/1.4 Inter,sans-serif}
+.dest-plan-arrow{align-self:center;flex:none;color:#9babb0;font:400 28px/1 Inter,sans-serif;padding-left:2px}
+/* Redosled kao na slici: Budžet → Balans → Komfor (JS ih gradi kao Balans, Komfor, Budžet) */
+.dest-plans-list .dest-plan-card[data-plan="2"]{order:1}
+.dest-plans-list .dest-plan-card[data-plan="0"]{order:2}
+.dest-plans-list .dest-plan-card[data-plan="1"]{order:3}
+@media (max-width:700px){
+  .dest-plans-head h2{font-size:25px}
+  .dest-plan-card{align-items:center;padding:10px 12px 10px 10px;gap:14px}
+  .dest-plan-photo{width:84px;height:84px;align-self:center;border-radius:12px}
+  .dest-plan-body{padding:0}
+  .dest-plan-body h3{font-size:16px}
+  .dest-plan-price{margin:6px 0 0;font-size:15px;color:#0d6371}
+  .dest-plan-price span{font-size:11px}
+  .dest-plan-features,.dest-plan-for{display:none}   /* detalji su na sledećem ekranu (Šta je uključeno) */
+  .dest-plan-badge{top:5px;right:auto;left:5px;padding:4px 7px;font-size:9px}
+}

@@ -320,6 +320,9 @@
     });
     return plans;
   }
+  // Kratak opis plana (ekran 4 sa slike): Budžet / Balans / Komfor
+  const PLAN_TAGS = {'best-value':'Pametno putovanje, velika iskustva.', 'comfort':'Više uživanja, manje briga.'};
+  const PLAN_TAG_BALANCE = 'Idealna kombinacija cene i komfora.';
   function cardHtml(p, i){
     const ft = p.feats.map(f => {
       // f[0] je '\u2708' (✈) samo za red o letu (uvek prvi u feats, videti
@@ -336,9 +339,11 @@
     return '<article class="dest-plan-card" data-plan="' + i + '"><div class="dest-plan-photo"><img src="' + escapeHtml(p.thumb)
       + '" alt="' + escapeHtml(cityLabel(p.dest)) + '" loading="lazy">'
       + (i === 0 ? '<span class="dest-plan-badge dest-plan-badge--popular">' + escapeHtml(tx(p.badge)) + '</span>' : '')
-      + '</div><div class="dest-plan-body"><h3>' + escapeHtml(tx(p.title)) + '</h3><p class="dest-plan-price">'
-      + escapeHtml(priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span></p><ul class="dest-plan-features">' + ft
-      + '</ul>' + apNote + '<p class="dest-plan-for">' + escapeHtml(tx(p.forWho)) + '</p></div></article>';
+      + '</div><div class="dest-plan-body"><h3>' + escapeHtml(tx(p.title)) + '</h3>'
+      + '<p class="dest-plan-tag">' + escapeHtml(tx(PLAN_TAGS[p.key] || PLAN_TAG_BALANCE)) + '</p>'
+      + '<p class="dest-plan-price">' + escapeHtml(tx('od ') + priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span></p><ul class="dest-plan-features">' + ft
+      + '</ul>' + apNote + '<p class="dest-plan-for">' + escapeHtml(tx(p.forWho)) + '</p></div>'
+      + '<span class="dest-plan-arrow" aria-hidden="true">\u203a</span></article>';
   }
   // Tekstovi koje JS preuzima od statičkog (SEO) HTML-a za Atinu: skidamo data-i18n da ih
   // applyStaticI18n() ne vrati na Atinu; osvežavaju se u render() pri promeni grada/jezika.
@@ -479,7 +484,7 @@
     set('#destinationSpotlightTitle', n);
     if (reasons.length) set('.destination-reference-reason .eyebrow', whyTitle(k));
     set('#destinationPlansBtn span', plansTitle(k));
-    set('#destinationPlansTitle', plansTitle(k));
+    set('#destinationPlansTitle', tx('Izaberi svoj plan'));   // opšti naslov; grad je već u kartici iznad
     const ul = qs('.destination-reference-reason ul');
     if (ul) ul.innerHTML = reasons.map(r => '<li>' + escapeHtml(tx(r)) + '</li>').join('');
     curPlans = buildPlans(k);

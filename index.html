@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=3318aa4a" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e2cdf9f9" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=11e5c773" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -417,8 +417,8 @@ html,body{background:#123A44;margin:0;}
 </div>
 </section><section aria-labelledby="destinationPlansTitle" class="section dest-plans-section" hidden="" id="destinationPlans">
 <div class="dest-plans-head">
-<h2 data-i18n="x_4e1b7c" id="destinationPlansTitle">3 plana za tvoju Atinu</h2>
-<p data-i18n="x_1ed724">Biramo najbolje kombinacije za tvoj budžet i stil putovanja.</p>
+<h2 data-i18n="x_pl_title" id="destinationPlansTitle">Izaberi svoj plan</h2>
+<p data-i18n="x_pl_sub">Tri plana. Tri stila. Tvoj izbor.</p>
 <p class="dest-plans-est-note" data-i18n="dest_plans_estimate_note" id="destPlansEstNote">Ovo su orijentacione cene za 2 putnika i okvirne datume — upiši svoje podatke ispod za tačan i kompletan plan.</p>
 </div>
 <div class="dest-plans-list" id="destPlansList">
@@ -428,7 +428,8 @@ html,body{background:#123A44;margin:0;}
 </div>
 <div class="dest-plan-body">
 <h3 data-i18n="x_703590">Budžet</h3>
-<p class="dest-plan-price">449 € <span data-i18n="x_c072d5">/ osoba</span></p>
+<p class="dest-plan-tag" data-i18n="x_pl_t1">Pametno putovanje, velika iskustva.</p>
+<p class="dest-plan-price"><span data-i18n="x_pl_od">od </span>449 € <span data-i18n="x_c072d5">/ osoba</span></p>
 <ul class="dest-plan-features">
 <li><span aria-hidden="true" class="dpf-ic">✈</span><span data-i18n="x_d2b59e">Najjeftinija kombinacija</span></li>
 <li><span aria-hidden="true" class="dpf-ic">▣</span><span data-i18n="x_e02bbd">3★ hotel</span></li>
@@ -436,7 +437,7 @@ html,body{background:#123A44;margin:0;}
 </ul>
 <p class="dest-plan-for" data-i18n="x_4d624e">Za koga: maksimalno rastezanje budžeta</p>
 </div>
-</article>
+<span aria-hidden="true" class="dest-plan-arrow">›</span></article>
 <article class="dest-plan-card" data-plan="city-weekend">
 <div class="dest-plan-photo">
 <img alt="Akropolj u Atini" data-i18n-alt="x_09c697" loading="lazy" src="img/atina-akropolj-500.webp"/>
@@ -444,7 +445,8 @@ html,body{background:#123A44;margin:0;}
 </div>
 <div class="dest-plan-body">
 <h3 data-i18n="x_7fa64f">Balans</h3>
-<p class="dest-plan-price">529 € <span data-i18n="x_c072d5">/ osoba</span></p>
+<p class="dest-plan-tag" data-i18n="x_pl_t2">Idealna kombinacija cene i komfora.</p>
+<p class="dest-plan-price"><span data-i18n="x_pl_od">od </span>529 € <span data-i18n="x_c072d5">/ osoba</span></p>
 <ul class="dest-plan-features">
 <li><span aria-hidden="true" class="dpf-ic">✈</span><span data-i18n="x_625c0c">Direktan let</span></li>
 <li><span aria-hidden="true" class="dpf-ic">▣</span><span data-i18n="x_eceb07">4★ hotel blizu centra</span></li>
@@ -453,14 +455,15 @@ html,body{background:#123A44;margin:0;}
 </ul>
 <p class="dest-plan-for" data-i18n="x_ad6bb2">Za koga: prvi put u Atini / city break</p>
 </div>
-</article>
+<span aria-hidden="true" class="dest-plan-arrow">›</span></article>
 <article class="dest-plan-card" data-plan="comfort">
 <div class="dest-plan-photo">
 <img alt="Plaka u Atini" data-i18n-alt="x_5f5be2" loading="lazy" src="img/atina-plaka-1400.webp"/>
 </div>
 <div class="dest-plan-body">
 <h3 data-i18n="x_ae9791">Komfor</h3>
-<p class="dest-plan-price">689 € <span data-i18n="x_c072d5">/ osoba</span></p>
+<p class="dest-plan-tag" data-i18n="x_pl_t3">Više uživanja, manje briga.</p>
+<p class="dest-plan-price"><span data-i18n="x_pl_od">od </span>689 € <span data-i18n="x_c072d5">/ osoba</span></p>
 <ul class="dest-plan-features">
 <li><span aria-hidden="true" class="dpf-ic">✈</span><span data-i18n="x_566e04">Fleksibilan let</span></li>
 <li><span aria-hidden="true" class="dpf-ic">▣</span><span data-i18n="x_4021ec">4★ hotel u mirnijem delu</span></li>
@@ -468,7 +471,7 @@ html,body{background:#123A44;margin:0;}
 </ul>
 <p class="dest-plan-for" data-i18n="x_c4f807">Za koga: želiš više komfora i slobode</p>
 </div>
-</article>
+<span aria-hidden="true" class="dest-plan-arrow">›</span></article>
 </div><div class="trip-defaults trip-defaults--plans" id="tripDefaultsPlans"><span class="trip-defaults-text" id="tripDefaultsPlansText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsPlansEdit" type="button">Promeni</button></div>
 </section><section aria-labelledby="planDetailTitle" class="section plan-detail-section" hidden="" id="planDetail">
 <article class="plan-detail-card">
@@ -1320,7 +1323,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
 <script defer="" src="i18n-data.js?v=f8ee145f"></script>
-<script defer="" src="i18n-extra.js?v=e4eae5ab"></script>
+<script defer="" src="i18n-extra.js?v=066d88bd"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=e9b26749"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
@@ -1328,7 +1331,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-04-pricing-engine.js?v=fafc7a3c"></script>
 <script defer="" src="app-05-results.js?v=108b871e"></script>
 <script defer="" src="app-06-form.js?v=9bbd4299"></script>
-<script defer="" src="app-07-package-detail.js?v=a08a37a0"></script>
+<script defer="" src="app-07-package-detail.js?v=2ef33858"></script>
 <script defer="" src="app-08-popular-airports.js?v=00bc4b12"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
