@@ -124,6 +124,29 @@ function placeStatus(raw){                    // true / false / undefined (još 
 }
 function placeSuggestion(raw){ return _placeSuggest[placeNorm(placeBaseName(raw))] || ''; }
 
+// Tolerantno poređenje naziva: geokoder često vrati drugačije pisanje (Hurgada/Hurghada, Sarm el Sejk/Sharm el-Sheikh...)
+function placeLev(a, b){
+  if (a === b) return 0;
+  const m = a.length, n = b.length;
+  if (!m || !n) return Math.max(m, n);
+  let prev = Array.from({length: n + 1}, (_, j) => j);
+  for (let i = 1; i <= m; i++){
+    const cur = [i];
+    for (let j = 1; j <= n; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+function placeClose(rn, q){
+  if (q.length < 3) return false;
+  if (rn.startsWith(q) || q.startsWith(rn)) return true;               // "Kotor" ~ "Kotor Varos"
+  const flat = s => s.replace(/\s+/g, '');
+  const a = flat(rn), b = flat(q);
+  const tol = b.length >= 9 ? 3 : b.length >= 5 ? 2 : 1;
+  return placeLev(a, b) <= tol;
+}
+
 async function verifyPlace(raw){              // true / false / null (nije moguće proveriti)
   const name = placeBaseName(raw), q = placeNorm(name);
   if (q.length < 2) return false;
@@ -134,7 +157,7 @@ async function verifyPlace(raw){              // true / false / null (nije mogu�
   const eat = (list) => {
     for (const r of list){
       const rn = placeNorm(r && r.name);
-      if (rn && rn === q) ok = true;
+      if (rn && (rn === q || placeClose(rn, q))) ok = true;   // tačno ili vrlo blizu (drugačije pisanje, prefiks, 1-2 slova razlike)
       else if (!sug && r && r.name) sug = r.name;
     }
     if (nonLatin && list.length) ok = true;   // ćirilica/ruski: poređenje po slovima nije pouzdano → dovoljan je pogodak
