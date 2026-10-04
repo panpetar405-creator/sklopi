@@ -421,6 +421,21 @@ html,body{background:#123A44;margin:0;}
 <p class="dest-plans-est-note" data-i18n="dest_plans_estimate_note" id="destPlansEstNote">Ovo su orijentacione cene za 2 putnika i okvirne datume — upiši svoje podatke ispod za tačan i kompletan plan.</p>
 </div>
 <div class="dest-plans-list" id="destPlansList">
+<article class="dest-plan-card" data-plan="best-value">
+<div class="dest-plan-photo">
+<img alt="Panorama Atine sa Akropoljem" data-i18n-alt="x_f40efd" loading="lazy" src="img/atina-akropolj-1200.webp"/>
+</div>
+<div class="dest-plan-body">
+<h3 data-i18n="x_703590">Budžet</h3>
+<p class="dest-plan-price">449 € <span data-i18n="x_c072d5">/ osoba</span></p>
+<ul class="dest-plan-features">
+<li><span aria-hidden="true" class="dpf-ic">✈</span><span data-i18n="x_d2b59e">Najjeftinija kombinacija</span></li>
+<li><span aria-hidden="true" class="dpf-ic">▣</span><span data-i18n="x_e02bbd">3★ hotel</span></li>
+<li><span aria-hidden="true" class="dpf-ic">▱</span><span data-i18n="x_1693c5">Bez auta · ključne aktivnosti</span></li>
+</ul>
+<p class="dest-plan-for" data-i18n="x_4d624e">Za koga: maksimalno rastezanje budžeta</p>
+</div>
+</article>
 <article class="dest-plan-card" data-plan="city-weekend">
 <div class="dest-plan-photo">
 <img alt="Akropolj u Atini" data-i18n-alt="x_09c697" loading="lazy" src="img/atina-akropolj-500.webp"/>
@@ -453,21 +468,6 @@ html,body{background:#123A44;margin:0;}
 <p class="dest-plan-for" data-i18n="x_c4f807">Za koga: želiš više komfora i slobode</p>
 </div>
 </article>
-<article class="dest-plan-card" data-plan="best-value">
-<div class="dest-plan-photo">
-<img alt="Panorama Atine sa Akropoljem" data-i18n-alt="x_f40efd" loading="lazy" src="img/atina-akropolj-1200.webp"/>
-</div>
-<div class="dest-plan-body">
-<h3 data-i18n="x_703590">Budžet</h3>
-<p class="dest-plan-price">449 € <span data-i18n="x_c072d5">/ osoba</span></p>
-<ul class="dest-plan-features">
-<li><span aria-hidden="true" class="dpf-ic">✈</span><span data-i18n="x_d2b59e">Najjeftinija kombinacija</span></li>
-<li><span aria-hidden="true" class="dpf-ic">▣</span><span data-i18n="x_e02bbd">3★ hotel</span></li>
-<li><span aria-hidden="true" class="dpf-ic">▱</span><span data-i18n="x_1693c5">Bez auta · ključne aktivnosti</span></li>
-</ul>
-<p class="dest-plan-for" data-i18n="x_4d624e">Za koga: maksimalno rastezanje budžeta</p>
-</div>
-</article>
 </div><div class="trip-defaults trip-defaults--plans" id="tripDefaultsPlans"><span class="trip-defaults-text" id="tripDefaultsPlansText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsPlansEdit" type="button">Promeni</button></div>
 </section><section aria-labelledby="planDetailTitle" class="section plan-detail-section" hidden="" id="planDetail">
 <article class="plan-detail-card">
@@ -493,6 +493,27 @@ html,body{background:#123A44;margin:0;}
 <p class="plan-detail-for" id="planDetailFor"></p>
 <button class="btn-secondary plan-detail-customize" data-i18n="ux_customize_plan" id="planDetailCustomize" type="button">Prilagodi ovaj plan</button><button class="btn-secondary plan-detail-more" data-i18n="ux_show_items" id="planDetailMore" type="button">Prikaži stavke</button>
 <p class="plan-detail-note" data-i18n="x_636428">Cene su procene i mogu da se promene u zavisnosti od raspoloživosti.</p>
+<!-- DEST INFO PANEL (premešteno u detalj plana) -->
+<section aria-labelledby="destInfoTitle" class="section flight-detail-section plan-detail-destinfo" id="destInfoSection">
+<div class="ad-head">
+<h2 id="destInfoTitle">O destinaciji</h2>
+<p id="destInfoSub">Sve što treba da znaš pre polaska.</p>
+</div>
+<div id="destInfoBody">
+<div class="dest-info-skeleton" hidden="" id="destInfoSkeleton">
+<div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div>
+<div class="di-skel-grid">
+<div class="di-skel-card"></div><div class="di-skel-card"></div>
+<div class="di-skel-card di-skel-full"></div>
+</div>
+</div>
+<div hidden="" id="destInfoContent"></div>
+<p class="fd-note di-disclaimer" hidden="" id="destInfoDisclaimer">
+      ⚠️ Info generiše AI radi orijentacije — pred put uvek proveri na sajtu ambasade i kod avio-kompanije.
+    </p>
+</div>
+</section>
+<!-- / DEST INFO PANEL -->
 </div>
 </article>
 </section><div class="plan-breakdown" hidden="" id="planBreakdown">
@@ -575,27 +596,6 @@ html,body{background:#123A44;margin:0;}
 <p class="fd-note" data-i18n="x_943843">Cene su ilustrativna procena; tačnu cenu i dostupnost proveri kod partnera (Viator).</p>
 <p class="fd-note" data-aff-disclosure=""></p>
 </section>
-<!-- DEST INFO PANEL -->
-<section aria-labelledby="destInfoTitle" class="section flight-detail-section" id="destInfoSection">
-<div class="ad-head">
-<h2 id="destInfoTitle">O destinaciji</h2>
-<p id="destInfoSub">Sve što treba da znaš pre polaska.</p>
-</div>
-<div id="destInfoBody">
-<div class="dest-info-skeleton" hidden="" id="destInfoSkeleton">
-<div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div>
-<div class="di-skel-grid">
-<div class="di-skel-card"></div><div class="di-skel-card"></div>
-<div class="di-skel-card di-skel-full"></div>
-</div>
-</div>
-<div hidden="" id="destInfoContent"></div>
-<p class="fd-note di-disclaimer" hidden="" id="destInfoDisclaimer">
-      ⚠️ Info generiše AI radi orijentacije — pred put uvek proveri na sajtu ambasade i kod avio-kompanije.
-    </p>
-</div>
-</section>
-<!-- / DEST INFO PANEL -->
 <section aria-labelledby="extrasDetailTitle" class="section flight-detail-section extras-detail-section" id="extrasDetail">
 <div class="ad-head">
 <h2 data-i18n="x_ace72c" id="extrasDetailTitle">Dodatne usluge za tvoj put</h2>

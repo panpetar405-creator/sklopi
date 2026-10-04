@@ -177,7 +177,13 @@
   }
   window.SKLOPI_activeServiceFlags = activeServiceFlags; // koriste ga i "Sastavi svoj paket"/"Tvoj personalizovani plan"
 
+  // Redosled prikaza (kao na dizajnu): Budžet → Balans → Komfor, cene rastu sleva nadesno.
+  // Računanje u buildPlansRaw ostaje po originalnom redosledu šablona (plans[0] = osnova za cenu).
   function buildPlans(k){
+    const rank = p => p.key === 'best-value' ? 0 : p.key === 'comfort' ? 2 : 1;
+    return buildPlansRaw(k).slice().sort((x, y) => rank(x) - rank(y));
+  }
+  function buildPlansRaw(k){
     const c = curEntry, tpl = CFG.arch[c.arch] || CFG.arch.city || [];
     const hero = heroFor(k, c);
     const n = cityLabel(k);
@@ -716,11 +722,11 @@
 
 /* ==========================================================
    TVOJ PERSONALIZOVANI PLAN (#personalPlans) — 7. ekran sa slike.
-   Iz izbora u "Sastavi svoj paket" pravi 3 plana: Najbolji izbor (tvoj
-   izbor), Više komfora i Najviše za novac. Osnovnu cenu daje
+   Iz izbora u "Sastavi svoj paket" pravi 3 plana: Balans (tvoj
+   izbor), Komfor i Budžet. Osnovnu cenu daje
    computeCustomPackage; Plan 2 i 3 se izvode iz nje istim konstantama
    (množioci leta, cene zvezdica, cena auta), da redosled cena uvek
-   bude Najviše za novac < Najbolji izbor < Više komfora.
+   bude Budžet < Balans < Komfor (isti redosled kao na kartici: Budžet, Balans, Komfor).
 ========================================================== */
 (function initPersonalPlans(){
   const section = document.getElementById('personalPlans');
@@ -787,20 +793,21 @@
     const noOwnAirport = svc.flight && apInfo && !apInfo.hasAirport && apInfo.nearest;
     const airportNote = noOwnAirport ? airportNoteText(apInfo) : '';
     const plans = [
-      {title:'Plan 1 \u2013 Balans', sel:a, flex:false},
-      {title:'Plan 2 \u2013 Komfor', flex:true, sel:Object.assign({}, a, {
+      {idx:0, title:'Plan 1 \u2013 Balans', sel:a, flex:false},
+      {idx:1, title:'Plan 2 \u2013 Komfor', flex:true, sel:Object.assign({}, a, {
         flightPref:'direct', hotelStars:Math.min(5, a.hotelStars + 1),
         carPref: svc.car ? (a.carPref === 'none' ? 'small' : a.carPref) : 'none',
         activityCount: svc.activity ? Math.min(10, a.activityCount + 1) : 0})},
-      {title:'Plan 3 \u2013 Budžet', flex:false, sel:Object.assign({}, a, {
+      {idx:2, title:'Plan 3 \u2013 Budžet', flex:false, sel:Object.assign({}, a, {
         flightPref:'cheapest', hotelStars:Math.max(3, a.hotelStars - 1),
         carPref:'none', activityCount: svc.activity ? Math.max(1, a.activityCount - 1) : 0})}
     ];
+    const shown = [plans[2], plans[0], plans[1]];   // prikaz: Budžet, Balans, Komfor
     const photos = photosFor(ctx.dest);
     tags.innerHTML = '<span class="pp-tag">' + escapeHtml(tx(TIER_LABEL[last.tier] || 'Balans')) + '</span>'
       + '<span class="pp-tag pp-tag--stars">' + a.hotelStars + '\u2605 ' + tx('hotel') + ' +</span>';
-    list.innerHTML = plans.map((p, i) => {
-      const price = p.price = i === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
+    list.innerHTML = shown.map((p, i) => {
+      const price = p.price = p.idx === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
       const flightLabel = escapeHtml(tx(flightText(p.sel, ctx, p.flex))) + (noOwnAirport ? ' \u2192 ' + escapeHtml(cityLabel(apInfo.nearest)) : '');
       const apNote = airportNote ? '<p class="dest-plan-airport-note">\u2708\ufe0f ' + escapeHtml(airportNote) + '</p>' : '';
       return '<article class="pp-card" data-plan="' + i + '"><div class="pp-card-top"><div class="pp-card-info">'
@@ -811,17 +818,17 @@
         + (svc.hotel ? '<li><span class="dpf-ic" aria-hidden="true">\u25a3</span>' + p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(ctx.nights) + ')</li>' : '')
         + (svc.activity ? '<li><span class="dpf-ic" aria-hidden="true">\u25c7</span>' + activitiesLabel(p.sel.activityCount) + '</li>' : '')
         + (svc.car ? '<li><span class="dpf-ic" aria-hidden="true">\u25b1</span>' + escapeHtml(tx(carText(p.sel.carPref))) + '</li>' : '')
-        + '</ul>' + apNote + '</div><div class="pp-photo"><img src="' + photos[i] + '" alt="" loading="lazy"></div></div>'
+        + '</ul>' + apNote + '</div><div class="pp-photo"><img src="' + photos[p.idx] + '" alt="" loading="lazy"></div></div>'
         + '<button type="button" class="btn-primary pp-more" data-plan="' + i + '">' + tx('Pogledaj detalje') + '</button></article>';
     }).join('');
     list.querySelectorAll('.pp-more').forEach(btn => btn.addEventListener('click', () => {
-      const i = Number(btn.dataset.plan), p = plans[i], c = builderCtx();
+      const i = Number(btn.dataset.plan), p = shown[i], c = builderCtx();
       const rooms = p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(c.nights) + ')';
       if (typeof window.SKLOPI_openPlan !== 'function') return;
       window.SKLOPI_openPlan({
-        title:p.title, price:p.price, badge:['Popularno','Više komfora','Najpovoljnije'][i],
-        badgeCls:i === 1 ? 'plan-detail-badge--comfort' : '',
-        photo:photos[i].replace('w=400', 'w=1200'), alt:p.title,
+        title:p.title, price:p.price, badge:['Popularno','Više komfora','Najpovoljnije'][p.idx],
+        badgeCls:p.idx === 1 ? 'plan-detail-badge--comfort' : '',
+        photo:photos[p.idx].replace('w=400', 'w=1200'), alt:p.title,
         flightPref:p.sel.flightPref, hotelStars:p.sel.hotelStars, prioritizeLocation:!!builderState.prioritizeLocation,
         carPref:p.sel.carPref, activityCount:p.sel.activityCount,
         flightT:flightText(p.sel, c, p.flex), flightS:'Povratna karta',
