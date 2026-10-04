@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=3318aa4a" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e49cd3a2" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e2cdf9f9" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -857,15 +857,21 @@ html,body{background:#123A44;margin:0;}
 </div>
 </div>
 </div><section aria-labelledby="howItWorksTitle" class="section how-it-works-section" id="how-it-works">
+<div class="how-it-works-wrap">
+<div class="how-it-works-main">
 <div class="section-head how-it-works-head">
-<div class="eyebrow" data-i18n="ux_how_eyebrow">Jednostavno od ideje do plana</div>
-<h2 data-i18n="ux_how_title" id="howItWorksTitle">Kako radi SKLOPI</h2>
-<p data-i18n="ux_how_sub">Unesi osnovne podatke, uporedi tri kombinacije i zatim prilagodi samo ono što ti je važno.</p>
+<h2 data-i18n="x_hw_title" id="howItWorksTitle">Kako radi SKLOPI?</h2>
+<p data-i18n="x_hw_sub">Brzo, lako i bez stresa.</p>
 </div>
-<div class="how-it-works-grid">
-<article class="how-step"><span class="how-step-no">01</span><div><h3 data-i18n="ux_step1_title">Unesi put</h3><p data-i18n="ux_step1_text">Polazak, destinacija, datumi i broj putnika.</p></div></article>
-<article class="how-step"><span class="how-step-no">02</span><div><h3 data-i18n="ux_step2_title">Uporedi 3 plana</h3><p data-i18n="ux_step2_text">Budžet, balans i komfor — sa procenom cene po osobi.</p></div></article>
-<article class="how-step"><span class="how-step-no">03</span><div><h3 data-i18n="ux_step3_title">Prilagodi i rezerviši</h3><p data-i18n="ux_step3_text">Promeni let, hotel, auto ili aktivnosti, pa nastavi kod partnera.</p></div></article>
+<ol class="how-it-works-grid">
+<li class="how-step"><span class="how-step-no" aria-hidden="true">1</span><div><h3 data-i18n="x_hw_s1">Unesi gde želiš da putuješ</h3><p data-i18n="x_hw_s1t">ili odgovori na 3 pitanja.</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">2</span><div><h3 data-i18n="x_hw_s2">Biraj između 3 plana</h3><p data-i18n="x_hw_s2t">koji odgovaraju tvom stilu.</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">3</span><div><h3 data-i18n="x_hw_s3">Prilagodi svoj put</h3><p data-i18n="x_hw_s3t">po svojim željama i budžetu.</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">4</span><div><h3 data-i18n="x_hw_s4">Pogledaj sve u jednom pregledu</h3><p data-i18n="x_hw_s4t">letovi, hoteli, auto i aktivnosti.</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">5</span><div><h3 data-i18n="x_hw_s5">Sačuvaj ili rezerviši</h3><p data-i18n="x_hw_s5t">i kreni u svoju avanturu!</p></div></li>
+</ol>
+</div>
+<div class="how-it-works-photo"><img alt="Primorski zaliv sa brdima i morem" data-i18n-alt="x_hw_alt" height="600" loading="lazy" src="img/crnogorsko-primorje-zaliv-900.webp" width="900"/></div>
 </div>
 <p class="how-it-works-note" data-i18n="ux_how_note">SKLOPI ne naplaćuje rezervaciju. Cene su ilustrativne procene dok ne potvrdiš dostupnost kod partnera.</p>
 </section><section aria-labelledby="guidesTeaserTitle" class="section guides-teaser-section" id="guidesTeaser">
@@ -1314,7 +1320,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
 <script defer="" src="i18n-data.js?v=f8ee145f"></script>
-<script defer="" src="i18n-extra.js?v=b374248e"></script>
+<script defer="" src="i18n-extra.js?v=e4eae5ab"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=e9b26749"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>

@@ -120,3 +120,26 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 .pp-budget--ok{color:#1d7a46}
 .pp-budget--over{color:#b4531a}
 
+
+/* ---------- Ekran 3: Kako radi SKLOPI? (5 koraka u krugovima + fotografija) ---------- */
+.how-it-works-wrap{display:grid;grid-template-columns:1fr;gap:22px;max-width:1000px;margin:0 auto;align-items:center}
+.how-it-works-head{text-align:left;margin:0 0 18px;max-width:none}
+.how-it-works-head h2{margin:0 0 6px;font-size:28px;line-height:1.1;letter-spacing:-.03em}
+.how-it-works-head p{margin:0;color:var(--ink-soft);font-size:15px}
+.how-it-works-grid{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;max-width:none}
+.how-it-works-grid .how-step{position:relative;display:flex;gap:16px;align-items:flex-start;padding:0 0 22px;border:0;border-radius:0;background:transparent;box-shadow:none}
+.how-it-works-grid .how-step:last-child{padding-bottom:0}
+.how-it-works-grid .how-step::before{content:"";position:absolute;left:17px;top:38px;bottom:2px;width:2px;background:#d6e6ea}
+.how-it-works-grid .how-step:last-child::before{display:none}
+.how-it-works-grid .how-step-no{flex:0 0 36px;width:36px;height:36px;border-radius:50%;background:#fff;border:2px solid #0d6371;color:#0d6371;font:700 15px/1 Sora,Inter,sans-serif;letter-spacing:0;display:grid;place-items:center;position:relative;z-index:1}
+.how-it-works-grid .how-step h3{margin:6px 0 2px;font-size:16px;color:var(--deep,#123a44)}
+.how-it-works-grid .how-step p{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.5}
+.how-it-works-photo{border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgba(15,68,78,.12);aspect-ratio:3/2;background:#dcebed}
+.how-it-works-photo img{display:block;width:100%;height:100%;object-fit:cover}
+@media (min-width:900px){
+  .how-it-works-wrap{grid-template-columns:1fr 1fr;gap:44px}
+  .how-it-works-head h2{font-size:34px}
+}
+@media (max-width:600px){
+  .how-it-works-photo{aspect-ratio:16/9}
+}
