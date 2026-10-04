@@ -98,3 +98,8 @@
 .trip-defaults-edit{flex:0 0 auto;min-height:36px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:#0b5a6b;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
 .trip-defaults--plans{margin:14px 0 0;background:#fff}
 body.ux-plans-open #destinationPlansBtn{display:none}
+/* Panel "O destinaciji" je u detalju plana (ispod dugmadi), ne iza "Prikaži stavke" */
+#planDetail .plan-detail-destinfo{max-width:none;margin:20px 0 0!important;padding:18px 0 0;border-top:1px solid #d9e7ea}
+#planDetail .plan-detail-destinfo .ad-head{margin:0 0 10px}
+#planDetail .plan-detail-destinfo h2{font-size:18px;line-height:1.25}
+#planDetail .plan-detail-destinfo .ad-head p{margin:4px 0 0;font-size:13px}
