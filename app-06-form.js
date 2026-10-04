@@ -100,7 +100,7 @@ function placeNorm(s){
 }
 function placeBaseName(raw){ return sanitizePlaceText(raw).split(',')[0].trim(); }
 
-const _placeCache = Object.create(null);    // norm → true | false (samo pouzdani odgovori)
+const _placeVerifyCache = Object.create(null);    // norm → true | false (samo pouzdani odgovori)
 const _placeSuggest = Object.create(null);  // norm → predlog ispravnog naziva
 let _placeLocalSet = null;
 function placeKnownLocally(raw){
@@ -120,7 +120,7 @@ function placeStatus(raw){                    // true / false / undefined (još 
   const name = placeBaseName(raw), q = placeNorm(name);
   if (q.length < 2) return undefined;
   if (placeKnownLocally(name)) return true;
-  return _placeCache[q];
+  return _placeVerifyCache[q];
 }
 function placeSuggestion(raw){ return _placeSuggest[placeNorm(placeBaseName(raw))] || ''; }
 
@@ -186,9 +186,9 @@ async function verifyPlace(raw){              // true / false / null (nije mogu�
     })());
   }
   await Promise.all(jobs);
-  if (ok){ _placeCache[q] = true; return true; }
+  if (ok){ _placeVerifyCache[q] = true; return true; }
   if (!reached) return null;
-  _placeCache[q] = false;
+  _placeVerifyCache[q] = false;
   if (sug) _placeSuggest[q] = sug;
   return false;
 }
