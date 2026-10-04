@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=bdc0b83f" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=685e149c" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e49cd3a2" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -641,6 +641,11 @@ html,body{background:#123A44;margin:0;}
 <div class="custom-planner-card">
 <h2 data-i18n="ux_customize_title" id="customPlannerTitle">Prilagodi svoj plan</h2>
 <p class="cp-sub" data-i18n="ux_customize_sub">Promeni samo ono što ti je važno. Procena će se osvežiti prema tvojim izborima.</p>
+<div class="cp-rows" id="cpTripRows">
+<button class="cp-row" id="cpRowDates" type="button"><span aria-hidden="true" class="cp-row-ic">📅</span><span class="cp-row-main"><b data-i18n="x_cp01">Datum putovanja</b><small id="cpRowDatesVal">—</small></span><span class="cp-row-act" data-i18n="ux_defaults_change">Promeni</span></button>
+<button class="cp-row" id="cpRowPax" type="button"><span aria-hidden="true" class="cp-row-ic">👥</span><span class="cp-row-main"><b data-i18n="x_cp02">Broj putnika</b><small id="cpRowPaxVal">—</small></span><span class="cp-row-act" data-i18n="ux_defaults_change">Promeni</span></button>
+<label class="cp-row cp-row--budget" for="cpBudget"><span aria-hidden="true" class="cp-row-ic">💶</span><span class="cp-row-main"><b data-i18n="x_cp04">Ukupan budžet (opciono)</b></span><span class="cp-budget-field"><span aria-hidden="true">€</span><input data-i18n-placeholder="placeholder_budget" id="cpBudget" inputmode="numeric" max="50000" min="0" placeholder="npr. 700" step="1" type="number"/></span></label>
+</div>
 <div class="cp-group" data-group="tier">
 <p class="cp-label" data-i18n="x_703590" id="cpl-tier">Budžet</p>
 <div aria-labelledby="cpl-tier" class="cp-chips cp-cols-3" role="group"><button aria-pressed="false" class="cp-chip" data-i18n="x_703590" data-value="budget" type="button">Budžet</button><button aria-pressed="true" class="cp-chip is-on" data-i18n="x_7fa64f" data-value="balance" type="button">Balans</button><button aria-pressed="false" class="cp-chip" data-i18n="x_ae9791" data-value="comfort" type="button">Komfor</button></div>
@@ -1308,7 +1313,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
 <script defer="" src="i18n-data.js?v=f8ee145f"></script>
-<script defer="" src="i18n-extra.js?v=fc56e4b2"></script>
+<script defer="" src="i18n-extra.js?v=70a570e9"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=e9b26749"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
@@ -1316,7 +1321,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-04-pricing-engine.js?v=fafc7a3c"></script>
 <script defer="" src="app-05-results.js?v=108b871e"></script>
 <script defer="" src="app-06-form.js?v=2c37b986"></script>
-<script defer="" src="app-07-package-detail.js?v=b366f1da"></script>
+<script defer="" src="app-07-package-detail.js?v=a08a37a0"></script>
 <script defer="" src="app-08-popular-airports.js?v=dacac49a"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>

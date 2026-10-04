@@ -13,6 +13,12 @@
     ["x_fx06","Boravišna taksa","Tourist tax","Туристический сбор"],
     ["x_fx07","Ukupna cena tvog puta","Total price of your trip","Общая стоимость вашей поездки"],
     ["x_fx08","Sve stavke koje si izabrao/la, sabrane na jedno mesto.","Everything you selected, gathered in one place.","Всё, что вы выбрали, собрано в одном месте."],
+    ["x_cp01","Datum putovanja","Travel dates","Даты поездки"],
+    ["x_cp02","Broj putnika","Number of travellers","Количество путешественников"],
+    ["x_cp04","Ukupan budžet (opciono)","Total budget (optional)","Общий бюджет (необязательно)"],
+    ["x_cp06","Izaberi","Select","Выбрать"],
+    ["x_cp08","U okviru budžeta","Within budget","В рамках бюджета"],
+    ["x_cp09","preko budžeta","over budget","сверх бюджета"],
     ["x_fx09","Sačuvaj u Moj put","Save to My trip","Сохранить в «Моя поездка»"],
     ["x_fx10","Ilustrativna procena — tačna cena i dostupnost potvrđuju se kod partnera pre rezervacije.","Illustrative estimate — the exact price and availability are confirmed with the partner before booking.","Ориентировочная оценка — точная цена и наличие подтверждаются у партнёра перед бронированием."],
     ["x_fx11","Auto","Car","Автомобиль"],
@@ -480,7 +486,13 @@
  "x_dp25": "Gut für Familien",
  "x_mt01": "Im Konto speichern",
  "x_mt02": "Im Konto gespeichert ✓",
- "x_mt03": "Plan entfernen"
+ "x_mt03": "Plan entfernen",
+ "x_cp01": "Reisedatum",
+ "x_cp02": "Anzahl der Reisenden",
+ "x_cp04": "Gesamtbudget (optional)",
+ "x_cp06": "Auswählen",
+ "x_cp08": "Im Budget",
+ "x_cp09": "über dem Budget"
 };
   var BY_SR = {};
   ROWS.forEach(function(r){

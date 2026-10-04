@@ -756,22 +756,9 @@
     const on = root.querySelector('.cp-group[data-group="' + group + '"] .cp-chip.is-on');
     return on ? on.dataset.value : null;
   }
-  root.querySelectorAll('.cp-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      const group = chip.closest('.cp-group').dataset.group;
-      setChip(group, chip.dataset.value);
-      if (group === 'tier'){
-        const p = TIER_PRESETS[chip.dataset.value];
-        if (p){ setChip('stars', p.stars); setChip('flight', p.flight); }
-      }
-    });
-  });
-  btn.addEventListener('click', () => {
-    // Ranije se proveravala SAMO destinacija — ista rupa kao kod ostalih
-    // dugmadi "Sklopi moj put"/"Napravi izlet": polazak, datumi i broj
-    // putnika su mogli ostati prazni. Ista provera kao svuda drugde.
-    const check = validateSearchInputs();
-    if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
+  // Primeni izbore iz konfiguratora (builderState + "Tvoj personalizovani plan"). Bez validacije i skrola:
+  // koristi se i za živo osvežavanje cene dok korisnik menja izbore.
+  function apply(){
     const svc = window.SKLOPI_activeServiceFlags ? window.SKLOPI_activeServiceFlags() : {flight:true, hotel:true, car:true, activity:true};
     builderState.includeFlight = svc.flight;
     builderState.includeHotel = svc.hotel;
@@ -787,9 +774,79 @@
       sel: {flightPref: builderState.flightPref, hotelStars: builderState.hotelStars,
             carPref: builderState.carPref, activityCount: builderState.activityCount}
     }}));
+  }
+  // Ako su personalizovani planovi već prikazani, svaka promena izbora odmah osvežava cene.
+  function liveRefresh(){
+    const pp = document.getElementById('personalPlans');
+    if (pp && !pp.hidden) apply();
+  }
+  document.addEventListener('sklopi:cp-refresh', liveRefresh);
+  root.querySelectorAll('.cp-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const group = chip.closest('.cp-group').dataset.group;
+      setChip(group, chip.dataset.value);
+      if (group === 'tier'){
+        const p = TIER_PRESETS[chip.dataset.value];
+        if (p){ setChip('stars', p.stars); setChip('flight', p.flight); }
+      }
+      liveRefresh();
+    });
+  });
+  btn.addEventListener('click', () => {
+    // Ranije se proveravala SAMO destinacija — ista rupa kao kod ostalih
+    // dugmadi "Sklopi moj put"/"Napravi izlet": polazak, datumi i broj
+    // putnika su mogli ostati prazni. Ista provera kao svuda drugde.
+    const check = validateSearchInputs();
+    if (!check.ok){ showToast(check.msg); focusSearchField(check.focus); return; }
+    apply();
     const target = document.getElementById('personalPlans') || document.getElementById('builderPanel');
     if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
   });
+})();
+
+/* ==========================================================
+   KONFIGURATOR — redovi Datum / Putnici / Budžet (6. ekran sa slike).
+   Datum i putnici se i dalje biraju u formi za pretragu (jedan izvor istine):
+   "Promeni" otvara istu formu kao "Promeni" ispod kartica planova.
+   Budžet je isto polje kao #budgetInput (builderState.budget).
+========================================================== */
+(function initCpTripRows(){
+  const root = document.getElementById('customPlanner');
+  const byId = id => document.getElementById(id);
+  const dVal = byId('cpRowDatesVal'), pVal = byId('cpRowPaxVal'), bIn = byId('cpBudget');
+  if (!root || !dVal || !pVal || !bIn) return;
+  const txt = id => ((byId(id) || {}).textContent || '').trim();
+  function refresh(){
+    const db = byId('dateDisplayBtn'), pb = byId('paxDisplayBtn');
+    const d = txt('dateDisplayText'), n = txt('dateNightsText'), p = txt('paxDisplayText');
+    dVal.textContent = (db && !db.classList.contains('is-empty') && d) ? d + (n ? ' (' + n + ')' : '') : tx('Izaberi');
+    pVal.textContent = (pb && !pb.classList.contains('is-empty') && p) ? p : tx('Izaberi');
+    if (document.activeElement !== bIn) bIn.value = builderState.budget || '';
+  }
+  function editTrip(){
+    const edit = byId('tripDefaultsPlansEdit');
+    if (edit){ edit.click(); return; }
+    const f = byId('searchForm');
+    if (f) f.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  byId('cpRowDates').addEventListener('click', editTrip);
+  byId('cpRowPax').addEventListener('click', editTrip);
+  let t = null;
+  bIn.addEventListener('input', () => {
+    const src = byId('budgetInput');
+    if (src){ src.value = bIn.value; src.dispatchEvent(new Event('input', {bubbles:true})); }
+    else builderState.budget = Math.max(0, Math.min(50000, Number(bIn.value) || 0));
+    clearTimeout(t);
+    t = setTimeout(() => document.dispatchEvent(new Event('sklopi:cp-refresh')), 350);
+  });
+  bIn.addEventListener('blur', refresh);
+  ['dateDisplayText', 'dateNightsText', 'paxDisplayText'].forEach(id => {
+    const el = byId(id);
+    if (el) new MutationObserver(refresh).observe(el, {childList:true, characterData:true, subtree:true});
+  });
+  new MutationObserver(refresh).observe(root, {attributes:true, attributeFilter:['hidden']});
+  document.addEventListener('sklopi:lang', refresh);
+  refresh();
 })();
 
 /* ==========================================================
@@ -882,11 +939,17 @@
       + '<span class="pp-tag pp-tag--stars">' + a.hotelStars + '\u2605 ' + tx('hotel') + ' +</span>';
     list.innerHTML = shown.map((p, i) => {
       const price = p.price = p.idx === 0 ? Math.round(pkg.total / ctx.adults) : derivePerPerson(pkg, a, p.sel, ctx);
+      // Budžet (opciono, ukupno za sve putnike): kratka napomena da li plan staje u njega.
+      const bud = Number(builderState.budget) || 0, tot = price * ctx.adults;
+      const budLine = !bud ? '' : tot <= bud
+        ? '<p class="pp-budget pp-budget--ok">\u2713 ' + escapeHtml(tx('U okviru budžeta')) + '</p>'
+        : '<p class="pp-budget pp-budget--over">\u26A0 ' + escapeHtml(fmtPrice(tot - bud) + ' ' + tx('preko budžeta')) + '</p>';
       const flightLabel = escapeHtml(tx(flightText(p.sel, ctx, p.flex))) + (noOwnAirport ? ' \u2192 ' + escapeHtml(cityLabel(apInfo.nearest)) : '');
       const apNote = airportNote ? '<p class="dest-plan-airport-note">\u2708\ufe0f ' + escapeHtml(airportNote) + '</p>' : '';
       return '<article class="pp-card" data-plan="' + i + '"><div class="pp-card-top"><div class="pp-card-info">'
         + '<h3>' + escapeHtml(tx(p.title)) + '</h3>'
         + '<p class="pp-price">' + fmtPrice(price) + ' <span>' + tx('/ osoba') + '</span></p>'
+        + budLine
         + '<ul class="pp-feats">'
         + (svc.flight ? '<li><span class="dpf-ic" aria-hidden="true">\u2708</span>' + flightLabel + '</li>' : '')
         + (svc.hotel ? '<li><span class="dpf-ic" aria-hidden="true">\u25a3</span>' + p.sel.hotelStars + '\u2605 ' + tx('hotel') + ' (' + nightsLabel(ctx.nights) + ')</li>' : '')
