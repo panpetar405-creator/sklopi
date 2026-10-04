@@ -142,6 +142,72 @@
     if (curCity === k) render();
     document.dispatchEvent(new Event('sklopi:city-photo'));
   }
+  /* ---- Više različitih slika za BILO KOJU destinaciju (kartice Budžet / Balans / Komfor) ----
+     Urednički gradovi imaju c.photos. Ostali: glavna slika (cityImg) + do 2 dodatne iz Wikipedia
+     media-list (samo .jpg fotografije; zastave, mape, grbovi, logotipi i dijagrami se preskaču).
+     Ako ništa ne stigne, kartice koriste glavnu sliku kao i do sada. Keš 7 dana. */
+  const IMGS_KEY = 'sklopi_spot_imgs_v1';
+  const cityImgs = {};
+  const BAD_IMG = /flag|map|locator|location|coat[_ ]of|arms|logo|seal|icon|symbol|blank|pictogram|signature|diagram|chart|graph|portrait|bust|poster|stamp|banner|\bsvg\b/i;
+  function imgFileName(url){
+    const m = /\/([^\/]+)\/\d+px-[^\/]+$/.exec(String(url || ''));
+    const f = m ? m[1] : String(url || '').split('?')[0].split('/').pop();
+    try { return decodeURIComponent(f).toLowerCase(); } catch(e){ return f.toLowerCase(); }
+  }
+  // items = media-list "items"; heroUrl = glavna slika grada; vraća do `max` dodatnih URL-ova
+  function pickWikiPhotos(items, heroUrl, max){
+    const seen = {}, out = [];
+    seen[imgFileName(heroUrl)] = 1;
+    (items || []).forEach(it => {
+      if (out.length >= max || !it || it.type !== 'image' || it.showInGallery === false) return;
+      const title = String(it.title || '').replace(/^File:/i, '');
+      if (!/\.jpe?g$/i.test(title) || BAD_IMG.test(title)) return;
+      const set = Array.isArray(it.srcset) ? it.srcset.filter(x => x && x.src) : [];
+      if (!set.length) return;
+      let src = set[set.length - 1].src;                 // najveća dostupna (obično 2x)
+      src = src.indexOf('//') === 0 ? 'https:' + src : src;
+      if (!/^https:\/\/upload\.wikimedia\.org\//.test(src)) return;
+      const key = imgFileName(src);
+      if (seen[key]) return;
+      seen[key] = 1; out.push(src);
+    });
+    return out;
+  }
+  async function wikiMedia(host, title){
+    try {
+      const r = await fetch('https://' + host + '/api/rest_v1/page/media-list/' + encodeURIComponent(title));
+      if (!r.ok) return [];
+      const d = await r.json();
+      return (d && d.items) || [];
+    } catch(e){ return []; }
+  }
+  async function loadCityPhotos(k){
+    if (cityImgs[k] !== undefined) return;
+    cityImgs[k] = [];
+    let cache = null; try { cache = JSON.parse(localStorage.getItem(IMGS_KEY) || 'null'); } catch(e){}
+    if (!cache || !cache.m || Date.now() - cache.ts > IMG_TTL) cache = {ts:Date.now(), m:{}};
+    let extra = cache.m[k];
+    if (!extra){
+      // sačekaj glavnu sliku (loadCityPhoto je već pokrenut iz heroFor) da bismo je ne ponovili
+      for (let i = 0; i < 20 && !cityImg[k]; i++) await new Promise(r => setTimeout(r, 250));
+      let names = {}; try { names = DEST_EN_NAMES; } catch(e){}
+      const title = (names[k] || k).split(',')[0].trim();
+      extra = pickWikiPhotos(await wikiMedia('en.wikipedia.org', title), cityImg[k], 2);
+      if (extra.length < 2) extra = extra.concat(pickWikiPhotos(await wikiMedia('sh.wikipedia.org', k), cityImg[k], 2 - extra.length));
+      if (extra.length){ cache.m[k] = extra; try { localStorage.setItem(IMGS_KEY, JSON.stringify(cache)); } catch(e){} }
+    }
+    if (!extra || !extra.length) return;
+    cityImgs[k] = extra;
+    if (curCity === k) render();
+    document.dispatchEvent(new Event('sklopi:city-photo'));
+  }
+  // [glavna, dodatna1, dodatna2] za plan-indekse 0 (Balans), 1 (Komfor), 2 (Budžet); prazno dok slike ne stignu
+  function wikiPhotosFor(k){
+    if (cityImgs[k] === undefined) loadCityPhotos(k);
+    const main = cityImg[k];
+    const ex = cityImgs[k] || [];
+    return main && ex.length ? [main].concat(ex) : [];
+  }
   function heroFor(k, c){
     if (c.photo) return ph(c.photo, 1200);
     if (!cityImg[k]) loadCityPhoto(k);
@@ -187,10 +253,11 @@
     const c = curEntry, tpl = CFG.arch[c.arch] || CFG.arch.city || [];
     const hero = heroFor(k, c);
     const n = cityLabel(k);
+    const wp = c.photos ? [] : wikiPhotosFor(k);
     const plans = tpl.map((t, i) => Object.assign({}, t, {
       dest:k, alt:n + ' \u2014 ' + tx(t.title),
-      photo: c.photos ? ph(c.photos[i], 1200) : hero,
-      thumb: c.photos ? ph(c.photos[i], 500) : hero.replace(/w=1200/, 'w=500'),
+      photo: c.photos ? ph(c.photos[i], 1200) : (wp[i] || hero),
+      thumb: c.photos ? ph(c.photos[i], 500) : (wp[i] || hero).replace(/w=1200/, 'w=500'),
       forWho: (i === 0 && c.forWho1) || t.forWho
     }));
     // Grad BEZ sopstvenog aerodroma (Bled, Rogaška Slatina...): urednički
@@ -455,6 +522,11 @@
   window.SKLOPI_setSpotlight = setCity;
   // Za "Tvoj personalizovani plan" (konfigurator): da li je unos poznata destinacija i urednička slika grada.
   window.SKLOPI_knownDest = name => !!resolveDest(name, {generic:true});
+  // Niz [glavna, dodatna, dodatna] za bilo koju destinaciju (prazno ako nema); koristi ga "Tvoj personalizovani plan".
+  window.SKLOPI_destPhotos = name => {
+    const r = resolveDest(name, {generic:true, loose:true});
+    return !r || r.c.photos || r.c.photo ? [] : wikiPhotosFor(r.k);
+  };
   window.SKLOPI_destPhoto = (name, w) => {
     const r = resolveDest(name, {generic:true, loose:true});
     if (!r) return null;
@@ -746,6 +818,8 @@
   }
   function photosFor(dest){
     if (normalizeSr(dest) === 'atina') return ATHENS_PHOTOS;
+    const many = window.SKLOPI_destPhotos ? window.SKLOPI_destPhotos(dest) : [];
+    if (many.length) return [many[0], many[1] || many[0], many[2] || many[0]];
     const cur = window.SKLOPI_destPhoto && window.SKLOPI_destPhoto(dest, 400);
     if (cur) return [cur, cur, cur];
     const card = Array.from(document.querySelectorAll('.popular-dest-card'))
