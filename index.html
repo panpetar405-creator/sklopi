@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=3318aa4a" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=11e5c773" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e03913bc" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -481,21 +481,26 @@ html,body{background:#123A44;margin:0;}
 <span class="plan-detail-badge" id="planDetailBadge">Najpovoljnije</span>
 </div>
 <div class="plan-detail-body">
-<h2 id="planDetailTitle">Budžet</h2>
+<h2 id="planDetailTitle">Budžet plan</h2>
+<p class="plan-detail-tag" id="planDetailTag"></p>
 <p class="plan-detail-meta" id="planDetailMeta">Atina • 4 dana</p>
-<p class="plan-detail-price" id="planDetailPrice">449 € <span>/ osoba</span></p>
-<p class="plan-detail-est" id="planDetailEst">Procena: ~420–480 €</p>
-<div class="ux-plan-summary-label" data-i18n="ux_plan_summary">Pregled plana</div>
+<div class="plan-detail-tiles" id="planDetailTiles"></div>
 <h3 class="plan-detail-sub" data-i18n="x_bd4d65">Šta je uključeno?</h3>
 <ul class="plan-detail-list" id="planDetailList">
-<li><span aria-hidden="true" class="pdl-ic">✈</span><div><b>Let</b><small>Povratna karta • Ekonomija</small></div></li>
-<li><span aria-hidden="true" class="pdl-ic">▣</span><div><b>Hotel</b><small>3★ • Blizu centra</small></div></li>
-<li><span aria-hidden="true" class="pdl-ic">◇</span><div><b>Aktivnosti</b><small>2 pažljivo odabrane ture</small></div></li>
-<li><span aria-hidden="true" class="pdl-ic">▱</span><div><b>Prevoz</b><small>Bez auta</small></div></li>
+<li><span aria-hidden="true" class="pdl-ic">✓</span><div><b>Let</b><small>Povratna karta • Ekonomija</small></div></li>
+<li><span aria-hidden="true" class="pdl-ic">✓</span><div><b>Hotel</b><small>3★ • Blizu centra</small></div></li>
+<li><span aria-hidden="true" class="pdl-ic">✓</span><div><b>Aktivnosti</b><small>2 pažljivo odabrane ture</small></div></li>
+<li><span aria-hidden="true" class="pdl-ic">✓</span><div><b>Prevoz</b><small>Bez auta</small></div></li>
 </ul>
 <p class="dest-plan-airport-note" hidden="" id="planDetailAirport"></p>
 <p class="plan-detail-for" id="planDetailFor"></p>
-<button class="btn-secondary plan-detail-customize" data-i18n="ux_customize_plan" id="planDetailCustomize" type="button">Prilagodi ovaj plan</button><button class="btn-secondary plan-detail-more" data-i18n="ux_show_items" id="planDetailMore" type="button">Prikaži stavke</button>
+<div class="plan-detail-total">
+<div class="pdt-main"><span class="pdt-label" data-i18n="x_pd_total">Ukupna procena</span>
+<p class="plan-detail-price" id="planDetailPrice">449 € <span>/ osoba</span></p>
+<p class="plan-detail-est" id="planDetailEst">Procena: ~420–480 €</p></div>
+<button class="pdt-alert" id="planDetailAlert" type="button"><span aria-hidden="true">🔔</span> <span data-i18n="x_pd_alert">Price Alert</span></button>
+</div>
+<button class="btn-primary plan-detail-more" data-i18n="ux_show_items" id="planDetailMore" type="button">Prikaži stavke</button><button class="btn-secondary plan-detail-customize" data-i18n="ux_customize_plan" id="planDetailCustomize" type="button">Prilagodi ovaj plan</button>
 <p class="plan-detail-note" data-i18n="x_636428">Cene su procene i mogu da se promene u zavisnosti od raspoloživosti.</p>
 <!-- DEST INFO PANEL (premešteno u detalj plana) -->
 <section aria-labelledby="destInfoTitle" class="section flight-detail-section plan-detail-destinfo" id="destInfoSection">
@@ -1323,7 +1328,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
 <script defer="" src="i18n-data.js?v=f8ee145f"></script>
-<script defer="" src="i18n-extra.js?v=066d88bd"></script>
+<script defer="" src="i18n-extra.js?v=e6ac5bca"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=e9b26749"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
@@ -1331,7 +1336,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-04-pricing-engine.js?v=fafc7a3c"></script>
 <script defer="" src="app-05-results.js?v=108b871e"></script>
 <script defer="" src="app-06-form.js?v=9bbd4299"></script>
-<script defer="" src="app-07-package-detail.js?v=2ef33858"></script>
+<script defer="" src="app-07-package-detail.js?v=cabc5726"></script>
 <script defer="" src="app-08-popular-airports.js?v=00bc4b12"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>

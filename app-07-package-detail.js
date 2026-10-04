@@ -577,10 +577,11 @@
     if (!p || !detail) return;
     const svc = p.svc || {flight:true, hotel:true, car:true, activity:true}; // stariji/keširan plan bez svc -> ponašaj se kao pre
     const lo = Math.round(p.price * 0.935 / 10) * 10, hi = Math.round(p.price * 1.07 / 10) * 10;
-    $('planDetailTitle').textContent = tx(p.title);
+    $('planDetailTitle').textContent = tx(p.title) + ' ' + tx('plan');
+    $('planDetailTag').textContent = tx(PLAN_TAGS[p.key] || PLAN_TAG_BALANCE);
     const pctx = builderCtx();
     $('planDetailMeta').textContent = cityLabel(pctx.dest) + ' \u2022 ' + daysLabel(pctx.days);
-    $('planDetailPrice').innerHTML = escapeHtml(priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span>';
+    $('planDetailPrice').innerHTML = escapeHtml(tx('od ') + priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span>';
     $('planDetailEst').textContent = tx('Procena: ~') + priceText(lo).replace(' \u20ac','') + '\u2013' + priceText(hi);
     $('planDetailImg').src = p.photo;
     $('planDetailImg').alt = tx(p.alt);
@@ -594,10 +595,28 @@
     // svoj (ista logika/tekst kao airportInfoFor/airportNoteText svuda drugde).
     const flightTitle = p.flightArrival ? escapeHtml(tx(p.flightT)) + ' \u2192 ' + escapeHtml(cityLabel(p.flightArrival)) : escapeHtml(tx(p.flightT));
     $('planDetailList').innerHTML =
-      (svc.flight ? row('\u2708', flightTitle, escapeHtml(tx(p.flightS))) : '') +
-      (svc.hotel ? row('\u25a3', tx('Hotel'), escapeHtml(tx(p.hotelS))) : '') +
-      (svc.activity ? row('\u25c7', tx('Aktivnosti'), escapeHtml(tx(p.actS))) : '') +
-      (svc.car ? row('\u25b1', tx('Prevoz'), escapeHtml(tx(p.carS))) : '');
+      (svc.flight ? row('\u2713', flightTitle, escapeHtml(tx(p.flightS))) : '') +
+      (svc.hotel ? row('\u2713', tx('Hotel'), escapeHtml(tx(p.hotelS))) : '') +
+      (svc.activity ? row('\u2713', tx('Aktivnosti'), escapeHtml(tx(p.actS))) : '') +
+      (svc.car ? row('\u2713', tx('Prevoz'), escapeHtml(tx(p.carS))) : '');
+    // Pločice sa cenom po stavci (ekran 5 sa slike): od čega se plan sastoji, cena po osobi.
+    const tilesEl = $('planDetailTiles');
+    if (tilesEl){
+      let pk = null;
+      try { pk = computeCustomPackage(Object.assign({}, builderState), pctx); } catch(e){}
+      const ad = Math.max(1, pctx.adults || 1);
+      const per = n => priceText(Math.round((n || 0) / ad));
+      const originTxt = (($('origin') || {}).value || '').split(',')[0].trim();
+      const tile = (ic, t1, t2, pr) => '<div class="pdt-tile"><span class="pdt-ic" aria-hidden="true">' + ic + '</span><b>' + escapeHtml(t1) + '</b><small>' + escapeHtml(t2) + '</small>'
+        + (pr ? '<em>' + escapeHtml(tx('od ') + pr) + '</em>' : '') + '</div>';
+      tilesEl.innerHTML = pk ? (
+        (svc.flight ? tile('\u2708', tx('Let'), (originTxt ? cityLabel(originTxt) + ' \u2022 ' : '') + cityLabel(p.flightArrival || pctx.dest), per(pk.flight.price)) : '') +
+        (svc.hotel ? tile('\u25a3', tx('Hotel'), p.hotelStars + '\u2605 ' + tx('Hotel'), per(pk.hotel.price)) : '') +
+        (svc.car && builderState.carPref !== 'none' ? tile('\u25b1', tx('Auto'), tx(p.carS), per(pk.car.price)) : '') +
+        (svc.activity ? tile('\u25c7', tx('Aktivnosti'), tx('izleti i ture'), priceText(Math.round(pk.activity.price || 0))) : '')
+      ) : '';
+      tilesEl.hidden = !tilesEl.innerHTML;
+    }
     const apEl = $('planDetailAirport');
     if (apEl){
       const show = svc.flight && !!p.airportNote;
@@ -724,6 +743,11 @@
     guardOverlayOpen('planBreakdown', closePlanBreakdown);
     document.dispatchEvent(new Event('sklopi:plan-breakdown'));
     breakdown.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  $('planDetailAlert')?.addEventListener('click', () => {
+    // isti tok kao dugme "Aktiviraj" u ukupnoj ceni: Price Alert za trenutni izbor (builderState)
+    const pkg = computeCustomPackage(builderState, builderCtx());
+    openAlertModal('builder', null, pkg.total);
   });
   $('planDetailCustomize')?.addEventListener('click', () => {
     const cp = document.getElementById('customPlanner');
