@@ -229,7 +229,7 @@
   }
   function whyTitle(k){
     const l = getLang(), n = cityLabel(k);
-    return l === 'sr' ? 'Zašto ' + k + '?' : l === 'ru' ? 'Почему ' + n + '?' : l === 'de' ? 'Warum ' + n + '?' : 'Why ' + n + '?';
+    return l === 'sr' ? 'Zašto baš ' + k + '?' : l === 'ru' ? 'Почему ' + n + '?' : l === 'de' ? 'Warum ' + n + '?' : 'Why ' + n + '?';
   }
   const pickSel = p => ({flightPref:p.flightPref, hotelStars:p.hotelStars, prioritizeLocation:p.prioritizeLocation,
     carPref:p.carPref, activityCount:p.activityCount});

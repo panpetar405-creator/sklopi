@@ -474,3 +474,72 @@
   .destination-reference-title-row{margin-top:-76px}
 }
 @media(prefers-reduced-motion:reduce){#destinationPlans .dest-plan-card,.dest-plans-continue{transition:none}}
+
+/* =====================================================================
+   #4 O DESTINACIJI — sve informacije — navy tema
+   "Zašto baš <grad>?" kao kartica + kartice sa AI informacijama (vreme, viza,
+   troškovi, znamenitosti…) u navy paleti. Markup i JS ostaju isti.
+   ===================================================================== */
+
+/* "Zašto baš <grad>?" */
+.destination-reference-reason{
+  margin-top:18px;padding:16px 16px 18px;
+  background:var(--nv-surface);border:1px solid var(--nv-line);border-top:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-card);
+}
+.destination-reference-reason .eyebrow{color:var(--nv-text);font:700 16px/1.2 Sora,Inter,sans-serif;letter-spacing:-.02em;margin-bottom:12px}
+.destination-reference-reason li{color:var(--nv-text);font-weight:500}
+.destination-reference-reason li::before{color:var(--nv-accent)}
+@media(max-width:700px){.destination-reference-reason ul{gap:10px}}
+
+/* Kartice informacija */
+#destInfoSection .di-card{
+  background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card);color:var(--nv-text);
+}
+#destInfoSection .di-card-ic,
+#destInfoSection .di-ic-aqua,#destInfoSection .di-ic-gold,#destInfoSection .di-ic-coral,
+#destInfoSection .di-ic-deep,#destInfoSection .di-ic-purple{background:rgba(245,200,66,.14)}
+#destInfoSection .di-card-title{color:var(--nv-text);text-transform:none;letter-spacing:-.01em;font:700 15px Sora,Inter,sans-serif}
+#destInfoSection .di-row{border-bottom-color:var(--nv-line)}
+#destInfoSection .di-label{color:var(--nv-muted)}
+#destInfoSection .di-val{color:var(--nv-text)}
+#destInfoSection .di-val.di-green{color:#4ADE80}
+#destInfoSection .di-val.di-red{color:#FCA5A5}
+#destInfoSection .di-val.di-gold{color:var(--nv-accent)}
+#destInfoSection .di-val.di-phrase{color:var(--nv-accent)}
+
+/* Vreme */
+#destInfoSection .di-temp{color:var(--nv-text)}
+#destInfoSection .di-temp-desc{color:var(--nv-muted)}
+
+/* Pilule (valuta, jezik, vreme, bezbednost) */
+#destInfoSection .di-pill{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-text)}
+#destInfoSection .di-pill.di-pill-di-green{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:#86EFAC}
+#destInfoSection .di-pill.di-pill-di-gold{background:rgba(245,200,66,.12);border-color:rgba(245,200,66,.4);color:var(--nv-accent)}
+#destInfoSection .di-pill.di-pill-di-red{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.35);color:#FCA5A5}
+
+/* Troškovi po nivou */
+#destInfoSection .di-budget-tier,
+#destInfoSection .di-tier-budget,#destInfoSection .di-tier-mid,#destInfoSection .di-tier-comfort{
+  background:var(--nv-bg);border:1px solid var(--nv-line);
+}
+#destInfoSection .di-tier-mid{border-color:rgba(245,200,66,.45)}
+#destInfoSection .di-tier-label,#destInfoSection .di-tier-note{color:var(--nv-muted)}
+#destInfoSection .di-tier-price{color:var(--nv-text)}
+
+/* Znamenitosti */
+#destInfoSection .di-ms-item{border-bottom-color:var(--nv-line)}
+#destInfoSection .di-ms-num{background:var(--nv-accent);color:var(--nv-on-accent)}
+#destInfoSection .di-ms-name{color:var(--nv-text)}
+#destInfoSection .di-ms-note{color:var(--nv-muted)}
+
+/* Greška i ponovni pokušaj */
+#destInfoSection .di-error{color:var(--nv-muted)}
+#destInfoSection .di-error + p button,#destInfoSection #diExtraRetry{
+  background:var(--nv-accent)!important;color:var(--nv-on-accent)!important;border:0!important;border-radius:12px!important;
+}
+#destInfoSection a{color:var(--nv-accent)}
+#destInfoSection a:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* Naslov panela: bez velikih slova */
+#destInfoSection .destination-value-kicker{text-transform:none;letter-spacing:0}
