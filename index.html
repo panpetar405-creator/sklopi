@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=3318aa4a" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=94624cca" rel="stylesheet"/><link href="theme-navy.css?v=d1ca911d" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=94624cca" rel="stylesheet"/><link href="theme-navy.css?v=d750dbaf" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -581,14 +581,18 @@ html,body{background:#123A44;margin:0;}
 <div class="fd-body">
 <h2 id="hotelDetailTitle">Hotel u Atini</h2>
 <p class="fd-meta" id="hdMeta">3★ • blizu centra</p>
-<div aria-hidden="true" class="fd-visual">
+<div aria-label="Smeštaj" class="hd-tabs" id="hdTabs" role="tablist"><button aria-selected="true" class="hd-tab is-on" data-tab="recs" role="tab" type="button" data-i18n="x_hd_recs">Preporuke</button><button aria-selected="false" class="hd-tab" data-tab="map" role="tab" tabindex="-1" type="button" data-i18n="x_hd_map">Karte</button><button aria-selected="false" class="hd-tab" data-tab="tips" role="tab" tabindex="-1" type="button" data-i18n="x_hd_tips">Saveti</button></div>
+<div aria-hidden="true" class="fd-visual hd-only-recs">
 <svg preserveaspectratio="xMidYMid slice" viewbox="0 0 320 120"><defs><lineargradient id="hdSky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9ed3df"></stop><stop offset="1" stop-color="#f3f8f8"></stop></lineargradient></defs><rect fill="url(#hdSky)" height="120" width="320"></rect><rect fill="#cfe3e6" height="20" width="320" x="0" y="100"></rect><rect fill="#fff" height="76" rx="4" stroke="#123A44" stroke-width="2" width="128" x="96" y="26"></rect><g fill="#8fc4cf" stroke="#123A44" stroke-width="1.5"><rect height="16" width="20" x="108" y="38"></rect><rect height="16" width="20" x="150" y="38"></rect><rect height="16" width="20" x="192" y="38"></rect><rect height="16" width="20" x="108" y="64"></rect><rect height="16" width="20" x="192" y="64"></rect></g><rect fill="#e7a93e" height="32" stroke="#123A44" stroke-width="1.5" width="24" x="148" y="70"></rect></svg>
 </div>
-<p class="fd-price" id="hdPrice">284 € <span>/ noć</span></p>
-<p class="fd-est" id="hdTotal">Ilustrativna procena</p>
-<div class="hd-chips" id="hdChips"></div>
-<a class="btn-primary fd-cta" data-dest="" data-kind="hotel" data-price="0" data-tier="plan" data-url="" href="#" id="hdBookingBtn" onclick="bookItem(this)" rel="noopener sponsored" target="_blank"><span data-i18n="x_4ed4f3">Idi na Booking.com</span> <span aria-hidden="true">↗</span></a>
-<span class="partner-badge partner-badge--booking fd-logo">Booking<span class="pb-dotcom">.com</span></span>
+<p class="fd-price hd-only-recs" id="hdPrice">284 € <span>/ noć</span></p>
+<p class="fd-est hd-only-recs" id="hdTotal">Ilustrativna procena</p>
+<div class="hd-chips hd-only-recs" id="hdChips"></div>
+<a class="btn-primary fd-cta hd-only-recs" data-dest="" data-kind="hotel" data-price="0" data-tier="plan" data-url="" href="#" id="hdBookingBtn" onclick="bookItem(this)" rel="noopener sponsored" target="_blank"><span data-i18n="x_4ed4f3">Idi na Booking.com</span> <span aria-hidden="true">↗</span></a>
+<span class="partner-badge partner-badge--booking fd-logo hd-only-recs">Booking<span class="pb-dotcom">.com</span></span>
+<div class="hd-areas hd-only-recs" id="hdAreas"></div>
+<div class="hd-map hd-only-map" id="hdMap"></div>
+<ul class="hd-tips hd-only-tips" id="hdTips"></ul>
 <p class="fd-note" data-i18n="x_2d3450">Cene se mogu promeniti. Preporučujemo proveru na partnerovom sajtu.</p>
 <p class="fd-note" data-aff-disclosure=""></p>
 </div>
@@ -602,14 +606,18 @@ html,body{background:#123A44;margin:0;}
 <div class="fd-body">
 <h2 id="carDetailTitle">Auto u Atini</h2>
 <p class="fd-meta" id="cdMeta">Mali auto</p>
-<div aria-hidden="true" class="fd-visual">
+<div aria-label="Prevoz" class="hd-tabs" id="cdTabs" role="tablist"><button aria-selected="true" class="hd-tab is-on" data-tab="recs" role="tab" type="button" data-i18n="x_cd_opts">Opcije</button><button aria-selected="false" class="hd-tab" data-tab="map" role="tab" tabindex="-1" type="button" data-i18n="x_cd_map">Karta</button><button aria-selected="false" class="hd-tab" data-tab="tips" role="tab" tabindex="-1" type="button" data-i18n="x_hd_tips">Saveti</button></div>
+<div class="hd-opts hd-only-recs" id="cdOptions"></div>
+<div aria-hidden="true" class="fd-visual hd-only-recs">
 <svg preserveaspectratio="xMidYMid slice" viewbox="0 0 320 120"><defs><lineargradient id="cdSky" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9ed3df"></stop><stop offset="1" stop-color="#f3f8f8"></stop></lineargradient></defs><rect fill="url(#cdSky)" height="120" width="320"></rect><rect fill="#cfe3e6" height="22" width="320" x="0" y="98"></rect><g transform="translate(70 52)"><path d="M4 34v-9l10-20a8 8 0 017-4h58a8 8 0 017 4l10 20v9" fill="#fff" stroke="#123A44" stroke-linejoin="round" stroke-width="2"></path><path d="M4 34h100M4 34v8M104 34v8" stroke="#123A44" stroke-width="2"></path><circle cx="24" cy="42" fill="#123A44" r="7"></circle><circle cx="84" cy="42" fill="#123A44" r="7"></circle></g></svg>
 </div>
-<p class="fd-price" id="cdPrice">31 € <span>/ dan</span></p>
-<p class="fd-est" id="cdTotal">Ilustrativna procena</p>
-<div class="hd-chips" id="cdChips"></div>
-<a class="btn-primary fd-cta" data-dest="" data-kind="car" data-price="0" data-tier="plan" data-url="" href="#" id="cdBookingBtn" onclick="bookItem(this)" rel="noopener sponsored" target="_blank"><span data-i18n="x_4ed4f3">Idi na Booking.com</span> <span aria-hidden="true">↗</span></a>
-<span class="partner-badge partner-badge--booking fd-logo">Booking<span class="pb-dotcom">.com</span></span>
+<p class="fd-price hd-only-recs" id="cdPrice">31 € <span>/ dan</span></p>
+<p class="fd-est hd-only-recs" id="cdTotal">Ilustrativna procena</p>
+<div class="hd-chips hd-only-recs" id="cdChips"></div>
+<a class="btn-primary fd-cta hd-only-recs" data-dest="" data-kind="car" data-price="0" data-tier="plan" data-url="" href="#" id="cdBookingBtn" onclick="bookItem(this)" rel="noopener sponsored" target="_blank"><span data-i18n="x_4ed4f3">Idi na Booking.com</span> <span aria-hidden="true">↗</span></a>
+<span class="partner-badge partner-badge--booking fd-logo hd-only-recs">Booking<span class="pb-dotcom">.com</span></span>
+<div class="hd-map hd-only-map" id="cdMap"></div>
+<ul class="hd-tips hd-only-tips" id="cdTips"></ul>
 <p class="fd-note" data-i18n="x_2d3450">Cene se mogu promeniti. Preporučujemo proveru na partnerovom sajtu.</p>
 <p class="fd-note" data-aff-disclosure=""></p>
 </div>
@@ -1372,10 +1380,12 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-17-itinerary.js?v=05a09fcc"></script>
 <script defer="" src="app-18-info-tabs.js?v=65b4007f"></script>
 <script defer="" src="app-19-info-index.js?v=998ffeee"></script>
+<script defer="" src="app-20-hotel-recs.js?v=51942448"></script>
+<script defer="" src="app-21-local-transport.js?v=fd61e4ac"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
 <script defer="" src="app-11-sections-hero.js?v=981569dd"></script>
-<script defer="" src="dest-info.js?v=ef93be84"></script>
+<script defer="" src="dest-info.js?v=0165513e"></script>
 <script defer="" src="price-mix.js?v=5e3c1012"></script>
 <script defer="" src="transport.js?v=dcc41813"></script>
 <script defer="" src="transport-i18n.js?v=f616fd98"></script>

@@ -707,7 +707,16 @@
         sights: normList(info.must_see, ['name','landmark','title','attraction','sight'], ['note','tip','description','desc']).slice(0, 3).map(function (x) { return x.a; }),
         food: normList(info.food, ['dish','name','title'], ['note','tip','description','desc']).slice(0, 2).map(function (x) { return x.a; }),
         sightsAll: normList(info.must_see, ['name','landmark','title','attraction','sight'], ['note','tip','description','desc']).slice(0, 8),
-        foodAll: normList(info.food, ['dish','name','title'], ['note','tip','description','desc']).slice(0, 6)
+        foodAll: normList(info.food, ['dish','name','title'], ['note','tip','description','desc']).slice(0, 6),
+        areas: (Array.isArray(info.neighborhoods) ? info.neighborhoods : [])
+          .filter(function (n) { return n && typeof n === 'object' && (n.area || n.name); })
+          .slice(0, 4)
+          .map(function (n) { return { area: String(n.area || n.name).slice(0, 60), forWho: String(n.for || '').slice(0, 80), price: String(n.price || '').slice(0, 40), note: String(n.note || '').slice(0, 140) }; }),
+        localTransport: (info.transport && typeof info.transport === 'object') ? {
+          pub: String(info.transport.public || '').slice(0, 220),
+          taxi: String(info.transport.taxi || '').slice(0, 220),
+          tip: String(info.transport.tip || '').slice(0, 220)
+        } : null
       };
     });
   };
