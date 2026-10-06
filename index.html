@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=3318aa4a" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=94624cca" rel="stylesheet"/><link href="theme-navy.css?v=d4aede27" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=94624cca" rel="stylesheet"/><link href="theme-navy.css?v=88524705" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -389,6 +389,7 @@ html,body{background:#123A44;margin:0;}
 <div>
 <h2 data-i18n="x_3843f4" id="destinationSpotlightTitle">Atina</h2>
 <p data-i18n="x_a8d9e7">Grčka</p>
+<p class="destination-reference-meta" hidden="" id="destRefMeta"></p>
 </div>
 </div>
 <nav aria-label="Šta možeš uključiti u put" class="destination-reference-tabs" data-i18n-aria-label="x_c0b571">
@@ -477,7 +478,9 @@ html,body{background:#123A44;margin:0;}
 <p class="dest-plan-for" data-i18n="x_c4f807">Za koga: želiš više komfora i slobode</p>
 </div>
 <span aria-hidden="true" class="dest-plan-arrow">›</span></article>
-</div><div class="trip-defaults trip-defaults--plans" id="tripDefaultsPlans"><span class="trip-defaults-text" id="tripDefaultsPlansText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsPlansEdit" type="button">Promeni</button></div>
+</div>
+<button class="dest-plans-continue" id="destPlansContinue" type="button"><span data-i18n="x_pl_continue">Nastavi</span> <span aria-hidden="true">→</span></button>
+<div class="trip-defaults trip-defaults--plans" id="tripDefaultsPlans"><span class="trip-defaults-text" id="tripDefaultsPlansText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsPlansEdit" type="button">Promeni</button></div>
 </section><!-- DEST INFO PANEL (premešteno u detalj plana) -->
 <section aria-labelledby="destInfoTitle" class="section flight-detail-section plan-detail-destinfo destination-value-section" hidden="" id="destInfoSection">
 <div class="ad-head">
@@ -1344,6 +1347,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-07-package-detail.js?v=cabc5726"></script>
 <script defer="" src="app-08-popular-airports.js?v=00bc4b12"></script>
 <script defer="" src="app-14-recent-searches.js?v=838179ea"></script>
+<script defer="" src="app-15-plan-select.js?v=e82434f8"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
 <script defer="" src="app-11-sections-hero.js?v=981569dd"></script>

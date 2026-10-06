@@ -405,3 +405,72 @@
   .recent-searches-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){.popular-filter-btn{transition:none}}
+
+/* =====================================================================
+   #3 REZULTATI — 3 PLANA — navy tema
+   Hero destinacije (naslov preko fotografije) + izbor plana + "Nastavi".
+   Tabovi, "Zašto <grad>?" i dugmad u istoj kartici su deo #4.
+   ===================================================================== */
+.section.destination-reference-section{max-width:980px;margin:12px auto!important;padding:0}
+.destination-reference-card{
+  position:relative;background:var(--nv-bg);color:var(--nv-text);
+  border:0;border-radius:var(--nv-radius-panel);box-shadow:none;
+}
+.destination-reference-photo::after{
+  background:linear-gradient(180deg,rgba(11,22,38,.45) 0%,rgba(11,22,38,.05) 30%,rgba(11,22,38,.55) 68%,var(--nv-bg) 100%);
+}
+.destination-reference-location{display:none}
+.destination-reference-body{padding:0 22px 22px}
+/* naslov preko slike */
+.destination-reference-title-row{position:relative;z-index:2;margin-top:-84px}
+.destination-reference-title-row h2{color:var(--nv-text);text-shadow:0 2px 20px rgba(11,22,38,.6);font-size:clamp(30px,5vw,40px)}
+.destination-reference-title-row p{color:#E4EBF3;text-shadow:0 1px 12px rgba(11,22,38,.7)}
+.destination-reference-title-row .destination-reference-meta{
+  display:inline-block;margin-top:10px;padding:6px 12px;border-radius:var(--nv-radius-pill);
+  background:rgba(11,22,38,.62);border:1px solid var(--nv-line);color:var(--nv-text);
+  font:600 12.5px/1.3 Inter,sans-serif;text-shadow:none;
+}
+.destination-reference-title-row .destination-reference-meta[hidden]{display:none}
+/* ostatak kartice (tabovi, razlozi, dugmad) — tamna površina, detalji u #4 */
+.destination-reference-tab{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-muted)}
+.destination-reference-tab:hover,.destination-reference-tab.is-active{background:var(--nv-surface-2);border-color:rgba(245,200,66,.45);color:var(--nv-text);box-shadow:none}
+.destination-reference-reason{border-top-color:var(--nv-line)}
+.destination-reference-reason .eyebrow{color:var(--nv-accent)}
+.destination-reference-reason li{color:var(--nv-muted)}
+.destination-reference-reason li::before{color:var(--nv-accent)}
+.destination-reference-primary.btn-primary{background:var(--nv-accent);color:var(--nv-on-accent);box-shadow:none}
+.destination-reference-primary.btn-primary:hover{background:#FFD65A;box-shadow:none}
+.destination-reference-secondary{background:transparent;border-color:var(--nv-line);color:var(--nv-text)}
+.destination-reference-secondary:hover{background:var(--nv-surface);border-color:rgba(245,200,66,.45)}
+
+/* Izbor plana: radio kružić umesto strelice */
+#destinationPlans .dest-plan-card{cursor:pointer;transition:border-color .18s ease,background .18s ease}
+#destinationPlans .dest-plan-arrow{
+  font-size:0;width:22px;height:22px;flex:none;align-self:flex-start;margin-top:2px;
+  border:2px solid var(--nv-muted);border-radius:50%;display:grid;place-items:center;
+}
+#destinationPlans .dest-plan-card.is-selected .dest-plan-arrow{background:var(--nv-accent);border-color:var(--nv-accent)}
+#destinationPlans .dest-plan-card.is-selected .dest-plan-arrow::after{
+  content:"";width:5px;height:10px;border:solid var(--nv-on-accent);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg);
+}
+/* ističe se IZABRANA kartica (podrazumevano ona sa značkom "Popularno") */
+#destinationPlans .dest-plan-card:has(.dest-plan-badge--popular):not(.is-selected){border-color:var(--nv-line);box-shadow:none}
+#destinationPlans .dest-plan-card.is-selected{border-color:var(--nv-accent);box-shadow:0 0 0 1px var(--nv-accent) inset;background:var(--nv-surface-2)}
+#destinationPlans .dest-plan-card:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px}
+
+/* Nastavi */
+.dest-plans-continue{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:18px;min-height:54px;
+  background:var(--nv-accent);color:var(--nv-on-accent);border:0;border-radius:16px;
+  font:800 16px Inter,sans-serif;cursor:pointer;transition:background .18s ease;
+}
+.dest-plans-continue[hidden]{display:none}
+.dest-plans-continue:hover{background:#FFD65A}
+.dest-plans-continue:focus-visible{outline:2px solid var(--nv-text);outline-offset:3px}
+@media(min-width:900px){.dest-plans-continue{max-width:420px;margin-left:auto;margin-right:auto}}
+@media(max-width:700px){
+  .section.destination-reference-section{margin:10px 10px!important}
+  .destination-reference-body{padding:0 14px 16px}
+  .destination-reference-title-row{margin-top:-76px}
+}
+@media(prefers-reduced-motion:reduce){#destinationPlans .dest-plan-card,.dest-plans-continue{transition:none}}
