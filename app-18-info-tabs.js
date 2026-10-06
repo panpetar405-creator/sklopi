@@ -102,6 +102,12 @@
     if (n){ e.preventDefault(); sel = n.dataset.tab; apply(); var nb = bar.querySelector('[data-tab="' + sel + '"]'); if (nb) nb.focus(); }
   });
 
+  /* za app-19 ("Dodatne informacije"): prebaci tab programski */
+  window.SKLOPI_infoSetTab = function(id){
+    if (!TABS.some(function(t){ return t.id === id; })) return;
+    sel = id; apply();
+  };
+
   var busy = false;
   new MutationObserver(function(){
     if (busy) return;
