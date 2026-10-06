@@ -644,3 +644,70 @@
 .pda-switch[aria-checked="true"]::after{transform:translateX(18px);background:var(--nv-on-accent)}
 .pda-switch:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.pda-switch,.pda-switch::after{transition:none}}
+
+/* =====================================================================
+   #6 PRILAGODI SVOJ PLAN — navy tema
+   Samo CSS: izbori (datum, putnici, budžet, nivo, tip leta, zvezdice, auto, aktivnosti)
+   i dalje upisuju u builderState preko initCustomPlanner().
+   ===================================================================== */
+.section.custom-planner-section{max-width:520px;margin:12px auto!important;padding:0}
+#customPlanner .custom-planner-card{
+  background:var(--nv-bg);color:var(--nv-text);border:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-panel);box-shadow:none;padding:24px 20px 22px;
+}
+#customPlanner .custom-planner-card h2{color:var(--nv-text);font-size:clamp(24px,4vw,28px);letter-spacing:-.035em}
+#customPlanner .cp-sub{color:var(--nv-muted)}
+
+/* Redovi: datum, putnici, ukupan budžet */
+#customPlanner .cp-row{
+  background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card);
+  color:var(--nv-text);min-height:60px;
+}
+#customPlanner button.cp-row{cursor:pointer;text-align:left}
+#customPlanner button.cp-row:hover{background:var(--nv-surface-2);border-color:rgba(245,200,66,.45)}
+#customPlanner .cp-row-ic{
+  width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:17px;
+  background:rgba(245,200,66,.14);
+}
+#customPlanner .cp-row-main b{color:var(--nv-text)}
+#customPlanner .cp-row-main small{color:var(--nv-muted)}
+#customPlanner .cp-row-act{color:var(--nv-accent);text-decoration:none}
+#customPlanner .cp-budget-field{background:var(--nv-bg);border:1px solid var(--nv-line);color:var(--nv-muted)}
+#customPlanner .cp-budget-field input{color:var(--nv-text)}
+#customPlanner .cp-budget-field input::placeholder{color:var(--nv-muted)}
+#customPlanner .cp-budget-field:focus-within{border-color:var(--nv-accent)}
+#customPlanner .cp-row:focus-visible,
+#customPlanner .cp-budget-field:focus-within{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* Grupe izbora */
+#customPlanner .cp-group{margin-top:22px}
+#customPlanner .cp-label{color:var(--nv-text);font:700 15px/1.2 Sora,Inter,sans-serif;letter-spacing:-.01em;margin-bottom:10px}
+#customPlanner .cp-chips{gap:10px}
+#customPlanner .cp-chip{
+  min-height:48px;background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:14px;
+  color:var(--nv-muted);box-shadow:none;transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+#customPlanner .cp-chip:hover{background:var(--nv-surface-2);border-color:rgba(245,200,66,.45);color:var(--nv-text)}
+#customPlanner .cp-chip.is-on{
+  background:rgba(245,200,66,.14);border-color:var(--nv-accent);color:var(--nv-accent);box-shadow:0 0 0 1px var(--nv-accent) inset;
+}
+#customPlanner .cp-chip:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* CTA */
+#customPlanner .cp-submit.btn-primary{
+  background:var(--nv-accent);color:var(--nv-on-accent);box-shadow:none;min-height:54px;border-radius:16px;font:800 16px Inter,sans-serif;
+}
+#customPlanner .cp-submit.btn-primary:hover{background:#FFD65A;box-shadow:none}
+#customPlanner .cp-submit:focus-visible{outline:2px solid var(--nv-text);outline-offset:3px}
+
+@media(max-width:700px){
+  .section.custom-planner-section{margin:10px 10px!important}
+  #customPlanner .custom-planner-card{padding:20px 14px 18px;border-radius:22px}
+}
+@media(prefers-reduced-motion:reduce){#customPlanner .cp-chip{transition:none}}
+
+/* ---------- #6 dopuna: Tip putovanja + Interesovanja ---------- */
+.cp-cols-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:380px){#customPlanner .cp-cols-4{grid-template-columns:repeat(2,1fr)}}
+#customPlanner .cp-cols-4 .cp-chip,#customPlanner .cp-cols-3 .cp-chip{font-size:13px;padding:0 6px}
+.pp-tag.pp-tag--pref{background:#e8eef6;color:#2b4260}

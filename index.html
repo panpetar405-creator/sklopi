@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=3318aa4a" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=94624cca" rel="stylesheet"/><link href="theme-navy.css?v=85168a61" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=94624cca" rel="stylesheet"/><link href="theme-navy.css?v=cadc2ce2" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -667,6 +667,14 @@ html,body{background:#123A44;margin:0;}
 <button class="cp-row" id="cpRowDates" type="button"><span aria-hidden="true" class="cp-row-ic">📅</span><span class="cp-row-main"><b data-i18n="x_cp01">Datum putovanja</b><small id="cpRowDatesVal">—</small></span><span class="cp-row-act" data-i18n="ux_defaults_change">Promeni</span></button>
 <button class="cp-row" id="cpRowPax" type="button"><span aria-hidden="true" class="cp-row-ic">👥</span><span class="cp-row-main"><b data-i18n="x_cp02">Broj putnika</b><small id="cpRowPaxVal">—</small></span><span class="cp-row-act" data-i18n="ux_defaults_change">Promeni</span></button>
 <label class="cp-row cp-row--budget" for="cpBudget"><span aria-hidden="true" class="cp-row-ic">💶</span><span class="cp-row-main"><b data-i18n="x_cp04">Ukupan budžet (opciono)</b></span><span class="cp-budget-field"><span aria-hidden="true">€</span><input data-i18n-placeholder="placeholder_budget" id="cpBudget" inputmode="numeric" max="50000" min="0" placeholder="npr. 700" step="1" type="number"/></span></label>
+</div>
+<div class="cp-group" data-group="who" data-pref="who">
+<p class="cp-label" id="cpl-who">Tip putovanja</p>
+<div aria-labelledby="cpl-who" class="cp-chips cp-cols-4" role="group"><button aria-pressed="false" class="cp-chip" data-value="couple" type="button">Parovi</button><button aria-pressed="false" class="cp-chip" data-value="family" type="button">Porodica</button><button aria-pressed="false" class="cp-chip" data-value="friends" type="button">Prijatelji</button><button aria-pressed="false" class="cp-chip" data-value="solo" type="button">Solo</button></div>
+</div>
+<div class="cp-group" data-group="interests" data-pref="interests">
+<p class="cp-label" id="cpl-interests">Interesovanja</p>
+<div aria-labelledby="cpl-interests" class="cp-chips cp-cols-3" role="group"><button aria-pressed="false" class="cp-chip" data-value="culture" type="button">Kultura</button><button aria-pressed="false" class="cp-chip" data-value="food" type="button">Gastronomija</button><button aria-pressed="false" class="cp-chip" data-value="beach" type="button">Plaže</button><button aria-pressed="false" class="cp-chip" data-value="nature" type="button">Priroda</button><button aria-pressed="false" class="cp-chip" data-value="nightlife" type="button">Noćni život</button><button aria-pressed="false" class="cp-chip" data-value="shopping" type="button">Šoping</button></div>
 </div>
 <div class="cp-group" data-group="tier">
 <p class="cp-label" data-i18n="x_703590" id="cpl-tier">Budžet</p>
@@ -1353,6 +1361,7 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="app-08-popular-airports.js?v=00bc4b12"></script>
 <script defer="" src="app-14-recent-searches.js?v=838179ea"></script>
 <script defer="" src="app-15-plan-select.js?v=e82434f8"></script>
+<script defer="" src="app-16-trip-prefs.js?v=f03a4be1"></script>
 <script defer="" src="app-09-account.js?v=66e7d256"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
 <script defer="" src="app-11-sections-hero.js?v=981569dd"></script>
