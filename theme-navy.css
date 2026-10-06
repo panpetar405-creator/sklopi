@@ -106,3 +106,162 @@
 #destinationPlans .trip-defaults--plans{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-muted)}
 #destinationPlans .trip-defaults-text{color:var(--nv-muted)}
 #destinationPlans .dpf-ic{background:rgba(245,200,66,.14);color:var(--nv-accent)}
+
+/* =====================================================================
+   #1 HERO / LANDING — navy tema
+   ===================================================================== */
+
+/* Traka sa logom */
+.topbar-wrap{background:var(--nv-bg);border-bottom:1px solid var(--nv-line)}
+.topbar-wrap .logo-v2-svg path{fill:#fff}
+.topbar-wrap .logo-v2-mark{box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+.topbar-wrap .lang-switch{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-text)}
+.topbar-wrap .lang-switch .ls-sep,
+.topbar-wrap .lang-switch .cs-rsd{color:var(--nv-muted)}
+.topbar-wrap .lang-switch:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* Hero okvir */
+.hero.hero-reference{
+  background:var(--nv-bg);
+  color:var(--nv-text);
+  padding:12px 12px 26px;
+  border-radius:0 0 32px 32px;
+}
+.hero-reference .hero-reference-shell{
+  background:transparent;border:0;box-shadow:none;border-radius:var(--nv-radius-panel);
+}
+.hero-reference .hero-reference-visual-overlay{
+  background:
+    linear-gradient(180deg,rgba(11,22,38,.55) 0%,rgba(11,22,38,.10) 26%,rgba(11,22,38,.55) 62%,rgba(11,22,38,.94) 90%,var(--nv-bg) 100%);
+}
+.hero-reference .hero-reference-eyebrow{display:none}
+.hero-reference .hero-reference-copy h1{
+  font-weight:800;
+  letter-spacing:-.03em;
+  word-spacing:.06em;
+  line-height:1.06;
+  text-shadow:0 2px 24px rgba(11,22,38,.55);
+}
+.hero-reference .hero-reference-copy p:last-child{
+  color:#E4EBF3;
+  text-shadow:0 1px 14px rgba(11,22,38,.7);
+}
+.hero-reference .hero-ui-btn{background:rgba(11,22,38,.55)!important;border:1px solid var(--nv-line)}
+
+/* Telo ispod fotografije */
+.hero-reference .hero-reference-body{background:transparent;padding-top:6px}
+.hero-reference .hero-reference-body::before{display:none}
+
+/* Polje za destinaciju */
+.hero-reference .ticket{
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  box-shadow:none;
+  border-radius:16px;
+}
+.hero-reference .ticket::before{display:none}
+.hero-reference .ticket .stub{border-color:var(--nv-line)}
+.hero-reference .ticket .stub label{color:var(--nv-muted)}
+.hero-reference .ticket .stub input,
+.hero-reference .ticket .date-display,
+.hero-reference .ticket .pax-display{color:var(--nv-text);background:transparent}
+.hero-reference .ticket .stub input::placeholder{color:#7F92AA}
+.hero-reference .ticket .date-display .dd-meta{color:var(--nv-muted)}
+.hero-reference .ticket .stub:focus-within{box-shadow:0 0 0 2px var(--nv-accent) inset;border-radius:16px}
+
+/* Dugme Kreni */
+.hero-reference .ticket-submit-row .btn-search-main{
+  background:var(--nv-accent);
+  color:var(--nv-on-accent);
+  box-shadow:none;
+  border-radius:16px;
+  font-weight:800;
+}
+.hero-reference .ticket-submit-row .btn-search-main::after{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
+.hero-reference .ticket-submit-row .btn-search-main .btn-search-icon{color:var(--nv-on-accent)}
+.hero-reference .ticket-submit-row .btn-search-main:hover{background:#FFD65A}
+.hero-reference .ticket-submit-row .btn-search-main:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+/* Traka "Polazak · datum · putnici" */
+.hero-reference .trip-defaults{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-muted)}
+.hero-reference .trip-defaults-text{color:var(--nv-muted)}
+.hero-reference .trip-defaults-edit{color:var(--nv-accent)}
+
+/* Proširena forma (posle "Promeni"): prekidači prevoza */
+.hero-reference .transport-row .toggle{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-text)}
+.hero-reference .transport-row .toggle.on{border-color:var(--nv-accent);background:rgba(245,200,66,.10)}
+.hero-reference .toggle .tt-icon{color:var(--nv-accent)}
+.hero-reference .hero-benefit{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-text)}
+.hero-reference .hero-benefit small{color:var(--nv-muted)}
+.hero-reference .hero-benefit.is-active{border-color:var(--nv-accent)}
+.hero-reference .hero-reference-formtitle{color:var(--nv-text)}
+.hero-reference .hero-reference-formhint{color:var(--nv-muted)}
+
+/* Kartica "Nemaš ideju kuda?" — ređa se vertikalno (na telefonu je bila razvučena u red) */
+.hero-reference .match-trigger{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  grid-template-areas:"ic title" "sub sub" "chips chips" "cta cta";
+  gap:6px 12px;
+  align-items:center;
+  width:100%;
+  text-align:left;
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  border-left:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-card);
+  box-shadow:none;
+  padding:16px;
+  color:var(--nv-text);
+}
+.hero-reference .match-trigger:hover{background:var(--nv-surface-2);border-color:rgba(245,200,66,.45);transform:none;box-shadow:none}
+.hero-reference .match-trigger .ac-ic{grid-area:ic;background:rgba(245,200,66,.14);color:var(--nv-accent);box-shadow:none}
+.hero-reference .match-trigger .ac-title{grid-area:title;color:var(--nv-text);font-size:16px}
+.hero-reference .match-trigger .ac-sub{grid-area:sub;max-width:none;color:var(--nv-muted);font-size:13px;line-height:1.45;margin:2px 0 0}
+.hero-reference .match-trigger .match-preview-row{grid-area:chips;display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.hero-reference .match-trigger .match-preview-chip{
+  background:var(--nv-bg);border:1px solid var(--nv-line);color:var(--nv-text);
+  padding:6px 10px;border-radius:var(--nv-radius-pill);font:700 12px/1 Inter,sans-serif;
+}
+.hero-reference .match-trigger .ac-cta{
+  grid-area:cta;margin:6px 0 0;width:100%;justify-content:space-between;
+  background:var(--nv-accent);color:var(--nv-on-accent);border-radius:12px;padding:13px 16px;
+  font-size:14px;
+}
+.hero-reference .match-trigger .ac-cta-label{color:var(--nv-on-accent)}
+.hero-reference .match-trigger .ac-arrow{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
+.hero-reference .match-trigger:hover .ac-cta{background:#FFD65A}
+
+/* Donja navigacija (telefon) */
+@media(max-width:700px){
+  .bottom-nav{background:var(--nv-bg);border-top:1px solid var(--nv-line);box-shadow:none}
+  .bottom-nav a{color:var(--nv-muted)}
+  .bottom-nav a:active,.bottom-nav a:hover,.bottom-nav a:focus-visible{color:var(--nv-accent)}
+  .hero.hero-reference{padding:10px 10px 22px}
+}
+
+/* ispravke #1 */
+.hero-reference .ticket .stub,
+.hero-reference .ticket .stub:last-of-type{background:transparent}
+.hero-reference .match-trigger .ac-arrow{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:15px;line-height:1}
+
+/* ispravke #1 (2): datum, ikone tierova i raspored forme na desktopu */
+.hero-reference .ticket .date-display .dd-range{color:var(--nv-text)}
+.hero-reference .hero-benefit-icon{background:rgba(245,200,66,.14);color:var(--nv-accent)}
+@media(min-width:761px){
+  /* Kreni više ne lebdi preko kartice ispod: polje + dugme u jednom redu, ostalo ispod */
+  .hero-reference .hero-reference-form{
+    display:grid;grid-template-columns:1fr auto;gap:12px;align-items:stretch;
+    max-width:760px;margin:0 auto;
+  }
+  .hero-reference .hero-reference-form > .ticket{grid-column:1}
+  .hero-reference .hero-reference-form > .ticket-submit-row{
+    position:static;grid-column:2;margin:0;display:flex;align-items:stretch;
+  }
+  .hero-reference .hero-reference-form > .ticket-submit-row .btn-search-main{height:100%;min-width:190px}
+  .hero-reference .hero-reference-form > .trip-defaults,
+  .hero-reference .hero-reference-form > .match-trigger,
+  .hero-reference .hero-reference-form > .transport-row{grid-column:1 / -1;margin-top:0}
+  .hero-reference .hero-reference-form > .match-trigger{max-width:none}
+  .hero-reference .transport-row{padding-right:0}
+}
