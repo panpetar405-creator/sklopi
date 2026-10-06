@@ -265,3 +265,98 @@
   .hero-reference .hero-reference-form > .match-trigger{max-width:none}
   .hero-reference .transport-row{padding-right:0}
 }
+
+/* =====================================================================
+   #2 PRETRAGA DESTINACIJE — navy tema
+   Samo CSS: markup i JS (app-08) ostaju isti.
+   ===================================================================== */
+.section.popular-reference-section{
+  max-width:980px;
+  margin:12px auto!important;
+  padding:26px 22px 22px;
+  background:var(--nv-bg);
+  color:var(--nv-text);
+  border-radius:var(--nv-radius-panel);
+}
+.popular-reference-head{align-items:flex-end}
+.popular-reference-head .eyebrow{color:var(--nv-accent)}
+.popular-reference-head h2{color:var(--nv-text);font-size:clamp(26px,4vw,34px);letter-spacing:-.035em}
+.popular-reference-sub{color:var(--nv-muted)}
+
+/* Polje za pretragu: pilula */
+.popular-reference-search-wrap{
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-pill);
+  padding:0 18px;
+  height:50px;
+  transition:border-color .18s ease,background .18s ease;
+}
+.popular-reference-search-wrap:focus-within{border-color:var(--nv-accent);background:var(--nv-surface-2)}
+.popular-reference-search-wrap svg{stroke:var(--nv-accent)}
+.popular-reference-search-wrap input{color:var(--nv-text)}
+.popular-reference-search-wrap input::placeholder{color:var(--nv-muted)}
+.popular-reference-search-wrap input:focus-visible{outline:0}
+
+/* Čipovi regiona */
+.popular-ref-chip{
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  color:var(--nv-muted);
+  min-height:38px;
+  padding:8px 16px;
+}
+.popular-ref-chip:hover{background:var(--nv-surface-2);border-color:rgba(245,200,66,.45);color:var(--nv-text);box-shadow:none}
+.popular-ref-chip.is-active{background:var(--nv-accent);border-color:var(--nv-accent);color:var(--nv-on-accent);box-shadow:none}
+.popular-ref-chip:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* Kartice destinacija */
+.popular-reference-grid .popular-dest-card{
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-card);
+  box-shadow:none;
+  color:var(--nv-text);
+}
+.popular-reference-grid .popular-dest-card:hover{
+  background:var(--nv-surface-2);
+  border-color:rgba(245,200,66,.45);
+  box-shadow:none;
+  transform:none;
+}
+.popular-reference-grid .popular-dest-card:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px}
+.popular-reference-grid .pd-thumb{background:var(--nv-surface-2);border-radius:12px}
+.popular-reference-grid .pd-name{color:var(--nv-text)}
+.popular-reference-grid .pd-meta{color:var(--nv-muted);font-size:12px}
+.popular-reference-grid .pd-price{color:var(--nv-accent)}
+.popular-reference-grid .pd-arrow{color:var(--nv-accent)}
+
+/* Nema rezultata */
+.popular-empty{background:var(--nv-surface);border:1px dashed var(--nv-line);color:var(--nv-text)}
+.popular-empty p{color:var(--nv-text)}
+.popular-empty .btn-secondary{
+  background:var(--nv-accent);color:var(--nv-on-accent);border:0;border-radius:12px;
+  padding:12px 18px;font:700 14px Inter,sans-serif;cursor:pointer;
+}
+.popular-empty .btn-secondary:hover{background:#FFD65A}
+.popular-empty .btn-secondary:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* Desktop: tri kolone, slika gore (kao tri plana iznad) */
+@media(min-width:900px){
+  .popular-reference-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .popular-reference-grid .popular-dest-card{
+    display:flex;flex-direction:column;align-items:stretch;gap:10px;min-height:0;padding:10px 10px 14px;
+  }
+  .popular-reference-grid .pd-thumb{width:100%;height:132px}
+  .popular-reference-grid .pd-copy{padding:0 4px}
+  .popular-reference-grid .pd-arrow{position:absolute;right:14px;bottom:12px;font-size:22px;line-height:1}
+}
+/* Telefon: ista logika kao ostali navy paneli */
+@media(max-width:700px){
+  .section.popular-reference-section{margin:10px 10px!important;padding:20px 14px 16px;border-radius:22px}
+  .popular-reference-grid .pd-thumb{border-radius:12px 12px 0 0}
+  .popular-reference-grid .popular-dest-card{padding:0 0 12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .popular-reference-search-wrap,.popular-ref-chip{transition:none}
+}
