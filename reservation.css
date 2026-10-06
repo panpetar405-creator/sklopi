@@ -1,0 +1,38 @@
+/* Ekran #15: Rezervacija (#totalDetail, app-23-reservation.js) — koristi tokene iz theme-navy.css */
+/* ---------- Ekran #15: Rezervacija (#totalDetail, app-23-reservation.js) ---------- */
+#totalDetail .ad-head h2{color:var(--nv-text)}
+#totalDetail .ad-head p{color:var(--nv-muted)}
+.resv-card{
+  margin-top:14px;padding:16px 16px 14px;background:var(--nv-surface);
+  border:1px solid var(--nv-line);border-radius:var(--nv-radius-card);color:var(--nv-text);
+}
+.resv-sub{margin:0 0 4px;font:800 15px Sora,Inter,sans-serif;color:var(--nv-text)}
+.resv-rows{list-style:none;margin:0;padding:0}
+.resv-row{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--nv-line)}
+.resv-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(245,200,66,.14);color:var(--nv-accent);font-size:16px}
+.resv-what{min-width:0}
+.resv-what b{display:block;font:700 14px Inter,sans-serif;color:var(--nv-text)}
+.resv-what small{display:block;margin-top:2px;font:500 12.5px/1.3 Inter,sans-serif;color:var(--nv-muted)}
+.resv-price{font:800 14px Inter,sans-serif;font-style:normal;color:var(--nv-text);white-space:nowrap}
+.resv-total{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-top:14px}
+.resv-total span{font:700 14px Inter,sans-serif;color:var(--nv-muted)}
+.resv-total b{font:800 26px/1 Sora,Inter,sans-serif;color:var(--nv-accent)}
+.resv-fine{margin:6px 0 0;text-align:right;font:500 11.5px/1.35 Inter,sans-serif;color:var(--nv-muted)}
+.resv-actions{margin-top:14px}
+.resv-go{width:100%;min-height:52px;border-radius:14px;background:var(--nv-accent);color:var(--nv-on-accent);font-weight:800;border:0}
+.resv-go:hover{background:#FFD65A}
+.resv-go:focus-visible,.resv-save:focus-visible,.resv-link:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+.resv-links{margin-top:12px;padding:14px;background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card)}
+.resv-links[hidden]{display:none}
+.resv-links-label{margin:0 0 10px;font:700 13px Inter,sans-serif;color:var(--nv-text)}
+.resv-link-item{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.resv-link{flex:1;min-width:0;display:grid;grid-template-columns:30px 1fr 14px;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--nv-surface-2);border:1px solid var(--nv-line);border-radius:12px;color:var(--nv-text);text-decoration:none}
+.resv-link:hover{border-color:rgba(245,200,66,.55)}
+.resv-link-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(245,200,66,.14);color:var(--nv-accent)}
+.resv-link-t b{display:block;font:700 13.5px Inter,sans-serif}
+.resv-link-t small{display:block;font:500 12px Inter,sans-serif;color:var(--nv-muted)}
+.resv-link>span:last-child{color:var(--nv-accent)}
+.resv-disc{margin:6px 0 0;font:500 11.5px/1.4 Inter,sans-serif;color:var(--nv-muted)}
+.resv-save{display:block;width:100%;margin-top:10px;padding:12px;background:none;border:0;color:var(--nv-accent);font:800 13.5px Inter,sans-serif;cursor:pointer;text-align:center}
+.resv-trust{margin:4px 0 0;text-align:center;font:500 12px Inter,sans-serif;color:var(--nv-muted)}
