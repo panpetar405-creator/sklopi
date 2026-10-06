@@ -552,6 +552,7 @@ document.getElementById('alertModalSubmit').addEventListener('click', async () =
       threshold
     });
 
+    try { document.dispatchEvent(new CustomEvent('sklopi:alert-created', {detail:{dest:_pendingAlert.dest, threshold, dateFrom:_pendingAlert.dateFrom, dateTo:_pendingAlert.dateTo}})); } catch(e){}   // za ekran "Obaveštenja" (app-24)
     requestCloseAlertModal();
     showToast('Poslali smo ti mejl na ' + email + ' — potvrdi klikom da aktiviraš alert za ' + _pendingAlert.dest + '.');
   } catch(err) {
@@ -584,6 +585,7 @@ function renderAccountMenu(){
            <ul class="ap-menu">
              <li><a href="#" id="dropdownSavedLink"><span class="ap-ic" aria-hidden="true">♡</span><span>${tx('Sačuvani izleti')}</span><span class="ap-chev" aria-hidden="true">›</span></a></li>
              <li><a href="#" id="dropdownMyTripLink"><span class="ap-ic" aria-hidden="true">✈</span><span>${tx('Moj put')}</span><span class="ap-chev" aria-hidden="true">›</span></a></li>
+             <li><a href="#" id="dropdownNotifLink"><span class="ap-ic" aria-hidden="true">🔔</span><span>${tx('Obaveštenja')}<em class="ap-badge" id="dropdownNotifBadge" hidden></em></span><span class="ap-chev" aria-hidden="true">›</span></a></li>
              <li><a href="#" id="dropdownHelpLink"><span class="ap-ic" aria-hidden="true">?</span><span>${tx('Pomoć i podrška')}</span><span class="ap-chev" aria-hidden="true">›</span></a></li>
            </ul>
            <button type="button" id="dropdownLogoutBtn">${tx('Odjavi se')}</button>
@@ -607,6 +609,17 @@ function renderAccountMenu(){
       dropdown.classList.remove('open');
       document.querySelector('.saved-wrap')?.scrollIntoView({behavior:'smooth', block:'start'});
     });
+    const notifLink = document.getElementById('dropdownNotifLink');
+    if (notifLink){
+      const nb = document.getElementById('dropdownNotifBadge');
+      const n = typeof window.SKLOPI_notifCount === 'function' ? window.SKLOPI_notifCount() : 0;
+      if (nb && n){ nb.textContent = n; nb.hidden = false; }
+      notifLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropdown.classList.remove('open');
+        if (typeof window.SKLOPI_openNotifications === 'function') window.SKLOPI_openNotifications();
+      });
+    }
     [['dropdownMyTripLink', '#myTrip'], ['dropdownHelpLink', '#faq']].forEach(([id, sel]) => {
       const a = document.getElementById(id);
       if (a) a.addEventListener('click', (e) => {

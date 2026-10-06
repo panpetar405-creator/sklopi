@@ -1,0 +1,28 @@
+/* Ekran #18: Obaveštenja (app-24-notifications.js) — tokeni iz theme-navy.css */
+.notif-sheet{
+  width:min(480px,100%);max-height:86vh;margin:auto auto 0;padding:18px 18px 16px;border:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-panel) var(--nv-radius-panel) 0 0;background:var(--nv-bg);color:var(--nv-text);overflow:auto;
+}
+@media (min-width:600px){ .notif-sheet{margin:auto;border-radius:var(--nv-radius-panel)} }
+.notif-sheet::backdrop{background:rgba(5,10,18,.62)}
+.notif-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.notif-head h2{margin:0;font:800 22px Sora,Inter,sans-serif;color:var(--nv-text)}
+.notif-head h2:focus{outline:none}
+.notif-x{width:40px;height:40px;border-radius:12px;border:1px solid var(--nv-line);background:var(--nv-surface);color:var(--nv-text);font-size:22px;line-height:1;cursor:pointer}
+.notif-x:hover{background:var(--nv-surface-2)}
+.notif-x:focus-visible,.notif-link:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+.notif-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.notif-item{display:grid;grid-template-columns:38px 1fr;gap:12px;padding:12px;background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card)}
+.notif-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(245,200,66,.14);color:var(--nv-accent);font-size:17px}
+.notif-body b{display:block;font:700 14px Inter,sans-serif;color:var(--nv-text)}
+.notif-body p{margin:4px 0 0;font:500 12.5px/1.45 Inter,sans-serif;color:var(--nv-muted)}
+.notif-foot{display:flex;align-items:center;gap:14px;margin-top:8px;font:600 11.5px Inter,sans-serif;color:var(--nv-muted)}
+.notif-foot span{margin-right:auto}
+.notif-link{padding:4px 0;background:none;border:0;color:var(--nv-accent);font:800 12.5px Inter,sans-serif;cursor:pointer}
+.notif-empty{padding:26px 12px;text-align:center;color:var(--nv-muted)}
+.notif-empty span{font-size:28px}
+.notif-empty p{margin:8px 0 4px;font:700 14px Inter,sans-serif;color:var(--nv-text)}
+.notif-empty small{font:500 12.5px/1.45 Inter,sans-serif}
+.notif-note{margin:12px 2px 0;font:500 11.5px/1.45 Inter,sans-serif;color:var(--nv-muted)}
+.ap-badge{display:inline-block;margin-left:8px;min-width:20px;padding:1px 6px;border-radius:999px;background:var(--nv-accent);color:var(--nv-on-accent);font:800 11px/18px Inter,sans-serif;text-align:center;font-style:normal}
+.ap-badge[hidden]{display:none}
