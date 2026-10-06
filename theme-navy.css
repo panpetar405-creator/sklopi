@@ -1,0 +1,108 @@
+/* SKLOPI — navy tema (v5). Tokeni + prva primena: "Izaberi svoj plan" i "O destinaciji".
+   Ostatak sajta ostaje na postojećoj svetloj paleti dok se ne odluči o daljem prenosu. */
+:root{
+  --nv-bg:#0B1626;          /* pozadina panela */
+  --nv-surface:#122238;     /* kartica */
+  --nv-surface-2:#182B45;   /* kartica na hover / ugnježdeno */
+  --nv-line:rgba(255,255,255,.10);
+  --nv-text:#F2F5F8;
+  --nv-muted:#A9B8CA;       /* ~8:1 na --nv-bg */
+  --nv-accent:#F5C842;      /* primarno dugme, isticanje */
+  --nv-on-accent:#1A1405;
+  --nv-radius-panel:28px;
+  --nv-radius-card:18px;
+  --nv-radius-pill:999px;
+}
+
+/* ---------- Panel sa planovima ---------- */
+#destinationPlans.dest-plans-section{
+  max-width:980px;
+  margin:12px auto!important;
+  padding:26px 22px 22px;
+  background:var(--nv-bg);
+  color:var(--nv-text);
+  border-radius:var(--nv-radius-panel);
+}
+#destinationPlans .dest-plans-head h2{color:var(--nv-text);font-size:clamp(26px,4vw,38px);letter-spacing:-.035em}
+#destinationPlans .dest-plans-head p{color:var(--nv-muted)}
+#destinationPlans .dest-plans-est-note{
+  color:var(--nv-muted);background:var(--nv-surface);
+  border:1px solid var(--nv-line);border-left:3px solid var(--nv-accent);
+  border-radius:0 12px 12px 0;padding:10px 12px;
+}
+#destinationPlans .dest-plan-card{
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-card);
+  box-shadow:none;
+  color:var(--nv-text);
+}
+#destinationPlans .dest-plan-card:hover{
+  background:var(--nv-surface-2);
+  border-color:rgba(245,200,66,.45);
+  box-shadow:none;
+  transform:none;
+}
+#destinationPlans .dest-plan-card:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px}
+#destinationPlans .dest-plan-body h3,
+#destinationPlans .dest-plan-price{color:var(--nv-text)}
+#destinationPlans .dest-plan-price{font-size:22px}
+#destinationPlans .dest-plan-price span,
+#destinationPlans .dest-plan-tag,
+#destinationPlans .dest-plan-features li,
+#destinationPlans .dest-plan-for{color:var(--nv-muted)}
+#destinationPlans .dest-plan-for{border-top-color:var(--nv-line)}
+#destinationPlans .dest-plan-arrow{color:var(--nv-accent)}
+#destinationPlans .dpf-ic{color:var(--nv-accent)}
+#destinationPlans .dest-plan-badge--popular{background:var(--nv-accent);color:var(--nv-on-accent)}
+/* Jedino istaknuta kartica = ona koja već nosi značku "Popularno" iz podataka */
+#destinationPlans .dest-plan-card:has(.dest-plan-badge--popular){
+  border-color:var(--nv-accent);
+  box-shadow:0 0 0 1px var(--nv-accent) inset;
+}
+#destinationPlans .trip-defaults{color:var(--nv-muted)}
+#destinationPlans .trip-defaults-edit{color:var(--nv-accent)}
+
+/* ---------- O destinaciji ---------- */
+#destInfoSection[hidden]{display:none!important}
+#destInfoSection.destination-value-section{
+  max-width:980px;
+  margin:12px auto;
+  padding:26px 22px 22px;
+  background:var(--nv-bg);
+  color:var(--nv-text);
+  border-radius:var(--nv-radius-panel);
+  border-top:0;
+}
+.destination-value-head{display:block;margin-bottom:16px}
+.destination-value-kicker{color:var(--nv-accent);margin-bottom:10px}
+.destination-value-title{color:var(--nv-text)}
+.destination-value-sub{color:var(--nv-muted)}
+.destination-value-note{margin:12px 0 0;max-width:650px;padding:9px 12px;font:600 12.5px/1.45 Inter,sans-serif;
+  color:var(--nv-muted);background:var(--nv-surface);border-left:3px solid var(--nv-accent);border-radius:0 10px 10px 0}
+#destInfoSection .ad-head h2{color:var(--nv-text)}
+#destInfoSection .ad-head p{color:var(--nv-muted)}
+.destination-value-nav{background:rgba(11,22,38,.92);border-color:var(--nv-line)}
+.destination-value-nav button{background:var(--nv-surface);color:var(--nv-text);border-color:var(--nv-line);min-height:40px}
+.destination-value-nav button:hover{background:var(--nv-surface-2);border-color:var(--nv-accent);color:var(--nv-text)}
+.destination-value-nav button:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+#destInfoSection .di-disclaimer{color:var(--nv-muted)}
+#destInfoSection .dest-info-skeleton .di-skel-row,
+#destInfoSection .dest-info-skeleton .di-skel-card{background:var(--nv-surface)}
+
+/* ---------- Desktop: tri plana u koloni, sredina blago podignuta ---------- */
+@media(min-width:900px){
+  #destinationPlans .dest-plans-list{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+  #destinationPlans .dest-plan-card{flex-direction:column;padding:12px}
+  #destinationPlans .dest-plan-photo{width:100%;height:150px;align-self:auto}
+  #destinationPlans .dest-plan-card:has(.dest-plan-badge--popular){transform:translateY(-6px)}
+}
+@media(max-width:760px){
+  #destinationPlans.dest-plans-section,
+  #destInfoSection.destination-value-section{margin:10px 10px;padding:20px 14px 16px;border-radius:22px}
+}
+
+/* Traka sa podrazumevanim podacima i ikone u karticama */
+#destinationPlans .trip-defaults--plans{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-muted)}
+#destinationPlans .trip-defaults-text{color:var(--nv-muted)}
+#destinationPlans .dpf-ic{background:rgba(245,200,66,.14);color:var(--nv-accent)}

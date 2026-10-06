@@ -160,7 +160,7 @@ html,body{background:#123A44;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=3318aa4a" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e03913bc" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=e03913bc" rel="stylesheet"/><link href="theme-navy.css?v=1" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -473,7 +473,27 @@ html,body{background:#123A44;margin:0;}
 </div>
 <span aria-hidden="true" class="dest-plan-arrow">›</span></article>
 </div><div class="trip-defaults trip-defaults--plans" id="tripDefaultsPlans"><span class="trip-defaults-text" id="tripDefaultsPlansText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsPlansEdit" type="button">Promeni</button></div>
-</section><section aria-labelledby="planDetailTitle" class="section plan-detail-section" hidden="" id="planDetail">
+</section><!-- DEST INFO PANEL (premešteno u detalj plana) -->
+<section aria-labelledby="destInfoTitle" class="section flight-detail-section plan-detail-destinfo destination-value-section" hidden="" id="destInfoSection">
+<div class="ad-head">
+<h2 id="destInfoTitle">O destinaciji</h2>
+<p id="destInfoSub">Sve što treba da znaš pre polaska.</p>
+</div>
+<div id="destInfoBody">
+<div class="dest-info-skeleton" hidden="" id="destInfoSkeleton">
+<div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div>
+<div class="di-skel-grid">
+<div class="di-skel-card"></div><div class="di-skel-card"></div>
+<div class="di-skel-card di-skel-full"></div>
+</div>
+</div>
+<div hidden="" id="destInfoContent"></div>
+<p class="fd-note di-disclaimer" hidden="" id="destInfoDisclaimer">
+      ⚠️ Info generiše AI radi orijentacije — pred put uvek proveri na sajtu ambasade i kod avio-kompanije.
+    </p>
+</div>
+</section>
+<!-- / DEST INFO PANEL --><section aria-labelledby="planDetailTitle" class="section plan-detail-section" hidden="" id="planDetail">
 <article class="plan-detail-card">
 <div class="plan-detail-photo">
 <img alt="Obala u sumrak — paket Budžet" id="planDetailImg" loading="lazy" src="img/lisabon-tramvaj-1200.webp"/>
@@ -502,27 +522,7 @@ html,body{background:#123A44;margin:0;}
 </div>
 <button class="btn-primary plan-detail-more" data-i18n="ux_show_items" id="planDetailMore" type="button">Prikaži stavke</button><button class="btn-secondary plan-detail-customize" data-i18n="ux_customize_plan" id="planDetailCustomize" type="button">Prilagodi ovaj plan</button>
 <p class="plan-detail-note" data-i18n="x_636428">Cene su procene i mogu da se promene u zavisnosti od raspoloživosti.</p>
-<!-- DEST INFO PANEL (premešteno u detalj plana) -->
-<section aria-labelledby="destInfoTitle" class="section flight-detail-section plan-detail-destinfo" id="destInfoSection">
-<div class="ad-head">
-<h2 id="destInfoTitle">O destinaciji</h2>
-<p id="destInfoSub">Sve što treba da znaš pre polaska.</p>
-</div>
-<div id="destInfoBody">
-<div class="dest-info-skeleton" hidden="" id="destInfoSkeleton">
-<div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div>
-<div class="di-skel-grid">
-<div class="di-skel-card"></div><div class="di-skel-card"></div>
-<div class="di-skel-card di-skel-full"></div>
-</div>
-</div>
-<div hidden="" id="destInfoContent"></div>
-<p class="fd-note di-disclaimer" hidden="" id="destInfoDisclaimer">
-      ⚠️ Info generiše AI radi orijentacije — pred put uvek proveri na sajtu ambasade i kod avio-kompanije.
-    </p>
-</div>
-</section>
-<!-- / DEST INFO PANEL -->
+
 </div>
 </article>
 </section><div class="plan-breakdown" hidden="" id="planBreakdown">
@@ -1348,5 +1348,6 @@ html,body{background:#123A44;margin:0;}
 <script defer="" src="contact.js?v=60aecad3"></script>
 <script defer="" src="cookies.js?v=ac951772"></script>
 <script defer="" src="app-12-ux-refactor.js?v=f4ec42e0"></script>
+<script defer="" src="app-13-destination-value.js?v=1"></script>
 </body>
 </html>
