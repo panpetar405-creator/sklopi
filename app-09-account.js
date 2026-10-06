@@ -577,10 +577,16 @@ function renderAccountMenu(){
   }
   getCurrentUser().then(user => {
     if (user) {
-      dropdown.innerHTML = `<div class="auth-dropdown-inner">
-           <div class="auth-dropdown-email">${escapeHtml(user.email)}</div>
-           <a href="#" id="dropdownSavedLink">Sačuvani izleti</a>
-           <button type="button" id="dropdownLogoutBtn">Odjavi se</button>
+      const initial = escapeHtml(String(user.email || '?').trim().charAt(0).toUpperCase() || '?');
+      dropdown.innerHTML = `<div class="auth-dropdown-inner auth-profile">
+           <div class="ap-head"><span class="ap-avatar" aria-hidden="true">${initial}</span>
+             <div class="ap-who"><span class="ap-label">${tx('Prijavljen/a')}</span><div class="auth-dropdown-email">${escapeHtml(user.email)}</div></div></div>
+           <ul class="ap-menu">
+             <li><a href="#" id="dropdownSavedLink"><span class="ap-ic" aria-hidden="true">♡</span><span>${tx('Sačuvani izleti')}</span><span class="ap-chev" aria-hidden="true">›</span></a></li>
+             <li><a href="#" id="dropdownMyTripLink"><span class="ap-ic" aria-hidden="true">✈</span><span>${tx('Moj put')}</span><span class="ap-chev" aria-hidden="true">›</span></a></li>
+             <li><a href="#" id="dropdownHelpLink"><span class="ap-ic" aria-hidden="true">?</span><span>${tx('Pomoć i podrška')}</span><span class="ap-chev" aria-hidden="true">›</span></a></li>
+           </ul>
+           <button type="button" id="dropdownLogoutBtn">${tx('Odjavi se')}</button>
          </div>`;
     } else if (_authBarExpanded) {
       dropdown.innerHTML = `<div class="auth-dropdown-inner">
@@ -600,6 +606,14 @@ function renderAccountMenu(){
       e.preventDefault();
       dropdown.classList.remove('open');
       document.querySelector('.saved-wrap')?.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    [['dropdownMyTripLink', '#myTrip'], ['dropdownHelpLink', '#faq']].forEach(([id, sel]) => {
+      const a = document.getElementById(id);
+      if (a) a.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropdown.classList.remove('open');
+        document.querySelector(sel)?.scrollIntoView({behavior:'smooth', block:'start'});
+      });
     });
     const logoutBtn = document.getElementById('dropdownLogoutBtn');
     if (logoutBtn) logoutBtn.addEventListener('click', async () => {
