@@ -360,3 +360,48 @@
 @media(prefers-reduced-motion:reduce){
   .popular-reference-search-wrap,.popular-ref-chip{transition:none}
 }
+
+/* ---------- #2 dopuna: dugme filtera + "Nedavno pretraživano" ---------- */
+.popular-filter-btn{
+  flex:none;width:36px;height:36px;margin-right:-8px;display:grid;place-items:center;
+  background:transparent;border:0;border-radius:50%;color:var(--nv-muted);cursor:pointer;
+  transition:background .18s ease,color .18s ease;
+}
+.popular-filter-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.popular-filter-btn:hover,.popular-filter-btn[aria-expanded="true"]{background:rgba(245,200,66,.14);color:var(--nv-accent)}
+.popular-filter-btn:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+/* Na desktopu su čipovi uvek vidljivi, pa dugme ne treba; na telefonu otvara/zatvara čipove */
+@media(min-width:701px){.popular-filter-btn{display:none}}
+@media(max-width:700px){
+  .section.popular-reference-section:not(.is-filters-open) .popular-reference-chips{display:none}
+}
+
+.recent-searches{margin-top:22px}
+.recent-searches[hidden]{display:none}
+.recent-searches-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.recent-searches-head h3{margin:0;font:700 16px/1.2 Sora,Inter,sans-serif;color:var(--nv-text);letter-spacing:-.02em}
+.recent-searches-clear{
+  background:transparent;border:0;padding:8px 4px;min-height:36px;color:var(--nv-muted);
+  font:600 13px Inter,sans-serif;cursor:pointer;
+}
+.recent-searches-clear:hover{color:var(--nv-accent)}
+.recent-searches-clear:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px;border-radius:6px}
+.recent-searches-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.recent-row{
+  width:100%;display:grid;grid-template-columns:52px 1fr 20px;align-items:center;gap:14px;
+  padding:8px 14px 8px 8px;text-align:left;cursor:pointer;
+  background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card);color:var(--nv-text);
+}
+.recent-row:hover{background:var(--nv-surface-2);border-color:rgba(245,200,66,.45)}
+.recent-row:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px}
+.recent-thumb{width:52px;height:52px;border-radius:12px;overflow:hidden;background:var(--nv-surface-2);display:grid;place-items:center}
+.recent-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.recent-thumb svg{width:22px;height:22px;fill:none;stroke:var(--nv-accent);stroke-width:1.8}
+.recent-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+.recent-name{font:700 15px Sora,Inter,sans-serif;color:var(--nv-text)}
+.recent-country{font:500 12px Inter,sans-serif;color:var(--nv-muted)}
+.recent-arrow{font:400 24px/1 Inter,sans-serif;color:var(--nv-accent);text-align:center}
+@media(min-width:900px){
+  .recent-searches-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.popular-filter-btn{transition:none}}
