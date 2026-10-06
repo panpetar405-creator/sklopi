@@ -34,6 +34,7 @@
     if (t.indexOf('\uD83D\uDCB0') >= 0) return 'costs';    // 💰
     if (t.indexOf('\uD83D\uDEC2') >= 0) return 'visa';     // 🛂
     if (t.indexOf('\uD83C\uDF24') >= 0) return 'climate';  // 🌤
+    if (t.indexOf('\uD83D\uDCC5') >= 0) return 'climate';  // 📅 klima po mesecima
     return 'basic';
   }
   function childTab(el){
