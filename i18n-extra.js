@@ -24,7 +24,7 @@
     ["x_fx11","Auto","Car","Автомобиль"],
     ["x_9bd979","PUTOVANJE PO TVOM UKUSU","TRAVEL YOUR WAY","ПУТЕШЕСТВИЕ ПО ВАШЕМУ ВКУСУ"],
     ["x_76e5d6","Sklopi put<br>koji ti odgovara.","Build a trip<br>that fits you.","Соберите поездку,<br>которая вам подходит."],
-    ["x_76f374","Reći nam gde ideš, koliko imaš i kakav put želiš.","Tell us where you're going, how much you have and what kind of trip you want.","Скажите, куда едете, какой у вас бюджет и какая поездка вам нужна."],
+    ["x_76f374","Reci nam gde ideš, koliko imaš i kakav put želiš.","Tell us where you're going, how much you have and what kind of trip you want.","Скажите, куда едете, какой у вас бюджет и какая поездка вам нужна."],
     ["x_bc6120","Način sklapanja putovanja","How to build your trip","Способ составления поездки"],
     ["x_703590","Budžet","Budget","Бюджет"],
     ["x_feb650","Hoću da prođem što povoljnije","I want to travel as affordably as possible","Хочу поехать как можно дешевле"],
