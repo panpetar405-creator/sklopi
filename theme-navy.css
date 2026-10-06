@@ -711,3 +711,44 @@
 @media(max-width:380px){#customPlanner .cp-cols-4{grid-template-columns:repeat(2,1fr)}}
 #customPlanner .cp-cols-4 .cp-chip,#customPlanner .cp-cols-3 .cp-chip{font-size:13px;padding:0 6px}
 .pp-tag.pp-tag--pref{background:#e8eef6;color:#2b4260}
+
+/* =====================================================================
+   #7 TVOJ ITINERAR — navy tema (unutar detalja plana)
+   ===================================================================== */
+.plan-itinerary{margin-top:22px}
+.plan-itinerary[hidden]{display:none}
+.plan-itinerary .plan-detail-sub{margin:0 0 2px}
+.plan-itinerary-sub{margin:0 0 12px;color:var(--nv-muted);font:500 13px Inter,sans-serif}
+
+/* tabovi dana */
+.pi-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pi-tabs::-webkit-scrollbar{display:none}
+.pi-tab{
+  flex:none;min-height:38px;padding:0 16px;border-radius:999px;cursor:pointer;
+  background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-muted);font:700 13px Inter,sans-serif;
+  transition:background .18s ease,color .18s ease,border-color .18s ease;
+}
+.pi-tab:hover{background:var(--nv-surface-2);color:var(--nv-text)}
+.pi-tab.is-on{background:var(--nv-accent);border-color:var(--nv-accent);color:var(--nv-on-accent)}
+.pi-tab:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* dan */
+.pi-day{margin-top:10px;padding:16px 14px 6px;background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card)}
+.pi-day-title{margin:0 0 10px;font:700 17px/1.25 Sora,Inter,sans-serif;color:var(--nv-text);letter-spacing:-.02em}
+.pi-slots{list-style:none;margin:0;padding:0;position:relative}
+.pi-slot{
+  display:grid;grid-template-columns:44px 34px 1fr auto;align-items:center;gap:10px;
+  padding:11px 0;border-top:1px solid var(--nv-line);
+}
+.pi-slot:first-child{border-top:0}
+.pi-time{font:700 12.5px Inter,sans-serif;color:var(--nv-accent);font-variant-numeric:tabular-nums}
+.pi-ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:15px;background:rgba(245,200,66,.14)}
+.pi-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pi-copy b{font:700 14px Inter,sans-serif;color:var(--nv-text)}
+.pi-copy small{font:500 12px/1.35 Inter,sans-serif;color:var(--nv-muted)}
+.pi-dur{font:600 12px Inter,sans-serif;color:var(--nv-muted);white-space:nowrap}
+.pi-sight .pi-copy b{color:var(--nv-text)}
+.pi-walk .pi-ic{background:var(--nv-surface-2)}
+.pi-note{margin:10px 2px 0;color:var(--nv-muted);font:500 12px/1.4 Inter,sans-serif}
+@media(max-width:380px){.pi-slot{grid-template-columns:40px 30px 1fr auto;gap:8px}.pi-ic{width:30px;height:30px}}
+@media(prefers-reduced-motion:reduce){.pi-tab{transition:none}}

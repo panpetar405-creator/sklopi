@@ -705,7 +705,9 @@
         suggestion: typeof info.suggestion === 'string' ? info.suggestion.trim().slice(0, 60) : '',
         country: typeof info.country === 'string' ? info.country.trim().slice(0, 60) : '',
         sights: normList(info.must_see, ['name','landmark','title','attraction','sight'], ['note','tip','description','desc']).slice(0, 3).map(function (x) { return x.a; }),
-        food: normList(info.food, ['dish','name','title'], ['note','tip','description','desc']).slice(0, 2).map(function (x) { return x.a; })
+        food: normList(info.food, ['dish','name','title'], ['note','tip','description','desc']).slice(0, 2).map(function (x) { return x.a; }),
+        sightsAll: normList(info.must_see, ['name','landmark','title','attraction','sight'], ['note','tip','description','desc']).slice(0, 8),
+        foodAll: normList(info.food, ['dish','name','title'], ['note','tip','description','desc']).slice(0, 6)
       };
     });
   };
