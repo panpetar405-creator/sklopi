@@ -752,3 +752,35 @@
 .pi-note{margin:10px 2px 0;color:var(--nv-muted);font:500 12px/1.4 Inter,sans-serif}
 @media(max-width:380px){.pi-slot{grid-template-columns:40px 30px 1fr auto;gap:8px}.pi-ic{width:30px;height:30px}}
 @media(prefers-reduced-motion:reduce){.pi-tab{transition:none}}
+
+/* =====================================================================
+   #8 INFORMACIJE O DESTINACIJI — tabovi + SKLOPI savet (navy)
+   ===================================================================== */
+.di-tab-off{display:none!important}
+.di-tabs{display:flex;gap:8px;overflow-x:auto;margin:4px 0 14px;padding:2px 0 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.di-tabs[hidden]{display:none}
+.di-tabs::-webkit-scrollbar{display:none}
+.di-tab{
+  flex:none;min-height:38px;padding:0 18px;border-radius:999px;cursor:pointer;
+  background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-muted);font:700 13px Inter,sans-serif;
+  transition:background .18s ease,color .18s ease,border-color .18s ease;
+}
+.di-tab:hover{background:var(--nv-surface-2);color:var(--nv-text)}
+.di-tab.is-on{background:var(--nv-accent);border-color:var(--nv-accent);color:var(--nv-on-accent)}
+.di-tab:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+.di-savet{
+  display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;
+  background:rgba(245,200,66,.08);border:1px solid var(--nv-accent);border-radius:var(--nv-radius-card);
+}
+.di-savet[hidden]{display:none}
+.di-savet-ic{width:32px;height:32px;flex:none;display:grid;place-items:center;border-radius:50%;background:rgba(245,200,66,.18);font-size:16px}
+.di-savet b{display:block;font:700 14px Sora,Inter,sans-serif;color:var(--nv-accent);margin-bottom:2px}
+.di-savet p{margin:0;font:500 13.5px/1.45 Inter,sans-serif;color:var(--nv-text)}
+@media(prefers-reduced-motion:reduce){.di-tab{transition:none}}
+
+/* Padajuće liste za pasoš u navy temi */
+#destInfoSection #diPassportSel,#destInfoSection #diPassportSel2{
+  background:var(--nv-surface)!important;color:var(--nv-text)!important;border:1px solid var(--nv-line)!important;
+}
+#destInfoSection #diPassportSel:focus-visible,#destInfoSection #diPassportSel2:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
