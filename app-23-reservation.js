@@ -1,4 +1,4 @@
-/* app-23-reservation.js — ekran #15: "Rezervacija" (pregled stavki + ukupno + nastavak kod partnera).
+/* app-23-reservation.js — ekran #15 + #16 (korak "Plaćanje kod partnera"): "Rezervacija" (pregled stavki + ukupno + nastavak kod partnera).
    Zamenjuje izgled ekrana "Ukupna cena tvog puta" (#totalDetail). Stari .mt-card ostaje u DOM-u (skriven)
    jer ga i dalje puni app-07 — ovde se samo crta nova kartica iz istih podataka (computeCustomPackage).
    SKLOPI NE naplaćuje i ne prima uplate: "Nastavi" otkriva linkove ka partnerima (KAYAK, Booking.com, Viator),
@@ -30,14 +30,19 @@
   var actions = document.createElement('div');
   actions.className = 'resv-actions';
   actions.innerHTML =
-    '<button type="button" class="btn-primary resv-go" id="resvGo" aria-expanded="false" aria-controls="resvLinks">' +
+    '<button type="button" class="btn-primary resv-go" id="resvGo">' +
       '<span data-resv="go">Nastavi kod partnera</span> <span aria-hidden="true">\u2192</span></button>' +
-    '<div class="resv-links" id="resvLinks" hidden></div>' +
     '<button type="button" class="resv-save" id="resvSave">Sa\u010duvaj u Moj put</button>' +
     '<p class="resv-trust"><span aria-hidden="true">\ud83d\udd12</span> <span data-resv="trust"></span></p>';
+  /* korak 2 (#16): "Plaćanje" — SKLOPI ne prima uplate, pa su ovo partneri kod kojih se plaća */
+  var pay = document.createElement('div');
+  pay.className = 'resv-pay'; pay.id = 'resvPay'; pay.hidden = true;
   sec.insertBefore(card, oldCard ? oldCard.nextSibling : null);
   sec.insertBefore(actions, card.nextSibling);
-  var go = actions.querySelector('#resvGo'), links = actions.querySelector('#resvLinks');
+  sec.insertBefore(pay, actions.nextSibling);
+  var go = actions.querySelector('#resvGo');
+  var headBox = sec.querySelector('.ad-head');
+  var step = 1;
 
   /* ---------- podaci ---------- */
   function snapshot(){
@@ -69,14 +74,17 @@
   }
 
   /* ---------- crtanje ---------- */
-  var last = null;
+  var last = null, metaText = '';
+  function setHead(){
+    if (title) title.textContent = tr(step === 2 ? 'Plaćanje' : 'Rezervacija');
+    if (sub) sub.textContent = step === 2 ? tr('Plaćanje se obavlja na sajtu partnera.') : metaText;
+  }
   function render(){
     var s; try { s = snapshot(); } catch(e){ return; }
     last = s;
     var c = s.ctx, p = s.plan;
-    if (title) title.textContent = tr('Rezervacija');
     var planName = p.title ? tr(p.title) + ' ' + tr('plan') : '';
-    if (sub) sub.textContent = cityLabel(c.dest) + (planName ? ' \u2013 ' + planName : '') + ' \u2022 ' + daysLabel(c.days)
+    metaText = cityLabel(c.dest) + (planName ? ' \u2013 ' + planName : '') + ' \u2022 ' + daysLabel(c.days)
       + (c.from && c.to ? ' \u2022 ' + fmtDate(c.from) + ' \u2013 ' + fmtDate(c.to) : '');
     var persons = c.adults + ' ' + pluralWord('adult', c.adults);
     card.innerHTML =
@@ -92,30 +100,43 @@
     var trust = actions.querySelector('[data-resv="trust"]');
     if (trust) trust.textContent = tr('Plaćanje ide direktno kod partnera \u2022 SKLOPI ne naplaćuje');
     actions.querySelector('#resvSave').textContent = tr('Sačuvaj u Moj put');
-    if (!links.hidden) renderLinks();
+    if (step === 2) renderPay(); else setHead();
   }
-  function renderLinks(){
+  function renderPay(){
     if (!last) return;
-    var s = last, c = s.ctx, parts = [];
+    var s = last, c = s.ctx, n = 0, items = [];
     s.rows.forEach(function(r){
       if (!r.cta) return;
+      n++;
       var url = linkFor(r.kind, s);
-      parts.push('<span class="resv-link-item"><a class="resv-link" href="' + esc(url) + '" target="_blank" rel="noopener sponsored"' +
+      items.push('<span class="resv-link-item"><a class="resv-link" href="' + esc(url) + '" target="_blank" rel="noopener sponsored"' +
         ' data-kind="' + r.kind + '" data-price="' + Math.round(r.price) + '" data-url="' + esc(url) + '" data-dest="' + esc(c.dest || '') + '" data-tier="plan" onclick="bookItem(this)">' +
-        '<span class="resv-link-ic" aria-hidden="true">' + r.ic + '</span><span class="resv-link-t"><b>' + esc(r.name) + '</b><small>' + esc(r.cta) + '</small></span>' +
+        '<span class="resv-link-ic" aria-hidden="true">' + r.ic + '</span>' +
+        '<span class="resv-link-t"><b>' + esc(r.name) + ' \u2022 ' + esc(money(r.price)) + '</b><small>' + esc(tr('Plati kod: ')) + esc(r.cta) + '</small></span>' +
         '<span aria-hidden="true">\u2197</span></a>' + (typeof affBadgeHtml === 'function' ? affBadgeHtml() : '') + '</span>');
     });
-    links.innerHTML = '<p class="resv-links-label">' + esc(tr('Rezerviši svaku stavku direktno kod partnera:')) + '</p>' +
-      parts.join('') + '<p class="resv-disc">' + esc(typeof affDisc === 'function' ? affDisc() : '') + '</p>';
+    pay.innerHTML =
+      '<button type="button" class="resv-back" id="resvBack"><span aria-hidden="true">\u2190</span> ' + esc(tr('Rezervacija')) + '</button>' +
+      '<div class="resv-card">' +
+        '<h3 class="resv-sub">' + esc(tr('Plati svaku stavku kod partnera')) + '</h3>' +
+        '<p class="resv-pay-info">' + esc(tr('Kartica, Apple Pay ili PayPal \u2014 načini plaćanja zavise od partnera. SKLOPI ne vidi niti čuva podatke o tvojoj kartici.')) + '</p>' +
+        (items.length ? items.join('') : '<p class="resv-pay-info">' + esc(tr('Nijedna stavka plana se ne rezerviše preko partnera.')) + '</p>') +
+        '<div class="resv-total"><span>' + esc(tr('Ukupno')) + '</span><b>' + esc(money(s.pkg.total)) + '</b></div>' +
+        '<p class="resv-fine">' + esc(tr('Ilustrativna procena \u2014 konačnu cenu i dostupnost potvrđuješ kod partnera.')) + '</p>' +
+      '</div>' +
+      '<p class="resv-disc">' + esc(typeof affDisc === 'function' ? affDisc() : '') + '</p>';
+    pay.querySelector('#resvBack').addEventListener('click', function(){ show(1); });
+  }
+  function show(n){
+    step = n;
+    var two = n === 2;
+    card.hidden = two; actions.hidden = two; pay.hidden = !two;
+    if (two) renderPay();
+    setHead();
+    if (headBox) headBox.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
-  go.addEventListener('click', function(){
-    var open = links.hidden;
-    if (open){ renderLinks(); links.hidden = false; }
-    else links.hidden = true;
-    go.setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (open) requestAnimationFrame(function(){ links.scrollIntoView({behavior:'smooth', block:'nearest'}); });
-  });
+  go.addEventListener('click', function(){ show(2); });
   actions.querySelector('#resvSave').addEventListener('click', function(){
     var t = document.getElementById('myTrip');
     if (t) t.scrollIntoView({behavior:'smooth', block:'start'});
@@ -123,7 +144,7 @@
 
   function ifOpen(){ if (!box.hidden) render(); }
   document.addEventListener('sklopi:plan-breakdown', function(){
-    links.hidden = true; go.setAttribute('aria-expanded', 'false');   // svaki ulazak na ekran počinje zatvoren
+    step = 1; card.hidden = false; actions.hidden = false; pay.hidden = true;   // svaki ulazak počinje od koraka 1
     render();
   });
   document.addEventListener('sklopi:plan-changed', ifOpen);
