@@ -338,7 +338,7 @@
     const apNote = p.airportNote ? '<p class="dest-plan-airport-note">\u2708\ufe0f ' + escapeHtml(p.airportNote) + '</p>' : '';
     return '<article class="dest-plan-card" data-plan="' + i + '"><div class="dest-plan-photo"><img src="' + escapeHtml(p.thumb)
       + '" alt="' + escapeHtml(cityLabel(p.dest)) + '" loading="lazy">'
-      + (i === 0 ? '<span class="dest-plan-badge dest-plan-badge--popular">' + escapeHtml(tx(p.badge)) + '</span>' : '')
+      + (p.badge ? '<span class="dest-plan-badge' + (p.badgeCls === 'plan-detail-badge--popular' ? ' dest-plan-badge--popular' : '') + '">' + escapeHtml(tx(p.badge)) + '</span>' : '')
       + '</div><div class="dest-plan-body"><h3>' + escapeHtml(tx(p.title)) + '</h3>'
       + '<p class="dest-plan-tag">' + escapeHtml(tx(PLAN_TAGS[p.key] || PLAN_TAG_BALANCE)) + '</p>'
       + '<p class="dest-plan-price">' + escapeHtml(tx('od ') + priceText(p.price)) + ' <span>' + tx('/ osoba') + '</span></p><ul class="dest-plan-features">' + ft
@@ -572,6 +572,86 @@
   const breakdown = document.getElementById('planBreakdown');
   function priceText(n){ return currentCurrency === 'RSD' ? fmtEUR(n) : n.toLocaleString('de-DE') + ' \u20ac'; }
 
+
+  /* ---- Ekran #5: šta NIJE uključeno + "Možeš dodati" ----
+     Usluga koja nije markirana (Letovi/Smeštaj/R a C/Aktivnost) prikazuje se kao prazan kružić,
+     a u "Možeš dodati" stoji prekidač koji uključuje tu uslugu (isti toggle kao u formi)
+     i ponovo računa plan. */
+  const ADDON_DEFS = [
+    {k:'flight',   ic:'\u2708', label:'Let'},
+    {k:'hotel',    ic:'\u25a3', label:'Hotel'},
+    {k:'car',      ic:'\u25b1', label:'Auto'},
+    {k:'activity', ic:'\u25c7', label:'Aktivnosti'}
+  ];
+  let _addedKey = '', _added = {};   // usluge dodate sa ovog ekrana (prekidač ostaje "uključen")
+  function offRows(svc){
+    return ADDON_DEFS.filter(d => !svc[d.k]).map(d =>
+      '<li class="is-off"><span class="pdl-ic" aria-hidden="true">\u25cb</span><div><b>' + escapeHtml(tx(d.label))
+      + '</b><small>' + escapeHtml(tx('Nije uključeno')) + '</small></div></li>').join('');
+  }
+  function addonDelta(p, svc, pctx, k){
+    try {
+      const mk = on => {
+        const o = Object.assign({}, BUILDER_DEFAULTS, {includeFlight:on.flight, includeHotel:on.hotel}, pickSel(p));
+        if (!on.car) o.carPref = 'none';
+        if (!on.activity) o.activityCount = 0;
+        return o;
+      };
+      const withK = Object.assign({}, svc, {[k]: true}), withoutK = Object.assign({}, svc, {[k]: false});
+      const ad = Math.max(1, pctx.adults || 1);
+      const a = computeCustomPackage(mk(withK), pctx).total, b = computeCustomPackage(mk(withoutK), pctx).total;
+      const d = Math.round((a - b) / ad);
+      return isFinite(d) && d > 0 ? d : 0;
+    } catch(e){ return 0; }
+  }
+  function renderAddons(p, svc, pctx){
+    const box = $('planDetailAddons'), ul = $('planDetailAddonList');
+    if (!box || !ul) return;
+    const key = p.key + '|' + pctx.dest;
+    if (key !== _addedKey){ _addedKey = key; _added = {}; }
+    const items = ADDON_DEFS.filter(d => {
+      if (d.k === 'car' && !svc.car && p.carPref === 'none') return false;   // plan ne predviđa auto
+      return !svc[d.k] || _added[d.k];
+    });
+    box.hidden = !items.length;
+    ul.innerHTML = items.map(d => {
+      const on = !!svc[d.k];
+      const pr = on ? (_added[d.k] ? _added[d.k].price : 0) : addonDelta(p, svc, pctx, d.k);
+      return '<li><span class="pdl-ic" aria-hidden="true">' + d.ic + '</span><div><b>' + escapeHtml(tx(d.label)) + '</b></div>'
+        + (pr ? '<em class="pda-price">+' + escapeHtml(priceText(pr)) + '</em>' : '')
+        + '<button type="button" role="switch" class="pda-switch" data-svc="' + d.k + '" data-price="' + (pr || 0)
+        + '" aria-checked="' + (on ? 'true' : 'false') + '" aria-label="' + escapeHtml(tx(d.label)) + '"></button></li>';
+    }).join('');
+  }
+  // Ponovo prikazuje aktivni plan posle promene usluga (nova cena i sadržaj), bez novog koraka u istoriji
+  function refreshActivePlan(){
+    const cur = window.SKLOPI_ACTIVE_PLAN;
+    if (!cur) return;
+    const np = curPlans.find(x => x.key === cur.key);
+    if (!np) return;
+    window.SKLOPI_ACTIVE_PLAN = np;
+    const svc = np.svc || {flight:true, hotel:true, car:true, activity:true};
+    Object.assign(builderState, {
+      includeFlight:svc.flight, includeHotel:svc.hotel, flightPref:np.flightPref, hotelStars:np.hotelStars,
+      prioritizeLocation:np.prioritizeLocation, carPref:svc.car ? np.carPref : 'none', activityCount:svc.activity ? np.activityCount : 0
+    });
+    renderFormUI();
+    document.dispatchEvent(new Event('sklopi:plan-changed'));
+    renderPlanDetail();
+  }
+  window.SKLOPI_refreshActivePlan = refreshActivePlan;
+  $('planDetailAddonList')?.addEventListener('click', e => {
+    const b = e.target.closest('.pda-switch');
+    if (!b) return;
+    const k = b.dataset.svc, wasOn = b.getAttribute('aria-checked') === 'true';
+    const toggle = document.querySelector('.toggle[data-t="' + k + '"]');
+    if (!toggle) return;
+    if (!wasOn) _added[k] = {price: Number(b.dataset.price) || 0};
+    else delete _added[k];
+    toggle.click();            // isti tok kao u formi → 'sklopi:services-changed' → render() preračuna planove
+    refreshActivePlan();
+  });
+
   function renderPlanDetail(){
     const p = window.SKLOPI_ACTIVE_PLAN;
     if (!p || !detail) return;
@@ -598,7 +678,9 @@
       (svc.flight ? row('\u2713', flightTitle, escapeHtml(tx(p.flightS))) : '') +
       (svc.hotel ? row('\u2713', tx('Hotel'), escapeHtml(tx(p.hotelS))) : '') +
       (svc.activity ? row('\u2713', tx('Aktivnosti'), escapeHtml(tx(p.actS))) : '') +
-      (svc.car ? row('\u2713', tx('Prevoz'), escapeHtml(tx(p.carS))) : '');
+      (svc.car ? row('\u2713', tx('Prevoz'), escapeHtml(tx(p.carS))) : '') +
+      offRows(svc);
+    renderAddons(p, svc, pctx);
     // Pločice sa cenom po stavci (ekran 5 sa slike): od čega se plan sastoji, cena po osobi.
     const tilesEl = $('planDetailTiles');
     if (tilesEl){
