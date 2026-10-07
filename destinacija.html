@@ -27,6 +27,9 @@
 <link rel="stylesheet" href="fonts.css?v=0f858672">
 <link rel="stylesheet" href="styles.css?v=bdc0b83f">
 <link rel="stylesheet" href="dest-info.css?v=67d8e547">
+<link rel="stylesheet" href="ux-refactor.css?v=94624cca">
+<link rel="stylesheet" href="theme-navy.css?v=navy2">
+<link rel="stylesheet" href="theme-navy-rest.css?v=navy4">
 <style>
 
 [hidden]{display:none !important;}
@@ -156,29 +159,28 @@
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt2{background:linear-gradient(135deg,var(--emerald) 0%,var(--deep) 100%);color:var(--on-dark-strong);}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
 </style>
+<link rel="stylesheet" href="destinacija.css?v=1">
 </head>
 <body>
 <a class="skip-link" href="#main">Preskoči na sadržaj</a>
 
-<!-- ====== TOPBAR (identičan onom sa index.html) ====== -->
+<!-- ====== TOPBAR (isti kao na početnoj) ====== -->
 <div class="topbar-wrap">
 <div class="topbar">
-<div class="logo">
-<div class="mark"><svg viewBox="0 0 24 24" fill="none"><g transform="rotate(-18 12 12)"><rect x="4" y="5" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="7" r="1.4" fill="var(--deep)"/><circle cx="20" cy="7" r="1.4" fill="var(--deep)"/><line x1="12" y1="5" x2="12" y2="9" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="10.5" width="16" height="4" rx="2" fill="#fff"/><circle cx="4" cy="12.5" r="1.4" fill="var(--deep)"/><circle cx="20" cy="12.5" r="1.4" fill="var(--deep)"/><line x1="12" y1="10.5" x2="12" y2="14.5" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="var(--deep)"/><circle cx="20" cy="18" r="1.4" fill="var(--deep)"/><line x1="12" y1="16" x2="12" y2="20" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/></g></svg></div>
-SKLOPI<em>.</em>
-</div>
-<nav>
-<a href="index.html#faq">Kako radi</a><a href="index.html#destinacije">Destinacije</a><a href="index.html#about">O nama</a>
-</nav>
+<a class="logo logo-v2" href="index.html" aria-label="SKLOPI — početna">
+<img alt="" aria-hidden="true" class="logo-v2-mark" height="36" src="sklopi-mark.svg" style="border-radius:8px;" width="36"/>
+<svg aria-label="SKLOPI" class="logo-v2-svg" role="img" style="height:20px!important;width:auto!important;" viewbox="166 66 420 89" xmlns="http://www.w3.org/2000/svg">
+<path d="M 561 77 L 561 144 L 576 144 L 576 77 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 531 79 L 523 77 L 487 77 L 487 144 L 502 144 L 503 122 L 524 122 L 533 119 L 540 113 L 543 106 L 543 92 L 540 86 Z M 502 91 L 523 91 L 528 97 L 526 106 L 521 109 L 503 109 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 336 77 L 336 144 L 384 144 L 384 131 L 353 131 L 351 129 L 351 77 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 254 77 L 254 144 L 269 144 L 269 127 L 278 117 L 298 144 L 317 144 L 289 107 L 289 105 L 316 77 L 297 77 L 271 105 L 269 104 L 269 77 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 424 76 L 411 81 L 401 91 L 396 103 L 396 118 L 400 129 L 409 139 L 423 145 L 439 145 L 453 139 L 463 128 L 467 115 L 466 100 L 458 86 L 450 80 L 438 76 Z M 427 90 L 436 90 L 442 93 L 450 103 L 450 118 L 444 127 L 436 131 L 426 131 L 420 128 L 412 116 L 412 105 L 414 100 L 419 94 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 187 80 L 179 90 L 178 100 L 180 106 L 190 114 L 213 120 L 217 124 L 217 128 L 211 132 L 200 132 L 183 125 L 176 136 L 186 142 L 196 145 L 214 145 L 221 143 L 230 136 L 233 130 L 233 119 L 231 115 L 223 108 L 196 100 L 194 95 L 199 90 L 207 89 L 224 96 L 231 84 L 225 80 L 211 76 L 198 76 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+</svg>
+</a>
 <div class="topbar-right">
 <button type="button" class="lang-switch currency-switch" data-currency="EUR" aria-label="Promeni valutu"><span class="cs-eur">EUR</span><span class="ls-sep">/</span><span class="cs-rsd">RSD</span></button>
 <button type="button" class="lang-switch" data-lang="sr">SR</button>
-<button type="button" class="avatar" aria-label="Nalog">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.5-4 4.2-6 7-6s5.5 2 7 6"/></svg>
-</button>
-<button type="button" class="hamburger" aria-label="Meni">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-</button>
 </div>
 </div>
 </div>
@@ -195,7 +197,7 @@ Nazad na pretragu
 <main id="main" tabindex="-1">
 <div class="dp-hero">
 <div class="dp-hero-inner">
-<p class="hero-kicker"><span class="dash" style="width:20px;height:2px;background:var(--gold-soft);display:inline-block;margin-right:8px;"></span>PAŽLJIVO OSMIŠLJENA PUTOVANJA</p>
+<p class="dp-kicker">Tvoje putovanje</p>
 <h1 id="dpHeroTitle">Kuda putuješ?</h1>
 <div class="dp-hero-facts" id="dpHeroFacts"></div>
 <div id="dpHeroChecklist"></div>
@@ -557,7 +559,8 @@ function travelChecklistHtml(country, includeCar){
   const rows = items.map(i =>
     '<li class="tc-item ' + (i.ok ? 'tc-ok' : 'tc-todo') + '"><span class="tc-ic">' + i.icon + '</span><div><b>' + esc(i.title) + '</b><p>' + esc(i.text) + '</p></div></li>'
   ).join('');
-  return '<div class="travel-checklist"><div class="tc-head"><span class="tc-title">🧳 Da li si sve pokrio?</span><span class="tc-score">' +
+  return '<details class="travel-checklist"><summary class="tc-head"><span class="tc-title">🧳 Dokumenta za put</span><span class="tc-score">' +
+    doneCount + '/' + items.length + ' spremno</span></summary><ul class="tc-list">' + rows + '</ul>' + travelRulesUpdatedHtml() + '</details>';
     doneCount + '/' + items.length + '</span></div><ul class="tc-list">' + rows + '</ul>' + travelRulesUpdatedHtml() + '</div>';
 }
 
@@ -1016,13 +1019,16 @@ function renderResults(P){
   $('dpHeroChecklist').innerHTML = dest.country ? travelChecklistHtml(dest.country, canDrive) : '';
 
   /* --- letovi (sadržaj se puni asinhrono) --- */
-  const simNote = '<p class="dp-note dp-note-top">Primeri ponuda sa ilustrativnim cenama. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
+  const simNote = '';
+  const jump = '<nav class="dp-jump" aria-label="Brza navigacija">' +
+    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#saveti">💡 Saveti</a></nav>' +
+    '<p class="dp-estimate">Cene su ilustrativne procene. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
   const viaNote = (c.oVia || c.dVia)
     ? '<p class="dp-note dp-note-top">' +
       (c.oVia ? esc(org.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.oVia) + '. ' : '') +
       (c.dVia ? esc(dest.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.dVia) + '. ' : '') + '</p>'
     : '';
-  let html = '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
+  let html = jump + '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
     '<p class="dp-note dp-note-top" id="destInfoSub"></p>' +
     '<div class="dest-info-skeleton" id="destInfoSkeleton" hidden><div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div><div class="di-skel-grid"><div class="di-skel-card"></div><div class="di-skel-card"></div></div></div>' +
     '<div id="destInfoContent" hidden></div><p class="dp-note di-disclaimer" id="destInfoDisclaimer" hidden></p></div>';
@@ -1235,5 +1241,11 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <script src="contact.js?v=60aecad3"></script>
+<nav aria-label="Glavna navigacija" class="bottom-nav" id="bottomNav">
+<a href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"></path></svg><span>Početna</span></a>
+<a href="index.html#popular-destinations" class="is-active" aria-current="page"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"></path></svg><span>Destinacije</span></a>
+<a href="vodici.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19V5M8 7h6"></path></svg><span>Vodiči</span></a>
+<a href="index.html#myTrip"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5 20c1.5-4 4.2-6 7-6s5.5 2 7 6"></path></svg><span>Moj put</span></a>
+</nav>
 </body>
 </html>

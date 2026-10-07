@@ -1,0 +1,211 @@
+/* SKLOPI — stranica Destinacije u istom (navy) dizajnu kao početna.
+   Učitava se POSLE theme-navy*.css i posle inline <style> bloka u destinacija.html, zato pobeđuje bez !important.
+   Tokeni (--nv-*) su definisani u theme-navy.css. */
+
+:root{--topbar-h:56px;--dp-gap:16px;}
+html{scroll-behavior:smooth;}
+body{background:var(--nv-page,#060D18);color:var(--nv-text);}
+.dp-wrap{max-width:760px;padding:0 var(--dp-gap) 110px;}
+.dp-section{margin-top:34px;scroll-margin-top:calc(var(--topbar-h) + 84px);}
+
+/* ---------- zaglavlje i "nazad" ---------- */
+.topbar-wrap{background:var(--nv-bg);border-bottom:1px solid var(--nv-line);}
+.topbar{padding:10px var(--dp-gap);max-width:760px;}
+.logo.logo-v2{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.dp-back-row{padding:14px var(--dp-gap) 0;max-width:760px;}
+.dp-back-row .results-back-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px 0 12px;
+  background:transparent;color:var(--nv-muted);border:1px solid var(--nv-line);border-radius:999px;font:600 14px Inter,sans-serif;}
+.dp-back-row .results-back-btn svg{width:16px;height:16px;}
+.dp-back-row .results-back-btn:hover{color:var(--nv-text);border-color:rgba(255,255,255,.28);}
+
+/* ---------- hero ---------- */
+.dp-hero{margin:14px var(--dp-gap) 0;max-width:728px;margin-left:auto;margin-right:auto;padding:26px 22px 22px;
+  background:radial-gradient(120% 140% at 12% -10%,rgba(245,200,66,.18) 0%,transparent 55%),linear-gradient(160deg,var(--nv-surface) 0%,var(--nv-bg) 100%);
+  border:1px solid var(--nv-line);border-radius:var(--nv-radius-panel,28px);color:var(--nv-text);}
+@media (max-width:788px){.dp-hero{margin-left:var(--dp-gap);margin-right:var(--dp-gap);}}
+.dp-hero-inner{max-width:none;}
+.dp-kicker{margin:0 0 6px;font:600 12px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--nv-accent);}
+.dp-hero h1{font:700 clamp(30px,8vw,42px)/1.08 Sora,sans-serif;letter-spacing:-.03em;color:var(--nv-text);margin:0;}
+.dp-hero .dp-flag{font-size:.8em;margin-right:8px;}
+.dp-hero-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.dp-hero-fact{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;font-size:13px;color:var(--nv-muted);
+  background:rgba(255,255,255,.05);border:1px solid var(--nv-line);border-radius:999px;}
+.dp-hero-fact b{color:var(--nv-text);font-weight:600;}
+.dp-hero-edit{margin-top:14px;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;cursor:pointer;
+  font:600 14px Inter,sans-serif;color:var(--nv-accent);background:transparent;border:1px solid rgba(245,200,66,.45);border-radius:999px;}
+.dp-hero-edit:hover{background:rgba(245,200,66,.12);}
+
+/* ---------- forma za izmenu pretrage ---------- */
+.dp-search{margin-top:16px;}
+.dp-field label{color:var(--nv-muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase;}
+.dp-field input,.dp-field select{background:rgba(255,255,255,.06);color:var(--nv-text);border:1px solid var(--nv-line);border-radius:14px;min-height:50px;}
+.dp-field input::placeholder{color:var(--nv-muted);}
+.dp-field input:focus-visible,.dp-field select:focus-visible{outline:2px solid var(--nv-accent);outline-offset:1px;}
+.dp-field select option{color:#111;}
+.dp-form-msg{color:#FCA5A5;}
+.dp-form .btn-primary,.dp-total-bar .btn-primary{background:var(--nv-accent);color:var(--nv-on-accent);border:0;border-radius:999px;font:700 16px Inter,sans-serif;min-height:52px;box-shadow:none;}
+.dp-form .btn-primary:hover,.dp-total-bar .btn-primary:hover{filter:brightness(1.06);}
+
+/* ---------- dokumenta za put (sklopljeno) ---------- */
+.travel-checklist{margin-top:16px;background:rgba(255,255,255,.04);border:1px solid var(--nv-line);border-radius:18px;color:var(--nv-text);overflow:hidden;}
+.travel-checklist .tc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 16px;cursor:pointer;list-style:none;font:600 15px Inter,sans-serif;}
+.travel-checklist .tc-head::-webkit-details-marker{display:none;}
+.travel-checklist .tc-head::after{content:"›";margin-left:4px;font-size:20px;line-height:1;color:var(--nv-muted);transition:transform .2s;}
+.travel-checklist[open] .tc-head::after{transform:rotate(90deg);}
+.travel-checklist .tc-title{flex:1;}
+.travel-checklist .tc-score{font-size:12.5px;font-weight:600;color:var(--nv-accent);background:rgba(245,200,66,.14);padding:4px 10px;border-radius:999px;}
+.travel-checklist .tc-list{list-style:none;margin:0;padding:0 16px 6px;}
+.travel-checklist .tc-item{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--nv-line);}
+.travel-checklist .tc-ic{flex:0 0 auto;font-size:18px;line-height:1.3;}
+.travel-checklist .tc-item b{display:block;font-size:14.5px;color:var(--nv-text);}
+.travel-checklist .tc-item p{margin:3px 0 0;font-size:13.5px;line-height:1.5;color:var(--nv-muted);}
+.travel-checklist .travel-updated{margin:0;padding:0 16px 14px;color:var(--nv-muted);}
+
+/* ---------- brza navigacija ---------- */
+.dp-jump{display:flex;gap:8px;overflow-x:auto;margin:18px calc(var(--dp-gap) * -1) 0;padding:2px var(--dp-gap) 6px;scrollbar-width:none;}
+.dp-jump::-webkit-scrollbar{display:none;}
+.dp-jump a{flex:0 0 auto;display:inline-flex;align-items:center;min-height:38px;padding:0 14px;font:600 13.5px Inter,sans-serif;white-space:nowrap;
+  color:var(--nv-text);text-decoration:none;background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:999px;}
+.dp-jump a:hover{border-color:rgba(245,200,66,.55);}
+.dp-estimate{margin:10px 0 0;font-size:12.5px;line-height:1.5;color:var(--nv-muted);}
+
+/* ---------- lepljiva traka sa zbirom ---------- */
+.dp-total-bar{top:var(--topbar-h);background:rgba(11,22,38,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--nv-line);box-shadow:0 10px 24px -14px rgba(0,0,0,.6);padding:10px var(--dp-gap);gap:10px;}
+.dp-total-bar .dp-tb-label{color:var(--nv-muted);}
+.dp-total-bar .dp-tb-price{color:var(--nv-text);}
+.dp-total-bar .dp-tb-price small{color:var(--nv-muted);}
+.dp-total-bar .btn-primary{padding:0 18px!important;min-height:44px;font-size:14.5px;display:inline-flex;align-items:center;gap:8px;}
+.dp-tb-open{background:var(--nv-accent);color:var(--nv-on-accent);min-height:44px;font-weight:700;}
+.dp-tb-open:hover{background:var(--nv-accent);filter:brightness(1.06);}
+.dp-trip-panel{border-top-color:var(--nv-line);}
+.dp-trip-row{border-bottom-color:var(--nv-line);color:var(--nv-text);}
+.dp-trip-txt a{color:var(--nv-accent);}
+.dp-trip-price{color:var(--nv-text);}
+.dp-trip-rm,.dp-trip-note{color:var(--nv-muted);}
+.aff-badge{background:rgba(255,255,255,.06);border-color:var(--nv-line);color:var(--nv-muted);}
+
+/* ---------- naslovi sekcija ---------- */
+.dp-section-head{margin-bottom:12px;}
+.dp-section-ic{background:rgba(245,200,66,.14);color:var(--nv-accent);}
+.dp-section-head h2{font:700 clamp(20px,5.4vw,24px)/1.2 Sora,sans-serif;letter-spacing:-.02em;color:var(--nv-text);}
+.dp-section-head .dp-sh-count{color:var(--nv-muted);}
+.dp-sl-btn{background:var(--nv-surface);color:var(--nv-text);border:1px solid var(--nv-line);}
+.dp-sl-btn:disabled{opacity:.35;}
+.dp-subhead{margin-top:26px;}
+.dp-note{color:var(--nv-muted);}
+
+/* ---------- kartice ponuda ---------- */
+.dp-sl-card{background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card,18px);box-shadow:none;color:var(--nv-text);overflow:hidden;}
+.dp-sl-photo{background:linear-gradient(135deg,var(--nv-surface-2) 0%,#0F2A3C 100%);}
+.dp-sl-banner{color:var(--nv-text);}
+.dp-sl-title{color:var(--nv-text);font:700 15.5px/1.3 Sora,sans-serif;}
+.dp-sl-sub{color:var(--nv-muted);}
+.dp-sl-price b{color:var(--nv-text);font:700 22px Sora,sans-serif;}
+.dp-sl-price small{color:var(--nv-muted);}
+.dp-badge{background:rgba(255,255,255,.08);color:var(--nv-muted);border:1px solid var(--nv-line);}
+.dp-badge.dp-partner{background:rgba(245,200,66,.14);color:var(--nv-accent);border-color:transparent;}
+.dp-fl-logo{background:rgba(255,255,255,.08);color:var(--nv-text);}
+.dp-fl-airline{color:var(--nv-text);}
+.dp-fl-route{color:var(--nv-text);}
+.dp-fl-route .dp-fl-line{background:var(--nv-line);}
+.dp-fl-route .dp-fl-line::after,.dp-fl-times{color:var(--nv-muted);}
+.dp-pick{border-color:var(--nv-accent);color:var(--nv-accent);min-height:44px;}
+.dp-pick:hover{background:rgba(245,200,66,.12);}
+.dp-pick.on{background:var(--nv-accent);color:var(--nv-on-accent);}
+.dp-linkbtn{background:transparent;color:var(--nv-text);border:1px solid var(--nv-line);}
+.dp-linkbtn:hover{background:rgba(255,255,255,.06);}
+.dp-linkbtn.dp-primary{background:var(--nv-accent);color:var(--nv-on-accent);border-color:transparent;}
+.dp-more-btn{background:transparent;color:var(--nv-text);border-color:var(--nv-line);min-height:44px;}
+.dp-more-btn:hover{border-color:rgba(245,200,66,.55);}
+
+/* ---------- ostale kartice (transferi, osiguranje, eSIM, saveti) ---------- */
+.dp-card{background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card,18px);box-shadow:none;color:var(--nv-text);}
+.dp-tip{border-bottom-color:var(--nv-line);}
+.dp-tip-ic{background:rgba(245,200,66,.14);}
+.dp-tip-title{color:var(--nv-text);}
+.dp-tip-text{color:var(--nv-muted);}
+.dp-gc{border-top-color:var(--nv-line);}
+.dp-gc-needed b{color:#FCA5A5;}
+.dp-disclosure{color:var(--nv-muted);}
+.dp-act-card,.dp-hotel-card,.dp-car-card{background:var(--nv-surface);border-color:var(--nv-line);}
+
+/* ---------- O destinaciji (preuzeto iz navy teme početne) ---------- */
+#o-destinaciji{color:var(--nv-text);}
+#o-destinaciji .dp-note,#o-destinaciji #destInfoSub{color:var(--nv-muted);}
+#o-destinaciji .ad-head h2{color:var(--nv-text)}
+#o-destinaciji .ad-head p{color:var(--nv-muted)}
+#o-destinaciji .di-disclaimer{color:var(--nv-muted)}
+#o-destinaciji .dest-info-skeleton .di-skel-row,
+#o-destinaciji .dest-info-skeleton .di-skel-card{background:var(--nv-surface)}
+/* Kartice informacija */
+#o-destinaciji .di-card{
+  background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card);color:var(--nv-text);
+}
+#o-destinaciji .di-card-ic,
+#o-destinaciji .di-ic-aqua,#o-destinaciji .di-ic-gold,#o-destinaciji .di-ic-coral,
+#o-destinaciji .di-ic-deep,#o-destinaciji .di-ic-purple{background:rgba(245,200,66,.14)}
+#o-destinaciji .di-card-title{color:var(--nv-text);text-transform:none;letter-spacing:-.01em;font:700 15px Sora,Inter,sans-serif}
+#o-destinaciji .di-row{border-bottom-color:var(--nv-line)}
+#o-destinaciji .di-label{color:var(--nv-muted)}
+#o-destinaciji .di-val{color:var(--nv-text)}
+#o-destinaciji .di-val.di-green{color:#4ADE80}
+#o-destinaciji .di-val.di-red{color:#FCA5A5}
+#o-destinaciji .di-val.di-gold{color:var(--nv-accent)}
+#o-destinaciji .di-val.di-phrase{color:var(--nv-accent)}
+/* Vreme */
+#o-destinaciji .di-temp{color:var(--nv-text)}
+#o-destinaciji .di-temp-desc{color:var(--nv-muted)}
+/* Pilule (valuta, jezik, vreme, bezbednost) */
+#o-destinaciji .di-pill{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-text)}
+#o-destinaciji .di-pill.di-pill-di-green{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:#86EFAC}
+#o-destinaciji .di-pill.di-pill-di-gold{background:rgba(245,200,66,.12);border-color:rgba(245,200,66,.4);color:var(--nv-accent)}
+#o-destinaciji .di-pill.di-pill-di-red{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.35);color:#FCA5A5}
+/* Troškovi po nivou */
+#o-destinaciji .di-budget-tier,
+#o-destinaciji .di-tier-budget,#o-destinaciji .di-tier-mid,#o-destinaciji .di-tier-comfort{
+  background:var(--nv-bg);border:1px solid var(--nv-line);
+}
+#o-destinaciji .di-tier-mid{border-color:rgba(245,200,66,.45)}
+#o-destinaciji .di-tier-label,#o-destinaciji .di-tier-note{color:var(--nv-muted)}
+#o-destinaciji .di-tier-price{color:var(--nv-text)}
+/* Znamenitosti */
+#o-destinaciji .di-ms-item{border-bottom-color:var(--nv-line)}
+#o-destinaciji .di-ms-num{background:var(--nv-accent);color:var(--nv-on-accent)}
+#o-destinaciji .di-ms-name{color:var(--nv-text)}
+#o-destinaciji .di-ms-note{color:var(--nv-muted)}
+/* Greška i ponovni pokušaj */
+#o-destinaciji .di-error{color:var(--nv-muted)}
+#o-destinaciji .di-error + p button,#o-destinaciji #diExtraRetry{
+  background:var(--nv-accent)!important;color:var(--nv-on-accent)!important;border:0!important;border-radius:12px!important;
+}
+#o-destinaciji a{color:var(--nv-accent)}
+#o-destinaciji a:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+/* Naslov panela: bez velikih slova */
+#o-destinaciji .destination-value-kicker{text-transform:none;letter-spacing:0}
+/* Padajuće liste za pasoš u navy temi */
+#o-destinaciji #diPassportSel,#o-destinaciji #diPassportSel2{
+  background:var(--nv-surface)!important;color:var(--nv-text)!important;border:1px solid var(--nv-line)!important;
+}
+#o-destinaciji #diPassportSel:focus-visible,#o-destinaciji #diPassportSel2:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+
+/* ---------- baneri kartica: jedna paleta (tamno plava, topli/tirkizni akcenat) ---------- */
+.dp-sl-banner,.dp-sl-photo.no-photo .dp-sl-banner.on-photo{background:linear-gradient(135deg,#1B3552 0%,#0F2A3C 100%);color:var(--nv-text);}
+.dp-sl-banner.alt2,.dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt2{background:linear-gradient(135deg,#12404B 0%,#0F2A3C 100%);color:var(--nv-text);}
+.dp-sl-banner.alt3,.dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,#4A3A16 0%,#1B2A3C 100%);color:var(--nv-text);}
+.dp-sl-banner .dp-badge{background:rgba(0,0,0,.28);color:var(--nv-text);}
+.travel-checklist .tc-head,.travel-checklist .tc-title{color:var(--nv-text);}
+
+/* ---------- donja navigacija ---------- */
+.bottom-nav a.is-active{color:var(--nv-accent);}
+
+/* ---------- telefon ---------- */
+@media (max-width:760px){
+  .dp-hero{padding:22px 18px 18px;}
+  .dp-total-bar{padding:10px var(--dp-gap);}
+  .dp-sl-card{min-width:78vw;}
+}
+@media (min-width:761px){
+  .dp-wrap{padding-bottom:60px;}
+}
+.travel-checklist .tc-title{padding:0;margin:0;}

@@ -1076,13 +1076,5 @@
   "ux_match_hint": "Pronađi destinaciju prema svojim željama",
   "ux_hero_go": "Kreni",
   "ux_defaults_from": "Polazak:",
-  "ux_defaults_change": "Promeni",
-  "hw4_s1": "Unesi gde želiš da putuješ",
-  "hw4_s1t": "datume i broj putnika možeš promeniti kasnije.",
-  "hw4_s2": "Pogledaj sve na jednom mestu",
-  "hw4_s2t": "letovi, smeštaj, rent a car, aktivnosti i saveti za tvoje datume.",
-  "hw4_s3": "Dodaj ono što ti odgovara",
-  "hw4_s3t": "ukupna procena puta stalno stoji pri vrhu.",
-  "hw4_s4": "Rezerviši kod partnera",
-  "hw4_s4t": "i kreni u svoju avanturu!"
+  "ux_defaults_change": "Promeni"
 }
