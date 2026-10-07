@@ -275,6 +275,17 @@
     ["x_mt01","Sačuvaj u nalog","Save to account","Сохранить в аккаунт"],
     ["x_mt02","Sačuvano u nalogu ✓","Saved to account ✓","Сохранено в аккаунте ✓"],
     ["x_mt03","Ukloni plan","Remove plan","Удалить план"],
+    ["x_recent_h","Nedavno pretraživano","Recently searched","Недавние поиски"],
+    ["x_recent_clear","Obriši","Clear","Очистить"],
+    ["x_pl_continue","Nastavi","Continue","Продолжить"],
+    ["x_pd_addons","Možeš dodati","You can add","Можно добавить"],
+    ["x_pi_title","Tvoj itinerar","Your itinerary","Ваш маршрут"],
+    ["x_pi_note","Orijentacioni predlog: radno vreme i ulaznice proveri pre polaska.","Indicative suggestion: check opening hours and tickets before you go.","Ориентировочное предложение: перед поездкой проверьте часы работы и билеты."],
+    ["x_hd_recs","Preporuke","Recommended","Рекомендации"],
+    ["x_hd_map","Karte","Maps","Карты"],
+    ["x_hd_tips","Saveti","Tips","Советы"],
+    ["x_cd_opts","Opcije","Options","Варианты"],
+    ["x_cd_map","Karta","Map","Карта"]
   ];
   /* Nemački (DE): ključ -> prevod; ako ključa nema, koristi se engleski. */
   var DE = {
@@ -548,7 +559,18 @@
  "x_cp04": "Gesamtbudget (optional)",
  "x_cp06": "Auswählen",
  "x_cp08": "Im Budget",
- "x_cp09": "über dem Budget"
+ "x_cp09": "über dem Budget",
+ "x_recent_h": "Zuletzt gesucht",
+ "x_recent_clear": "Löschen",
+ "x_pl_continue": "Weiter",
+ "x_pd_addons": "Du kannst hinzufügen",
+ "x_pi_title": "Dein Reiseplan",
+ "x_pi_note": "Unverbindlicher Vorschlag: Öffnungszeiten und Tickets vor der Reise prüfen.",
+ "x_hd_recs": "Empfehlungen",
+ "x_hd_map": "Karten",
+ "x_hd_tips": "Tipps",
+ "x_cd_opts": "Optionen",
+ "x_cd_map": "Karte"
 };
   var BY_SR = {};
   ROWS.forEach(function(r){

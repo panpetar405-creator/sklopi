@@ -14,11 +14,11 @@
    menja pri deploy-u. Nov BUILD = nov shell keš; stari se briše pri aktivaciji. */
 
 /* STAMP:BEGIN (generiše stamp-assets.mjs — ne menjaj ručno) */
-const BUILD = '584fecf5';
+const BUILD = '32b5e0bb';
 const PRECACHE = [
   "/",
   "/affiliate.js?v=85396c00",
-  "/app-01-core.js?v=e9b26749",
+  "/app-01-core.js?v=01ae711c",
   "/app-02-market-passengers.js?v=3eb1af24",
   "/app-03-airports.js?v=81b29008",
   "/app-04-pricing-engine.js?v=fafc7a3c",
@@ -42,6 +42,7 @@ const PRECACHE = [
   "/app-23-reservation.js?v=08005ba1",
   "/app-24-notifications.js?v=8e39b260",
   "/app-25-hero.js?v=67dcb030",
+  "/app-26-plan-customize.js?v=fe5d4a62",
   "/config.js?v=60b28611",
   "/contact.js?v=60aecad3",
   "/cookies.js?v=ac951772",
@@ -51,7 +52,7 @@ const PRECACHE = [
   "/fonts.css?v=0f858672",
   "/hero-extras.css?v=9b7a4fd2",
   "/i18n-data.js?v=f8ee145f",
-  "/i18n-extra.js?v=b3e13ef0",
+  "/i18n-extra.js?v=0baab2b7",
   "/index.html",
   "/manifest.json",
   "/notifications.css?v=563a3ebd",
