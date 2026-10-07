@@ -144,17 +144,7 @@
       return origFocus.apply(this, arguments);
     };
   }
-  // Izbor predloga u polju Destinacija = odmah 3 plana (isto kao dugme Kreni).
-  if(typeof window.selectLocSuggestion === 'function'){
-    const origSelect = window.selectLocSuggestion;
-    window.selectLocSuggestion = function(id, value){
-      origSelect.apply(this, arguments);
-      if(id === 'destSuggestions'){
-        const f = byId('searchForm');
-        setTimeout(function(){ if(f) (f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', {cancelable:true}))); }, 80);
-      }
-    };
-  }
+  // Izbor predloga u polju Destinacija samo popunjava polje; na stranicu destinacije se ide tek klikom na "Kreni".
   // Kad su planovi otvoreni, dugme "3 plana za ..." u spotlight kartici je suvišno.
   function syncPlansOpen(){ document.body.classList.toggle('ux-plans-open', !!plansSec && !plansSec.hidden); }
   if(plansSec) new MutationObserver(syncPlansOpen).observe(plansSec, {attributes:true, attributeFilter:['hidden']});
