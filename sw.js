@@ -38,6 +38,7 @@ const PRECACHE = [
   "/app-18-info-tabs.js?v=931fcc1e",
   "/app-19-info-index.js?v=998ffeee",
   "/app-21-local-transport.js?v=fd61e4ac",
+  "/app-27-hotel-tabs.js?v=hotel1",
   "/app-22-climate-table.js?v=97edbc6c",
   "/app-23-reservation.js?v=08005ba1",
   "/app-24-notifications.js?v=f8c346d9",
