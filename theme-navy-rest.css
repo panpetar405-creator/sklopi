@@ -125,3 +125,87 @@ body{background:var(--nv-page)}
 /* ---------- Podnožje ---------- */
 footer{background:var(--nv-bg);border-top:1px solid var(--nv-line)}
 footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13,24,.95) 100%)}   /* preko fotografije podnožja */
+
+/* =====================================================================
+   Modali i "sheet" prozori: alert, quiz (match), deljenje, dokumenta, prilagodi plan,
+   rezultati, atrakcije, vodič kroz funkcije + toast
+   ===================================================================== */
+.alert-modal,.match-modal,.start-modal,#results,#attractionsSheet,#featureGuideSheet{
+  --bg:var(--nv-bg);--paper:var(--nv-surface);--ink:var(--nv-text);--ink-soft:var(--nv-muted);
+  --line:var(--nv-line);--gold-text:var(--nv-accent);--coral-text:#FCA5A5;--coral-soft:rgba(248,113,113,.14);
+  color:var(--nv-text);color-scheme:dark;
+}
+.alert-modal-backdrop,.results-backdrop{background:rgba(5,10,18,.70)}
+
+.alert-modal,.start-modal{
+  background:var(--nv-bg);border:1px solid var(--nv-line);border-top:3px solid var(--nv-accent);
+  border-radius:var(--nv-radius-panel);box-shadow:0 30px 70px -20px rgba(0,0,0,.7);color:var(--nv-text);
+}
+.match-modal{
+  background:linear-gradient(165deg,var(--nv-surface-2) 0%,var(--nv-bg) 70%);
+  border:1px solid var(--nv-line);border-top:3px solid var(--nv-accent);border-radius:var(--nv-radius-panel);color:var(--nv-text);
+}
+.alert-modal h3,.start-modal h3,.match-modal h3,.alert-modal-row label,.match-modal .alert-modal-row label{color:var(--nv-text)}
+.alert-modal-sub,.start-modal-sub,.alert-modal-disclaimer,.match-modal .alert-modal-sub,.match-modal .alert-modal-disclaimer{color:var(--nv-muted)}
+.alert-modal-ic,.match-modal-ic{background:rgba(245,200,66,.14);color:var(--nv-accent)}
+.start-modal-eyebrow{color:var(--nv-accent)}
+.alert-modal-close,.match-modal .alert-modal-close{
+  background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-text);border-radius:12px;
+}
+.alert-modal-close:hover,.match-modal .alert-modal-close:hover{background:var(--nv-surface-2);color:var(--nv-text);border-color:var(--nv-line)}
+.alert-modal input:not([type="checkbox"]):not([type="radio"]),.alert-modal select,.alert-modal textarea,
+.match-modal input:not([type="checkbox"]):not([type="radio"]),.match-modal select,
+.start-modal input:not([type="checkbox"]):not([type="radio"]),.start-modal select{
+  background:var(--nv-surface);color:var(--nv-text);border:1px solid var(--nv-line);border-radius:12px;
+}
+.alert-modal input::placeholder,.match-modal input::placeholder,.match-modal #matchBudget::placeholder{color:var(--nv-muted)}
+.match-modal #matchBudget{background:var(--nv-surface);color:var(--nv-text);border-color:var(--nv-line)}
+.match-modal .builder-budget-row span{color:var(--nv-accent)}
+.alert-modal .btn-primary,.match-modal .btn-primary,.start-modal .btn-primary,
+#results .btn-primary,#attractionsSheet .btn-primary,#featureGuideSheet .btn-primary{
+  background:var(--nv-accent);color:var(--nv-on-accent);border-radius:14px;font-weight:800;
+}
+.alert-modal .btn-primary:hover,.match-modal .btn-primary:hover,.start-modal .btn-primary:hover,
+#results .btn-primary:hover,#attractionsSheet .btn-primary:hover,#featureGuideSheet .btn-primary:hover{background:#FFD65A}
+.alert-modal .btn-primary::after,.match-modal .btn-primary::after,.start-modal .btn-primary::after,#results .btn-primary::after{
+  background:rgba(26,20,5,.14);color:var(--nv-on-accent);
+}
+.alert-modal a{color:var(--nv-accent)}
+.start-modal .q-form .q-row,.start-modal .builder-group{background:transparent;border-color:var(--nv-line)}
+.start-modal .builder-label,.start-modal .q-name{color:var(--nv-text)}
+.start-modal .builder-summary{background:var(--nv-surface);box-shadow:none}
+
+/* sheet prozori preko celog ekrana */
+#results.visible,#attractionsSheet.visible,#featureGuideSheet.visible{
+  background:var(--nv-bg);box-shadow:0 -24px 60px -20px rgba(0,0,0,.7);
+}
+#results h1,#results h2,#results h3,#attractionsSheet h2,#attractionsSheet h3,#featureGuideSheet h2,#featureGuideSheet h3,
+.fg-card-head h3,.fg-content li b{color:var(--nv-text)}
+.fg-content p,.fg-content li,.fg-disclaimer,.fg-card-head .fg-card-step{color:var(--nv-muted)}
+.fg-content h4{color:var(--nv-text)}
+.btn-secondary,.passport-check-btn,.pkg-save-btn,.results-back-btn{
+  background:var(--nv-surface-2);color:var(--nv-text);border:1px solid var(--nv-line);
+}
+.status-banner,.pkg{background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-text);box-shadow:none}
+
+/* atrakcije */
+.attraction-card{background:var(--nv-surface);border:1px solid var(--nv-line);box-shadow:none}
+.attraction-card:hover{border-color:rgba(245,200,66,.55);box-shadow:none}
+.attraction-card .ac-name{color:var(--nv-text)}
+.attraction-card .ac-loc,.attraction-card .ac-price span{color:var(--nv-muted)}
+.attraction-card .ac-price{color:var(--nv-accent)}
+.attractions-arrow{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-text)}
+.attractions-arrow:hover{border-color:var(--nv-accent);color:var(--nv-accent)}
+.attractions-dots .a-dot{background:rgba(255,255,255,.22)}
+.attractions-dots .a-dot.active{background:var(--nv-accent)}
+.attractions-see-all,.attractions-see-all:hover,.btn-alert.attractions-see-all,.btn-alert.attractions-see-all:hover{
+  background:var(--nv-surface-2);color:var(--nv-text);border:1px solid var(--nv-line);
+}
+
+/* poruka (toast) */
+#toast{background:var(--nv-surface-2);color:var(--nv-text);border:1px solid var(--nv-line);border-radius:14px;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+#toast .dot{background:var(--nv-accent)}
+.docs-tabs{background:var(--nv-surface);border-color:var(--nv-line)}
+.docs-tab{color:var(--nv-muted)}
+.docs-tab.active{background:var(--nv-accent);color:var(--nv-on-accent);box-shadow:none}
+.docs-section-sub{color:var(--nv-muted)}

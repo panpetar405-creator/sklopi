@@ -4158,3 +4158,63 @@ button.mark-v2:active{transform:scale(.95);}
   input[type="text"],input[type="email"],input[type="number"],input[type="search"],input[type="tel"],input[type="password"],select,textarea,
   .q-text-field,.builder-input,.auth-input,.popular-reference-search-wrap input{font-size:16px;}
 }
+
+/* =====================================================================
+   Navy tema za samostalne stranice (pravne stranice, vodiči, "zajedno").
+   Prepoznaju se po .legal-wrap, pa se ništa od ovoga ne primenjuje na index.html ni destinacija.html.
+   Vrednosti odgovaraju tokenima iz theme-navy.css (--nv-*), koji se ovde ne učitavaju.
+   ===================================================================== */
+body:has(.legal-wrap){
+  --nv-bg:#0B1626;--nv-surface:#122238;--nv-surface-2:#182B45;--nv-line:rgba(255,255,255,.10);
+  --nv-text:#F2F5F8;--nv-muted:#A9B8CA;--nv-accent:#F5C842;--nv-on-accent:#1A1405;
+  --bg:#060D18;--paper:var(--nv-surface);--ink:var(--nv-text);--ink-soft:var(--nv-muted);--line:var(--nv-line);
+  --line-form:rgba(255,255,255,.22);--gold-text:var(--nv-accent);--coral-text:#FCA5A5;--emerald:#7BD8A9;
+  background:#060D18;color:var(--nv-text);color-scheme:dark;
+}
+body:has(.legal-wrap) .topbar-wrap{background:var(--nv-bg);border-bottom:1px solid var(--nv-line);-webkit-backdrop-filter:none;backdrop-filter:none}
+body:has(.legal-wrap) .topbar-wrap .logo-v2-svg path{fill:#fff}
+body:has(.legal-wrap) .topbar-wrap .logo-v2-mark{box-shadow:0 0 0 1px rgba(255,255,255,.18)}
+body:has(.legal-wrap) .topbar-wrap .logo,body:has(.legal-wrap) .topbar-wrap .logo-v2{color:var(--nv-text)}
+body:has(.legal-wrap) .topbar-right .lang-switch,body:has(.legal-wrap) .topbar-wrap .lang-switch{background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-text)}
+body:has(.legal-wrap) .lang-switch .ls-sep,body:has(.legal-wrap) .lang-switch .cs-rsd{color:var(--nv-muted)}
+body:has(.legal-wrap) .lang-menu{background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-text)}
+body:has(.legal-wrap) .mobile-panel{background:var(--nv-bg);border-bottom:1px solid var(--nv-line)}
+body:has(.legal-wrap) .mobile-panel .mp-nav a{color:var(--nv-text);border-bottom-color:var(--nv-line)}
+body:has(.legal-wrap) .mobile-panel .mp-nav a:hover{background:var(--nv-surface);border-left-color:var(--nv-accent)}
+body:has(.legal-wrap) .hamburger{color:var(--nv-text)}
+
+body:has(.legal-wrap) .legal-wrap h1,body:has(.legal-wrap) .legal-wrap h2,body:has(.legal-wrap) .legal-wrap h3{color:var(--nv-text)}
+body:has(.legal-wrap) .legal-wrap p,body:has(.legal-wrap) .legal-wrap li{color:var(--nv-muted)}
+body:has(.legal-wrap) .legal-wrap strong,body:has(.legal-wrap) .legal-wrap b{color:var(--nv-text)}
+body:has(.legal-wrap) .legal-wrap a{color:var(--nv-accent)}
+body:has(.legal-wrap) .legal-wrap .legal-updated,body:has(.legal-wrap) .guide-updated{color:var(--nv-muted)}
+body:has(.legal-wrap) .legal-wrap table{color:var(--nv-muted)}
+body:has(.legal-wrap) .legal-wrap th,body:has(.legal-wrap) .legal-wrap td{border-color:var(--nv-line)}
+body:has(.legal-wrap) .legal-wrap hr{border-color:var(--nv-line)}
+body:has(.legal-wrap) .guide-img{border:1px solid var(--nv-line)}
+body:has(.legal-wrap) .related-guides a{color:var(--nv-accent)}
+body:has(.legal-wrap) .btn-primary{background:var(--nv-accent);color:var(--nv-on-accent);border-radius:14px;font-weight:800}
+body:has(.legal-wrap) .btn-primary:hover{background:#FFD65A}
+body:has(.legal-wrap) .btn-primary::after{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
+body:has(.legal-wrap) .disclaimer{color:var(--nv-muted)}
+
+/* "zajedno" (zajedničko planiranje) */
+body:has(.legal-wrap) .zj-tally-item,body:has(.legal-wrap) .zj-list-card,body:has(.legal-wrap) .zj-form,body:has(.legal-wrap) .zj-state,
+body:has(.legal-wrap) .saved-trip-card{background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-muted)}
+body:has(.legal-wrap) .zj-tally-item b,body:has(.legal-wrap) .saved-trip-head h1,body:has(.legal-wrap) .saved-trip-head h4,
+body:has(.legal-wrap) .saved-trip-total,body:has(.legal-wrap) .zj-trip-total,body:has(.legal-wrap) .pkg-total{color:var(--nv-text)}
+body:has(.legal-wrap) .zj-input{background:var(--nv-surface-2);color:var(--nv-text);border:1px solid rgba(255,255,255,.22)}
+body:has(.legal-wrap) .zj-input::placeholder{color:var(--nv-muted)}
+body:has(.legal-wrap) .zj-field label,body:has(.legal-wrap) .zj-sub,body:has(.legal-wrap) .zj-empty,body:has(.legal-wrap) .saved-trip-meta{color:var(--nv-muted)}
+body:has(.legal-wrap) .saved-trip-tag{color:var(--nv-muted);border-color:var(--nv-line)}
+body:has(.legal-wrap) .chip{background:var(--nv-surface);color:var(--nv-text);border:1px solid var(--nv-line)}
+body:has(.legal-wrap) .chip.on,body:has(.legal-wrap) .chip.active{background:var(--nv-accent);color:var(--nv-on-accent);border-color:var(--nv-accent)}
+body:has(.legal-wrap) .tc-item{border-color:var(--nv-line);color:var(--nv-text)}
+body:has(.legal-wrap) .zj-response{background:var(--nv-surface-2);color:var(--nv-text);border:1px solid var(--nv-line)}
+body:has(.legal-wrap) .zj-msg.err{color:#FCA5A5}
+
+/* podnožje na tim stranicama */
+body:has(.legal-wrap) footer{background:var(--nv-bg);border-top:1px solid var(--nv-line);color:var(--nv-muted)}
+body:has(.legal-wrap) footer .flinks a,body:has(.legal-wrap) footer .footer-logo{color:var(--nv-text)}
+body:has(.legal-wrap) footer .foot-note{color:var(--nv-muted)}
+body:has(.legal-wrap) footer .footer-logo em{color:var(--nv-accent)}
