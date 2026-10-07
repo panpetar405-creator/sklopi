@@ -408,7 +408,7 @@ body.ux-plans-open #destinationPlansBtn{display:none}
     max-height:90vh;max-height:90svh;
   }
   .hero-reference .hero-reference-shell{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%}
-  .hero-reference .hero-reference-visual{flex:1 1 auto;min-height:230px}
+  .hero-reference .hero-reference-visual{flex:1 1 auto;min-height:276px}
   .hero-reference .hero-reference-copy{padding:68px 20px 20px}
   .hero-reference .hero-reference-copy h1{font-size:clamp(30px,9.5vw,40px)}
   .hero-reference .hero-reference-copy p:last-child{margin-top:8px;font-size:13px}
