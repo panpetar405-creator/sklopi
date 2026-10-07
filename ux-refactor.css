@@ -405,8 +405,8 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 @media (max-width:760px){
   .hero.hero-reference{
     display:flex;flex-direction:column;box-sizing:border-box;
-    /* hero + zaglavlje zajedno = 90% visine ekrana; zaglavlje ~81px */
-    height:calc(90vh - 81px);height:calc(90svh - 81px);min-height:520px;
+    /* hero + zaglavlje zajedno = 85.5% visine ekrana (90% umanjeno za 5%); zaglavlje ~81px */
+    height:calc(85.5vh - 81px);height:calc(85.5svh - 81px);min-height:494px;
   }
   .hero-reference .hero-reference-shell{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%}
   .hero-reference .hero-reference-visual{flex:1 1 auto;min-height:200px;display:flex;flex-direction:column;justify-content:flex-start}
