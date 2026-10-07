@@ -1746,62 +1746,103 @@
       showToast('Čuvanje nije uspelo — pokušaj ponovo.');
     }
   }
-  function download(){
+  // "Preuzmi plan puta" — pravi PNG sliku plana (navy/žuta tema) koja se lako deli.
+  // Crta se na canvas-u bez spoljnih biblioteka; na telefonu otvara sistemski "Podeli" meni.
+  const PLAN_LOGO_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" rx=\"22\" fill=\"#0B1626\"/><g transform=\"translate(50 50) scale(1.0) translate(-50 -50.5)\"><path d=\"M 72.66,50.68 L 71.00,49.41 L 68.85,48.24 L 57.03,43.26 L 52.15,40.92 L 50.78,40.53 L 49.51,40.62 L 47.36,41.60 L 41.02,45.12 L 40.43,45.61 L 40.04,46.48 L 40.14,47.36 L 40.92,48.24 L 61.13,57.42 L 62.01,58.11 L 62.01,58.59 L 61.33,59.18 L 46.68,64.75 L 36.91,68.75 L 35.74,69.43 L 34.67,70.61 L 33.98,72.46 L 34.08,74.71 L 34.96,76.66 L 37.11,78.52 L 40.23,80.08 L 44.63,81.25 L 47.56,80.96 L 52.54,79.30 L 57.03,77.25 L 69.82,72.07 L 71.29,71.19 L 73.73,69.04 L 75.00,67.38 L 76.46,64.16 L 77.05,60.64 L 76.56,57.03 L 75.78,54.88 L 75.20,53.81 Z M 53.22,22.46 L 51.66,22.36 L 49.32,23.24 L 27.44,35.25 L 26.27,36.23 L 24.51,38.67 L 23.73,40.43 L 22.95,43.95 L 22.95,45.12 L 23.83,48.63 L 25.29,51.27 L 27.54,53.52 L 29.39,54.69 L 46.97,62.30 L 49.22,62.01 L 52.73,60.64 L 53.42,59.86 L 53.42,58.79 L 51.95,57.71 L 46.29,55.37 L 35.64,50.29 L 34.18,49.02 L 33.98,47.46 L 34.38,46.39 L 35.06,45.80 L 38.87,43.85 L 40.82,43.16 L 49.71,38.57 L 52.73,37.30 L 54.00,36.13 L 54.49,34.96 L 54.49,23.83 L 54.30,23.34 Z\" fill=\"#F2F5F8\"/><circle cx=\"64.98\" cy=\"27.42\" r=\"7.9\" fill=\"#F5C842\" stroke=\"#F2F5F8\" stroke-width=\"1\"/></g></svg>";
+  function loadImg(src){
+    return new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+  }
+  async function renderPlanImage(d){
+    const W = 1080, PAD = 48, FONT = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    const logo = await loadImg('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(PLAN_LOGO_SVG));
+    try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
+    function paint(ctx){
+      const rr = (x, y, w, h, r) => { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); };
+      const font = (w, sz) => { ctx.font = w + ' ' + sz + 'px ' + FONT; };
+      const wrap = (text, maxW) => { const out = []; let line = ''; String(text).split(/\s+/).forEach(w => { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line){ out.push(line); line = w; } else line = t; }); if (line) out.push(line); return out; };
+      ctx.fillStyle = '#060D18'; ctx.fillRect(0, 0, W, 4000);
+      let y = 56;
+      if (logo) ctx.drawImage(logo, PAD, y, 84, 84);
+      ctx.fillStyle = '#F2F5F8'; font('800', 34); ctx.textBaseline = 'middle';
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '8px';
+      ctx.fillText('SKLOPI', PAD + 108, y + 44);
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+      y += 84 + 40;
+      // hero
+      const heroH = 300;
+      const g = ctx.createLinearGradient(PAD, y, W - PAD, y + heroH); g.addColorStop(0, '#16294A'); g.addColorStop(1, '#0B1626');
+      rr(PAD, y, W - 2 * PAD, heroH, 44); ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#1F3350'; ctx.stroke();
+      ctx.textBaseline = 'alphabetic'; ctx.fillStyle = '#F5C842'; font('700', 26);
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '5px';
+      ctx.fillText(d.label.toUpperCase(), PAD + 48, y + 80);
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+      let fs = 92; font('800', fs); while (ctx.measureText(d.city).width > W - 2 * PAD - 96 && fs > 40){ fs -= 4; font('800', fs); }
+      ctx.fillStyle = '#F2F5F8'; ctx.fillText(d.city, PAD + 48, y + 80 + fs + 10);
+      ctx.fillStyle = '#A9B7C9'; font('500', 32);
+      const sub = wrap(d.sub, W - 2 * PAD - 96); sub.slice(0, 2).forEach((l, i) => ctx.fillText(l, PAD + 48, y + 80 + fs + 10 + 56 + i * 42));
+      y += heroH + 32;
+      // stavke
+      const rowH = 116, cardH = d.rows.length * rowH + 24;
+      rr(PAD, y, W - 2 * PAD, cardH, 40); ctx.fillStyle = '#0B1626'; ctx.fill(); ctx.strokeStyle = '#1F3350'; ctx.stroke();
+      d.rows.forEach((r, i) => {
+        const ry = y + 12 + i * rowH;
+        if (i){ ctx.fillStyle = '#1F3350'; ctx.fillRect(PAD + 36, ry, W - 2 * PAD - 72, 2); }
+        rr(PAD + 36, ry + 22, 72, 72, 22); ctx.fillStyle = 'rgba(245,200,66,.14)'; ctx.fill();
+        ctx.textBaseline = 'middle'; ctx.textAlign = 'center'; font('400', 34); ctx.fillStyle = '#F2F5F8'; ctx.fillText(r.icon, PAD + 72, ry + 60);
+        ctx.textAlign = 'left'; font('600', 36); ctx.fillText(r.label, PAD + 132, ry + 58);
+        ctx.textAlign = 'right'; font('700', 36); ctx.fillText(r.amount, W - PAD - 36, ry + 58); ctx.textAlign = 'left';
+      });
+      y += cardH + 32;
+      // ukupno
+      rr(PAD, y, W - 2 * PAD, 156, 40); ctx.fillStyle = '#F5C842'; ctx.fill();
+      ctx.fillStyle = '#1A1405'; ctx.textBaseline = 'middle'; font('700', 40); ctx.fillText(d.totalLabel, PAD + 44, y + 80);
+      ctx.textAlign = 'right'; font('800', 80); ctx.fillText(d.total, W - PAD - 44, y + 78); ctx.textAlign = 'left';
+      y += 156 + 36;
+      ctx.textBaseline = 'alphabetic'; ctx.fillStyle = '#A9B7C9'; font('500', 28);
+      ctx.fillText(d.fine, PAD + 8, y); y += 28;
+      if (d.partners){
+        y += 36; ctx.fillStyle = '#F2F5F8'; font('700', 30); ctx.fillText(d.partners, PAD + 8, y + 30); y += 30;
+      }
+      y += 52; ctx.fillStyle = '#7D8DA3'; font('500', 24); ctx.textAlign = 'center';
+      wrap(d.disclaimer, W - 2 * PAD - 16).forEach(l => { ctx.fillText(l, W / 2, y); y += 36; });
+      ctx.textAlign = 'left';
+      return y + 40;
+    }
+    const probe = document.createElement('canvas'); probe.width = W; probe.height = 4000;
+    const H = Math.ceil(paint(probe.getContext('2d')));
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    paint(cv.getContext('2d'));
+    return new Promise(res => cv.toBlob(res, 'image/png'));
+  }
+  async function download(){
     const {ctx, pkg, rows} = summary();
-    const sel = trip.sel;
-    const linkCtx = {dest:ctx.dest, originCode:ctx.originCode || 'Beograd', from:ctx.from, to:ctx.to, adults:ctx.adults,
-      flightPref:sel.flightPref, hotelStars:sel.hotelStars, prioritizeLocation:sel.prioritizeLocation};
-    const fmtDate = d => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] + '.' : (d || ''); };
-    const partners = [];
-    if (sel.includeFlight) partners.push(['\u2708', 'KAYAK', tx('Let'), buildAffiliateLink('flight', linkCtx)]);
-    if (sel.includeHotel) partners.push(['\uD83C\uDFE8', 'Booking.com', tx('Hotel'), buildAffiliateLink('hotel', linkCtx)]);
-    if (sel.activityCount > 0) partners.push(['\uD83C\uDFAB', 'Viator', tx('Aktivnosti'), buildAffiliateLink('activity', {dest:ctx.dest})]);
-    const rowsHtml = rows.filter(r => Number(r[2]) > 0).map(r =>
-      '<li><span class="ic">' + escapeHtml(r[0]) + '</span><b>' + escapeHtml(tx(r[1])) + '</b><em>' + escapeHtml(money(r[2])) + '</em></li>').join('');
-    const partnersHtml = partners.map(x =>
-      '<a class="pl" href="' + escapeHtml(x[3]) + '" target="_blank" rel="noopener sponsored"><span class="ic">' + x[0] + '</span><span><b>' + escapeHtml(x[1]) + '</b><small>' + escapeHtml(x[2]) + '</small></span><i>\u2192</i></a>').join('');
-    const css = ':root{color-scheme:dark}*{box-sizing:border-box}'
-      + 'html{-webkit-print-color-adjust:exact;print-color-adjust:exact}'
-      + 'body{margin:0;background:#060D18;color:#F2F5F8;font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:20px 16px 40px}'
-      + '.wrap{max-width:520px;margin:0 auto}'
-      + '.brand{display:flex;align-items:center;gap:10px;margin:4px 0 18px;font-weight:800;letter-spacing:.2em;font-size:15px}'
-      + '.brand svg{width:34px;height:34px;flex:none}'
-      + '.hero{background:linear-gradient(160deg,#16294A 0%,#0B1626 70%);border:1px solid #1F3350;border-radius:24px;padding:26px 22px}'
-      + '.hero small{display:block;color:#F5C842;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px}'
-      + '.hero h1{margin:6px 0 4px;font-size:34px;line-height:1.1;letter-spacing:-.02em}'
-      + '.hero p{margin:0;color:#A9B7C9;font-size:15px}'
-      + '.card{margin-top:16px;background:#0B1626;border:1px solid #1F3350;border-radius:20px;padding:6px 18px}'
-      + '.card h2{margin:16px 0 4px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#A9B7C9}'
-      + 'ul{list-style:none;margin:0;padding:0}'
-      + 'li{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid #1F3350}'
-      + 'li:first-child{border-top:0}'
-      + '.ic{width:38px;height:38px;border-radius:12px;background:rgba(245,200,66,.14);display:grid;place-items:center;font-size:18px;flex:none}'
-      + 'li b{flex:1;font-weight:600}li em{font-style:normal;font-weight:700}'
-      + '.total{margin-top:16px;display:flex;justify-content:space-between;align-items:baseline;background:#F5C842;color:#1A1405;border-radius:20px;padding:18px 20px}'
-      + '.total span{font-weight:700}.total b{font-size:30px;letter-spacing:-.02em}'
-      + '.fine{margin:8px 4px 0;color:#A9B7C9;font-size:12.5px}'
-      + '.pl{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid #1F3350;text-decoration:none;color:inherit}'
-      + '.pl:first-child{border-top:0}.pl b{display:block}.pl small{display:block;color:#A9B7C9}.pl span:nth-child(2){flex:1}'
-      + '.pl i{font-style:normal;color:#F5C842;font-size:20px}'
-      + '.note{margin-top:20px;color:#A9B7C9;font-size:12px;text-align:center}'
-      + '.pdf{display:block;width:100%;margin-top:20px;padding:15px;border:0;border-radius:16px;background:#122238;color:#F2F5F8;font:700 15px Inter,system-ui,sans-serif;cursor:pointer;border:1px solid #1F3350}'
-      + '@media print{.pdf{display:none}body{padding:0}}';
-    const logo = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" rx=\"22\" fill=\"#0B1626\"/><g transform=\"translate(50 50) scale(1.0) translate(-50 -50.5)\"><path d=\"M 72.66,50.68 L 71.00,49.41 L 68.85,48.24 L 57.03,43.26 L 52.15,40.92 L 50.78,40.53 L 49.51,40.62 L 47.36,41.60 L 41.02,45.12 L 40.43,45.61 L 40.04,46.48 L 40.14,47.36 L 40.92,48.24 L 61.13,57.42 L 62.01,58.11 L 62.01,58.59 L 61.33,59.18 L 46.68,64.75 L 36.91,68.75 L 35.74,69.43 L 34.67,70.61 L 33.98,72.46 L 34.08,74.71 L 34.96,76.66 L 37.11,78.52 L 40.23,80.08 L 44.63,81.25 L 47.56,80.96 L 52.54,79.30 L 57.03,77.25 L 69.82,72.07 L 71.29,71.19 L 73.73,69.04 L 75.00,67.38 L 76.46,64.16 L 77.05,60.64 L 76.56,57.03 L 75.78,54.88 L 75.20,53.81 Z M 53.22,22.46 L 51.66,22.36 L 49.32,23.24 L 27.44,35.25 L 26.27,36.23 L 24.51,38.67 L 23.73,40.43 L 22.95,43.95 L 22.95,45.12 L 23.83,48.63 L 25.29,51.27 L 27.54,53.52 L 29.39,54.69 L 46.97,62.30 L 49.22,62.01 L 52.73,60.64 L 53.42,59.86 L 53.42,58.79 L 51.95,57.71 L 46.29,55.37 L 35.64,50.29 L 34.18,49.02 L 33.98,47.46 L 34.38,46.39 L 35.06,45.80 L 38.87,43.85 L 40.82,43.16 L 49.71,38.57 L 52.73,37.30 L 54.00,36.13 L 54.49,34.96 L 54.49,23.83 L 54.30,23.34 Z\" fill=\"#F2F5F8\"/><circle cx=\"64.98\" cy=\"27.42\" r=\"7.9\" fill=\"#F5C842\" stroke=\"#F2F5F8\" stroke-width=\"1\"/></g></svg>";
-    const html = '<!doctype html><html lang="sr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-      + '<title>SKLOPI \u2014 ' + escapeHtml(cityLabel(ctx.dest)) + '</title><style>' + css + '</style></head><body><div class="wrap">'
-      + '<div class="brand">' + logo + 'SKLOPI</div>'
-      + '<section class="hero"><small>' + escapeHtml(tx('Plan puta')) + '</small><h1>' + escapeHtml(cityLabel(ctx.dest)) + '</h1>'
-      + '<p>' + escapeHtml(daysLabel(ctx.days)) + ' \u2022 ' + escapeHtml(fmtDate(ctx.from)) + ' \u2013 ' + escapeHtml(fmtDate(ctx.to)) + ' \u2022 ' + ctx.adults + ' ' + escapeHtml(pluralWord('adult', ctx.adults)) + '</p></section>'
-      + '<section class="card"><ul>' + rowsHtml + '</ul></section>'
-      + '<div class="total"><span>' + escapeHtml(tx('Ukupno')) + '</span><b>' + escapeHtml(money(pkg.total)) + '</b></div>'
-      + '<p class="fine">' + escapeHtml(tx('Ilustrativna procena za ') + ctx.adults + ' ' + pluralWord('adult', ctx.adults) + '.') + '</p>'
-      + (partnersHtml ? '<section class="card"><h2>' + escapeHtml(tx('Rezervacija')) + '</h2>' + partnersHtml + '</section>' : '')
-      + '<button class="pdf" onclick="window.print()">' + escapeHtml(tx('Sačuvaj kao PDF')) + '</button>'
-      + '<p class="note">' + escapeHtml(affDisc()) + '</p>'
-      + '</div></body></html>';
-    const url = URL.createObjectURL(new Blob([html], {type:'text/html;charset=utf-8'}));
+    const fmtDate = x => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(x || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] + '.' : (x || ''); };
+    const sel = trip.sel, names = [];
+    if (sel.includeFlight) names.push('KAYAK');
+    if (sel.includeHotel) names.push('Booking.com');
+    if (sel.activityCount > 0) names.push('Viator');
+    const pax = ctx.adults + ' ' + pluralWord('adult', ctx.adults);
+    const data = {
+      label: tx('Plan puta'),
+      city: cityLabel(ctx.dest),
+      sub: daysLabel(ctx.days) + ' \u2022 ' + fmtDate(ctx.from) + ' \u2013 ' + fmtDate(ctx.to) + ' \u2022 ' + pax,
+      rows: rows.filter(r => Number(r[2]) > 0).map(r => ({icon: r[0], label: tx(r[1]), amount: money(r[2])})),
+      totalLabel: tx('Ukupno'), total: money(pkg.total),
+      fine: tx('Ilustrativna procena za ') + pax + '.',
+      partners: names.length ? tx('Rezervacija') + ': ' + names.join(' \u00B7 ') : '',
+      disclaimer: affDisc()
+    };
+    let blob;
+    try { blob = await renderPlanImage(data); } catch(e){ console.warn('[sklopi] slika plana nije uspela:', e); }
+    if (!blob){ showToast('Čuvanje slike nije uspelo — pokušaj ponovo.'); return; }
+    const file = new File([blob], 'sklopi-plan-puta.png', {type:'image/png'});
+    if (navigator.canShare && navigator.canShare({files:[file]})){
+      try { await navigator.share({files:[file], title:'SKLOPI \u2014 ' + data.city}); return; }
+      catch(e){ if (e && e.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = url; link.download = 'sklopi-plan-puta.html';
+    link.href = url; link.download = 'sklopi-plan-puta.png';
     document.body.appendChild(link); link.click(); link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
