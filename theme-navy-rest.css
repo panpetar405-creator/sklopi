@@ -273,3 +273,8 @@ footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13
 
 /* WhatsApp dugme: žuti akcenat umesto stare narandžaste */
 .whatsapp-fab{background:var(--nv-accent);color:var(--nv-on-accent);box-shadow:0 14px 30px -10px rgba(0,0,0,.55)}
+
+/* "Prikaži svoj plan" na dnu ekrana ne sme da ostane iza donje navigacije i WhatsApp dugmeta */
+@media (max-width:700px){
+  #planBreakdown.open{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+}
