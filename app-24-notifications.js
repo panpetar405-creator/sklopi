@@ -34,7 +34,7 @@
     var days = Math.floor((Date.now() - ts) / 86400000);
     if (days <= 0) return tr('Danas');
     if (days === 1) return tr('Juče');
-    return days + ' ' + tr('dana');
+    return daysLabel(days);
   }
   function dayDiff(iso){
     var a = new Date(iso + 'T00:00:00'), b = new Date(); b.setHours(0,0,0,0);
@@ -53,7 +53,7 @@
         if (sel.activityCount > 0) kinds.push('activity');
         var done = read(DONE_KEY, {}) || {};
         var left = kinds.filter(function(k){ return !done[[trip.dest, trip.ctx.from, trip.ctx.to, k].join('|')]; }).length;
-        var when = untilStart > 0 ? tr('Polazak za ') + untilStart + ' ' + tr(untilStart === 1 ? 'dan' : 'dana') + '.'
+        var when = untilStart > 0 ? tr('Polazak za ') + daysLabel(untilStart) + '.'
                  : untilStart === 0 ? tr('Polazak je danas.') : tr('Putovanje je u toku.');
         var rest = left > 0 ? ' ' + tr('Još nije označeno kao rezervisano: ') + left + '.' : (kinds.length ? ' ' + tr('Sve stavke su označene kao rezervisane.') : '');
         items.push({ ic:'\u2708', t: tr('Tvoj plan za ') + cityLabel(trip.dest), p: when + rest, meta: tr('Moj put'), go:'#myTrip' });
