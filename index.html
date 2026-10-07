@@ -378,7 +378,8 @@ html,body{background:#0B1626;margin:0;}
 <div class="recent-searches-head"><h3 data-i18n="x_recent_h">Nedavno pretraživano</h3><button class="recent-searches-clear" id="recentSearchClear" type="button" data-i18n="x_recent_clear">Obriši</button></div>
 <ul class="recent-searches-list" id="recentSearchList"></ul>
 </div>
-</div><section aria-labelledby="destinationSpotlightTitle" class="section destination-reference-section" hidden="" id="destinationSpotlight">
+</div><div id="legacyPlanner" hidden aria-hidden="true" style="display:none">
+<section aria-labelledby="destinationSpotlightTitle" class="section destination-reference-section" hidden="" id="destinationSpotlight">
 <div class="destination-reference-card">
 <div class="destination-reference-photo">
 <img alt="Atina — Akropolj" data-i18n-alt="x_f4aa87" loading="lazy" src="img/atina-akropolj-1200.webp"/>
@@ -900,7 +901,9 @@ html,body{background:#0B1626;margin:0;}
 <p data-i18n="builder_placeholder_text">Ovde ćeš videti procenjenu cenu čim počneš da biraš — promeni bilo koju opciju levo.</p>
 </div>
 </div>
-</div><section aria-labelledby="howItWorksTitle" class="section how-it-works-section" id="how-it-works">
+</div>
+</div>
+<section aria-labelledby="howItWorksTitle" class="section how-it-works-section" id="how-it-works">
 <div class="how-it-works-wrap">
 <div class="how-it-works-main">
 <div class="section-head how-it-works-head">
@@ -908,11 +911,10 @@ html,body{background:#0B1626;margin:0;}
 <p data-i18n="x_hw_sub">Brzo, lako i bez stresa.</p>
 </div>
 <ol class="how-it-works-grid">
-<li class="how-step"><span class="how-step-no" aria-hidden="true">1</span><div><h3 data-i18n="x_hw_s1">Unesi gde želiš da putuješ</h3><p data-i18n="x_hw_s1t">ili odgovori na 3 pitanja.</p></div></li>
-<li class="how-step"><span class="how-step-no" aria-hidden="true">2</span><div><h3 data-i18n="x_hw_s2">Biraj između 3 plana</h3><p data-i18n="x_hw_s2t">koji odgovaraju tvom stilu.</p></div></li>
-<li class="how-step"><span class="how-step-no" aria-hidden="true">3</span><div><h3 data-i18n="x_hw_s3">Prilagodi svoj put</h3><p data-i18n="x_hw_s3t">po svojim željama i budžetu.</p></div></li>
-<li class="how-step"><span class="how-step-no" aria-hidden="true">4</span><div><h3 data-i18n="x_hw_s4">Pogledaj sve u jednom pregledu</h3><p data-i18n="x_hw_s4t">letovi, hoteli, auto i aktivnosti.</p></div></li>
-<li class="how-step"><span class="how-step-no" aria-hidden="true">5</span><div><h3 data-i18n="x_hw_s5">Sačuvaj ili rezerviši</h3><p data-i18n="x_hw_s5t">i kreni u svoju avanturu!</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">1</span><div><h3 data-i18n="hw4_s1">Unesi gde želiš da putuješ</h3><p data-i18n="hw4_s1t">datume i broj putnika možeš promeniti kasnije.</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">2</span><div><h3 data-i18n="hw4_s2">Pogledaj sve na jednom mestu</h3><p data-i18n="hw4_s2t">letovi, smeštaj, rent a car, aktivnosti i saveti za tvoje datume.</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">3</span><div><h3 data-i18n="hw4_s3">Dodaj ono što ti odgovara</h3><p data-i18n="hw4_s3t">ukupna procena puta stalno stoji pri vrhu.</p></div></li>
+<li class="how-step"><span class="how-step-no" aria-hidden="true">4</span><div><h3 data-i18n="hw4_s4">Rezerviši kod partnera</h3><p data-i18n="hw4_s4t">i kreni u svoju avanturu!</p></div></li>
 </ol>
 </div>
 <div class="how-it-works-photo"><img alt="Primorski zaliv sa brdima i morem" data-i18n-alt="x_hw_alt" height="600" loading="lazy" src="img/crnogorsko-primorje-zaliv-900.webp" width="900"/></div>
@@ -1399,5 +1401,6 @@ html,body{background:#0B1626;margin:0;}
 <script defer="" src="cookies.js?v=ac951772"></script>
 <script defer="" src="app-12-ux-refactor.js?v=f4ec42e0"></script>
 <script defer="" src="app-13-destination-value.js?v=5285c82e"></script>
+<script defer="" src="app-28-single-page-flow.js?v=1"></script>
 </body>
 </html>
