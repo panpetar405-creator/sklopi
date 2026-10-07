@@ -461,3 +461,9 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 .match-below .match-trigger .ac-arrow{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
 .match-below .match-trigger:hover .ac-cta{background:#FFD65A}
 .match-below .match-trigger .ac-arrow{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:15px;line-height:1}
+
+/* Hero: Polazak, datumi i putnici (unapred popunjeno) u istoj svetloj/prigušenoj boji kao prazno polje Destinacija */
+.hero-reference #searchForm #origin,
+.hero-reference #searchForm .date-display .dd-range,
+.hero-reference #searchForm .pax-display,
+.hero-reference #searchForm #paxDisplayText{color:#7F92AA}
