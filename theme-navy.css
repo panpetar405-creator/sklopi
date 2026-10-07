@@ -1026,3 +1026,11 @@
   align-self:stretch;background:transparent;color:#FCA5A5;border:1px solid var(--nv-line);border-radius:12px;min-height:44px;font-weight:700;
 }
 .auth-dropdown-inner #dropdownLogoutBtn:hover{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.4)}
+
+/* ---------- Cookie banner: navy umesto stare petrol boje ---------- */
+.cookie-banner{background:var(--nv-surface);color:var(--nv-text);border-top:1px solid var(--nv-line);box-shadow:0 -14px 34px -18px rgba(0,0,0,.6)}
+.cookie-text{color:var(--nv-muted)}
+.cookie-text b{color:var(--nv-text)}
+.cookie-text a{color:var(--nv-accent)}
+.cookie-btn.accept{background:var(--nv-accent);background-image:none;color:var(--nv-on-accent)}
+.cookie-btn.decline{background:transparent;color:var(--nv-muted);border:1px solid var(--nv-line)}
