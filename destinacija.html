@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="fonts.css?v=0f858672">
 <link rel="stylesheet" href="styles.css?v=bdc0b83f">
 <link rel="stylesheet" href="dest-info.css?v=67d8e547">
-<link rel="stylesheet" href="ux-refactor.css?v=94624cca">
+<link rel="stylesheet" href="ux-refactor.css?v=1f948492">
 <link rel="stylesheet" href="theme-navy.css?v=navy2">
 <link rel="stylesheet" href="theme-navy-rest.css?v=navy4">
 <style>
@@ -48,7 +48,7 @@
   min-height:46px;padding:10px 12px;border:1px solid var(--line-form);border-radius:10px;
 }
 .dp-field input:focus-visible,.dp-field select:focus-visible,
-.dp-linkbtn:focus-visible,.dp-hero-edit:focus-visible{outline:2px solid var(--deep);outline-offset:2px;}
+.dp-linkbtn:focus-visible{outline:2px solid var(--deep);outline-offset:2px;}
 .dp-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .dp-form-msg{min-height:0;margin:0;font-size:13px;color:var(--coral-text);}
 .dp-form-msg:empty{display:none;}
@@ -159,7 +159,7 @@
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt2{background:linear-gradient(135deg,var(--emerald) 0%,var(--deep) 100%);color:var(--on-dark-strong);}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
 </style>
-<link rel="stylesheet" href="destinacija.css?v=2">
+<link rel="stylesheet" href="destinacija.css?v=3">
 </head>
 <body>
 <a class="skip-link" href="#main">Preskoči na sadržaj</a>
@@ -200,8 +200,26 @@ Nazad na pretragu
 <p class="dp-kicker">Tvoje putovanje</p>
 <h1 id="dpHeroTitle">Kuda putuješ?</h1>
 <div class="dp-hero-facts" id="dpHeroFacts"></div>
+<div class="dp-search" id="dpSearch">
+<form class="dp-card dp-form" id="dpForm" novalidate>
+<div class="dp-row2 dp-row-route">
+<div class="dp-field"><label for="dpFrom">Polazak iz</label><input id="dpFrom" type="text" list="dpCities" autocomplete="off" placeholder="npr. Beograd"></div>
+<div class="dp-field"><label for="dpTo">Destinacija</label><input id="dpTo" type="text" list="dpCities" autocomplete="off" placeholder="npr. Atina"></div>
+</div>
+<div class="dp-row2">
+<div class="dp-field"><label for="dpStart">Polazak</label><input id="dpStart" type="date"></div>
+<div class="dp-field"><label for="dpEnd">Povratak</label><input id="dpEnd" type="date"></div>
+</div>
+<div class="dp-row2 dp-row-go">
+<div class="dp-field"><label for="dpAdults">Broj putnika</label>
+<select id="dpAdults"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></div>
+<button type="submit" class="btn-primary q-submit">Prikaži ponude</button>
+</div>
+<p class="dp-form-msg" id="dpMsg" role="alert"></p>
+</form>
+<datalist id="dpCities"></datalist>
+</div>
 <div id="dpHeroChecklist"></div>
-<button type="button" class="dp-hero-edit" id="dpEdit" aria-expanded="false" aria-controls="dpSearch">✎ Izmeni pretragu</button>
 </div>
 </div>
 
@@ -219,22 +237,6 @@ Nazad na pretragu
 </div>
 
 <div class="dp-wrap">
-
-<div class="dp-search" id="dpSearch" hidden>
-<form class="dp-card dp-form" id="dpForm" novalidate>
-<div class="dp-field"><label for="dpFrom">Polazak iz</label><input id="dpFrom" type="text" list="dpCities" autocomplete="off" placeholder="npr. Beograd"></div>
-<div class="dp-field"><label for="dpTo">Destinacija</label><input id="dpTo" type="text" list="dpCities" autocomplete="off" placeholder="npr. Atina"></div>
-<div class="dp-row2">
-<div class="dp-field"><label for="dpStart">Polazak</label><input id="dpStart" type="date"></div>
-<div class="dp-field"><label for="dpEnd">Povratak</label><input id="dpEnd" type="date"></div>
-</div>
-<div class="dp-field"><label for="dpAdults">Broj putnika</label>
-<select id="dpAdults"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></div>
-<p class="dp-form-msg" id="dpMsg" role="alert"></p>
-<button type="submit" class="btn-primary q-submit">Prikaži ponude</button>
-</form>
-<datalist id="dpCities"></datalist>
-</div>
 
 <noscript><div class="dp-card"><p class="dp-note">Za prikaz ponuda potreban je uključen JavaScript.</p></div></noscript>
 
@@ -1183,7 +1185,6 @@ function renderResults(P){
 
   $('dpResults').innerHTML = html;
   $('dpResults').hidden = false;
-  $('dpEdit').hidden = false;
   if (window.SklopiDestInfo) SklopiDestInfo.load(dest.name, c.org ? c.org.name + (c.org.country ? ', ' + c.org.country : '') : '');
   const token = ++renderToken;
   CUR = c;
@@ -1204,7 +1205,6 @@ function renderHome(msg){
   $('dpHeroFacts').innerHTML = '';
   $('dpResults').hidden = true;
   $('dpResults').innerHTML = '';
-  $('dpEdit').hidden = true;
   $('dpTotalBar').hidden = true;
   if (flightAbort) flightAbort.abort();
   setForm(msg || '');
@@ -1217,21 +1217,19 @@ function setForm(msg){
   const t = todayUTC();
   $('dpFrom').value = P.from || 'Beograd';
   $('dpTo').value = P.to;
-  $('dpStart').value = P.start || isoOf(addDays(t, 30));
-  $('dpEnd').value = P.end || isoOf(addDays(t, 37));
+  $('dpStart').value = P.start || '';   /* bez unapred zadatih datuma — korisnik bira sam */
+  $('dpEnd').value = P.end || '';
   $('dpAdults').value = String(P.adults);
   $('dpStart').min = isoOf(t);
   $('dpEnd').min = isoOf(addDays(t, 1));
   $('dpMsg').textContent = msg || '';
 }
-function showForm(open){
-  $('dpSearch').hidden = !open;
-  $('dpEdit').setAttribute('aria-expanded', open ? 'true' : 'false');
-}
+function showForm(){ /* forma je stalno vidljiva u hero sekciji */ }
 
 function render(){
   const P = readParams();
   if (!P.to) return renderHome('');
+  if (!P.start && !P.end) return renderHome('');   /* stigao sa odredištem, bez datuma: samo prikaži formu */
   const err = validate(P);
   if (err) return renderHome(err);
   setForm('');
@@ -1243,7 +1241,6 @@ function render(){
 function init(){
   const dl = $('dpCities');
   dl.innerHTML = DATA.pop.map(p => '<option value="' + esc(p[0]) + '"></option>').join('');
-  $('dpEdit').addEventListener('click', () => showForm($('dpSearch').hidden));
   $('dpResults').addEventListener('click', ev => {
     const b = ev.target.closest && ev.target.closest('.dp-sl-btn');
     if (!b) return;
@@ -1259,7 +1256,7 @@ function init(){
     if (!s) return;
     $('dpEnd').min = isoOf(addDays(s, 1));
     const e = parseISO($('dpEnd').value);
-    if (!e || e <= s) $('dpEnd').value = isoOf(addDays(s, 7));
+    if (e && e <= s) $('dpEnd').value = '';
   });
   $('dpForm').addEventListener('submit', ev => {
     ev.preventDefault();
