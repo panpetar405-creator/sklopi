@@ -405,10 +405,11 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 @media (max-width:760px){
   .hero.hero-reference{
     display:flex;flex-direction:column;box-sizing:border-box;
-    max-height:90vh;max-height:90svh;
+    /* hero + zaglavlje zajedno = 90% visine ekrana; zaglavlje ~81px */
+    height:calc(90vh - 81px);height:calc(90svh - 81px);min-height:520px;
   }
   .hero-reference .hero-reference-shell{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%}
-  .hero-reference .hero-reference-visual{flex:1 1 auto;min-height:276px}
+  .hero-reference .hero-reference-visual{flex:1 1 auto;min-height:276px;display:flex;flex-direction:column;justify-content:flex-end}
   .hero-reference .hero-reference-copy{padding:68px 20px 20px}
   .hero-reference .hero-reference-copy h1{font-size:clamp(30px,9.5vw,40px)}
   .hero-reference .hero-reference-copy p:last-child{margin-top:8px;font-size:13px}
@@ -424,3 +425,40 @@ body.ux-plans-open #destinationPlansBtn{display:none}
   .hero-reference #searchForm .date-display .dd-meta{margin-top:1px}
   .hero-reference .ticket-submit-row{margin-top:8px}
 }
+
+/* ===== "Nemaš ideju kuda?" — odvojena kartica ISPOD hero sekcije (nije u sklopu hero-a) ===== */
+.match-below{max-width:760px;margin:12px auto 0;padding:0 12px;position:relative;z-index:1}
+.match-below .match-trigger{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  grid-template-areas:"ic title" "sub sub" "chips chips" "cta cta";
+  gap:6px 12px;
+  align-items:center;
+  width:100%;
+  text-align:left;
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  border-left:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-card);
+  box-shadow:none;
+  padding:16px;
+  color:var(--nv-text);
+}
+.match-below .match-trigger:hover{background:var(--nv-surface-2);border-color:rgba(245,200,66,.45);transform:none;box-shadow:none}
+.match-below .match-trigger .ac-ic{grid-area:ic;background:rgba(245,200,66,.14);color:var(--nv-accent);box-shadow:none}
+.match-below .match-trigger .ac-title{grid-area:title;color:var(--nv-text);font-size:16px}
+.match-below .match-trigger .ac-sub{grid-area:sub;max-width:none;color:var(--nv-muted);font-size:13px;line-height:1.45;margin:2px 0 0}
+.match-below .match-trigger .match-preview-row{grid-area:chips;display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.match-below .match-trigger .match-preview-chip{
+  background:var(--nv-bg);border:1px solid var(--nv-line);color:var(--nv-text);
+  padding:6px 10px;border-radius:var(--nv-radius-pill);font:700 12px/1 Inter,sans-serif;
+}
+.match-below .match-trigger .ac-cta{
+  grid-area:cta;margin:6px 0 0;width:100%;justify-content:space-between;
+  background:var(--nv-accent);color:var(--nv-on-accent);border-radius:12px;padding:13px 16px;
+  font-size:14px;
+}
+.match-below .match-trigger .ac-cta-label{color:var(--nv-on-accent)}
+.match-below .match-trigger .ac-arrow{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
+.match-below .match-trigger:hover .ac-cta{background:#FFD65A}
+.match-below .match-trigger .ac-arrow{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:15px;line-height:1}

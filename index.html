@@ -160,7 +160,7 @@ html,body{background:#0B1626;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=e6c63a2f" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=a2d842a5" rel="stylesheet"/><link href="theme-navy.css?v=navy2" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="hero-extras.css?v=9b7a4fd2" rel="stylesheet"/><link href="theme-navy-rest.css?v=navy4" rel="stylesheet"/>
+<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=24e2b679" rel="stylesheet"/><link href="theme-navy.css?v=navy2" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="hero-extras.css?v=9b7a4fd2" rel="stylesheet"/><link href="theme-navy-rest.css?v=navy4" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -320,7 +320,6 @@ html,body{background:#0B1626;margin:0;}
 <div class="ticket-submit-row">
 <button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="ux_hero_go">Kreni</span></button>
 </div><div class="trip-defaults" id="tripDefaults"><span class="trip-defaults-text" id="tripDefaultsText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsEdit" type="button">Promeni</button></div>
-<button aria-haspopup="dialog" class="match-trigger" data-i18n-html="match_trigger" data-i18n-title="ux_match_hint" id="matchTriggerBtn" type="button"></button>
 <div class="transport-row">
 <label class="toggle" data-t="flight">
 <input type="checkbox"/>
@@ -347,7 +346,11 @@ html,body{background:#0B1626;margin:0;}
 <div class="hero-spacer"></div>
 </div>
 </div>
-</div><div class="section popular-reference-section" id="popular-destinations">
+</div>
+<div class="match-below" id="matchBelow">
+<button aria-haspopup="dialog" class="match-trigger" data-i18n-html="match_trigger" data-i18n-title="ux_match_hint" id="matchTriggerBtn" type="button"></button>
+</div>
+<div class="section popular-reference-section" id="popular-destinations">
 <div class="popular-reference-head">
 <div>
 <div class="eyebrow" data-i18n="eyebrow_ideas" id="popularDestEyebrow">Ideje za sledeći izlet</div>
