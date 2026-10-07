@@ -159,7 +159,7 @@
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt2{background:linear-gradient(135deg,var(--emerald) 0%,var(--deep) 100%);color:var(--on-dark-strong);}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
 </style>
-<link rel="stylesheet" href="destinacija.css?v=1">
+<link rel="stylesheet" href="destinacija.css?v=2">
 </head>
 <body>
 <a class="skip-link" href="#main">Preskoči na sadržaj</a>
@@ -608,8 +608,23 @@ function slider(id, label, cards, spread){
     '</div>';
 }
 /* ---- izbor ponuda i zbir puta ---- */
-const REG = {flight:[], hotel:[], car:[], act:[]};
-const TRIP = {flight:null, hotel:null, car:null, act:new Set()};
+const REG = {flight:[], hotel:[], car:[], act:[], esim:[]};
+const TRIP = {flight:null, hotel:null, car:null, act:new Set(), esim:false};
+let PANEL_OPEN = false, PREV_COUNT = 0;
+/* Okvirne procene za stavke koje partneri ne daju kroz ponude (ilustrativno, EUR).
+   Boravišna taksa: po osobi (odraslom) po noći, plaća se na licu mesta u smeštaju. */
+const TAX_PER_NIGHT = {'Hrvatska':1.5,'Crna Gora':1.5,'Bosna i Hercegovina':1,'Srbija':1.5,'Severna Makedonija':1,'Slovenija':3,
+  'Albanija':1,'Grčka':2,'Italija':3,'Španija':1.5,'Portugalija':2,'Francuska':2,'Nemačka':2.5,'Austrija':2.5,'Mađarska':2,
+  'Češka':1,'Bugarska':1,'Turska':1.5,'Švajcarska':3,'Holandija':4,'Velika Britanija':0};
+function taxEstimate(c){
+  const rate = TAX_PER_NIGHT[c.dest.country];
+  const r = rate == null ? 1.5 : rate;
+  return {rate:r, total:Math.round(r * c.nights * c.P.adults * 10) / 10, known:rate != null};
+}
+function esimEstimate(c){
+  const n = c.nights, per = n <= 4 ? 5 : n <= 8 ? 8 : n <= 12 ? 11 : n <= 20 ? 15 : 20;
+  return {per:per, total:per * c.P.adults};
+}
 const BAR_DEF = {html:'', href:'#'};
 let CUR = null;
 function pickBtn(kind, i){
@@ -621,24 +636,41 @@ function tripItems(){
   if (TRIP.hotel != null && REG.hotel[TRIP.hotel]) out.push(['hotel', TRIP.hotel, '🛏️', REG.hotel[TRIP.hotel]]);
   if (TRIP.car != null && REG.car[TRIP.car]) out.push(['car', TRIP.car, '🚗', REG.car[TRIP.car]]);
   [...TRIP.act].sort((a, b) => a - b).forEach(i => { if (REG.act[i]) out.push(['act', i, '🎟️', REG.act[i]]); });
+  if (TRIP.esim && REG.esim[0]) out.push(['esim', 0, '📶', REG.esim[0]]);
+  /* boravišna taksa se računa sama čim je u putu smeštaj; plaća se na licu mesta */
+  if (TRIP.hotel != null && REG.hotel[TRIP.hotel] && CUR){
+    const t = taxEstimate(CUR);
+    if (t.total > 0) out.push(['tax', 0, '🏛️', {title:'Boravišna taksa (okvirno)', detail:CUR.P.adults + ' × ' + CUR.nights + ' noć. × ' + money(t.rate, 'EUR') + (t.known ? '' : ' · procena'),
+      total:t.total, cur:'EUR', onsite:true}]);
+  }
   return out;
 }
 function itemsWord(n){ return n + (n === 1 ? ' stavka' : (n >= 2 && n <= 4) ? ' stavke' : ' stavki'); }
 function syncPicks(){
   document.querySelectorAll('.dp-pick').forEach(b => {
     const [k, i] = b.getAttribute('data-pick').split(':');
-    const on = k === 'act' ? TRIP.act.has(+i) : TRIP[k] === +i;
+    const on = k === 'act' ? TRIP.act.has(+i) : k === 'esim' ? TRIP.esim : TRIP[k] === +i;
     b.setAttribute('aria-pressed', on ? 'true' : 'false');
     b.classList.toggle('on', on);
     b.textContent = on ? '✓ U tvom putu' : '＋ Dodaj u put';
   });
 }
+function tripRow(it){
+  const r = it[3];
+  const sub = r.detail ? '<span class="dp-trip-detail">' + esc(r.detail) + '</span>' : '';
+  const link = r.url ? '<a href="' + esc(r.url) + '" ' + ext + '>Otvori na ' + esc(r.partner) + ' ↗</a>' : '<span class="dp-trip-detail">plaća se u smeštaju</span>';
+  const rm = it[0] === 'tax' ? '' : '<button type="button" class="dp-trip-rm" data-rm="' + it[0] + ':' + it[1] + '" aria-label="Ukloni">×</button>';
+  return '<div class="dp-trip-row"><span class="dp-trip-ic">' + it[2] + '</span><div class="dp-trip-txt"><b>' + esc(r.title) + '</b>' + sub + link + '</div>' +
+    '<span class="dp-trip-price">' + money(r.total, r.cur) + '</span>' + rm + '</div>';
+}
+function sumEUR(list){ let t = 0, sk = 0; list.forEach(it => { if (it[3].cur === 'EUR' && isFinite(it[3].total)) t += it[3].total; else sk++; }); return {t:t, sk:sk}; }
 function updateBar(){
   const bar = $('dpTotalBar'); if (!bar) return;
   const items = tripItems();
   const label = $('dpTbLabel'), price = $('dpTbPrice'), link = $('dpTbLink'), open = $('dpTbOpen'), panel = $('dpTripPanel');
   syncPicks();
   if (!items.length){
+    PANEL_OPEN = false; PREV_COUNT = 0;
     label.textContent = 'Najjeftiniji let';
     price.innerHTML = BAR_DEF.html;
     link.href = BAR_DEF.href; link.style.display = BAR_DEF.html ? '' : 'none';
@@ -647,20 +679,25 @@ function updateBar(){
     return;
   }
   bar.hidden = false;
-  let sum = 0, skipped = 0;
-  items.forEach(it => { if (it[3].cur === 'EUR' && isFinite(it[3].total)) sum += it[3].total; else skipped++; });
+  if (PREV_COUNT === 0) PANEL_OPEN = true;   /* čim se doda prva stavka, odmah se otvara specifikacija */
+  PREV_COUNT = items.length;
+  const online = items.filter(it => !it[3].onsite), onsite = items.filter(it => it[3].onsite);
+  const a = sumEUR(online), b = sumEUR(onsite);
+  const sum = a.t + b.t, skipped = a.sk + b.sk;
   const ad = CUR ? CUR.P.adults : 1;
   label.textContent = 'Tvoj put · ' + itemsWord(items.length);
   price.innerHTML = money(sum, 'EUR') + ' <small>/ ukupno za ' + ad + (ad === 1 ? ' putnika' : ' putnika') + '</small>';
   link.style.display = 'none'; open.hidden = false;
-  panel.innerHTML = items.map(it => {
-    const r = it[3];
-    return '<div class="dp-trip-row"><span class="dp-trip-ic">' + it[2] + '</span><div class="dp-trip-txt"><b>' + esc(r.title) + '</b>' +
-      '<a href="' + esc(r.url) + '" ' + ext + '>Otvori na ' + esc(r.partner) + ' ↗</a></div>' +
-      '<span class="dp-trip-price">' + money(r.total, r.cur) + '</span>' +
-      '<button type="button" class="dp-trip-rm" data-rm="' + it[0] + ':' + it[1] + '" aria-label="Ukloni">×</button></div>';
-  }).join('') +
-    '<p class="dp-trip-note">Ilustrativna procena. Aktivnosti su računate za sve putnike. Tačnu cenu i dostupnost potvrđuješ kod partnera pre rezervacije. ' + AFF_BADGE + '</p>' +
+  open.setAttribute('aria-expanded', PANEL_OPEN ? 'true' : 'false');
+  open.textContent = PANEL_OPEN ? 'Sakrij specifikaciju' : 'Specifikacija';
+  panel.hidden = !PANEL_OPEN;
+  panel.innerHTML =
+    '<div class="dp-trip-grp">Rezervišeš kod partnera</div>' + online.map(tripRow).join('') +
+    (online.length > 1 ? '<div class="dp-trip-sub"><span>Međuzbir</span><b>' + money(a.t, 'EUR') + '</b></div>' : '') +
+    (onsite.length ? '<div class="dp-trip-grp">Plaćaš na licu mesta</div>' + onsite.map(tripRow).join('') : '') +
+    '<div class="dp-trip-total"><span>UKUPNO</span><b>' + money(sum, 'EUR') + '</b></div>' +
+    '<div class="dp-trip-pp">≈ ' + money(sum / ad, 'EUR') + ' po osobi</div>' +
+    '<p class="dp-trip-note">Ilustrativna procena. Aktivnosti, eSIM i boravišna taksa računati su za sve putnike. Tačnu cenu i dostupnost potvrđuješ kod partnera pre rezervacije. ' + AFF_BADGE + '</p>' +
     (skipped ? '<p class="dp-trip-note">' + skipped + ' stavka je u drugoj valuti i nije uračunata u zbir.</p>' : '');
 }
 function setBarDefault(html, href){ BAR_DEF.html = html; BAR_DEF.href = href; updateBar(); }
@@ -669,20 +706,19 @@ document.addEventListener('click', e => {
   if (pk){
     const [k, i] = pk.getAttribute('data-pick').split(':'), n = +i;
     if (k === 'act'){ TRIP.act.has(n) ? TRIP.act.delete(n) : TRIP.act.add(n); }
+    else if (k === 'esim') TRIP.esim = !TRIP.esim;
     else TRIP[k] = TRIP[k] === n ? null : n;
     updateBar(); return;
   }
   const rm = e.target.closest('[data-rm]');
   if (rm){
     const [k, i] = rm.getAttribute('data-rm').split(':'), n = +i;
-    if (k === 'act') TRIP.act.delete(n); else TRIP[k] = null;
+    if (k === 'act') TRIP.act.delete(n); else if (k === 'esim') TRIP.esim = false; else TRIP[k] = null;
     updateBar(); return;
   }
   if (e.target.closest('#dpTbOpen')){
-    const panel = $('dpTripPanel'), btn = $('dpTbOpen');
-    panel.hidden = !panel.hidden;
-    btn.setAttribute('aria-expanded', panel.hidden ? 'false' : 'true');
-    btn.textContent = panel.hidden ? 'Pregled puta' : 'Sakrij pregled';
+    PANEL_OPEN = !PANEL_OPEN;
+    updateBar();
     return;
   }
   const more = e.target.closest('.dp-more-btn');
@@ -908,7 +944,7 @@ function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls
     if (token !== renderToken) return;
     const key = kind === 'hotels' ? 'hotel' : kind === 'cars' ? 'car' : 'act';
     const ad = c.P.adults;
-    REG[key] = list.map(o => ({title:o.title, total: key === 'act' ? o.price * ad : o.price, cur:'EUR', url:o.url, partner:partner}));
+    REG[key] = list.map(o => ({title:o.title, detail: key === 'act' ? ad + ' × ' + money(o.price, 'EUR') : (o.sub || ''), total: key === 'act' ? o.price * ad : o.price, cur:'EUR', url:o.url, partner:partner}));
     $(boxId).innerHTML = slider(sliderId, label, list.map((o, i) => offerCard(o, partner, bannerCls, key, i)), true);
     $(countId).textContent = countLabel(list.length);
     initSlider(sliderId);
@@ -1111,6 +1147,7 @@ function renderResults(P){
   const esimLink = esimSlug
     ? 'https://www.airalo.com/' + esimSlug + '-esim?ref=' + enc(aff('airalo'))
     : 'https://www.airalo.com/esim?ref=' + enc(aff('airalo'));
+  const esimEst = esimEstimate(c);
   const esimTips = [['📶', 'Zašto je važno',
     'Roming van paketa operatera (van EU ili van regiona) može biti i desetine puta skuplji od lokalnog interneta. eSIM se kupuje unapred i aktivira tek po sletanju.']];
   if (!esimSlug) esimTips.push(['ℹ️', 'Napomena',
@@ -1120,6 +1157,7 @@ function renderResults(P){
   html += '<div class="dp-section" id="esim">' + sectionHead('📶', 'eSIM', '') + '<div class="dp-card">' +
     esimTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
       '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') +
+    '<div class="dp-esim-pick"><span>Procena za ' + c.P.adults + (c.P.adults === 1 ? ' putnika' : ' putnika') + ' · ' + c.nights + (c.nights === 1 ? ' dan' : ' dana') + ': <b>' + money(esimEst.total, 'EUR') + '</b></span>' + pickBtn('esim', 0) + '</div>' +
     '<div class="dp-links dp-links-after"><a class="dp-linkbtn dp-primary" href="' + esc(esimLink) + '" ' + ext + '>Pogledaj pakete na Airalo</a>' + AFF_BADGE + '</div>' +
     '</div></div>';
 
@@ -1150,7 +1188,9 @@ function renderResults(P){
   const token = ++renderToken;
   CUR = c;
   REG.flight = []; REG.hotel = []; REG.car = []; REG.act = [];
-  TRIP.flight = TRIP.hotel = TRIP.car = null; TRIP.act.clear();
+  const es = esimEstimate(c);
+  REG.esim = [{title:'eSIM paket · ' + (dest.country || dest.name), detail:c.P.adults + ' × ' + money(es.per, 'EUR') + ' · ' + c.nights + (c.nights === 1 ? ' dan' : ' dana'), total:es.total, cur:'EUR', url:esimLink, partner:'Airalo'}];
+  TRIP.flight = TRIP.hotel = TRIP.car = null; TRIP.act.clear(); TRIP.esim = false; PANEL_OPEN = false; PREV_COUNT = 0;
   BAR_DEF.html = ''; BAR_DEF.href = '#';
   loadFlights(c);
   fillOffers('hotels', c, 'dpHotelBox', 'dpHotelCount', 'dpHotelTrack', 'Ponude smeštaja', 'Booking.com', '', token);

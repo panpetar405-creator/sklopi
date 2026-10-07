@@ -209,3 +209,17 @@ body{background:var(--nv-page,#060D18);color:var(--nv-text);}
   .dp-wrap{padding-bottom:60px;}
 }
 .travel-checklist .tc-title{padding:0;margin:0;}
+
+/* ---------- Specifikacija puta (zbir sa razradom) ---------- */
+.dp-trip-grp{margin:10px 0 2px;font:700 11.5px Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--nv-muted);}
+.dp-trip-detail{display:block;font-size:12.5px;color:var(--nv-muted);}
+.dp-trip-txt b{white-space:normal;}
+.dp-trip-sub{display:flex;justify-content:space-between;padding:8px 0 2px;font-size:13.5px;color:var(--nv-muted);}
+.dp-trip-sub b{color:var(--nv-text);}
+.dp-trip-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding:12px 14px;border-radius:14px;background:rgba(244,200,66,.12);border:1px solid rgba(244,200,66,.45);}
+.dp-trip-total span{font:800 13px Inter,sans-serif;letter-spacing:.08em;color:var(--nv-accent);}
+.dp-trip-total b{font:800 22px Inter,sans-serif;color:var(--nv-text);}
+.dp-trip-pp{text-align:right;margin-top:4px;font-size:12.5px;color:var(--nv-muted);}
+.dp-esim-pick{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:14px;color:var(--nv-muted);}
+.dp-esim-pick b{color:var(--nv-text);}
+.dp-trip-panel{max-height:60vh;}
