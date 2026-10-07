@@ -1,0 +1,127 @@
+/* SKLOPI — navy tema za ostatak stranice (Moj put, Sačuvani aranžmani, FAQ, Vodiči, Kako radi, Partneri, builder).
+   Tokeni (--nv-*) su u theme-navy.css. Ne dira --deep (koristi ga ~100 pravila, uključujući .btn-primary),
+   nego u ovim sekcijama preusmerava samo "papir/tekst" promenljive i ručno ispravlja ono što ima tvrdo upisane boje. */
+
+:root{--nv-page:#060D18}                       /* pozadina stranice, tamnija od panela (--nv-bg) */
+body{background:var(--nv-page)}
+
+.how-it-works-section,.guides-teaser-section,.business-strip,.my-trip-section,
+.saved-wrap,#faq,.builder-wrap{
+  --bg:var(--nv-bg);--paper:var(--nv-surface);--ink:var(--nv-text);--ink-soft:var(--nv-muted);
+  --line:var(--nv-line);--gold-text:var(--nv-accent);--coral-text:#FCA5A5;--coral-soft:rgba(248,113,113,.14);
+  color:var(--nv-text);
+}
+
+/* ---------- naslovi ---------- */
+.how-it-works-section h2,.how-it-works-section h3,.guides-teaser-section h2,.my-trip-section h2,
+.saved-wrap h2,#faq h2,.builder-wrap h2,.builder-wrap h3,.saved-wrap .section-head h2,#faq .section-head h2,
+.ad-head h2,.faq-head-v2 h2{color:var(--nv-text)}
+.ad-head p,.section-head .section-sub,.how-it-works-head p{color:var(--nv-muted)}
+.section-head .eyebrow{background:rgba(245,200,66,.14);color:var(--nv-accent)}
+
+/* ---------- Kako radi ---------- */
+.how-step{background:var(--nv-surface);border:1px solid var(--nv-line);box-shadow:none}
+.how-step-no{background:var(--nv-accent);color:var(--nv-on-accent)}
+.how-step h3{color:var(--nv-text)}
+.how-step p,.how-it-works-note{color:var(--nv-muted)}
+
+/* ---------- Vodiči i saveti ---------- */
+.gd-card{background:var(--nv-surface);border:1px solid var(--nv-line);box-shadow:none}
+.gd-card:hover{border-color:rgba(245,200,66,.55);box-shadow:none}
+.gd-thumb{background:var(--nv-surface-2)}
+.gd-info b{color:var(--nv-text)}
+.gd-info small{color:var(--nv-muted)}
+.gd-info em{color:var(--nv-accent)}
+
+/* ---------- Partneri (logotipi ostaju u svojim bojama, zato je kartica svetla) ---------- */
+.partners-label{color:var(--nv-muted)}
+.partners-card{background:#F2F5F8;border:0;box-shadow:none}
+
+/* ---------- Moj put ---------- */
+.mt-tabs{background:var(--nv-surface)}
+.mt-tab{color:var(--nv-muted)}
+.mt-tab.is-on{background:var(--nv-accent);color:var(--nv-on-accent)}
+.mt-tab:focus-visible,.mt-link:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
+.my-trip-section .mt-card{background:var(--nv-surface);border:1px solid var(--nv-line);box-shadow:none}
+.my-trip-section .mt-head h3{color:var(--nv-text)}
+.my-trip-section .mt-head p{color:var(--nv-muted)}
+.my-trip-section .mt-thumb{background:var(--nv-surface-2)}
+.my-trip-section .mt-rows li{color:var(--nv-muted);border-bottom-color:var(--nv-line)}
+.my-trip-section .mt-rows li span{color:var(--nv-accent)}
+.my-trip-section .mt-rows li em{color:var(--nv-text)}
+.my-trip-section .mt-total{color:var(--nv-muted)}
+.my-trip-section .mt-total b{color:var(--nv-accent)}
+.my-trip-section .mt-fine{color:var(--nv-muted)}
+.mt-empty{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-muted)}
+.mt-link{color:var(--nv-accent)}
+.my-trip-section .btn-primary,.saved-wrap .btn-primary,.builder-wrap .btn-primary{
+  background:var(--nv-accent);color:var(--nv-on-accent);border-radius:14px;font-weight:800;
+}
+.my-trip-section .btn-primary:hover,.saved-wrap .btn-primary:hover,.builder-wrap .btn-primary:hover{background:#FFD65A}
+.my-trip-section .btn-primary::after,.builder-wrap .btn-primary::after{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
+
+/* ---------- Sačuvani aranžmani ---------- */
+.saved-wrap .btn-alert{
+  background:var(--nv-accent);color:var(--nv-on-accent);border:0;border-radius:14px;min-height:48px;font-weight:800;
+}
+.saved-wrap .btn-alert svg{color:var(--nv-on-accent)}
+.saved-wrap .btn-alert:hover{background:#FFD65A;transform:none;box-shadow:none}
+.saved-wrap .btn-alert:hover svg{color:var(--nv-on-accent)}
+.saved-wrap .auth-input,.saved-wrap input[type="email"]{
+  background:var(--nv-surface);color:var(--nv-text);border:1px solid var(--nv-line);border-radius:12px;
+}
+.saved-empty,.saved-loading{background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card);color:var(--nv-muted)}
+.saved-trip-card{background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card)}
+.saved-trip-head h4,.saved-trip-total{color:var(--nv-text)}
+.saved-trip-meta{color:var(--nv-muted)}
+.saved-trip-tag{color:var(--nv-muted);border-color:var(--nv-line)}
+.saved-trip-actions{border-top-color:var(--nv-line)}
+.saved-trip-btn{background:var(--nv-surface-2);color:var(--nv-text);border:1px solid var(--nv-line);border-radius:10px}
+.saved-trip-btn.danger{color:#FCA5A5;border-color:rgba(248,113,113,.35)}
+
+/* ---------- Česta pitanja ---------- */
+.faq-item{background:var(--nv-surface);border:1px solid var(--nv-line);box-shadow:none}
+.faq-item summary{color:var(--nv-text)}
+.faq-item summary::after{border-color:var(--nv-line);color:var(--nv-accent)}
+.faq-item[open] summary::after{background:var(--nv-accent);border-color:var(--nv-accent);color:var(--nv-on-accent)}
+.faq-item p{color:var(--nv-muted)}
+.faq-item p a{color:var(--nv-accent)}
+.faq-banner{background:var(--nv-surface-2);border:1px solid var(--nv-line);color:var(--nv-text)}
+.faq-banner b{color:var(--nv-accent)}
+
+/* ---------- Builder (Sastavi svoj paket) ---------- */
+.builder-form,.builder-summary{
+  background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:var(--nv-radius-card);box-shadow:none;color:var(--nv-text);
+}
+.builder-summary::before{display:none}
+.builder-label,.q-row-head .q-name,.builder-line .lval{color:var(--nv-text)}
+.q-row-head .q-desc,.q-field-label,.builder-line,.builder-summary-head,.builder-total-sub,.builder-total-hint{color:var(--nv-muted)}
+.builder-total #builderTotal{color:var(--nv-accent)}
+.q-row-head input[type="checkbox"]{background:var(--nv-bg);border-color:var(--nv-muted)}
+.q-row-head input[type="checkbox"]:checked{background:var(--nv-accent);border-color:var(--nv-accent)}
+.q-row-head input[type="checkbox"]:checked::after{border-color:var(--nv-on-accent)}
+.q-row-head:has(input[type="checkbox"]:checked) .q-name{color:var(--nv-accent)}
+.q-radio-line{color:var(--nv-text)}
+.q-radio-line input[type="radio"]{border-color:var(--nv-muted)}
+.q-radio-line input[type="radio"]:checked{border-color:var(--nv-accent)}
+.q-radio-line input[type="radio"]:checked::after{background:var(--nv-accent)}
+.q-radio-line input[type="checkbox"]{background:var(--nv-bg);border-color:var(--nv-muted)}
+.q-radio-line input[type="checkbox"]:checked{background:var(--nv-accent);border-color:var(--nv-accent)}
+.q-radio-line input[type="checkbox"]:checked::after{border-color:var(--nv-on-accent)}
+.q-text-field,.q-num-field{color:var(--nv-text);border-bottom-color:var(--nv-line)}
+.q-text-field:focus{border-bottom-color:var(--nv-accent)}
+.builder-ic.ic-flight,.builder-ic.ic-hotel,.builder-ic.ic-car,.builder-ic.ic-activity,.builder-ic.ic-budget,.builder-ic.ic-addons{
+  background:rgba(245,200,66,.14);color:var(--nv-accent);
+}
+.builder-close{background:var(--nv-surface-2);color:var(--nv-text);border:1px solid var(--nv-line);box-shadow:none}
+.optimize-result{background:var(--nv-surface-2);border-left-color:var(--nv-accent);color:var(--nv-text)}
+.optimize-result .save{color:var(--nv-accent)}
+.optimize-apply{border-color:var(--nv-accent);color:var(--nv-accent)}
+.item-btn.flight{background:var(--nv-surface-2);border:1px solid var(--nv-line);color:var(--nv-text)}
+.qa-item{color:var(--nv-text)}
+.qa-item svg{stroke:var(--nv-accent)}
+.disclaimer{color:var(--nv-muted)}
+
+/* ---------- Podnožje ---------- */
+footer{background:var(--nv-bg);border-top:1px solid var(--nv-line)}
+footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13,24,.95) 100%)}   /* preko fotografije podnožja */
