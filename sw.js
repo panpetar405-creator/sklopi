@@ -68,7 +68,7 @@ const PRECACHE = [
 /* STAMP:END */
 
 const SHELL_CACHE = 'sklopi-shell-' + BUILD;
-const IMG_CACHE = 'sklopi-img-v1';          // slike prežive nov BUILD; menjaj samo ako menjaš pravila
+const IMG_CACHE = 'sklopi-img-v2';          // slike prežive nov BUILD; menjaj samo ako menjaš pravila
 const KEEP = [SHELL_CACHE, IMG_CACHE];
 const IMG_MAX = 80;
 const NAV_TIMEOUT_MS = 4000;

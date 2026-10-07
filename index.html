@@ -5,17 +5,17 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <style>
-html,body{background:#123A44;margin:0;}
-#appSplash{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#123A44 0%,#0A1B20 100%);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
+html,body{background:#0B1626;margin:0;}
+#appSplash{position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#0B1626 0%,#060D18 100%);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;}
 #appSplash.is-hidden{opacity:0;pointer-events:none;}
 .app-splash-inner{position:relative;display:flex;flex-direction:column;align-items:center;gap:26px;}
 .app-splash-mark{position:relative;z-index:1;display:block;}
-.app-splash-inner::before{content:"";position:absolute;top:0;left:50%;width:96px;height:96px;margin-left:-48px;border-radius:22px;box-shadow:0 0 0 0 rgba(230,126,34,.55);animation:splashRing 1.8s ease-out infinite;}
+.app-splash-inner::before{content:"";position:absolute;top:0;left:50%;width:96px;height:96px;margin-left:-48px;border-radius:22px;box-shadow:0 0 0 0 rgba(245,200,66,.55);animation:splashRing 1.8s ease-out infinite;}
 .app-splash-track{width:120px;height:4px;border-radius:4px;background:rgba(255,255,255,.14);overflow:hidden;position:relative;}
-.app-splash-fill{position:absolute;top:0;left:0;height:100%;width:38%;border-radius:4px;background:linear-gradient(90deg,#d9631c,#f0964c);animation:splashLoad 1.15s cubic-bezier(.45,0,.55,1) infinite;}
+.app-splash-fill{position:absolute;top:0;left:0;height:100%;width:38%;border-radius:4px;background:linear-gradient(90deg,#F5C842,#FAD974);animation:splashLoad 1.15s cubic-bezier(.45,0,.55,1) infinite;}
 @keyframes splashPop{0%{opacity:0;transform:scale(.4);}60%{transform:scale(1.12);}80%{transform:scale(.95);}100%{opacity:1;transform:scale(1);}}
 @keyframes splashFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-@keyframes splashRing{0%{box-shadow:0 0 0 0 rgba(230,126,34,.55);}100%{box-shadow:0 0 0 26px rgba(230,126,34,0);}}
+@keyframes splashRing{0%{box-shadow:0 0 0 0 rgba(245,200,66,.55);}100%{box-shadow:0 0 0 26px rgba(245,200,66,0);}}
 @keyframes splashLoad{0%{left:-38%;}100%{left:100%;}}
 </style>
 <title>SKLOPI — sastavi putni paket, jedna cena</title>
@@ -146,9 +146,9 @@ html,body{background:#123A44;margin:0;}
 <link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="favicon-16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="favicon.ico" rel="shortcut icon"/>
-<link href="app-icon-1024.png?v=5" rel="apple-touch-icon" sizes="180x180"/>
+<link href="app-icon-1024.png?v=6" rel="apple-touch-icon" sizes="180x180"/>
 <link href="manifest.json" rel="manifest"/>
-<meta content="#123A44" name="theme-color"/>
+<meta content="#0B1626" name="theme-color"/>
 <meta content="light" name="color-scheme"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -168,7 +168,7 @@ html,body{background:#123A44;margin:0;}
 <noscript><style>#appSplash{display:none!important;}</style></noscript>
 <div aria-label="Učitavanje" aria-live="polite" class="app-splash" id="appSplash" role="status">
 <div class="app-splash-inner">
-<img alt="" aria-hidden="true" class="app-splash-mark" height="96" src="app-icon-192.png?v=5" style="border-radius:6px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1) both,splashFloat 2.4s ease-in-out .7s infinite;" width="96"/>
+<img alt="" aria-hidden="true" class="app-splash-mark" height="96" src="app-icon-192.png?v=6" style="border-radius:22px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1) both,splashFloat 2.4s ease-in-out .7s infinite;" width="96"/>
 <div class="app-splash-track"><span class="app-splash-fill"></span></div>
 </div>
 </div>
