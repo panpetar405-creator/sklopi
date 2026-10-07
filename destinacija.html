@@ -75,6 +75,23 @@
 .dp-gc-needed b{color:var(--coral-text);}
 .dp-disclosure{margin:26px 0 0;font-size:12px;line-height:1.55;color:var(--ink-soft);}
 .dp-tb-cta{display:flex;flex-direction:column;align-items:center;gap:0;}
+.dp-total-bar{flex-wrap:wrap;}
+.dp-tb-open{border:0;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;background:var(--deep);color:var(--on-dark-strong);}
+.dp-tb-open:hover{background:var(--deep2);}
+.dp-trip-panel{flex:1 1 100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);max-height:48vh;overflow:auto;}
+.dp-trip-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.dp-trip-row:last-of-type{border-bottom:0;}
+.dp-trip-ic{flex:0 0 auto;font-size:18px;}
+.dp-trip-txt{flex:1 1 auto;min-width:0;}
+.dp-trip-txt b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dp-trip-txt a{font-size:12.5px;color:var(--deep);}
+.dp-trip-price{flex:0 0 auto;font-weight:700;color:var(--deep);}
+.dp-trip-rm{flex:0 0 auto;border:0;background:transparent;cursor:pointer;font-size:18px;line-height:1;color:var(--ink-soft);padding:4px 6px;}
+.dp-trip-note{margin:8px 0 0;font-size:12px;color:var(--ink-soft);}
+.dp-pick{margin-top:8px;width:100%;box-sizing:border-box;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:9px 14px;border-radius:999px;border:1.5px solid var(--deep);background:transparent;color:var(--deep);}
+.dp-pick.on{background:var(--deep-soft);}
+.dp-slider:not(.dp-all) .dp-extra{display:none;}
+.dp-more-btn{display:block;margin:12px auto 0;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:9px 20px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);color:var(--deep);}
 .dp-tb-cta .aff-badge{margin-top:4px;}
 .dp-sl-body .aff-badge{align-self:flex-start;margin-top:6px;}
 .dp-links .aff-badge{margin-top:0;align-self:center;}
@@ -188,13 +205,15 @@ Nazad na pretragu
 
 <div class="dp-total-bar" id="dpTotalBar" hidden>
 <div>
-<div class="dp-tb-label">Najjeftiniji let</div>
+<div class="dp-tb-label" id="dpTbLabel">Najjeftiniji let</div>
 <div class="dp-tb-price" id="dpTbPrice"></div>
 </div>
 <div class="dp-tb-cta">
 <a class="btn-primary" id="dpTbLink" href="#" target="_blank" rel="noopener sponsored" style="padding:10px 18px;text-decoration:none;">Uporedi letove</a>
+<button type="button" class="dp-tb-open" id="dpTbOpen" aria-expanded="false" aria-controls="dpTripPanel" hidden>Pregled puta</button>
 <span class="aff-badge" title="Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.">🔗 Afilijacija</span>
 </div>
+<div class="dp-trip-panel" id="dpTripPanel" hidden></div>
 </div>
 
 <div class="dp-wrap">
@@ -568,10 +587,108 @@ function countLabel(n){
    simulated, badge}. Prave ponude partnera se ubacuju preko
    window.SKLOPI_FEEDS (vidi getOffers) — kartice ostaju iste.
 ========================================================== */
-function slider(id, label, cards){
-  return '<div class="dp-slider"><div class="dp-slider-track" id="' + id + '" tabindex="0" role="region" aria-label="' + esc(label) + '">' +
-    cards.join('') + '</div></div>';
+const VISIBLE = 5;
+function visibleSet(n, spread){
+  const set = new Set();
+  if (n <= VISIBLE || !spread){ for (let i = 0; i < Math.min(n, VISIBLE); i++) set.add(i); return set; }
+  for (let i = 0; i < VISIBLE; i++) set.add(Math.round(i * (n - 1) / (VISIBLE - 1)));
+  return set;
 }
+/* Prikazuje 5 ponuda (spread = ravnomerno raspoređene po ceni, inače 5 prvih); ostale iza dugmeta "Prikaži još". */
+function slider(id, label, cards, spread){
+  const vis = visibleSet(cards.length, spread);
+  const extra = cards.length - vis.size;
+  const html = cards.map((c, i) => vis.has(i) ? c : c.replace('<article class="dp-sl-card"', '<article class="dp-sl-card dp-extra"')).join('');
+  return '<div class="dp-slider"><div class="dp-slider-track" id="' + id + '" tabindex="0" role="region" aria-label="' + esc(label) + '">' +
+    html + '</div>' +
+    (extra > 0 ? '<button type="button" class="dp-more-btn" data-more="' + id + '" data-extra="' + extra + '">Prikaži još (' + extra + ')</button>' : '') +
+    '</div>';
+}
+/* ---- izbor ponuda i zbir puta ---- */
+const REG = {flight:[], hotel:[], car:[], act:[]};
+const TRIP = {flight:null, hotel:null, car:null, act:new Set()};
+const BAR_DEF = {html:'', href:'#'};
+let CUR = null;
+function pickBtn(kind, i){
+  return '<button type="button" class="dp-pick" data-pick="' + kind + ':' + i + '" aria-pressed="false">＋ Dodaj u put</button>';
+}
+function tripItems(){
+  const out = [];
+  if (TRIP.flight != null && REG.flight[TRIP.flight]) out.push(['flight', TRIP.flight, '✈️', REG.flight[TRIP.flight]]);
+  if (TRIP.hotel != null && REG.hotel[TRIP.hotel]) out.push(['hotel', TRIP.hotel, '🛏️', REG.hotel[TRIP.hotel]]);
+  if (TRIP.car != null && REG.car[TRIP.car]) out.push(['car', TRIP.car, '🚗', REG.car[TRIP.car]]);
+  [...TRIP.act].sort((a, b) => a - b).forEach(i => { if (REG.act[i]) out.push(['act', i, '🎟️', REG.act[i]]); });
+  return out;
+}
+function itemsWord(n){ return n + (n === 1 ? ' stavka' : (n >= 2 && n <= 4) ? ' stavke' : ' stavki'); }
+function syncPicks(){
+  document.querySelectorAll('.dp-pick').forEach(b => {
+    const [k, i] = b.getAttribute('data-pick').split(':');
+    const on = k === 'act' ? TRIP.act.has(+i) : TRIP[k] === +i;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.classList.toggle('on', on);
+    b.textContent = on ? '✓ U tvom putu' : '＋ Dodaj u put';
+  });
+}
+function updateBar(){
+  const bar = $('dpTotalBar'); if (!bar) return;
+  const items = tripItems();
+  const label = $('dpTbLabel'), price = $('dpTbPrice'), link = $('dpTbLink'), open = $('dpTbOpen'), panel = $('dpTripPanel');
+  syncPicks();
+  if (!items.length){
+    label.textContent = 'Najjeftiniji let';
+    price.innerHTML = BAR_DEF.html;
+    link.href = BAR_DEF.href; link.style.display = BAR_DEF.html ? '' : 'none';
+    open.hidden = true; open.setAttribute('aria-expanded', 'false'); panel.hidden = true; panel.innerHTML = '';
+    if (!BAR_DEF.html) bar.hidden = true;
+    return;
+  }
+  bar.hidden = false;
+  let sum = 0, skipped = 0;
+  items.forEach(it => { if (it[3].cur === 'EUR' && isFinite(it[3].total)) sum += it[3].total; else skipped++; });
+  const ad = CUR ? CUR.P.adults : 1;
+  label.textContent = 'Tvoj put · ' + itemsWord(items.length);
+  price.innerHTML = money(sum, 'EUR') + ' <small>/ ukupno za ' + ad + (ad === 1 ? ' putnika' : ' putnika') + '</small>';
+  link.style.display = 'none'; open.hidden = false;
+  panel.innerHTML = items.map(it => {
+    const r = it[3];
+    return '<div class="dp-trip-row"><span class="dp-trip-ic">' + it[2] + '</span><div class="dp-trip-txt"><b>' + esc(r.title) + '</b>' +
+      '<a href="' + esc(r.url) + '" ' + ext + '>Otvori na ' + esc(r.partner) + ' ↗</a></div>' +
+      '<span class="dp-trip-price">' + money(r.total, r.cur) + '</span>' +
+      '<button type="button" class="dp-trip-rm" data-rm="' + it[0] + ':' + it[1] + '" aria-label="Ukloni">×</button></div>';
+  }).join('') +
+    '<p class="dp-trip-note">Ilustrativna procena. Aktivnosti su računate za sve putnike. Tačnu cenu i dostupnost potvrđuješ kod partnera pre rezervacije. ' + AFF_BADGE + '</p>' +
+    (skipped ? '<p class="dp-trip-note">' + skipped + ' stavka je u drugoj valuti i nije uračunata u zbir.</p>' : '');
+}
+function setBarDefault(html, href){ BAR_DEF.html = html; BAR_DEF.href = href; updateBar(); }
+document.addEventListener('click', e => {
+  const pk = e.target.closest('.dp-pick');
+  if (pk){
+    const [k, i] = pk.getAttribute('data-pick').split(':'), n = +i;
+    if (k === 'act'){ TRIP.act.has(n) ? TRIP.act.delete(n) : TRIP.act.add(n); }
+    else TRIP[k] = TRIP[k] === n ? null : n;
+    updateBar(); return;
+  }
+  const rm = e.target.closest('[data-rm]');
+  if (rm){
+    const [k, i] = rm.getAttribute('data-rm').split(':'), n = +i;
+    if (k === 'act') TRIP.act.delete(n); else TRIP[k] = null;
+    updateBar(); return;
+  }
+  if (e.target.closest('#dpTbOpen')){
+    const panel = $('dpTripPanel'), btn = $('dpTbOpen');
+    panel.hidden = !panel.hidden;
+    btn.setAttribute('aria-expanded', panel.hidden ? 'false' : 'true');
+    btn.textContent = panel.hidden ? 'Pregled puta' : 'Sakrij pregled';
+    return;
+  }
+  const more = e.target.closest('.dp-more-btn');
+  if (more){
+    const wrap = more.parentNode, on = wrap.classList.toggle('dp-all');
+    more.textContent = on ? 'Prikaži manje' : 'Prikaži još (' + more.getAttribute('data-extra') + ')';
+    const track = wrap.querySelector('.dp-slider-track'); if (track) updateSliderNav(track);
+  }
+});
 /* ---- fotografije u karticama ----
    Kartice nemaju fotografije iz stranih izvora (Wikipedija je uklonjena). Ponuda može doneti
    sopstveni o.img (npr. iz pravog Booking.com / Viator feed-a preko window.SKLOPI_FEEDS) —
@@ -585,7 +702,7 @@ function photoBlock(o, attrs, bannerRow){
   const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async">' : '';
   return '<div class="dp-sl-photo' + (bannerRow ? ' has-banner' : '') + '"' + (o.img ? '' : attrs) + '>' + img + (bannerRow || '') + '</div>';
 }
-function offerCard(o, partner, bannerCls){
+function offerCard(o, partner, bannerCls, kind, idx){
   const badge = o.simulated ? '<span class="dp-badge">primer</span>' : (o.badge ? '<span class="dp-badge dp-partner">' + esc(o.badge) + '</span>' : '');
   const bannerRow = o.banner ? '<div class="dp-sl-banner on-photo ' + (bannerCls || '') + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
   const banner = photoBlock(o, '', bannerRow);
@@ -594,7 +711,8 @@ function offerCard(o, partner, bannerCls){
     '<div class="dp-sl-title">' + esc(o.title) + '</div>' +
     (o.sub ? '<div class="dp-sl-sub">' + esc(o.sub) + '</div>' : '') +
     '<div class="dp-sl-price"><b>' + money(o.price, 'EUR') + '</b><small>' + esc(o.priceNote || '') + '</small></div>' +
-    '<a class="dp-linkbtn dp-primary dp-sl-cta" href="' + esc(o.url) + '" ' + ext + '>Pogledaj na ' + esc(partner) + '</a>' + AFF_BADGE +
+    (kind ? pickBtn(kind, idx) : '') +
+    '<a class="dp-linkbtn dp-sl-cta" href="' + esc(o.url) + '" ' + ext + '>Pogledaj na ' + esc(partner) + '</a>' + AFF_BADGE +
     '</div></article>';
 }
 function updateSliderNav(track){
@@ -746,7 +864,7 @@ const FLIGHT_CARRIERS = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa']
 function simFlights(c){
   const x = simContext(c);
   const rng = seededRandom(hashSeed('flight|' + c.dest.name.toLowerCase() + '|' + c.org.name.toLowerCase() + '|' + c.P.start));
-  const depCount = 3 + Math.floor(rng() * 4); // 3–6 poletanja, nikad više
+  const depCount = 5 + Math.floor(rng() * 2); // 5–6 poletanja (5 vidljivih + eventualno 6. iza "Prikaži još")
   const base = 45 + rng() * 130;
   const rows = [];
   for (let i = 0; i < depCount; i++){
@@ -785,14 +903,17 @@ function getOffers(kind, c){
 function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls, token){
   return getOffers(kind, c).then(list => {
     if (token !== renderToken) return;
-    $(boxId).innerHTML = slider(sliderId, label, list.map(o => offerCard(o, partner, bannerCls)));
+    const key = kind === 'hotels' ? 'hotel' : kind === 'cars' ? 'car' : 'act';
+    const ad = c.P.adults;
+    REG[key] = list.map(o => ({title:o.title, total: key === 'act' ? o.price * ad : o.price, cur:'EUR', url:o.url, partner:partner}));
+    $(boxId).innerHTML = slider(sliderId, label, list.map((o, i) => offerCard(o, partner, bannerCls, key, i)), true);
     $(countId).textContent = countLabel(list.length);
     initSlider(sliderId);
     fillPhotos(sliderId);
   });
 }
 
-function flightCard(o, adults, c){
+function flightCard(o, adults, c, idx){
   const per = adults > 1 ? 'ukupno za ' + adults + ' putnika' : 'ukupno, povratna karta';
   const test = o.airline === 'Duffel Airways' ? '<span class="dp-badge">test podaci</span>' : '';
   const legs = (o.slices || []).map(s =>
@@ -804,7 +925,8 @@ function flightCard(o, adults, c){
     '<div class="dp-fl-mid"><div class="dp-fl-airline">' + esc(o.airline || 'Aviokompanija') + '</div>' + test + '</div></div>' +
     legs +
     '<div class="dp-sl-price"><b>' + money(o.total_amount, o.total_currency) + '</b><small>' + esc(per) + '</small></div>' +
-    '<a class="dp-linkbtn dp-primary dp-sl-cta" href="' + esc(linkFlights(c)) + '" ' + ext + '>Pogledaj na KAYAK</a>' + AFF_BADGE +
+    pickBtn('flight', idx) +
+    '<a class="dp-linkbtn dp-sl-cta" href="' + esc(linkFlights(c)) + '" ' + ext + '>Pogledaj na KAYAK</a>' + AFF_BADGE +
     '</div></article>';
 }
 
@@ -817,14 +939,14 @@ function loadFlights(c){
   function showSimulated(){
     const offers = SIM.flights(c).slice(0, 6);
     count.textContent = countLabel(offers.length);
-    list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => offerCard(o, 'KAYAK', '')));
+    REG.flight = offers.map(o => ({title:o.title, total:o.price, cur:'EUR', url:o.url, partner:'KAYAK'}));
+    list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map((o, i) => offerCard(o, 'KAYAK', '', 'flight', i)), false);
     initSlider('dpFlightTrack');
     fillPhotos('dpFlightTrack');
     const cheapest = offers[0];
     if (cheapest){
-      $('dpTbPrice').innerHTML = money(cheapest.price, 'EUR') + ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>';
-      $('dpTbLink').href = linkFlights(c);
       bar.hidden = false;
+      setBarDefault(money(cheapest.price, 'EUR') + ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>', linkFlights(c));
     }
   }
 
@@ -852,15 +974,18 @@ function loadFlights(c){
         .sort((a,b) => parseFloat(a.total_amount) - parseFloat(b.total_amount)).slice(0, 6);
       if (!offers.length) throw new Error('empty');
       count.textContent = countLabel(offers.length);
-      list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map(o => flightCard(o, c.P.adults, c)));
+      REG.flight = offers.map(o => {
+        const s0 = (o.slices || [])[0];
+        return {title:(o.airline || 'Let') + (s0 ? ' · ' + s0.origin + ' → ' + s0.destination : ''),
+          total:parseFloat(o.total_amount), cur:o.total_currency || 'EUR', url:linkFlights(c), partner:'KAYAK'};
+      });
+      list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map((o, i) => flightCard(o, c.P.adults, c, i)), false);
       initSlider('dpFlightTrack');
       fillPhotos('dpFlightTrack');
       const cheapest = offers[0];
-      $('dpTbPrice').innerHTML = money(cheapest.total_amount, cheapest.total_currency) +
-        ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>';
-      const a = $('dpTbLink');
-      a.href = linkFlights(c);
       bar.hidden = false;
+      setBarDefault(money(cheapest.total_amount, cheapest.total_currency) +
+        ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>', linkFlights(c));
     })
     .catch(() => {
       if (my !== flightReq) return;
@@ -1017,6 +1142,10 @@ function renderResults(P){
   $('dpEdit').hidden = false;
   if (window.SklopiDestInfo) SklopiDestInfo.load(dest.name, c.org ? c.org.name + (c.org.country ? ', ' + c.org.country : '') : '');
   const token = ++renderToken;
+  CUR = c;
+  REG.flight = []; REG.hotel = []; REG.car = []; REG.act = [];
+  TRIP.flight = TRIP.hotel = TRIP.car = null; TRIP.act.clear();
+  BAR_DEF.html = ''; BAR_DEF.href = '#';
   loadFlights(c);
   fillOffers('hotels', c, 'dpHotelBox', 'dpHotelCount', 'dpHotelTrack', 'Ponude smeštaja', 'Booking.com', '', token);
   fillOffers('activities', c, 'dpActBox', 'dpActCount', 'dpActTrack', 'Ponude atrakcija', 'Viator', 'alt3', token);

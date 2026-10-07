@@ -310,10 +310,18 @@ document.getElementById('searchForm').addEventListener('submit', async function(
   const destVal = document.getElementById('dest').value.trim();
   trackFunnelEvent('search_submit', { destination: destVal || 'Atina' });
   try { bumpSearchStat(destVal); } catch(err){}
-  if (window.SKLOPI_setSpotlight) window.SKLOPI_setSpotlight(destVal, {generic:true, loose:true});
-  if (window.SKLOPI_showDestPlans) window.SKLOPI_showDestPlans();
-  else if (window.SKLOPI_revealSpotlight) window.SKLOPI_revealSpotlight();
-  else openStartPrefsModal();
+  // Kreni vodi direktno na stranicu destinacije (destinacija.html): letovi, smeštaj, atrakcije,
+  // rent a car i ostalo za iste datume, bez međukoraka sa 3 plana na glavnoj stranici.
+  const originVal = (document.getElementById('origin').value || '').trim() || 'Beograd';
+  const adultsVal = Number(document.getElementById('adults').value) || 2;
+  const destUrl = 'destinacija.html?' + new URLSearchParams({
+    od: originVal,
+    do: destVal || 'Atina',
+    polazak: document.getElementById('dateFrom').value,
+    povratak: document.getElementById('dateTo').value,
+    putnika: String(adultsVal)
+  }).toString();
+  window.location.href = destUrl;
 });
 
 /* ==========================================================
