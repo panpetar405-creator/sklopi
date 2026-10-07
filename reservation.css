@@ -63,3 +63,8 @@
 .resv-check label small{display:block;margin-top:2px;font:500 12.5px Inter,sans-serif;color:var(--nv-muted)}
 .resv-check input:focus-visible{outline:2px solid var(--nv-accent);outline-offset:2px}
 .resv-done-actions{margin-top:14px}
+
+/* ---------- Dugme "Prikaži svoj plan" ---------- */
+#totalDetail[hidden],.resv-gate[hidden]{display:none!important}
+.resv-gate{margin-top:6px;margin-bottom:6px}
+.resv-gate .resv-go{width:100%}

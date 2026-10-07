@@ -45,6 +45,19 @@
   done.className = 'resv-done'; done.id = 'resvDone'; done.hidden = true;
   sec.insertBefore(done, pay.nextSibling);
   var go = actions.querySelector('#resvGo');
+  /* "Prikaži svoj plan": rezervacija (#totalDetail) se ne otvara sama ispod dodataka, nego tek na ovaj klik */
+  var gate = document.createElement('div');
+  gate.className = 'section resv-gate'; gate.id = 'resvGate';
+  gate.innerHTML = '<button type="button" class="btn-primary resv-go" id="resvShow"><span data-resv="show">Prikaži svoj plan</span> <span aria-hidden="true">\u2192</span></button>';
+  sec.parentNode.insertBefore(gate, sec);
+  var showBtn = gate.querySelector('#resvShow');
+  sec.hidden = true;
+  showBtn.addEventListener('click', function(){
+    sec.hidden = false; gate.hidden = true;
+    step = 1; card.hidden = false; actions.hidden = false; pay.hidden = true; done.hidden = true;
+    render();
+    requestAnimationFrame(function(){ (headBox || sec).scrollIntoView({behavior:'smooth', block:'start'}); });
+  });
   var headBox = sec.querySelector('.ad-head');
   var step = 1;
 
@@ -101,6 +114,7 @@
       }).join('') + '</ul>' +
       '<div class="resv-total"><span>' + esc(tr('Ukupno')) + '</span><b>' + esc(money(s.pkg.total)) + '</b></div>' +
       '<p class="resv-fine">' + esc(tr('Ilustrativna procena za ') + persons + ', ' + daysLabel(c.days) + '.') + '</p>';
+    var shTxt = gate.querySelector('[data-resv="show"]'); if (shTxt) shTxt.textContent = tr('Prikaži svoj plan');
     var goTxt = go.querySelector('[data-resv="go"]'); if (goTxt) goTxt.textContent = tr('Nastavi kod partnera');
     var trust = actions.querySelector('[data-resv="trust"]');
     if (trust) trust.textContent = tr('Plaćanje ide direktno kod partnera \u2022 SKLOPI ne naplaćuje');
@@ -193,6 +207,7 @@
   function ifOpen(){ if (!box.hidden) render(); }
   document.addEventListener('sklopi:plan-breakdown', function(){
     step = 1; card.hidden = false; actions.hidden = false; pay.hidden = true; done.hidden = true;   // svaki ulazak počinje od koraka 1
+    sec.hidden = true; gate.hidden = false;                                                          // i sa zatvorenim planom
     render();
   });
   document.addEventListener('sklopi:plan-changed', ifOpen);

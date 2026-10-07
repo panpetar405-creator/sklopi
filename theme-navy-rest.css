@@ -209,3 +209,22 @@ footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13
 .docs-tab{color:var(--nv-muted)}
 .docs-tab.active{background:var(--nv-accent);color:var(--nv-on-accent);box-shadow:none}
 .docs-section-sub{color:var(--nv-muted)}
+
+/* ---------- Detalj plana: dodatne usluge i ostale kartice sa tvrdo upisanom belom ---------- */
+.extras-detail-section,.total-detail-section{
+  --bg:var(--nv-bg);--paper:var(--nv-surface);--ink:var(--nv-text);--ink-soft:var(--nv-muted);--line:var(--nv-line);
+}
+.ex-card,.ad-card,.flight-detail-card{background:var(--nv-surface);border:1px solid var(--nv-line);box-shadow:none;color:var(--nv-text)}
+.ex-ic{background:rgba(245,200,66,.14)}
+.ex-info h3{color:var(--nv-text)}
+.ex-info p{color:var(--nv-muted)}
+.ex-btn{background:var(--nv-accent);color:var(--nv-on-accent);border-radius:12px}
+.ex-btn:hover:not(:disabled){background:#FFD65A}
+.ex-btn[aria-pressed="true"]{background:#34D399;color:#04210F}
+.ex-btn:disabled{background:var(--nv-surface-2);color:var(--nv-muted)}
+.ex-banner{background:var(--nv-surface-2);border:1px solid var(--nv-line)}
+.ex-banner p{color:var(--nv-muted)}
+.ex-banner b{color:var(--nv-accent)}
+.ex-banner svg{color:var(--nv-accent)}
+.fd-note{color:var(--nv-muted)}
+.hd-chip{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-muted)}
