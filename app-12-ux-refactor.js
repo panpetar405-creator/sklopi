@@ -85,24 +85,8 @@
     ['tripDefaults', 'tripDefaultsPlans'].forEach(id => { const el = byId(id); if(el) el.hidden = !txt; });
   }
   function initDefaults(){
-    const origin = byId('origin'), pax = byId('adults');
-    // polazak: poslednji korišćen, inače Beograd (korisnik ga menja jednim tapom na "Promeni")
-    if(origin && !origin.value.trim()){
-      let saved = '';
-      try { saved = localStorage.getItem(ORIGIN_KEY) || ''; } catch(e){}
-      origin.value = saved || 'Beograd';
-      try { _locDropdownState.originSuggestions.suppressNextFetch = true; } catch(e){}   // bez otvaranja liste predloga
-      origin.dispatchEvent(new Event('input', {bubbles:true}));
-      origin.dispatchEvent(new Event('change', {bubbles:true}));
-    }
-    if(pax && !pax.value){
-      pax.value = '2';
-      if(typeof window.syncPaxDisplay === 'function') window.syncPaxDisplay();
-      pax.dispatchEvent(new Event('input', {bubbles:true}));
-      pax.dispatchEvent(new Event('change', {bubbles:true}));
-    }
-    const db = byId('dateDisplayBtn');
-    if(db && db.classList.contains('is-empty') && typeof window.syncDateDisplay === 'function') window.syncDateDisplay();
+    // Polja polazak / putnici / datumi ostaju prazna — korisnik vidi samo primer (placeholder).
+    // Namerno se ništa ne popunjava unapred (ni "Beograd", ni 2 putnika, ni datumi).
     refreshSummary();
   }
   const originEl = byId('origin');
