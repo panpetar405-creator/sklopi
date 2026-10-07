@@ -1817,10 +1817,12 @@
   async function download(){
     const {ctx, pkg, rows} = summary();
     const fmtDate = x => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(x || ''); return m ? m[3] + '.' + m[2] + '.' + m[1] + '.' : (x || ''); };
-    const sel = trip.sel, names = [];
-    if (sel.includeFlight) names.push('KAYAK');
-    if (sel.includeHotel) names.push('Booking.com');
-    if (sel.activityCount > 0) names.push('Viator');
+    const sel = trip.sel, names = [], linkLines = [];
+    const linkCtx = {dest:ctx.dest, originCode:ctx.originCode || 'Beograd', from:ctx.from, to:ctx.to, adults:ctx.adults,
+      flightPref:sel.flightPref, hotelStars:sel.hotelStars, prioritizeLocation:sel.prioritizeLocation};
+    if (sel.includeFlight){ names.push('KAYAK'); linkLines.push('\u2708 KAYAK (' + tx('Let') + '): ' + buildAffiliateLink('flight', linkCtx)); }
+    if (sel.includeHotel){ names.push('Booking.com'); linkLines.push('\uD83C\uDFE8 Booking.com (' + tx('Hotel') + '): ' + buildAffiliateLink('hotel', linkCtx)); }
+    if (sel.activityCount > 0){ names.push('Viator'); linkLines.push('\uD83C\uDFAB Viator (' + tx('Aktivnosti') + '): ' + buildAffiliateLink('activity', {dest:ctx.dest})); }
     const pax = ctx.adults + ' ' + pluralWord('adult', ctx.adults);
     const data = {
       label: tx('Plan puta'),
@@ -1837,8 +1839,14 @@
     if (!blob){ showToast('Čuvanje slike nije uspelo — pokušaj ponovo.'); return; }
     const file = new File([blob], 'sklopi-plan-puta.png', {type:'image/png'});
     if (navigator.canShare && navigator.canShare({files:[file]})){
-      try { await navigator.share({files:[file], title:'SKLOPI \u2014 ' + data.city}); return; }
+      // Linkovi idu kao tekst poruke uz sliku (u slici sama ne mogu biti klikabilni).
+      const msg = 'SKLOPI \u2014 ' + data.city + ', ' + daysLabel(ctx.days) + '\n' + data.totalLabel + ': ' + data.total
+        + (linkLines.length ? '\n\n' + tx('Rezervacija') + ':\n' + linkLines.join('\n') : '') + '\n\n' + affDisc();
+      try { await navigator.share({files:[file], title:'SKLOPI \u2014 ' + data.city, text: msg}); return; }
       catch(e){ if (e && e.name === 'AbortError') return; }
+    }
+    if (linkLines.length && navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(linkLines.join('\n')).then(() => showToast('Linkovi ka partnerima kopirani.')).catch(() => {});
     }
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
