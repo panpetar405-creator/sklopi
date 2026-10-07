@@ -401,7 +401,7 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 
 /* ===== Mobilni hero: najviše 90% visine ekrana (ne ceo ekran) =====
    Hero je flex kolona sa gornjom granicom; slika/naslov se skuplja, a forma (polazak, destinacija,
-   datumi, putnici + Kreni) ostaje cela. Polja su u mreži 2×2 da forma zauzme što manje visine. */
+   datumi, putnici + Kreni) ostaje cela. Polja su jedno ispod drugog; naslov je na vrhu slike. */
 @media (max-width:760px){
   .hero.hero-reference{
     display:flex;flex-direction:column;box-sizing:border-box;
@@ -409,15 +409,14 @@ body.ux-plans-open #destinationPlansBtn{display:none}
     height:calc(90vh - 81px);height:calc(90svh - 81px);min-height:520px;
   }
   .hero-reference .hero-reference-shell{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%}
-  .hero-reference .hero-reference-visual{flex:1 1 auto;min-height:276px;display:flex;flex-direction:column;justify-content:flex-end}
+  .hero-reference .hero-reference-visual{flex:1 1 auto;min-height:200px;display:flex;flex-direction:column;justify-content:flex-start}
   .hero-reference .hero-reference-copy{padding:68px 20px 20px}
   .hero-reference .hero-reference-copy h1{font-size:clamp(30px,9.5vw,40px)}
   .hero-reference .hero-reference-copy p:last-child{margin-top:8px;font-size:13px}
   .hero-reference .hero-reference-body{flex:0 0 auto;padding:6px 12px 14px}
-  .hero-reference #searchForm.ticket{grid-template-columns:1fr 1fr}
-  .hero-reference #searchForm .stub{padding:10px 12px;border-right:1px solid var(--hero-line);border-bottom:1px solid var(--hero-line);min-width:0}
-  .hero-reference #searchForm .stub:nth-of-type(2n){border-right:0}
-  .hero-reference #searchForm .stub:nth-of-type(n+3){border-bottom:0}
+  .hero-reference #searchForm.ticket{grid-template-columns:1fr}
+  .hero-reference #searchForm .stub{padding:10px 14px;border-right:0;border-bottom:1px solid var(--hero-line);min-width:0}
+  .hero-reference #searchForm .stub:last-of-type{border-bottom:0}
   .hero-reference #searchForm .stub label{margin-bottom:3px}
   .hero-reference #searchForm .stub input,
   .hero-reference #searchForm .date-display .dd-range,
