@@ -228,3 +228,48 @@ footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13
 .ex-banner svg{color:var(--nv-accent)}
 .fd-note{color:var(--nv-muted)}
 .hd-chip{background:var(--nv-surface);border-color:var(--nv-line);color:var(--nv-muted)}
+
+/* =====================================================================
+   Ekran "Prikaži stavke" (#planBreakdown): Let / Hotel / Auto / Aktivnosti /
+   Dodaci / Ukupno — sve u navy temi (ranije mešavina nove i stare teme)
+   ===================================================================== */
+#planBreakdown.open{background:var(--nv-page)}
+#planBreakdown .section{background:transparent}
+
+/* Let — isto kao hotel i auto */
+.section.flight-detail-section:not(.hotel-detail-section):not(.car-detail-section):not(.activities-detail-section):not(.extras-detail-section):not(.total-detail-section):not(.destination-value-section){max-width:520px;margin:12px auto!important;padding:0}
+#flightDetail .flight-detail-card{background:var(--nv-bg);color:var(--nv-text);border:1px solid var(--nv-line);border-radius:var(--nv-radius-panel);box-shadow:none}
+#flightDetail .fd-back{background:var(--nv-surface);color:var(--nv-text);border:1px solid var(--nv-line)}
+#flightDetail .fd-body h2,#flightDetail .fd-price,#flightDetail .fd-route b{color:var(--nv-text)}
+#flightDetail .fd-meta,#flightDetail .fd-est,#flightDetail .fd-note,#flightDetail .fd-price span,
+#flightDetail .fd-route small,#flightDetail .fd-line em,#flightDetail .fd-carrier{color:var(--nv-muted)}
+#flightDetail .fd-line span{border-top-color:rgba(255,255,255,.22)}
+#flightDetail .fd-visual{background:var(--nv-surface-2);border:1px solid var(--nv-line)}
+
+/* Ilustracije (nebo/tlo) u tamnim tonovima */
+#fdSky stop:first-child,#hdSky stop:first-child,#cdSky stop:first-child{stop-color:#1E3A5F}
+#fdSky stop:last-child,#hdSky stop:last-child,#cdSky stop:last-child{stop-color:#0F1E33}
+.fd-visual svg rect[fill="#cfe3e6"]{fill:#16283F}
+.fd-visual svg ellipse{fill:#2B4568;opacity:.7}
+
+/* Glavna dugmad: žuta umesto petrol/narandžaste, strelica u navy krugu */
+#planBreakdown .btn-primary{background:var(--nv-accent);background-image:none;color:var(--nv-on-accent);box-shadow:none}
+#planBreakdown .btn-primary:hover{background:#FFD65A;box-shadow:none}
+#planBreakdown .btn-primary::after,#planBreakdown .btn-primary:hover::after{background:var(--nv-bg);color:var(--nv-accent)}
+
+/* Aktivnosti */
+.ad-card{background:var(--nv-surface);border-color:var(--nv-line);box-shadow:none}
+.ad-info h3,.ad-price{color:var(--nv-text)}
+.ad-book{background:var(--nv-accent);color:var(--nv-on-accent)}
+.ad-book:hover{background:#FFD65A}
+.ad-photo{background:var(--nv-surface-2)}
+
+/* Dodaci i Ukupno: i "Price Alert" kartica (bila) */
+#extrasDetail .ex-card:has(#exAlertBtn){background:var(--nv-surface);border-color:var(--nv-line)}
+#totalDetail .ux-price-alert-inline{background:var(--nv-surface);border-color:var(--nv-line)}
+#totalDetail .ux-price-alert-inline p{color:var(--nv-muted)}
+.ex-banner svg rect,.ex-banner svg path{stroke:var(--nv-accent)}
+.ex-banner svg rect[fill="#fff"]{fill:var(--nv-surface)}
+
+/* WhatsApp dugme: žuti akcenat umesto stare narandžaste */
+.whatsapp-fab{background:var(--nv-accent);color:var(--nv-on-accent);box-shadow:0 14px 30px -10px rgba(0,0,0,.55)}
