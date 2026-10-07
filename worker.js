@@ -87,6 +87,42 @@ function extraPrompt(dest, origin, passport, LANG_EN, L, now) {
     'Schema:\n' + JSON.stringify(EXTRA_SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
 }
 
+// ── Itinerar po danima ("Tvoj itinerar"): pravi vodič sa imenovanim mestima, poseban AI poziv i keš ──
+const ITIN_KINDS = ['sight', 'food', 'walk', 'view', 'market', 'trip', 'rest', 'night'];
+const ITIN_SCHEMA_DAY = {
+  title: '<short theme of the day that names the area, e.g. the old town and sunset>',
+  area: '<main district / area of the day>',
+  tip: '<one practical tip for this day: transport, tickets, best light, siesta closing times, dress code>',
+  slots: [{ t: '<HH:MM 24h>', k: '<one of: ' + ITIN_KINDS.join(' | ') + '>', name: '<REAL specific place or experience>', note: '<max 160 characters: why it is worth it + one concrete tip, e.g. what to order or when to go>', dur: '<e.g. ~2h>' }],
+};
+function itineraryPrompt(dest, days, tier, LANG_EN, L, now) {
+  const style = {
+    budget: 'BUDGET: free or cheap sights, bakeries, markets, local taverns, public transport and walking',
+    balanced: 'BALANCED: a mix of must-see sights and authentic local places, mid-range restaurants, public transport plus an occasional taxi',
+    comfort: 'COMFORT: relaxed pace, well-reviewed restaurants, guided tours or tickets booked ahead, taxis between far stops',
+  }[tier] || 'BALANCED';
+  return 'You are a local expert travel guide writing a REAL, usable day-by-day itinerary. DEST = \"' + dest + '\". ' +
+    'Number of days: ' + days + '. Travel style: ' + style + '. Today is ' + now.toISOString().slice(0, 10) + ' — adapt to the current season (daylight, weather, what is open). ' +
+    'RULES: ' +
+    '1) Every place must be a REAL, well-established, specifically named place in or near DEST (museum, landmark, neighbourhood, market, viewpoint, trail, beach, cafe, bakery, restaurant, tavern). ' +
+    'Prefer places that have existed for many years and are widely known. NEVER invent names. If you are not sure that a specific restaurant or cafe exists, name the street/square/neighbourhood and the dish instead (for example a traditional tavern around a named square), but never fabricate a venue. ' +
+    '2) Cluster every day in ONE area and order the stops so the route is logical with little back-and-forth; when two stops are far apart say how to get between them (on foot 10 min, tram/bus line, taxi) in the note. ' +
+    '3) Day 1 is lighter (arrival, orientation walk, a first local dinner). The last day is lighter and ends with a relaxed morning near the centre and a buffer for departure. ' +
+    (days >= 4 ? 'Include ONE real day trip (a named place within about 2 hours, with how to get there) on day 3 or later. ' : '') +
+    '4) Each day has 5-7 slots between 08:00 and 22:30 with realistic times and durations, including lunch and dinner (name the local dish AND where to eat it) and one slot for a rest, coffee or viewpoint. ' +
+    '5) note: at most 160 characters — why it is worth it plus ONE concrete tip (what to order, best time of day, book ahead, free entry). Do NOT state exact opening hours, ticket prices or phone numbers unless you are certain; otherwise tell the traveller to check the opening hours. ' +
+    '6) k must be one of: ' + ITIN_KINDS.join(', ') + '. ' +
+    'Return ONLY a JSON object {\"days\": [...]} with EXACTLY ' + days + ' items, each shaped like the schema below. The schema values in <angle brackets> are instructions, NOT example data: replace every one and never output angle brackets. JSON keys stay EXACTLY as in the schema (English). ' +
+    'LANGUAGE RULE: every human-readable value must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. \"nemački\", never \"njemački\"; always use proper diacritics č ć š ž đ)' : '') + ', except proper names of places. ' +
+    'Day schema:\n' + JSON.stringify(ITIN_SCHEMA_DAY) + '\nReturn ONLY JSON.';
+}
+function validItinerary(o, want) {
+  if (!o || !Array.isArray(o.days) || o.days.length < want) return false;
+  return o.days.slice(0, want).every((d) => d && typeof d.title === 'string' && Array.isArray(d.slots) && d.slots.length >= 4 &&
+    d.slots.every((s) => s && /^\d{1,2}:\d{2}$/.test(String(s.t || '').trim()) && typeof s.name === 'string' && s.name.trim().length > 1 && !/[<>]/.test(s.name + (s.note || ''))) &&
+    !/[<>]/.test(d.title));
+}
+
 function hasText(v) {
   if (typeof v === 'string') return v.trim().length > 2 && !/[<>]/.test(v);
   if (Array.isArray(v)) return v.some(hasText);
@@ -105,7 +141,7 @@ async function handleDestInfo(request, env, ctx) {
   const declared = parseInt(request.headers.get('content-length') || '0', 10);
   if (declared > MAX_BODY) return json({ error: 'payload_too_large' }, 413);
 
-  let dest = '', lang = 'sr', origin = '', passport = '', part = 'main';
+  let dest = '', lang = 'sr', origin = '', passport = '', part = 'main', itinDays = 0, itinTier = 'balanced';
   try {
     const raw = await request.text();
     if (raw.length > MAX_BODY) return json({ error: 'payload_too_large' }, 413);
@@ -114,7 +150,11 @@ async function handleDestInfo(request, env, ctx) {
     lang = String(body.lang || 'sr').trim().slice(0, 5);
     origin = String(body.origin || '').trim().slice(0, 80);
     passport = String(body.passport || '').trim().slice(0, 60);
-    part = body.part === 'extra' ? 'extra' : 'main';
+    part = body.part === 'extra' ? 'extra' : (body.part === 'itinerary' ? 'itinerary' : 'main');
+    if (part === 'itinerary') {
+      itinDays = Math.min(10, Math.max(1, parseInt(body.days, 10) || 3));
+      itinTier = ['budget', 'balanced', 'comfort'].includes(body.tier) ? body.tier : 'balanced';
+    }
   } catch (e) {}
   if (!dest) return json({ error: 'nedostaje dest' }, 400);
   // dest/origin/passport ulaze u AI prompt: dozvoljena su samo slova, cifre, razmak i .,'’-()/&
@@ -127,8 +167,11 @@ async function handleDestInfo(request, env, ctx) {
   const L = SUPPORTED.includes(lang) ? lang : 'sr';
 
   // ── Keš: isti grad (+ jezik, polazak, pasoš, mesec) se generiše samo jednom ──
-  const post = (o) => (part === 'extra' ? o : finalize(o));
-  const cacheKey = makeKey(dest, L, origin, passport) + '|' + part;
+  const post = (o) => (part === 'main' ? finalize(o) : o);
+  // Itinerar ne zavisi od polaska i pasoša — deli se između svih posetilaca (jedan AI poziv po gradu/danima/stilu).
+  const cacheKey = part === 'itinerary'
+    ? makeKey(dest, L, '', '') + '|itin|' + itinDays + '|' + itinTier
+    : makeKey(dest, L, origin, passport) + '|' + part;
   const cached = await cacheGet(env, cacheKey);
   if (cached) return json(post(cached), 200, { 'X-Cache': 'HIT' });
   // Ako isti zahtev već traje u ovom Worker-u, čekaj njegov rezultat (bez drugog AI poziva)
@@ -162,9 +205,10 @@ async function handleDestInfo(request, env, ctx) {
     'KEY RULE: JSON keys must stay EXACTLY as in the schema (English, never translated); every array item must be an object with all its keys filled, no empty or missing fields. ' +
     'LANGUAGE RULE: every human-readable value — including safety_level, safety_note, water, tips, notes, descriptions, season names, transport and airline notes, dish notes and month lists — must be written in ' + LANG_EN + (L === 'sr' ? ' (ekavian, e.g. "voda je pitka", "bezbedno", "nemački" — never ijekavian/Croatian forms like "njemački"; always write proper diacritics č ć š ž đ, never c/s/z instead)' : '') + ', never in English or any other language. The ONLY exceptions are proper names (dishes, landmarks, airlines) and phrases[].local, which is the local language of DEST. ' +
     'Schema:\n' + JSON.stringify(SCHEMA) + '\nAll keys are required. Return ONLY JSON.';
-  const prompt = part === 'extra' ? extraPrompt(dest, origin, passport, LANG_EN, L, now) : mainPrompt;
+  const prompt = part === 'extra' ? extraPrompt(dest, origin, passport, LANG_EN, L, now)
+    : part === 'itinerary' ? itineraryPrompt(dest, itinDays, itinTier, LANG_EN, L, now) : mainPrompt;
 
-  const work = generateInfo(env, prompt, part);
+  const work = generateInfo(env, prompt, part, itinDays);
   INFLIGHT.set(cacheKey, work);
   try {
     const out = await work;                               // sirovo (sa timezone_iana)
@@ -226,7 +270,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Primarni model, na 429 kratko čekanje pa jedan ponovni pokušaj, zatim rezervni model
 // (drugi model ima svoj TPM limit na Groq-u).
-async function generateInfo(env, prompt, part) {
+async function generateInfo(env, prompt, part, want) {
   const models = [
     { name: env.GROQ_MODEL || 'openai/gpt-oss-120b', max: 4000, extra: { reasoning_effort: 'low' } },
     { name: env.GROQ_FALLBACK_MODEL || 'llama-3.3-70b-versatile', max: 3500, extra: {} },
@@ -241,8 +285,8 @@ async function generateInfo(env, prompt, part) {
           headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + env.GROQ_API_KEY },
           body: JSON.stringify({
             model: m.name, ...m.extra,
-            max_tokens: part === 'extra' ? 2500 : m.max,       // Groq ovo uračunava u TPM procenu — zato ne 8000
-            temperature: 0.3,
+            max_tokens: part === 'extra' ? 2500 : (part === 'itinerary' ? Math.min(7000, 900 + want * 800) : m.max),       // Groq ovo uračunava u TPM procenu — zato ne 8000
+            temperature: part === 'itinerary' ? 0.4 : 0.3,
             response_format: { type: 'json_object' },
             messages: [{ role: 'user', content: prompt }],
           }),
@@ -262,7 +306,7 @@ async function generateInfo(env, prompt, part) {
       try {
         const out = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
         if (/^BGN$/i.test(String(out.currency || ''))) { out.currency = 'EUR'; out.currency_rate = ''; } // Bugarska: evro od 1.1.2026.
-        if ((part === 'extra' ? validExtra : validInfo)(out)) return out;
+        if (part === 'itinerary' ? validItinerary(out, want) : (part === 'extra' ? validExtra : validInfo)(out)) return out;
         lastErr = m.name + ' nepotpun JSON';
       } catch (e) { lastErr = m.name + ' neispravan JSON'; }
       // nepotpun/neispravan odgovor: pokušaj ponovo, pa sledeći model
