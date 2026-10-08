@@ -15,7 +15,8 @@
     "stamp:check": "node stamp-assets.mjs --check",
     "sitemap": "node generate-sitemap.mjs",
     "sitemap:check": "node generate-sitemap.mjs --check",
-    "predeploy": "npm run stamp && npm run sitemap && npm run check:assets"
+    "predeploy": "npm run stamp && npm run sitemap && npm run check:assets",
+    "test:store": "node selftest-trip-store.mjs"
   },
   "engines": {
     "node": ">=18"

@@ -1,4 +1,4 @@
-SKLOPI — koraci 1, 2 i 3a (sadrzi SVE izmene u odnosu na originalni sklopi-main.zip)
+SKLOPI — koraci 1, 2, 3a i 3b (sadrzi SVE izmene u odnosu na originalni sklopi-main.zip)
 Raspakuj preko korena repoa (cuvaju se putanje). OBRISI: assetsignore.txt, styles-patch.css. Ovaj fajl ne commituj.
-Novi fajlovi: i18n-en.js, i18n-ru.js, i18n-de.js (generisani; moraju u repo).
-Provera: npm run stamp:check && npm run sitemap:check && npm run check:assets
+Novi fajlovi: i18n-en.js, i18n-ru.js, i18n-de.js (generisani), trip-store.js, selftest-trip-store.mjs.
+Provera: npm run stamp:check && npm run sitemap:check && npm run check:assets && npm run test:store

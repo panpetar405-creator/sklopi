@@ -353,7 +353,8 @@ const BUILDER_DEFAULTS = {
                      // u hotelu, zato je uključena po difoltu (korisnik i dalje može da je isključi).
   budget: null
 };
-const builderState = Object.assign({}, BUILDER_DEFAULTS);
+// Izbor putovanja živi u TripStore-u (trip-store.js): ostatak koda čita/piše builderState kao i pre, ali promene sada javljaju pretplatnicima.
+const builderState = window.TripStore ? TripStore.bindSelection(Object.assign({}, BUILDER_DEFAULTS)) : Object.assign({}, BUILDER_DEFAULTS);
 
 // Originalno mesto kartice "Tvoj izlet" (#builderSummary) unutar samostalne
 // "Kontrola sadržaja" sekcije — čuvamo ga da bismo karticu mogli privremeno
