@@ -1034,3 +1034,55 @@
 .cookie-text a{color:var(--nv-accent)}
 .cookie-btn.accept{background:var(--nv-accent);background-image:none;color:var(--nv-on-accent)}
 .cookie-btn.decline{background:transparent;color:var(--nv-muted);border:1px solid var(--nv-line)}
+
+/* ---------- Kalendar (#calCard) i broj putnika (#paxCard) — usklađeno sa navy temom ----------
+   Ove dve kartice su imale svoju staru "Deep Petrol" paletu (#123A44, krem opseg, svetla dugmad).
+   ID selektori su isti kao u styles.css, a ovaj fajl se učitava kasnije, pa pobeđuju. */
+#calCard,#paxCard{
+  --deep:var(--nv-bg);
+  --deep2:var(--nv-bg);
+  --paper:var(--nv-surface);
+  --ink:var(--nv-text);
+  --ink-soft:var(--nv-muted);
+  --line:var(--nv-line);
+  --line-form:var(--nv-line);
+  --gold:var(--nv-accent);
+  --gold-soft:rgba(245,200,66,.16);
+  --gold-text:var(--nv-accent);
+  --on-gold:var(--nv-on-accent);
+  background:var(--nv-surface);
+  border:1px solid var(--nv-line);
+  border-radius:var(--nv-radius-card);
+  box-shadow:0 24px 60px -20px rgba(0,0,0,.65);
+  color:var(--nv-text);
+}
+.cal-backdrop{background:rgba(11,22,38,.62)}
+
+/* Kalendar */
+#calCard .cal-nav{background:var(--nv-surface-2);border-color:var(--nv-line);color:var(--nv-muted)}
+#calCard .cal-nav:hover{border-color:var(--nv-accent);color:var(--nv-accent)}
+#calCard .cal-day.is-disabled{color:rgba(169,184,202,.32)}
+#calCard .cal-day.range-mid{background:rgba(245,200,66,.16);color:var(--nv-text)}
+#calCard .cal-day.range-start,#calCard .cal-day.range-end{background:var(--nv-accent);color:var(--nv-on-accent)}
+#calCard .cal-day:not(.is-empty):not(.is-disabled):not(.range-start):not(.range-end):hover{background:var(--nv-surface-2)}
+#calCard .cal-day.range-mid .cal-wx,#calCard .cal-day.is-disabled .cal-wx{opacity:1}
+#calCard .cal-wx{filter:none}
+#calCard .chip{background:var(--nv-surface-2);border:1px solid var(--nv-line);color:var(--nv-text)}
+#calCard .chip:hover{border-color:var(--nv-accent);color:var(--nv-text)}
+#calCard .chip.on{background:var(--nv-accent);border-color:var(--nv-accent);color:var(--nv-on-accent);box-shadow:none}
+#calCard .cal-wx-legend{color:var(--nv-muted)}
+
+/* Putnici */
+#paxCard .pax-option{color:var(--nv-text)}
+#paxCard .pax-option:hover{background:var(--nv-surface-2)}
+#paxCard .pax-option.is-selected{background:var(--nv-accent);color:var(--nv-on-accent);font-weight:700}
+#paxCard,#paxCard .pax-list,#calCard{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
+
+/* Dugme "Gotovo" — isto kao ostala primarna dugmad na navy temi */
+#calCard .btn-primary,#paxCard .btn-primary{
+  background:var(--nv-accent);background-image:none;color:var(--nv-on-accent);
+  box-shadow:none;border-radius:16px;font-weight:800;
+}
+#calCard .btn-primary:hover,#paxCard .btn-primary:hover{background:#FFD65A;box-shadow:none}
+#calCard .btn-primary::after,#paxCard .btn-primary::after,
+#calCard .btn-primary:hover::after,#paxCard .btn-primary:hover::after{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
