@@ -4,6 +4,13 @@
    #legacyPlanner (skriveno) i mogu se obrisati kad se očisti i stari JS. */
 (function(){
   'use strict';
+  // Rezultati upitnika "Nemaš ideju kuda" (#results + #resultsBackdrop) su u HTML-u unutar skrivenog
+  // #legacyPlanner, pa se nikad nisu videli. Izvlačimo ih na kraj <body> (fixed sheet, ne zavisi od roditelja).
+  ['resultsBackdrop', 'results'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el && el.closest('#legacyPlanner')) document.body.appendChild(el);
+  });
+
   function val(id){ var el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
 
   function goToDestination(){

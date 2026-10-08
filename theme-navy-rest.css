@@ -286,3 +286,17 @@ footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13
 .pi-map:hover{text-decoration:underline}
 .pi-loading{margin:8px 2px 14px;color:var(--nv-muted);font:500 14px/1.5 Inter,sans-serif}
 .pi-view .pi-ic,.pi-trip .pi-ic,.pi-market .pi-ic,.pi-rest .pi-ic,.pi-night .pi-ic{background:var(--nv-surface-2)}
+
+/* ===== Rezultati upitnika "Nemaš ideju kuda" (match-pkg) — tamna tema =====
+   Stari svetli stilovi (mint pozadina, tamno-roze tekst) su na navy pozadini bili nečitljivi. */
+.pkg.match-pkg .pkg-head,
+.pkg.match-pkg.featured .pkg-head{background:rgba(245,200,66,.08);border-bottom-color:var(--nv-line)}
+.pkg.match-pkg .pkg-head h3{color:var(--nv-text)}
+.pkg.match-pkg .pkg-head-main,.pkg.match-pkg .pkg-head-main *{color:var(--nv-muted)}
+.pkg.match-pkg .pkg-head-main h3,.pkg.match-pkg .pkg-total,.pkg.match-pkg .pkg-total .num{color:var(--nv-text)}
+.pkg.match-pkg .pkg-score-box{background:rgba(52,199,150,.12);border-color:rgba(52,199,150,.6)}
+.pkg.match-pkg .pkg-score-box .score-num{color:#4FD8A8}
+.pkg.match-pkg .pkg-score-box *:not(.score-num){color:var(--nv-muted)}
+.match-reason{background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.28);color:var(--nv-text)}
+.match-refine-chip{border-color:var(--nv-line);color:var(--nv-text);background:transparent}
+.match-badge{background:rgba(52,199,150,.16);color:#4FD8A8}

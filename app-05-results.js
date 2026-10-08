@@ -1385,29 +1385,7 @@ window.onLangChange = function(lang){
 // Trenutno stanje upitnika (popunjava se klikom na chip-ove u modalu)
 const matchQuizState = { companion:null, vibe:null };
 
-// Upitnik "Nemaš ideju kuda" i pretraga koja iz njega sledi trebaju polazak, datume i broj putnika.
-// Hero polja su namerno prazna (samo primeri), pa se ovde, TEK pri korišćenju upitnika, prazna polja
-// popunjavaju razumnim podrazumevanim vrednostima (Beograd, datumi iz skrivenih polja, 2 odrasla).
-function ensureTripDefaultsForMatch(){
-  try {
-    const origin = document.getElementById('origin');
-    if (origin && !origin.value.trim()){
-      origin.value = 'Beograd';
-      origin.dispatchEvent(new Event('input', {bubbles:true}));
-      origin.dispatchEvent(new Event('change', {bubbles:true}));
-    }
-    const pax = document.getElementById('adults');
-    if (pax && !pax.value){
-      pax.value = '2';
-      if (typeof window.syncPaxDisplay === 'function') window.syncPaxDisplay();
-    }
-    const db = document.getElementById('dateDisplayBtn');
-    if (db && db.classList.contains('is-empty') && typeof window.syncDateDisplay === 'function') window.syncDateDisplay();
-  } catch(e){}
-}
-
 async function runMatchSearch(isReroll){
-  ensureTripDefaultsForMatch();
   const budgetInput = document.getElementById('matchBudget');
   const budget = Number(budgetInput.value) || 0;
 
@@ -1496,9 +1474,14 @@ function refineMatchSearch(kind){
 function exploreMatchDestination(idx){
   const pick = (window._lastMatchPicks || [])[idx];
   if (!pick) return;
-  ensureTripDefaultsForMatch();
-  document.getElementById('dest').value = pick.dest;
-  runSearch(true);
+  // Jedan tok: ponuda za izabranu destinaciju je na destinacija.html. Hero polja se ne diraju
+  // (ostaju prazna); prazno polazište/putnici dobijaju podrazumevane vrednosti samo u linku.
+  const val = id => { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; };
+  const q = new URLSearchParams({ od: val('origin') || 'Beograd', 'do': pick.dest });
+  if (val('dateFrom')) q.set('polazak', val('dateFrom'));
+  if (val('dateTo')) q.set('povratak', val('dateTo'));
+  q.set('putnika', val('adults') || '2');
+  window.location.href = 'destinacija.html?' + q.toString();
 }
 
 async function saveMatchPackage(idx){
