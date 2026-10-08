@@ -1,6 +1,9 @@
 /* app-01-core.js — deo nekadašnjeg app.js (deo 1/11): Zaštita dugmeta "Nazad", i18n, pomoćnici za prevod.
    Klasična skripta: deli globalni opseg sa ostalim app-*.js fajlovima; redosled učitavanja u index.html je bitan. */
-window.addEventListener('error', function(e){ document.title = 'GRESKA: ' + e.message + ' (' + String(e.filename||'').split('/').pop().split('?')[0] + ':' + e.lineno + ')'; }, {once:true});
+// Dijagnostika u naslovu strane samo za razvoj (localhost ili ?debug) — korisnici ne treba da vide "GRESKA:" u tabu.
+if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /[?&]debug\b/.test(location.search)) {
+  window.addEventListener('error', function(e){ document.title = 'GRESKA: ' + e.message + ' (' + String(e.filename||'').split('/').pop().split('?')[0] + ':' + e.lineno + ')'; }, {once:true});
+}
 (function(){
   const topbarWrap = document.querySelector('.topbar-wrap');
   if (!topbarWrap) return;

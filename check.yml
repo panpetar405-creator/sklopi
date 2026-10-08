@@ -1,0 +1,23 @@
+name: Provera (bez commit-a)
+
+# Pokreće se na svaki push i pull request. NIŠTA ne menja i ne commituje —
+# samo pada (crveno ✗) ako:
+#   - neki <script>/<link>/slika/font iz HTML-a ne postoji u repou,
+#   - ?v= žigovi i sw.js nisu ažurni (treba `npm run stamp`),
+#   - sitemap.xml nije ažuran (treba `npm run sitemap`),
+#   - neki serverski fajl bi završio javno (.assetsignore).
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node stamp-assets.mjs --check
+      - run: node generate-sitemap.mjs --check
+      - run: node check-assets.mjs
