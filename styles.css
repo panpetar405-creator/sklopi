@@ -4196,6 +4196,11 @@ body:has(.legal-wrap) .related-guides a{color:var(--nv-accent)}
 body:has(.legal-wrap) .btn-primary{background:var(--nv-accent);color:var(--nv-on-accent);border-radius:14px;font-weight:800}
 body:has(.legal-wrap) .btn-primary:hover{background:#FFD65A}
 body:has(.legal-wrap) .btn-primary::after{background:rgba(26,20,5,.14);color:var(--nv-on-accent)}
+/* Dugme (CTA) u vodičima je <a>, pa ga je pravilo ".legal-wrap a" bojilo žuto na žutom — natpis je bio nevidljiv. */
+body:has(.legal-wrap) .legal-wrap a.btn-primary,
+body:has(.legal-wrap) .legal-wrap a.btn-primary:hover,
+body:has(.legal-wrap) .legal-wrap a.btn-primary:visited{color:var(--nv-on-accent);text-decoration:none}
+body:has(.legal-wrap) .legal-wrap a.btn-primary{display:inline-flex!important;align-items:center;justify-content:center;gap:12px;white-space:normal;text-align:left;line-height:1.25;padding:10px 10px 10px 22px;max-width:100%}
 body:has(.legal-wrap) .disclaimer{color:var(--nv-muted)}
 
 /* "zajedno" (zajedničko planiranje) */
