@@ -1385,7 +1385,29 @@ window.onLangChange = function(lang){
 // Trenutno stanje upitnika (popunjava se klikom na chip-ove u modalu)
 const matchQuizState = { companion:null, vibe:null };
 
+// Upitnik "Nemaš ideju kuda" i pretraga koja iz njega sledi trebaju polazak, datume i broj putnika.
+// Hero polja su namerno prazna (samo primeri), pa se ovde, TEK pri korišćenju upitnika, prazna polja
+// popunjavaju razumnim podrazumevanim vrednostima (Beograd, datumi iz skrivenih polja, 2 odrasla).
+function ensureTripDefaultsForMatch(){
+  try {
+    const origin = document.getElementById('origin');
+    if (origin && !origin.value.trim()){
+      origin.value = 'Beograd';
+      origin.dispatchEvent(new Event('input', {bubbles:true}));
+      origin.dispatchEvent(new Event('change', {bubbles:true}));
+    }
+    const pax = document.getElementById('adults');
+    if (pax && !pax.value){
+      pax.value = '2';
+      if (typeof window.syncPaxDisplay === 'function') window.syncPaxDisplay();
+    }
+    const db = document.getElementById('dateDisplayBtn');
+    if (db && db.classList.contains('is-empty') && typeof window.syncDateDisplay === 'function') window.syncDateDisplay();
+  } catch(e){}
+}
+
 async function runMatchSearch(isReroll){
+  ensureTripDefaultsForMatch();
   const budgetInput = document.getElementById('matchBudget');
   const budget = Number(budgetInput.value) || 0;
 
@@ -1474,6 +1496,7 @@ function refineMatchSearch(kind){
 function exploreMatchDestination(idx){
   const pick = (window._lastMatchPicks || [])[idx];
   if (!pick) return;
+  ensureTripDefaultsForMatch();
   document.getElementById('dest').value = pick.dest;
   runSearch(true);
 }
