@@ -138,6 +138,22 @@ function guardOverlayReplace(oldId, newId, closeFn){
    za deljenje (zajedno.html) NISU obuhvaćene — ostaju na srpskom.
 ========================================================== */
 function hasLang(code){ return Object.prototype.hasOwnProperty.call(I18N, code); }
+// Jezik je "učitan" kad je njegov i18n-<kod>.js izvršen (sr je uvek u i18n-data.js). Prazan objekat u I18N je samo rezervisano mesto.
+function langLoaded(code){ return typeof I18N_LOADED !== 'undefined' && I18N_LOADED[code] === true; }
+const _langLoading = {};
+function loadLang(code){
+  if (langLoaded(code)) return Promise.resolve(true);
+  if (_langLoading[code]) return _langLoading[code];
+  return (_langLoading[code] = new Promise(function(resolve){
+    const v = (window.I18N_V || {})[code];
+    if (!v){ resolve(false); return; }
+    const s = document.createElement('script');
+    s.src = 'i18n-' + code + '.js?v=' + v;
+    s.onload = function(){ resolve(langLoaded(code)); };
+    s.onerror = function(){ delete _langLoading[code]; s.remove(); resolve(false); };   // offline → može ponovo
+    document.head.appendChild(s);
+  }));
+}
 // Redosled: ?lang= iz URL-a (da Google/deljeni linkovi mogu da otvore
 // konkretnu jezičku verziju) > localStorage (pamćenje izbora) > sr.
 function getLang(){
@@ -203,7 +219,7 @@ function t(key){
 }
 function checkI18nCompleteness(){
   if (!_I18N_DEV) return;
-  const langs = I18N_LANGS.map(l => l.code);
+  const langs = I18N_LANGS.map(l => l.code).filter(langLoaded);   // samo učitani jezici (ostali su prazni dok se ne izaberu)
   const all = new Set();
   langs.forEach(l => Object.keys(I18N[l] || {}).forEach(k => all.add(k)));
   const ph = v => (String(v).match(/\{\w+\}/g) || []).sort().join(',');
@@ -389,6 +405,11 @@ function applyStaticI18n(){
 }
 function setLang(lang){
   const l = hasLang(lang) ? lang : 'sr';
+  if (langLoaded(l)) return _applyLang(l, lang);
+  // Jezik još nije preuzet: prvo ga učitaj, pa tek onda primeni. Ako ne uspe (offline), ostajemo na srpskom.
+  loadLang(l).then(function(ok){ _applyLang(ok ? l : 'sr', ok ? lang : 'sr'); });
+}
+function _applyLang(l, lang){
   localStorage.setItem('sklopi_lang', l);
   // Upiši izbor i u URL (bez reload-a) — tako link postaje deljiv i
   // Google indeksira konkretnu jezičku verziju umesto samo srpske.

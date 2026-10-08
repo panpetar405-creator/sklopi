@@ -1,6 +1,6 @@
 # SKLOPI — automatski prevodi
 
-Pišeš samo **srpski** (`sr.json`). Ostali jezici nastaju skriptom, a sajt učitava jedan generisani fajl: `i18n-data.js`.
+Pišeš samo **srpski** (`sr.json`). Ostali jezici nastaju skriptom, a sajt učitava generisane fajlove: `i18n-data.js` (srpski, uvek) i `i18n-<kod>.js` po jeziku (`i18n-en.js`, `i18n-ru.js`, `i18n-de.js`...), koji se preuzima tek kad je taj jezik izabran.
 
 ```
 sr.json  ──►  translate.mjs  ──►  en.json, ru.json, de.json …
@@ -17,7 +17,7 @@ sr.json  ──►  translate.mjs  ──►  en.json, ru.json, de.json …
    ANTHROPIC_API_KEY=sk-ant-...  node translate.mjs
    ```
    (ili stavi `ANTHROPIC_API_KEY=...` u fajl `.env` u korenu — on je u `.gitignore`).
-3. Commituj: `*.json`, `_state.json`, `i18n-data.js`, `index.html` (skripta sama osveži `?v=` iza `i18n-data.js`).
+3. Commituj: `*.json`, `_state.json`, `i18n-data.js`, `i18n-*.js`, `index.html` (skripta sama osveži `?v=` iza `i18n-data.js` i mapu `window.I18N_V` sa hash-evima jezičkih fajlova).
 
 Prvo pokretanje ne poziva API (sve što postoji već je prevedeno) — samo upiše `_state.json`, koji beleži šta je ručno napisano a šta automatski prevedeno.
 
@@ -39,10 +39,10 @@ Slobodno menjaj `en.json`, `ru.json`, … Skripta **ne prepisuje** ručno isprav
 
 | Naredba | Šta radi |
 |---|---|
-| `node translate.mjs` | prevede šta fali/promenjeno, generiše `i18n-data.js` |
+| `node translate.mjs` | prevede šta fali/promenjeno, generiše `i18n-data.js` + `i18n-<kod>.js` |
 | `… --dry-run` | samo prikaže šta bi se prevodilo |
 | `… --check` | bez API-ja, izlaz 1 ako nešto fali ili je neispravno (za proveru pre objave) |
-| `… --build` | samo generiše `i18n-data.js` |
+| `… --build` | samo generiše `i18n-data.js` + `i18n-<kod>.js` |
 | `… --lang de` | samo jedan jezik |
 | `… --prune` | briše ključeve kojih više nema u `sr.json` |
 | `node selftest.mjs` | samotest skripte (lažni prevod, bez API-ja) |
@@ -62,6 +62,6 @@ Skripta proverava svaki prevod: isti `{placeholderi}`, isti HTML tagovi, brendov
 
 - Srpski tekst upisan direktno u kod izvan `t()`/`tf()` ostaje na srpskom (opisi ponuđenih paketa, poruke o pasošu, naslovi „Isplati li se let preko drugog aerodroma?" …). `node find-hardcoded.mjs` ih izlista; prebacuješ ih postepeno u `sr.json`.
 - Pravne stranice (privatnost, uslovi, kolačići) i `zajedno.html` nisu prevedene; za pravne tekstove preporučujem ljudsku proveru.
-- Svaki drugi HTML koji učitava `app.js` mora pre njega da učita `i18n-data.js`.
+- Svaki drugi HTML koji učitava `app.js` mora pre njega da učita `i18n-data.js` i inline skript za jezik iz `index.html` (onaj sa `window.I18N_V`).
 - Predlozi gradova u polju Destinacija (Open-Meteo) i dalje se traže na `sr`/`en`.
 - Automatski prevod je dobar početak, ali za tekstove koji prodaju (naslovi, opisi) vredi da ih pročita neko ko zna jezik.

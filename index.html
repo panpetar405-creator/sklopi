@@ -1368,10 +1368,17 @@ html,body{background:#0B1626;margin:0;}
 </a>
 <script defer="" src="config.js?v=60b28611"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
-<script defer="" src="i18n-data.js?v=f8ee145f"></script>
+<script defer="" src="i18n-data.js?v=f4bb4212"></script>
+<script>
+/* Jezički fajl (i18n-<kod>.js) se učitava samo ako je izabran jezik različit od srpskog.
+   Mapa kod → hash popunjava translate.mjs (ne menjaj ručno). Ostali jezici se učitavaju kasnije, iz loadLang() u app-01-core.js. */
+window.I18N_V=/*I18N_V*/{"en":"75e08431","ru":"1510aa59","de":"8656cbc0"}/*/I18N_V*/;
+(function(){var l='sr',V=window.I18N_V;try{var u=new URLSearchParams(location.search).get('lang');if(u&&(u==='sr'||V[u]))l=u;else{var s=localStorage.getItem('sklopi_lang');if(s&&V[s])l=s}}catch(e){}
+if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/script>')})();
+</script>
 <script defer="" src="i18n-extra.js?v=26b40dfc"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
-<script defer="" src="app-01-core.js?v=b4f4e431"></script>
+<script defer="" src="app-01-core.js?v=56849d5c"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
 <script defer="" src="app-03-airports.js?v=81b29008"></script>
 <script defer="" src="app-04-pricing-engine.js?v=fafc7a3c"></script>

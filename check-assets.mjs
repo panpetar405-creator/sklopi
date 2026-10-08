@@ -55,12 +55,14 @@ const mustServe = [
   'dest-info.css', 'dest-plans.js', 'fonts.css', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
 ];
 
+// jezički fajlovi (i18n-en.js, i18n-ru.js...) učitavaju se dinamički, ali MORAJU biti javni
+const LANG_FILES = files.filter((f) => /^i18n-[a-z]{2,3}\.js$/.test(f));
 let bad = 0;
 for (const f of files) {
   const shouldHide = mustHide.includes(f) || mustHideRe.some((r) => r.test(f));
   if (shouldHide && !ignored(f)) { console.error('✗ JAVNO a ne sme: ' + f); bad++; }
 }
-for (const f of mustServe) {
+for (const f of [...mustServe, ...LANG_FILES]) {
   if (files.includes(f) && ignored(f)) { console.error('✗ IGNORISANO a pregledač ga treba: ' + f); bad++; }
 }
 
@@ -87,6 +89,38 @@ if (existsSync(join(root, 'fonts.css'))) {
 // 3c) Nijedna stranica ne sme da vuče Google Fonts (self-host).
 for (const f of files.filter((x) => /\.html$/.test(x) && !ignored(x))) {
   if (/fonts\.(googleapis|gstatic)\.com/.test(readFileSync(join(root, f), 'utf8'))) { console.error('✗ Google Fonts u: ' + f); bad++; }
+}
+
+// 3d) Svaki lokalni <script src> / <link href> iz HTML-a mora da postoji na disku
+//     (hvata npr. skriptu koja je nekad bila u repou pa je obrisana, a tag ostao).
+const tagRe = /<(?:script|link)\b[^>]*?\b(?:src|href)="([^"]+)"/g;
+for (const f of files.filter((x) => /\.html$/.test(x) && !ignored(x))) {
+  const txt = readFileSync(join(root, f), 'utf8');
+  for (const m of txt.matchAll(tagRe)) {
+    const u = m[1].split(/[?#]/)[0];
+    if (!u || /['+]/.test(u) || /^(?:[a-z][a-z0-9+.-]*:|\/\/|\{|\$)/i.test(u)) continue;   // ' i + = putanja sklapana u JS-u (npr. i18n-'+l+'.js)     // http:, data:, mailto:, //cdn...
+    if (!/\.(?:js|css|json|webmanifest|ico|png|svg|webp|jpe?g|woff2?)$/i.test(u)) continue;   // stranice (.html) i rute preskačemo
+    const rel = u.replace(/^\.?\//, '');
+    if (!existsSync(join(root, rel))) { console.error('✗ FAJL FALI: ' + rel + '  (u: ' + f + ')'); bad++; }
+  }
+}
+
+// 3e) Mapa jezičkih fajlova u index.html (window.I18N_V) mora da se poklapa sa fajlovima na disku.
+{
+  const idx = existsSync(join(root, 'index.html')) ? readFileSync(join(root, 'index.html'), 'utf8') : '';
+  const mm = /\/\*I18N_V\*\/([\s\S]*?)\/\*\/I18N_V\*\//.exec(idx);
+  if (mm) {
+    const { createHash } = await import('node:crypto');
+    let map = {};
+    try { map = JSON.parse(mm[1]); } catch (e) { console.error('✗ I18N_V u index.html nije ispravan JSON'); bad++; }
+    for (const code of Object.keys(map)) {
+      const fp = join(root, 'i18n-' + code + '.js');
+      if (!existsSync(fp)) { console.error('✗ FAJL FALI: i18n-' + code + '.js (a u I18N_V je)'); bad++; continue; }
+      const v = createHash('sha1').update(readFileSync(fp)).digest('hex').slice(0, 8);
+      if (v !== map[code]) { console.error('✗ I18N_V[' + code + '] je zastareo (' + map[code] + ' ≠ ' + v + ') — pokreni: npm run i18n:build'); bad++; }
+    }
+    for (const f of LANG_FILES) { const code = f.slice(5, -3); if (!(code in map)) { console.error('✗ ' + f + ' postoji, a nije u I18N_V — pokreni: npm run i18n:build'); bad++; } }
+  }
 }
 
 const pub = files.filter((f) => !ignored(f));

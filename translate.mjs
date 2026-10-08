@@ -8,7 +8,7 @@
      2) prevede ih preko Claude API-ja (ANTHROPIC_API_KEY),
      3) proveri prevod (placeholderi {n}, HTML tagovi, brendovi, oblici množine),
      4) upiše <jezik>.json + _state.json,
-     5) generiše i18n-data.js (to je jedino što sajt učitava).
+     5) generiše i18n-data.js (srpski) + i18n-<kod>.js po jeziku (učitavaju se tek kad se jezik izabere).
 
    Ručno ispravljen prevod skripta NE prepisuje: ako se posle toga promeni
    srpski tekst, ključ se samo prijavi kao "proveri ručno" (vidi --retranslate-changed).
@@ -339,24 +339,38 @@ if (!flag('check') && !flag('dry-run')) {
     out[l.code] = o;
   }
   const meta = LANGS.map((l) => ({ code: l.code, short: l.short, name: l.name, locale: l.locale, ...(l.dateMonth ? { dateMonth: l.dateMonth } : {}) }));
+  const HEADER = `/* AUTOMATSKI GENERISANO iz *.json — NE MENJAJ RUČNO.\n   Ažuriranje: node translate.mjs   (vidi PREVODI.md) */\n`;
+  // Početni paket nosi samo izvorni jezik (sr); ostali jezici žive u i18n-<kod>.js i učitavaju se kad zatrebaju
+  // (index.html: inline skript za jezik iz URL-a/localStorage-a, a app-01-core.js: loadLang() pri promeni jezika).
   const body =
-`/* AUTOMATSKI GENERISANO iz *.json — NE MENJAJ RUČNO.
-   Ažuriranje: node translate.mjs   (vidi PREVODI.md) */
-const I18N_LANGS = ${JSON.stringify(meta)};
+`${HEADER}const I18N_LANGS = ${JSON.stringify(meta)};
 const I18N = {
-${LANGS.map((l) => `  ${JSON.stringify(l.code)}: ${JSON.stringify(out[l.code])}`).join(',\n')}
+${LANGS.map((l) => `  ${JSON.stringify(l.code)}: ${l.code === SRC ? JSON.stringify(out[l.code]) : '{}'}`).join(',\n')}
 };
+const I18N_LOADED = {${JSON.stringify(SRC)}: true};
 `;
   const changed = !fs.existsSync(F.data) || fs.readFileSync(F.data, 'utf8') !== body;
   if (changed) fs.writeFileSync(F.data, body);
-  log(`\n${changed ? '✓ generisan' : '= nepromenjen'} i18n-data.js (${LANGS.map((l) => l.code + ':' + Object.keys(out[l.code]).length).join(', ')})`);
+  log(`\n${changed ? '✓ generisan' : '= nepromenjen'} i18n-data.js (${SRC}:${Object.keys(out[SRC]).length})`);
 
-  // keš-bust: i18n-data.js?v=<hash> u index.html
+  const verMap = {};
+  for (const l of LANGS) {
+    if (l.code === SRC) continue;
+    const fb = `${HEADER}Object.assign(I18N[${JSON.stringify(l.code)}], ${JSON.stringify(out[l.code])});\nI18N_LOADED[${JSON.stringify(l.code)}] = true;\n`;
+    const fp = path.join(ROOT, 'i18n-' + l.code + '.js');
+    const ch = !fs.existsSync(fp) || fs.readFileSync(fp, 'utf8') !== fb;
+    if (ch) fs.writeFileSync(fp, fb);
+    verMap[l.code] = h(fb).slice(0, 8);
+    log(`  ${ch ? '✓ generisan' : '= nepromenjen'} i18n-${l.code}.js (${Object.keys(out[l.code]).length} ključeva)`);
+  }
+
+  // keš-bust: i18n-data.js?v=<hash> + mapa verzija jezičkih fajlova u index.html
   if (fs.existsSync(F.html)) {
     const html = fs.readFileSync(F.html, 'utf8');
     const v = h(body).slice(0, 8);
-    const next = html.replace(/i18n-data\.js(\?v=[^"']*)?/, 'i18n-data.js?v=' + v);
-    if (next !== html) { fs.writeFileSync(F.html, next); log('✓ index.html: i18n-data.js?v=' + v); }
+    let next = html.replace(/i18n-data\.js(\?v=[^"']*)?/, 'i18n-data.js?v=' + v);
+    next = next.replace(/\/\*I18N_V\*\/[\s\S]*?\/\*\/I18N_V\*\//, () => '/*I18N_V*/' + JSON.stringify(verMap) + '/*/I18N_V*/');
+    if (next !== html) { fs.writeFileSync(F.html, next); log('✓ index.html: i18n-data.js?v=' + v + ' + mapa jezičkih fajlova'); }
   }
 }
 
