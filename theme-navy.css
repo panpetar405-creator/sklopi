@@ -396,6 +396,8 @@
 .recent-row:focus-visible{outline:2px solid var(--nv-accent);outline-offset:3px}
 .recent-thumb{width:52px;height:52px;border-radius:12px;overflow:hidden;background:var(--nv-surface-2);display:grid;place-items:center}
 .recent-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb-fallback{display:grid;place-items:center}
+.thumb-initial{font-weight:700;font-size:22px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
 .recent-thumb svg{width:22px;height:22px;fill:none;stroke:var(--nv-accent);stroke-width:1.8}
 .recent-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
 .recent-name{font:700 15px Sora,Inter,sans-serif;color:var(--nv-text)}

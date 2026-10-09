@@ -120,3 +120,18 @@ namespace_id = "1012"
   [ratelimits.simple]
   limit = 60
   period = 60
+
+# Slika grada — /go/dest-image (city-image.js; Wikidata/Wikipedia, keš 30 dana). Računa se samo promašaj keša.
+[[ratelimits]]
+name = "RL_CITYIMG_IP"
+namespace_id = "1013"
+  [ratelimits.simple]
+  limit = 20
+  period = 60
+
+[[ratelimits]]
+name = "RL_CITYIMG_GLOBAL"
+namespace_id = "1014"
+  [ratelimits.simple]
+  limit = 120
+  period = 60

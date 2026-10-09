@@ -396,7 +396,19 @@ async function destLoadImagesWiki(rows){
 }
 // Traži sliku za JEDNU destinaciju (Viator ako je Worker podešen, inače/uz to Wikipedia) —
 // koristi se pri zameni kartice koja nije dobila sliku.
+// Automatska slika grada sa Worker-a (/go/dest-image: Wikidata → Wikipedia/Commons, keš 30 dana) — radi za bilo koji grad.
+async function destFetchCityImage(dest){
+  const base = window.SKLOPI_ALERT_WORKER_URL;
+  if (!base || !dest) return '';
+  try {
+    const r = await fetch(String(base).replace(/\/$/, '') + '/go/dest-image?city=' + encodeURIComponent(dest));
+    if (!r.ok) return '';
+    return ((await r.json()) || {}).url || '';
+  } catch(e){ return ''; }
+}
 async function destFetchOneImage(it){
+  const own = await destFetchCityImage(it.dest);
+  if (own) return own;
   const endpoint = destImgEndpoint();
   if (endpoint){
     try {

@@ -255,7 +255,7 @@ async function popularFillImages(grid){
       const card = need[next++], d = card.dataset.dest;
       let url = '';
       try {
-        if (destImgEndpoint()) url = await destFetchOneImage({dest:d, row:''});
+        url = await destFetchOneImage({dest:d, row:''});
         if (!url) url = await fetchWikiImage(POPULAR_WIKI_TITLES[d] || destWikiTitle({dest:d}));
       } catch(e){}
       if (url){ cache.m[d] = url; _destImgMap[d] = url; put(card, url); }
@@ -263,6 +263,12 @@ async function popularFillImages(grid){
   }
   await Promise.all(Array.from({length: Math.min(4, need.length)}, worker));
   destWriteImgCache(WIKI_IMG_CACHE_KEY, cache);
+  // ništa nije našlo sliku → gradijent sa početnim slovom (nikad prazan okvir)
+  need.forEach(card => {
+    if (card.isConnected && card.dataset.noimg === '1' && window.SKLOPI_thumbFallback){
+      const th = card.querySelector('.pd-thumb'); if (th) window.SKLOPI_thumbFallback(th, card.dataset.dest || '');
+    }
+  });
 }
 function attachPopularDestCardHandlers(grid){
   // odloženo: DEST_* podaci i pomoćnici su definisani niže u fajlu

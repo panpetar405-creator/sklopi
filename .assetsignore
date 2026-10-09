@@ -18,6 +18,7 @@ viator-activities.js
 destination-images.js
 pricing-core.js
 rate-limit.js
+city-image.js
 
 # ── Konfiguracija, zavisnosti, tajne ──
 wrangler.toml

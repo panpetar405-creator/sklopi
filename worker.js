@@ -3,6 +3,7 @@
 // prosleđuje postojećem price-alert-worker.js kao do sada.
 import * as alertMod from './price-alert-worker.js';
 import { rateLimit, clientIp, tooManyRequests } from './rate-limit.js';
+import { handleCityImage } from './city-image.js';
 
 const alertWorker = alertMod.default || alertMod;
 
@@ -323,6 +324,19 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/dest-info') return handleDestInfo(request, env, ctx);
+    // Slika grada (Wikidata/Wikipedia/Commons), keširana. Limit se računa samo kad slike nema u kešu.
+    if (url.pathname === '/go/dest-image') {
+      return handleCityImage(request, env, ctx, {
+        rateLimit: async (e, req, cors) => {
+          const ip = clientIp(req);
+          const a = await rateLimit(e, { binding: 'RL_CITYIMG_IP', name: 'cityimg-ip', key: ip, limit: 20, windowSec: 60 });
+          if (!a.ok) return tooManyRequests(a.retryAfter, cors);
+          const g = await rateLimit(e, { binding: 'RL_CITYIMG_GLOBAL', name: 'cityimg-global', key: 'all', limit: 120, windowSec: 60 });
+          if (!g.ok) return tooManyRequests(g.retryAfter, cors);
+          return null;
+        }
+      });
+    }
     if (alertWorker && typeof alertWorker.fetch === 'function') {
       return alertWorker.fetch(request, env, ctx);
     }

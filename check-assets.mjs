@@ -37,7 +37,7 @@ const files = walk(root);
 // 1) Ovo NE sme biti javno (ako postoji u repou).
 const mustHide = [
   'worker.js', 'worker-dest-info.js', 'price-alert-worker.js', 'viator-activities.js',
-  'destination-images.js', 'pricing-core.js', 'rate-limit.js', 'wrangler.toml', 'package.json',
+  'destination-images.js', 'pricing-core.js', 'rate-limit.js', 'city-image.js', 'wrangler.toml', 'package.json',
   '.assetsignore', 'assetsignore.txt', 'README.txt', 'translate.yml', 'translate.mjs',
   'sr.json', 'en.json', 'de.json', 'ru.json', 'languages.json', '_glossary.json', '_notes.json',
   'transport-sr-keys.json', 'check-assets.mjs',
