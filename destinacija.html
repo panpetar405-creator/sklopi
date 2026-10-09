@@ -86,6 +86,20 @@
 .dp-tb-share:focus-visible{outline:3px solid var(--gold,#E7A93E);outline-offset:2px;}
 .dp-tb-status{flex-basis:100%;font-size:12.5px;min-height:0;}
 .dp-tb-status:empty{display:none;}
+/* ---- Praktične informacije (sklopljena grupa) ---- */
+.dp-more{margin-top:34px;scroll-margin-top:calc(var(--topbar-h) + 84px);}
+.dp-more-sum{list-style:none;display:flex;align-items:center;gap:14px;min-height:64px;padding:12px 16px;cursor:pointer;border:1px solid var(--nv-line,rgba(255,255,255,.14));border-radius:var(--nv-radius-card,18px);background:var(--nv-surface,rgba(255,255,255,.06));color:var(--nv-text,#fff);}
+.dp-more-sum::-webkit-details-marker{display:none;}
+.dp-more-sum:hover{border-color:rgba(245,200,66,.55);}
+.dp-more-sum:focus-visible{outline:3px solid var(--gold,#E7A93E);outline-offset:3px;}
+.dp-more-ic{flex:none;width:40px;height:40px;display:inline-grid;place-items:center;border-radius:12px;background:rgba(245,200,66,.14);font-size:20px;}
+.dp-more-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.dp-more-txt b{font:700 16px/1.25 Inter,sans-serif;}
+.dp-more-txt small{font:500 12.5px/1.35 Inter,sans-serif;color:var(--nv-muted,rgba(255,255,255,.7));}
+.dp-more-chev{flex:none;width:10px;height:10px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:rotate(45deg);transition:transform .2s;margin:-4px 4px 0 0;}
+.dp-more[open] > .dp-more-sum .dp-more-chev{transform:rotate(-135deg);margin-top:4px;}
+.dp-more-body > .dp-section:first-child{margin-top:26px;}
+@media (prefers-reduced-motion:reduce){.dp-more-chev{transition:none;}}
 .dp-trip-panel{flex:1 1 100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);max-height:48vh;overflow:auto;}
 .dp-trip-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;}
 .dp-trip-row:last-of-type{border-bottom:0;}
@@ -775,7 +789,17 @@ function shareTrip(){
   } else copy();
 }
 function setBarDefault(html, href){ BAR_DEF.html = html; BAR_DEF.href = href; updateBar(); }
+/* grupa "Praktične informacije": otvori je kad link ili adresa (#saveti, #esim...) pokazuje na nešto unutra */
+function openMoreFor(id){
+  const t = id && document.getElementById(id); if (!t) return false;
+  const d = t.id === 'prakticno' ? t : t.closest('details.dp-more');
+  if (d && !d.open){ d.open = true; return true; }
+  return false;
+}
+window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (openMoreFor(h)) document.getElementById(h).scrollIntoView(); });
 document.addEventListener('click', e => {
+  const jl = e.target.closest('a[href^="#"]');
+  if (jl && jl.getAttribute('href').length > 1) openMoreFor(jl.getAttribute('href').slice(1));
   const pk = e.target.closest('.dp-pick');
   if (pk){
     const [k, i] = pk.getAttribute('data-pick').split(':'), n = +i;
@@ -1135,7 +1159,7 @@ function renderResults(P){
   /* --- letovi (sadržaj se puni asinhrono) --- */
   const simNote = '';
   const jump = '<nav class="dp-jump" aria-label="Brza navigacija">' +
-    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#saveti">💡 Saveti</a></nav>' +
+    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#prakticno">🧳 Praktično</a></nav>' +
     '<p class="dp-estimate">Cene su ilustrativne procene. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
   const viaNote = (c.oVia || c.dVia)
     ? '<p class="dp-note dp-note-top">' +
@@ -1160,8 +1184,15 @@ function renderResults(P){
   /* --- auto i ruta --- */
   const gc = greenCard(dest.country);
   html += '<div class="dp-section" id="rentacar">' + sectionHead('🚗', 'Rent a car', '', 'dpCarCount', 'dpCarTrack') + simNote +
-    '<div id="dpCarBox"></div>' +
-    '<div class="dp-section-head dp-subhead"><div class="dp-section-ic">🧭</div><h2>Ruta</h2></div>';
+    '<div id="dpCarBox"></div></div>' +
+    /* Praktične informacije: sklopljeno po defaultu da stranica ne bude jedan beskonačan zid sekcija.
+       Grupa je pravi <details> (tastatura i čitač ekrana rade bez dodatnog koda); sav sadržaj je u DOM-u. */
+    '<details class="dp-more" id="prakticno"><summary class="dp-more-sum">' +
+      '<span class="dp-more-ic" aria-hidden="true">🧳</span>' +
+      '<span class="dp-more-txt"><b>Praktične informacije</b><small>Ruta · Transferi · Autobus · Osiguranje · eSIM · Saveti</small></span>' +
+      '<span class="dp-more-chev" aria-hidden="true"></span></summary>' +
+    '<div class="dp-more-body">' +
+    '<div class="dp-section" id="ruta">' + sectionHead('🧭', 'Ruta', '');
   if (canDrive){
     html += '<div class="dp-card"><div class="dp-tip-title">Ako voziš do destinacije</div>' +
       '<p class="dp-note">' + (dest.country ? '' : 'Ako se do ovog mesta stiže kopnom: ') + 'Trasa ' + esc(org.name) + ' – ' + esc(dest.name) + ' sa vremenom vožnje i putarinama u Google Maps-u.</p>' +
@@ -1172,7 +1203,7 @@ function renderResults(P){
   } else {
     html += '<div class="dp-card"><p class="dp-note">Do ove destinacije se ne stiže automobilom iz Srbije, pa auto iznajmljuješ na licu mesta.</p></div>';
   }
-  html += '</div>';
+  html += '</div>';   /* kraj #ruta */
 
   /* --- transferi (aerodrom/pristanište → smeštaj) --- */
   const airportNote = DEST_AIRPORT_NOTES[norm(dest.name)] || null;
@@ -1257,9 +1288,12 @@ function renderResults(P){
     tips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
       '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
 
+  html += '</div></details>';   /* kraj grupe "Praktične informacije" (obaveštenje o partnerima ostaje vidljivo ispod) */
+
   html += '<p class="dp-disclosure">Linkovi ka KAYAK-u, Booking.com-u, Viator-u, Airalo-u i World Nomads-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.</p>';
 
   $('dpResults').innerHTML = html;
+  { const h = location.hash.slice(1); if (h && openMoreFor(h)) setTimeout(() => { const t = document.getElementById(h); if (t) t.scrollIntoView(); }, 0); }
   $('dpResults').hidden = false;
   if (window.SklopiDestInfo) SklopiDestInfo.load(dest.name, c.org ? c.org.name + (c.org.country ? ', ' + c.org.country : '') : '');
   const token = ++renderToken;
