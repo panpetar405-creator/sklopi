@@ -340,10 +340,28 @@
     ["x_rs44","Plaćanje","Payment","Оплата"],
     ["x_rs45","Personalizovani planovi","Personalised plans","Персональные планы"],
     ["x_rs46","Jedna ukupna cena","One total price","Единая итоговая цена"],
-    ["x_rs47","Rezervacija kod partnera","Booking with partners","Бронирование у партнёров"]
+    ["x_rs47","Rezervacija kod partnera","Booking with partners","Бронирование у партнёров"],
+    ["x_tb01","Ukupno","Total","Итого"],
+    ["x_tb02","Podeli","Share","Поделиться"],
+    ["x_tb03","Link do tvog putovanja je kopiran.","The link to your trip has been copied.","Ссылка на вашу поездку скопирована."],
+    ["x_tb04","Link nije ispravan ili je oštećen.","This link is invalid or damaged.","Ссылка недействительна или повреждена."],
+    ["x_tb05","Broj noći","Number of nights","Количество ночей"],
+    ["x_tb06","Moje putovanje","My trip","Моя поездка"],
+    ["x_tb07","Procena cene mog putovanja:","Estimated price of my trip:","Оценка стоимости моей поездки:"],
+    ["x_tb08","Podeli putovanje","Share trip","Поделиться поездкой"],
+    ["x_tb09","Ukupna cena putovanja","Trip total price","Общая стоимость поездки"]
   ];
   /* Nemački (DE): ključ -> prevod; ako ključa nema, koristi se engleski. */
   var DE = {
+ "x_tb01": "Gesamt",
+ "x_tb02": "Teilen",
+ "x_tb03": "Der Link zu deiner Reise wurde kopiert.",
+ "x_tb04": "Dieser Link ist ungültig oder beschädigt.",
+ "x_tb05": "Anzahl der Nächte",
+ "x_tb06": "Meine Reise",
+ "x_tb07": "Preisschätzung meiner Reise:",
+ "x_tb08": "Reise teilen",
+ "x_tb09": "Gesamtpreis der Reise",
  "x_fx01": "Auto in ",
  "x_fx02": "/ Tag",
  "x_fx03": "inkl. Kraftstoff und Maut",

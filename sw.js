@@ -14,7 +14,7 @@
    menja pri deploy-u. Nov BUILD = nov shell keš; stari se briše pri aktivaciji. */
 
 /* STAMP:BEGIN (generiše stamp-assets.mjs — ne menjaj ručno) */
-const BUILD = 'c342ddb1';
+const BUILD = '8e7d1616';
 const PRECACHE = [
   "/",
   "/affiliate.js?v=85396c00",
@@ -52,7 +52,7 @@ const PRECACHE = [
   "/dest-plans.js?v=23ab51ff",
   "/fonts.css?v=0f858672",
   "/i18n-data.js?v=f4bb4212",
-  "/i18n-extra.js?v=26b40dfc",
+  "/i18n-extra.js?v=5d4348d4",
   "/index.html",
   "/manifest.json",
   "/notifications.css?v=563a3ebd",
@@ -63,6 +63,8 @@ const PRECACHE = [
   "/theme-navy.css?v=1c8740ce",
   "/transport-i18n.js?v=f616fd98",
   "/transport.js?v=dcc41813",
+  "/trip-bar.css?v=3c60f0ed",
+  "/trip-bar.js?v=960eb3a1",
   "/trip-store.js?v=5637f7aa",
   "/ux-refactor.css?v=72a2050c"
 ];
