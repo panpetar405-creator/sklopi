@@ -100,6 +100,22 @@
 .dp-toast-act{flex:0 0 auto;min-height:44px;padding:0 12px;border:0;background:transparent;color:#F5C842;font:700 14px Inter,sans-serif;cursor:pointer;}
 @media (min-width:701px){.dp-dock{bottom:16px;} .dp-toast{bottom:92px;}}
 @media (prefers-reduced-motion:reduce){.dp-dock.bump{animation:none;}}
+/* ---------- specifikacija kao donji panel (telefon) ---------- */
+.dp-sheet-head{display:none;}
+.dp-sheet-back{position:fixed;inset:0;z-index:80;background:rgba(3,8,16,.62);}
+.dp-sheet-back[hidden]{display:none;}
+html.dp-sheet-open{overflow:hidden;}
+#dpTripPanel.is-sheet{position:fixed;left:0;right:0;bottom:0;z-index:81;box-sizing:border-box;flex:none;margin:0 auto;max-width:760px;
+  max-height:86vh;max-height:86dvh;overflow:auto;overscroll-behavior:contain;background:#0B1626;border:1px solid #243A57;border-bottom:0;border-radius:22px 22px 0 0;
+  padding:0 16px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -18px 48px -12px rgba(0,0,0,.8);outline:none;}
+#dpTripPanel.is-sheet:not([hidden]){animation:dpSheetUp .26s ease-out;}
+@keyframes dpSheetUp{from{transform:translateY(40px);opacity:0;}to{transform:none;opacity:1;}}
+#dpTripPanel.is-sheet .dp-sheet-head{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1;background:#0B1626;
+  padding:18px 0 10px;margin-bottom:4px;color:#EAF1F8;font:700 17px Sora,Inter,sans-serif;}
+#dpTripPanel.is-sheet .dp-sheet-head::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:4px;background:#3A5170;}
+.dp-sheet-close{width:44px;height:44px;margin-right:-10px;border:0;border-radius:50%;background:transparent;color:#A9B8CA;font-size:26px;line-height:1;cursor:pointer;}
+.dp-sheet-close:focus-visible{outline:3px solid #F5C842;outline-offset:-3px;}
+@media (prefers-reduced-motion:reduce){#dpTripPanel.is-sheet:not([hidden]){animation:none;}}
 .dp-tb-cta{display:flex;flex-direction:column;align-items:center;gap:0;}
 .dp-total-bar{flex-wrap:wrap;}
 .dp-tb-open{border:0;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;background:var(--deep);color:var(--on-dark-strong);}
@@ -725,6 +741,7 @@ function updateBar(){
     { const sh = $('dpTbShare'); if (sh) sh.hidden = true; }
     if (!BAR_DEF.html) bar.hidden = true;
     syncDock(0, 0);
+    syncSheet();
     return;
   }
   bar.hidden = false;
@@ -742,7 +759,9 @@ function updateBar(){
   open.setAttribute('aria-expanded', PANEL_OPEN ? 'true' : 'false');
   open.textContent = PANEL_OPEN ? 'Sakrij specifikaciju' : 'Specifikacija';
   panel.hidden = !PANEL_OPEN;
+  placePanel();
   panel.innerHTML =
+    '<div class="dp-sheet-head"><span>Tvoj put · ' + itemsWord(items.length) + '</span><button type="button" class="dp-sheet-close" data-close-sheet aria-label="Zatvori specifikaciju">×</button></div>' +
     '<div class="dp-trip-grp">Rezervišeš kod partnera</div>' + online.map(tripRow).join('') +
     (online.length > 1 ? '<div class="dp-trip-sub"><span>Međuzbir</span><b>' + money(a.t, 'EUR') + '</b></div>' : '') +
     (onsite.length ? '<div class="dp-trip-grp">Plaćaš na licu mesta</div>' + onsite.map(tripRow).join('') : '') +
@@ -751,10 +770,35 @@ function updateBar(){
     '<p class="dp-trip-note">Ilustrativna procena. Aktivnosti, eSIM i boravišna taksa računati su za sve putnike. Tačnu cenu i dostupnost potvrđuješ kod partnera pre rezervacije. ' + AFF_BADGE + '</p>' +
     (skipped ? '<p class="dp-trip-note">' + skipped + ' stavka je u drugoj valuti i nije uračunata u zbir.</p>' : '');
   syncDock(items.length, sum);
+  syncSheet();
 }
 /* ---- donja traka "Tvoj put" + toast: potvrda i prečica do specifikacije ---- */
 const PHONE = window.matchMedia ? window.matchMedia('(max-width:700px)') : {matches:false};
 let toastTimer = 0, dockCount = 0;
+/* Na telefonu se specifikacija prebacuje iz lepljive gornje trake u donji panel (fixed ne radi unutar elementa sa backdrop-filter) */
+function placePanel(){
+  const panel = $('dpTripPanel'), bar = $('dpTotalBar'); if (!panel || !bar) return;
+  if (PHONE.matches){
+    if (panel.parentNode !== document.body) document.body.insertBefore(panel, $('dpDock'));
+    panel.classList.add('is-sheet'); panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-label', 'Tvoj put'); panel.tabIndex = -1;
+  } else {
+    if (panel.parentNode !== bar) bar.appendChild(panel);
+    panel.classList.remove('is-sheet'); ['role', 'aria-modal', 'aria-label', 'tabindex'].forEach(a => panel.removeAttribute(a));
+  }
+  syncSheet();
+}
+function syncSheet(){
+  const panel = $('dpTripPanel'), back = $('dpSheetBack'); if (!panel || !back) return;
+  const open = PHONE.matches && PANEL_OPEN && !panel.hidden;
+  back.hidden = !open;
+  document.documentElement.classList.toggle('dp-sheet-open', open);
+}
+function closeSheet(){
+  PANEL_OPEN = false; updateBar();
+  const d = $('dpDock'); if (d && !d.hidden) d.focus({preventScroll:true});
+}
+if (PHONE.addEventListener) PHONE.addEventListener('change', () => { placePanel(); updateBar(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && PHONE.matches && PANEL_OPEN){ closeSheet(); } });
 function syncDock(n, sum){
   const dock = $('dpDock'); if (!dock) return;
   if (!n){ dock.hidden = true; dockCount = 0; hideToast(); return; }
@@ -858,10 +902,14 @@ document.addEventListener('click', e => {
     if (added){ const r = k === 'esim' ? REG.esim[0] : (REG[k] || [])[n]; showAddedToast(r && r.title ? r.title : ''); } else hideToast();
     return;
   }
+  if (e.target.closest('[data-close-sheet], #dpSheetBack')){ closeSheet(); return; }
   if (e.target.closest('#dpDock, [data-open-trip]')){
     PANEL_OPEN = true; hideToast(); updateBar();
-    const bar = $('dpTotalBar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({block:'nearest', behavior: REDUCED ? 'auto' : 'smooth'});
-    const op = $('dpTbOpen'); if (op) op.focus({preventScroll:true});
+    if (PHONE.matches){ const pn = $('dpTripPanel'); if (pn) pn.focus({preventScroll:true}); }
+    else {
+      const bar = $('dpTotalBar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({block:'nearest', behavior: REDUCED ? 'auto' : 'smooth'});
+      const op = $('dpTbOpen'); if (op) op.focus({preventScroll:true});
+    }
     return;
   }
   const rm = e.target.closest('[data-rm]');
@@ -1449,6 +1497,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <script src="contact.js?v=60aecad3"></script>
+<div class="dp-sheet-back" id="dpSheetBack" hidden></div>
 <div class="dp-toast" id="dpToast" role="status" aria-live="polite" hidden></div>
 <button type="button" class="dp-dock" id="dpDock" aria-controls="dpTripPanel" hidden>
 <span class="dp-dock-txt"><span class="dp-dock-label" id="dpDockLabel"></span><b class="dp-dock-price" id="dpDockPrice"></b></span>
