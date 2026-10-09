@@ -123,6 +123,10 @@ html.dp-sheet-open{overflow:hidden;}
 .dp-sheet-close{width:44px;height:44px;margin-right:-10px;border:0;border-radius:50%;background:transparent;color:#A9B8CA;font-size:26px;line-height:1;cursor:pointer;}
 .dp-sheet-close:focus-visible{outline:3px solid #F5C842;outline-offset:-3px;}
 @media (prefers-reduced-motion:reduce){#dpTripPanel.is-sheet:not([hidden]){animation:none;}}
+.dp-total-bar:not(.has-trip) .aff-badge{display:none;}
+@media (max-width:700px){
+  .dp-field input[type="date"]{font-size:14px;padding-left:12px;padding-right:26px;letter-spacing:-.01em;}
+}
 .dp-tb-cta{display:flex;flex-direction:column;align-items:center;gap:0;}
 .dp-total-bar{flex-wrap:wrap;}
 .dp-tb-open{border:0;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;background:var(--deep);color:var(--on-dark-strong);}
@@ -294,7 +298,7 @@ Nazad na pretragu
 <div class="dp-tb-price" id="dpTbPrice"></div>
 </div>
 <div class="dp-tb-cta">
-<a class="btn-primary" id="dpTbLink" href="#" target="_blank" rel="noopener sponsored" style="padding:10px 18px;text-decoration:none;">Uporedi letove</a>
+<a class="btn-primary" id="dpTbLink" href="#avio" style="padding:10px 18px;text-decoration:none;">Pogledaj letove</a>
 <button type="button" class="dp-tb-open" id="dpTbOpen" aria-expanded="false" aria-controls="dpTripPanel" hidden>Pregled puta</button>
 <button type="button" class="dp-tb-share" id="dpTbShare" aria-label="Podeli ovaj put" hidden>Podeli</button>
 <span class="aff-badge" title="Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.">🔗 Afilijacija</span>
@@ -744,7 +748,7 @@ function updateBar(){
     PANEL_OPEN = false; PREV_COUNT = 0;
     label.textContent = 'Najjeftiniji let';
     price.innerHTML = BAR_DEF.html;
-    link.href = BAR_DEF.href; link.style.display = BAR_DEF.html ? '' : 'none';
+    link.style.display = BAR_DEF.html ? '' : 'none';   /* vodi do sekcije Let (#avio); partnerski linkovi su na karticama letova */
     open.hidden = true; open.setAttribute('aria-expanded', 'false'); panel.hidden = true; panel.innerHTML = '';
     { const sh = $('dpTbShare'); if (sh) sh.hidden = true; }
     if (!BAR_DEF.html) bar.hidden = true;
