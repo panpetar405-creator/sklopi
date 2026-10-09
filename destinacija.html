@@ -701,10 +701,12 @@ function updateBar(){
     open.hidden = true; open.setAttribute('aria-expanded', 'false'); panel.hidden = true; panel.innerHTML = '';
     { const sh = $('dpTbShare'); if (sh) sh.hidden = true; }
     if (!BAR_DEF.html) bar.hidden = true;
+    syncDock(0, 0);
     return;
   }
   bar.hidden = false;
-  if (PREV_COUNT === 0) PANEL_OPEN = true;   /* čim se doda prva stavka, odmah se otvara specifikacija */
+  /* na telefonu se specifikacija ne otvara sama (gurala bi sadržaj); korisnika vodi donja traka i toast */
+  if (PREV_COUNT === 0 && !PHONE.matches) PANEL_OPEN = true;
   PREV_COUNT = items.length;
   const online = items.filter(it => !it[3].onsite), onsite = items.filter(it => it[3].onsite);
   const a = sumEUR(online), b = sumEUR(onsite);
@@ -725,6 +727,28 @@ function updateBar(){
     '<div class="dp-trip-pp">≈ ' + money(sum / ad, 'EUR') + ' po osobi</div>' +
     '<p class="dp-trip-note">Ilustrativna procena. Aktivnosti, eSIM i boravišna taksa računati su za sve putnike. Tačnu cenu i dostupnost potvrđuješ kod partnera pre rezervacije. ' + AFF_BADGE + '</p>' +
     (skipped ? '<p class="dp-trip-note">' + skipped + ' stavka je u drugoj valuti i nije uračunata u zbir.</p>' : '');
+  syncDock(items.length, sum);
+}
+/* ---- donja traka "Tvoj put" + toast: potvrda i prečica do specifikacije ---- */
+const PHONE = window.matchMedia ? window.matchMedia('(max-width:700px)') : {matches:false};
+let toastTimer = 0, dockCount = 0;
+function syncDock(n, sum){
+  const dock = $('dpDock'); if (!dock) return;
+  if (!n){ dock.hidden = true; dockCount = 0; hideToast(); return; }
+  $('dpDockLabel').textContent = 'Tvoj put · ' + itemsWord(n);
+  $('dpDockPrice').textContent = money(sum, 'EUR');
+  dock.hidden = PANEL_OPEN;                       /* kad je specifikacija otvorena, traka je suvišna */
+  dock.setAttribute('aria-label', 'Tvoj put, ' + itemsWord(n) + ', ' + money(sum, 'EUR') + '. Otvori specifikaciju');
+  if (n !== dockCount && dockCount !== 0 && !REDUCED){ dock.classList.remove('bump'); void dock.offsetWidth; dock.classList.add('bump'); }
+  dockCount = n;
+}
+function hideToast(){ const t = $('dpToast'); if (t){ t.hidden = true; t.innerHTML = ''; } clearTimeout(toastTimer); }
+function showAddedToast(title){
+  const t = $('dpToast'); if (!t || PANEL_OPEN) return;
+  t.innerHTML = '<span class="dp-toast-ic" aria-hidden="true">✓</span><span class="dp-toast-msg">Dodato u Tvoj put' + (title ? ': ' + esc(title) : '') + '</span><button type="button" class="dp-toast-act" data-open-trip>Pogledaj</button>';
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(hideToast, 4000);
 }
 /* ---- Podeli put: izbor stavki ide u URL kao ?izbor=f0-ab12.h2-cd34.a3-ef56.e  (vrsta + redni broj + kratak otisak naslova) ----
    Otisak štiti od pogrešne stavke: ako ponude više nisu iste (stvarni feed), stavka se preskače, a ne dodaje pogrešna. */
@@ -806,7 +830,16 @@ document.addEventListener('click', e => {
     if (k === 'act'){ TRIP.act.has(n) ? TRIP.act.delete(n) : TRIP.act.add(n); }
     else if (k === 'esim') TRIP.esim = !TRIP.esim;
     else TRIP[k] = TRIP[k] === n ? null : n;
-    updateBar(); return;
+    const added = k === 'act' ? TRIP.act.has(n) : k === 'esim' ? TRIP.esim : TRIP[k] === n;
+    updateBar();
+    if (added){ const r = k === 'esim' ? REG.esim[0] : (REG[k] || [])[n]; showAddedToast(r && r.title ? r.title : ''); } else hideToast();
+    return;
+  }
+  if (e.target.closest('#dpDock, [data-open-trip]')){
+    PANEL_OPEN = true; hideToast(); updateBar();
+    const bar = $('dpTotalBar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({block:'nearest', behavior: REDUCED ? 'auto' : 'smooth'});
+    const op = $('dpTbOpen'); if (op) op.focus({preventScroll:true});
+    return;
   }
   const rm = e.target.closest('[data-rm]');
   if (rm){
@@ -817,6 +850,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('#dpTbShare')){ shareTrip(); return; }
   if (e.target.closest('#dpTbOpen')){
     PANEL_OPEN = !PANEL_OPEN;
+    if (PANEL_OPEN) hideToast();
     updateBar();
     return;
   }
@@ -1390,6 +1424,11 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <script src="contact.js?v=60aecad3"></script>
+<div class="dp-toast" id="dpToast" role="status" aria-live="polite" hidden></div>
+<button type="button" class="dp-dock" id="dpDock" aria-controls="dpTripPanel" hidden>
+<span class="dp-dock-txt"><span class="dp-dock-label" id="dpDockLabel"></span><b class="dp-dock-price" id="dpDockPrice"></b></span>
+<span class="dp-dock-cta">Pogledaj</span>
+</button>
 <nav aria-label="Glavna navigacija" class="bottom-nav" id="bottomNav">
 <a href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"></path></svg><span>Početna</span></a>
 <a href="index.html#popular-destinations" class="is-active" aria-current="page"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"></path></svg><span>Destinacije</span></a>
