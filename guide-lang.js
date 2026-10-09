@@ -9,7 +9,13 @@
   var alts = {};
   Array.prototype.forEach.call(document.querySelectorAll('link[rel="alternate"][hreflang]'), function(l){
     var c = l.getAttribute('hreflang');
-    if (c && c !== 'x-default') alts[c] = l.getAttribute('href');
+    if (c && c !== 'x-default') {
+      // Apsolutni hreflang (https://sklopi.rs/...) pretvaramo u relativni fajl, da prebacivanje jezika
+      // radi na bilo kom domenu (workers.dev, sklopi.rs...). <link> tagovi ostaju isti (SEO).
+      var h = l.getAttribute('href');
+      try { h = new URL(h, location.href).pathname.split('/').pop() || h; } catch(e){}
+      alts[c] = h;
+    }
   });
   function same(u){ try { return new URL(u, location.href).pathname === location.pathname; } catch(e){ return true; } }
   function go(code){
