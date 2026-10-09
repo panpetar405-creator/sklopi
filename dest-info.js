@@ -642,7 +642,7 @@
       html += '</div>';
     }
 
-    html += '<div id="diExtra" style="margin-top:12px"><button type="button" id="diExtraBtn" style="width:100%;padding:12px;border:0;border-radius:14px;background:#0f3b4c;color:#fff;font:inherit;font-weight:600">➕ ' + esc(L.extra_btn) + '</button></div>';
+    html += '<div id="diExtra" style="margin-top:12px"><button type="button" id="diExtraBtn" style="width:100%;padding:12px;border:0;border-radius:14px;background:#0f3b4c;color:#fff;font:inherit;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;cursor:pointer" aria-expanded="false" aria-controls="diExtra"><span>' + esc(L.extra_btn) + '</span><span aria-hidden="true" style="width:9px;height:9px;border:solid currentColor;border-width:0 2.5px 2.5px 0;transform:translateY(-3px) rotate(45deg);flex:0 0 auto"></span></button></div>';
 
     ct.innerHTML = html;
     ct.hidden = false;
