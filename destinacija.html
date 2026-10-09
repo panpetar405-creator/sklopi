@@ -1193,7 +1193,7 @@ function renderResults(P){
   /* --- letovi (sadržaj se puni asinhrono) --- */
   const simNote = '';
   const jump = '<nav class="dp-jump" aria-label="Brza navigacija">' +
-    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#prakticno">🧳 Praktično</a></nav>' +
+    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#osiguranje">🛡️ Osiguranje</a><a href="#esim">📶 eSIM</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#prakticno">🧳 Praktično</a></nav>' +
     '<p class="dp-estimate">Cene su ilustrativne procene. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
   const viaNote = (c.oVia || c.dVia)
     ? '<p class="dp-note dp-note-top">' +
@@ -1219,11 +1219,12 @@ function renderResults(P){
   const gc = greenCard(dest.country);
   html += '<div class="dp-section" id="rentacar">' + sectionHead('🚗', 'Rent a car', '', 'dpCarCount', 'dpCarTrack') + simNote +
     '<div id="dpCarBox"></div></div>' +
+    '@@EXTRA@@' +   /* ovde se ubacuju Osiguranje i eSIM (grade se niže) — vidljivi, van sklopljene grupe */
     /* Praktične informacije: sklopljeno po defaultu da stranica ne bude jedan beskonačan zid sekcija.
        Grupa je pravi <details> (tastatura i čitač ekrana rade bez dodatnog koda); sav sadržaj je u DOM-u. */
     '<details class="dp-more" id="prakticno"><summary class="dp-more-sum">' +
       '<span class="dp-more-ic" aria-hidden="true">🧳</span>' +
-      '<span class="dp-more-txt"><b>Praktične informacije</b><small>Ruta · Transferi · Autobus · Osiguranje · eSIM · Saveti</small></span>' +
+      '<span class="dp-more-txt"><b>Praktične informacije</b><small>Ruta · Transferi · Autobus · Saveti</small></span>' +
       '<span class="dp-more-chev" aria-hidden="true"></span></summary>' +
     '<div class="dp-more-body">' +
     '<div class="dp-section" id="ruta">' + sectionHead('🧭', 'Ruta', '');
@@ -1279,7 +1280,7 @@ function renderResults(P){
     'Ambasada zna da traži dokaz o putnom zdravstvenom osiguranju kao deo vizne prijave za ' + dest.country + ' — proveri pre podnošenja dokumenata.']);
   insTips.push(['💳', 'Pre kupovine nove polise',
     'Neke bankovne kartice (premium paketi) uključuju putno osiguranje besplatno — proveri to pre nego što platiš novu polisu.']);
-  html += '<div class="dp-section" id="osiguranje">' + sectionHead('🛡️', 'Osiguranje', '') + '<div class="dp-card">' +
+  let extraHtml = '<div class="dp-section" id="osiguranje">' + sectionHead('🛡️', 'Osiguranje', '') + '<div class="dp-card">' +
     insTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
       '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') +
     '<div class="dp-links dp-links-after"><a class="dp-linkbtn dp-primary" href="' + esc(insuranceLink) + '" ' + ext + '>Uporedi ponude na World Nomads</a>' + AFF_BADGE + '</div>' +
@@ -1297,7 +1298,7 @@ function renderResults(P){
     'Ne znamo tačno u kojoj je državi ova destinacija, pa link vodi na opštu Airalo prodavnicu — potraži tamo „' + dest.name + '“ ili državu u kojoj se nalazi.']);
   else esimTips.push(['📱', 'Pre kupovine proveri',
     'Da li telefon podržava eSIM (uglavnom noviji modeli od 2019+), i da li ti je za ovu dužinu putovanja isplativiji fiksni paket (npr. 10GB/10 dana) od dnevnog.']);
-  html += '<div class="dp-section" id="esim">' + sectionHead('📶', 'eSIM', '') + '<div class="dp-card">' +
+  extraHtml += '<div class="dp-section" id="esim">' + sectionHead('📶', 'eSIM', '') + '<div class="dp-card">' +
     esimTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
       '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') +
     '<div class="dp-esim-pick"><span>Procena za ' + c.P.adults + (c.P.adults === 1 ? ' putnika' : ' putnika') + ' · ' + c.nights + (c.nights === 1 ? ' dan' : ' dana') + ': <b>' + money(esimEst.total, 'EUR') + '</b></span>' + pickBtn('esim', 0) + '</div>' +
@@ -1322,6 +1323,7 @@ function renderResults(P){
     tips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
       '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
 
+  html = html.replace('@@EXTRA@@', () => extraHtml);   /* Osiguranje + eSIM odmah posle rent a car-a */
   html += '</div></details>';   /* kraj grupe "Praktične informacije" (obaveštenje o partnerima ostaje vidljivo ispod) */
 
   html += '<p class="dp-disclosure">Linkovi ka KAYAK-u, Booking.com-u, Viator-u, Airalo-u i World Nomads-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.</p>';
