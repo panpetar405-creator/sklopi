@@ -52,5 +52,7 @@ languages.json
 _glossary.json
 _notes.json
 _state.json
+_guides_state.json
+_guides_fake/
 transport-sr-keys.json
 locales/

@@ -7,6 +7,8 @@
     "i18n:check": "node translate.mjs --check",
     "i18n:build": "node translate.mjs --build",
     "i18n:test": "node selftest.mjs",
+    "i18n:guides": "node translate-guides.mjs",
+    "i18n:guides:check": "node translate-guides.mjs --check",
     "i18n:todo": "node find-hardcoded.mjs",
     "check:assets": "node check-assets.mjs",
     "fetch:images": "node fetch-missing-images.mjs",

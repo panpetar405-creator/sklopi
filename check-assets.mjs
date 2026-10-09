@@ -52,7 +52,7 @@ if (APP_PARTS.length === 0) { console.error('✗ nema app-*.js fajlova'); proces
 const mustServe = [
   'index.html', ...APP_PARTS, 'styles.css', 'i18n-data.js', 'i18n-extra.js', 'config.js', 'contact.js',
   'cookies.js', 'affiliate.js', 'price-mix.js', 'transport.js', 'transport-i18n.js', 'dest-info.js',
-  'dest-info.css', 'dest-plans.js', 'fonts.css', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
+  'dest-info.css', 'dest-plans.js', 'guide-lang.js', 'fonts.css', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
 ];
 
 // jezički fajlovi (i18n-en.js, i18n-ru.js...) učitavaju se dinamički, ali MORAJU biti javni
