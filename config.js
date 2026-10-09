@@ -6,7 +6,7 @@ window.SKLOPI_SUPABASE_KEY = 'sb_publishable_09taoChvrqBGyieWjp_CRQ_oS4b-Qqt';
 // podešen (vidi PRICE_ALERTS_README.md, korak 5), zameni ovo direktno
 // sa *.workers.dev adresom worker-a dok Route ne bude spreman — isto
 // poznato ograničenje kao i za unsubUrl u samom workeru.
-window.SKLOPI_ALERT_WORKER_URL = 'https://sklopi.rs';
+window.SKLOPI_ALERT_WORKER_URL = 'https://sklopi.panpetar405.workers.dev';
 // Cloudflare Turnstile (captcha) za RSVP na zajedno.html. PRAZNO = isključeno (rade honeypot + rate limit).
 // Uključivanje: dash.cloudflare.com → Turnstile → dodaj sajt → upiši SITE KEY ovde,
 // a SECRET na Worker-u: `npx wrangler secret put TURNSTILE_SECRET`. Oba moraju zajedno, inače forma ne prolazi.
