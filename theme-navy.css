@@ -966,7 +966,10 @@
   content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(11,22,38,0) 45%,rgba(11,22,38,.88) 100%);
 }
-.popular-reference-grid .pd-copy{position:relative;z-index:1;padding:0 12px 12px;gap:2px}
+/* pd-copy NE sme biti position:relative — inače se apsolutno pozicionirana cena (.pd-price) meri od pd-copy
+   (donji deo kartice) i sedi preko "Zemlja · 3h", umesto u gornjem desnom uglu kartice. */
+.popular-reference-grid .pd-copy{padding:0 12px 12px;gap:2px}
+.popular-reference-grid .pd-name,.popular-reference-grid .pd-meta{position:relative;z-index:1;overflow-wrap:anywhere}
 .popular-reference-grid .pd-name{color:#fff;font:700 17px/1.15 Sora,Inter,sans-serif;letter-spacing:-.02em;text-shadow:0 1px 10px rgba(11,22,38,.6)}
 .popular-reference-grid .pd-meta{color:#E4EBF3;font:500 12px/1.3 Inter,sans-serif}
 .popular-reference-grid .pd-price{
