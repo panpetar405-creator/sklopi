@@ -81,6 +81,11 @@
 .dp-total-bar{flex-wrap:wrap;}
 .dp-tb-open{border:0;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;background:var(--deep);color:var(--on-dark-strong);}
 .dp-tb-open:hover{background:var(--deep2);}
+.dp-tb-share{border:1.5px solid currentColor;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;min-height:44px;padding:0 16px;border-radius:999px;background:transparent;color:inherit;}
+.dp-total-bar.has-trip .dp-tb-cta{flex-direction:row;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;}
+.dp-tb-share:focus-visible{outline:3px solid var(--gold,#E7A93E);outline-offset:2px;}
+.dp-tb-status{flex-basis:100%;font-size:12.5px;min-height:0;}
+.dp-tb-status:empty{display:none;}
 .dp-trip-panel{flex:1 1 100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);max-height:48vh;overflow:auto;}
 .dp-trip-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;}
 .dp-trip-row:last-of-type{border-bottom:0;}
@@ -231,8 +236,10 @@ Nazad na pretragu
 <div class="dp-tb-cta">
 <a class="btn-primary" id="dpTbLink" href="#" target="_blank" rel="noopener sponsored" style="padding:10px 18px;text-decoration:none;">Uporedi letove</a>
 <button type="button" class="dp-tb-open" id="dpTbOpen" aria-expanded="false" aria-controls="dpTripPanel" hidden>Pregled puta</button>
+<button type="button" class="dp-tb-share" id="dpTbShare" aria-label="Podeli ovaj put" hidden>Podeli</button>
 <span class="aff-badge" title="Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.">🔗 Afilijacija</span>
 </div>
+<div class="dp-tb-status" id="dpTbStatus" role="status" aria-live="polite"></div>
 <div class="dp-trip-panel" id="dpTripPanel" hidden></div>
 </div>
 
@@ -669,6 +676,7 @@ function sumEUR(list){ let t = 0, sk = 0; list.forEach(it => { if (it[3].cur ===
 function updateBar(){
   const bar = $('dpTotalBar'); if (!bar) return;
   const items = tripItems();
+  bar.classList.toggle('has-trip', items.length > 0);
   const label = $('dpTbLabel'), price = $('dpTbPrice'), link = $('dpTbLink'), open = $('dpTbOpen'), panel = $('dpTripPanel');
   syncPicks();
   if (!items.length){
@@ -677,6 +685,7 @@ function updateBar(){
     price.innerHTML = BAR_DEF.html;
     link.href = BAR_DEF.href; link.style.display = BAR_DEF.html ? '' : 'none';
     open.hidden = true; open.setAttribute('aria-expanded', 'false'); panel.hidden = true; panel.innerHTML = '';
+    { const sh = $('dpTbShare'); if (sh) sh.hidden = true; }
     if (!BAR_DEF.html) bar.hidden = true;
     return;
   }
@@ -690,6 +699,7 @@ function updateBar(){
   label.textContent = 'Tvoj put · ' + itemsWord(items.length);
   price.innerHTML = money(sum, 'EUR') + ' <small>/ ukupno za ' + ad + (ad === 1 ? ' putnika' : ' putnika') + '</small>';
   link.style.display = 'none'; open.hidden = false;
+  { const sh = $('dpTbShare'); if (sh) sh.hidden = false; }
   open.setAttribute('aria-expanded', PANEL_OPEN ? 'true' : 'false');
   open.textContent = PANEL_OPEN ? 'Sakrij specifikaciju' : 'Specifikacija';
   panel.hidden = !PANEL_OPEN;
@@ -701,6 +711,68 @@ function updateBar(){
     '<div class="dp-trip-pp">≈ ' + money(sum / ad, 'EUR') + ' po osobi</div>' +
     '<p class="dp-trip-note">Ilustrativna procena. Aktivnosti, eSIM i boravišna taksa računati su za sve putnike. Tačnu cenu i dostupnost potvrđuješ kod partnera pre rezervacije. ' + AFF_BADGE + '</p>' +
     (skipped ? '<p class="dp-trip-note">' + skipped + ' stavka je u drugoj valuti i nije uračunata u zbir.</p>' : '');
+}
+/* ---- Podeli put: izbor stavki ide u URL kao ?izbor=f0-ab12.h2-cd34.a3-ef56.e  (vrsta + redni broj + kratak otisak naslova) ----
+   Otisak štiti od pogrešne stavke: ako ponude više nisu iste (stvarni feed), stavka se preskače, a ne dodaje pogrešna. */
+const PICK_RE = /^([fhca])(\d{1,3})-([0-9a-z]{1,6})$/;
+let PENDING = null, SHARED_USED = false;
+function h4(str){ let h = 5381; str = String(str); for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36).slice(0, 6); }
+function encodePicks(){
+  const out = [];
+  [['f','flight'],['h','hotel'],['c','car']].forEach(([l, k]) => { if (TRIP[k] != null && REG[k][TRIP[k]]) out.push(l + TRIP[k] + '-' + h4(REG[k][TRIP[k]].title)); });
+  [...TRIP.act].sort((a, b) => a - b).forEach(i => { if (REG.act[i]) out.push('a' + i + '-' + h4(REG.act[i].title)); });
+  if (TRIP.esim) out.push('e');
+  return out.join('.');
+}
+function parsePicks(str){
+  if (typeof str !== 'string' || str.length > 200) return null;
+  const res = {flight:null, hotel:null, car:null, act:[], esim:false, total:0, skipped:0};
+  str.split('.').slice(0, 20).forEach(t => {
+    if (t === 'e'){ res.esim = true; res.total++; return; }
+    const m = PICK_RE.exec(t); if (!m) return;
+    const kind = {f:'flight', h:'hotel', c:'car', a:'act'}[m[1]];
+    const item = {i:+m[2], h:m[3]};
+    if (kind === 'act') res.act.push(item); else res[kind] = item;
+    res.total++;
+  });
+  return res.total ? res : null;
+}
+function applyPending(){
+  if (!PENDING) return;
+  const hit = (k, it) => it && REG[k][it.i] ? (h4(REG[k][it.i].title) === it.h ? 'ok' : 'bad') : 'wait';
+  let changed = false;
+  ['flight','hotel','car'].forEach(k => {
+    const it = PENDING[k], r = hit(k, it); if (r === 'wait') return;
+    if (r === 'ok'){ TRIP[k] = it.i; changed = true; } else PENDING.skipped++;
+    PENDING[k] = null;
+  });
+  PENDING.act = PENDING.act.filter(it => {
+    const r = hit('act', it); if (r === 'wait') return true;
+    if (r === 'ok'){ TRIP.act.add(it.i); changed = true; } else PENDING.skipped++;
+    return false;
+  });
+  if (PENDING.esim && REG.esim[0]){ TRIP.esim = true; PENDING.esim = false; changed = true; }
+  if (changed) updateBar();
+  const left = PENDING.flight || PENDING.hotel || PENDING.car || PENDING.act.length || PENDING.esim;
+  if (!left){
+    const st = $('dpTbStatus');
+    if (st && PENDING.skipped) st.textContent = 'Neke stavke iz podeljenog linka više nisu dostupne pa nisu dodate.';
+    PENDING = null;
+  }
+}
+function shareTrip(){
+  const enc = encodePicks(); if (!enc) return;
+  const u = new URL(location.href); u.searchParams.set('izbor', enc); u.hash = '';
+  const url = u.toString(), st = $('dpTbStatus'), btn = $('dpTbShare');
+  const done = msg => { if (st) st.textContent = msg; setTimeout(() => { if (st && st.textContent === msg) st.textContent = ''; }, 4000); };
+  const copy = () => {
+    const ok = () => done('Link do tvog puta je kopiran.');
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url).then(ok, () => done(url));
+    try { const ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:-1000px;opacity:0'; document.body.appendChild(ta); ta.select(); const r = document.execCommand('copy'); ta.remove(); r ? ok() : done(url); } catch(e){ done(url); }
+  };
+  if (navigator.share){
+    navigator.share({title:'Moje putovanje — SKLOPI', text:(CUR && CUR.dest ? CUR.dest.name + ' — ' : '') + 'pogledaj moj plan puta', url}).catch(e => { if (!e || e.name !== 'AbortError') copy(); });
+  } else copy();
 }
 function setBarDefault(html, href){ BAR_DEF.html = html; BAR_DEF.href = href; updateBar(); }
 document.addEventListener('click', e => {
@@ -718,6 +790,7 @@ document.addEventListener('click', e => {
     if (k === 'act') TRIP.act.delete(n); else if (k === 'esim') TRIP.esim = false; else TRIP[k] = null;
     updateBar(); return;
   }
+  if (e.target.closest('#dpTbShare')){ shareTrip(); return; }
   if (e.target.closest('#dpTbOpen')){
     PANEL_OPEN = !PANEL_OPEN;
     updateBar();
@@ -950,6 +1023,7 @@ function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls
     $(boxId).innerHTML = slider(sliderId, label, list.map((o, i) => offerCard(o, partner, bannerCls, key, i)), true);
     $(countId).textContent = countLabel(list.length);
     initSlider(sliderId);
+    applyPending();
     fillPhotos(sliderId);
   });
 }
@@ -983,6 +1057,7 @@ function loadFlights(c){
     REG.flight = offers.map(o => ({title:o.title, total:o.price, cur:'EUR', url:o.url, partner:'KAYAK'}));
     list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map((o, i) => offerCard(o, 'KAYAK', '', 'flight', i)), false);
     initSlider('dpFlightTrack');
+    applyPending();
     fillPhotos('dpFlightTrack');
     const cheapest = offers[0];
     if (cheapest){
@@ -1022,6 +1097,7 @@ function loadFlights(c){
       });
       list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map((o, i) => flightCard(o, c.P.adults, c, i)), false);
       initSlider('dpFlightTrack');
+      applyPending();
       fillPhotos('dpFlightTrack');
       const cheapest = offers[0];
       bar.hidden = false;
@@ -1192,6 +1268,8 @@ function renderResults(P){
   const es = esimEstimate(c);
   REG.esim = [{title:'eSIM paket · ' + (dest.country || dest.name), detail:c.P.adults + ' × ' + money(es.per, 'EUR') + ' · ' + c.nights + (c.nights === 1 ? ' dan' : ' dana'), total:es.total, cur:'EUR', url:esimLink, partner:'Airalo'}];
   TRIP.flight = TRIP.hotel = TRIP.car = null; TRIP.act.clear(); TRIP.esim = false; PANEL_OPEN = false; PREV_COUNT = 0;
+  /* podeljeni link (?izbor=…) važi samo za prvo otvaranje stranice; kasnije pretrage kreću od praznog puta */
+  if (!SHARED_USED){ SHARED_USED = true; PENDING = parsePicks(new URLSearchParams(location.search).get('izbor')); } else PENDING = null;
   BAR_DEF.html = ''; BAR_DEF.href = '#';
   loadFlights(c);
   fillOffers('hotels', c, 'dpHotelBox', 'dpHotelCount', 'dpHotelTrack', 'Ponude smeštaja', 'Booking.com', '', token);

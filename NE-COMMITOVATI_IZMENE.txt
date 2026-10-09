@@ -1,4 +1,5 @@
-SKLOPI — koraci 1, 2, 3a, 3b i 4 (sadrzi SVE izmene u odnosu na originalni sklopi-main.zip)
+SKLOPI — koraci 1-4 (ispravljeno). Sadrzi SVE izmene u odnosu na originalni sklopi-main.zip.
 Raspakuj preko korena repoa (cuvaju se putanje). OBRISI: assetsignore.txt, styles-patch.css. Ovaj fajl ne commituj.
-Novi fajlovi: i18n-en.js, i18n-ru.js, i18n-de.js (generisani), trip-store.js, trip-bar.js, trip-bar.css, selftest-trip-store.mjs.
-Provera: npm run stamp:check && npm run sitemap:check && npm run check:assets && npm run test:store
+Novi fajlovi: i18n-en.js, i18n-ru.js, i18n-de.js (generisani), .github/workflows/check.yml.
+Share putovanja je u destinacija.html (dugme "Podeli" u traci "Tvoj put").
+Provera: npm run stamp:check && npm run sitemap:check && npm run check:assets

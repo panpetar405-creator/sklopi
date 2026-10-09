@@ -50,7 +50,7 @@ const mustHideRe = [/\.sql$/, /\.md$/, /\.mjs$/, /(^|\/)\.env(\..*)?$/, /(^|\/)\
 const APP_PARTS = files.filter((f) => /^app-\d+-.+\.js$/.test(f));
 if (APP_PARTS.length === 0) { console.error('✗ nema app-*.js fajlova'); process.exit(1); }
 const mustServe = [
-  'index.html', 'trip-store.js', ...APP_PARTS, 'styles.css', 'i18n-data.js', 'i18n-extra.js', 'config.js', 'contact.js',
+  'index.html', ...APP_PARTS, 'styles.css', 'i18n-data.js', 'i18n-extra.js', 'config.js', 'contact.js',
   'cookies.js', 'affiliate.js', 'price-mix.js', 'transport.js', 'transport-i18n.js', 'dest-info.js',
   'dest-info.css', 'dest-plans.js', 'fonts.css', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
 ];
