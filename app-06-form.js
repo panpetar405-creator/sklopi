@@ -72,8 +72,9 @@ function validateSearchInputs(extra){
   const paxConfirmed = !document.getElementById('paxDisplayBtn')?.classList.contains('is-empty');
   if (!dest) return {ok:false, focus:'dest', msg:t('val_dest_missing')};
   if (placeStatus(dest) === false) return {ok:false, focus:'dest', msg:tf('val_dest_unknown', {name: placeBaseName(dest)})};
-  if (origin && flight && placeStatus(origin) === false) return {ok:false, focus:'origin', msg:tf('val_origin_unknown', {name: placeBaseName(origin)})};
-  if (flight && !origin) return {ok:false, focus:'origin', msg:t('val_origin_missing')};
+  // Polazak je OBAVEZAN uvek (ne samo kad je let uključen).
+  if (!origin) return {ok:false, focus:'origin', msg:t('val_origin_missing')};
+  if (placeStatus(origin) === false) return {ok:false, focus:'origin', msg:tf('val_origin_unknown', {name: placeBaseName(origin)})};
   if (!datesConfirmed || !isDate(from) || !isDate(to)) return {ok:false, focus:'form', msg:t('val_dates_missing')};
   if (to <= from) return {ok:false, focus:'form', msg:t('val_return_before_departure')};
   if (extra.checkPast && from < localTodayStr()) return {ok:false, focus:'form', msg:t('val_departure_in_past')};
@@ -312,7 +313,7 @@ document.getElementById('searchForm').addEventListener('submit', async function(
   try { bumpSearchStat(destVal); } catch(err){}
   // Kreni vodi direktno na stranicu destinacije (destinacija.html): letovi, smeštaj, atrakcije,
   // rent a car i ostalo za iste datume, bez međukoraka sa 3 plana na glavnoj stranici.
-  const originVal = (document.getElementById('origin').value || '').trim() || 'Beograd';
+  const originVal = (document.getElementById('origin').value || '').trim();
   const adultsVal = Number(document.getElementById('adults').value) || 2;
   const destUrl = 'destinacija.html?' + new URLSearchParams({
     od: originVal,
