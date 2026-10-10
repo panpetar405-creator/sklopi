@@ -223,3 +223,13 @@ body{background:var(--nv-page,#060D18);color:var(--nv-text);}
 .dp-esim-pick{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:14px;color:var(--nv-muted);}
 .dp-esim-pick b{color:var(--nv-text);}
 .dp-trip-panel{max-height:60vh;}
+
+/* Datum: na uskim ekranima cela vrednost (dd. mm. gggg.) mora da stane, bez odsecanja godine */
+.dp-form .dp-field input[type="date"]{min-width:0;font-size:13px;padding-left:10px;padding-right:8px;letter-spacing:-.02em;}
+.dp-form .dp-field input[type="date"]::-webkit-datetime-edit,
+.dp-form .dp-field input[type="date"]::-webkit-datetime-edit-fields-wrapper{padding:0;white-space:nowrap;}
+.dp-form .dp-field input[type="date"]::-webkit-datetime-edit-text{padding:0 1px;}
+.dp-form .dp-field input[type="date"]::-webkit-calendar-picker-indicator{margin:0 0 0 2px;padding:0;width:16px;flex:0 0 16px;}
+@media (max-width:380px){
+  .dp-form .dp-field input[type="date"]{font-size:12.5px;}
+}
