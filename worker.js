@@ -75,11 +75,17 @@ const EXTRA_SCHEMA = {
   day_trips: [1, 2, 3].map((n) => ({ name: '<real place #' + n + ' within about 2 hours of DEST>', time: '<travel time and how to get there>', note: '<why it is worth going>' })),
 };
 
+// Pravila za viznu logiku: sprečavaju kontradikciju tipa "potrebna viza" + "do 90 dana" i pogrešno pogađanje pasoša.
+const VISA_RULE =
+  'VISA CONSISTENCY RULES: visa.required, visa.type and visa.duration MUST agree with each other. If visa.required is false, visa.type must plainly say that no visa is needed (visa-free) and duration must give the allowed stay; if visa.required is true, duration must describe the visa, never a visa-free stay such as "90 days in 180". ' +
+  'Facts to respect: citizens of Serbia (also Montenegro, North Macedonia, Albania, Bosnia and Herzegovina, Moldova, Georgia, and Ukraine with a biometric passport) do NOT need a visa for short stays (up to 90 days in any 180) in the Schengen area; Serbia itself is not in the EU or Schengen. EU/EEA/Swiss citizens need no visa and no ETIAS within Schengen. Never state that a Schengen visa is required for a passport that is visa-free. If you are not sure about the rule for the given PASSPORT, say to check the official embassy site instead of guessing. ';
+
 function extraPrompt(dest, origin, passport, LANG_EN, L, now) {
   return 'You are a travel expert. DEST = "' + dest + '". ' +
-    'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || 'the country where ORIGIN is located') + '". ' +
+    'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || (origin ? 'the country where ORIGIN is located' : 'Serbia')) + '". ' +
     'PASSPORT may list several passports: use the MOST favourable one for entry rules and say which passport the rule applies to. ' +
     'Today is ' + now.toISOString().slice(0, 10) + '; give rules valid on that date. ' +
+    VISA_RULE +
     'Return ONLY a JSON object with EXACTLY the keys of the schema below, filled with REAL facts about DEST and the country it is in. ' +
     'The schema values in <angle brackets> are instructions, NOT example data: replace every one of them and never output angle brackets. ' +
     'If you are not sure about an exact price, limit or rule, do NOT invent a number: say briefly (in the output language) that it should be checked with the official source. ' +
@@ -193,11 +199,12 @@ async function handleDestInfo(request, env, ctx) {
   const now = new Date();
   const mainPrompt =
     'You are a travel expert. DEST = "' + dest + '". ' +
-    'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || ('the country where ORIGIN is located')) + '". ' +
+    'The traveller departs from ORIGIN = "' + (origin || 'Belgrade, Serbia') + '" and holds the passport of PASSPORT = "' + (passport || (origin ? 'the country where ORIGIN is located' : 'Serbia')) + '". ' +
     'PASSPORT may list several passports (e.g. "Serbia, Germany" or "Srbija-Nemačka"): treat the traveller as holding all of them and, for visa/entry/health rules, use the MOST favourable one (an EU/Schengen passport means free movement, an ID card is enough) and say which passport the rule applies to. '+
     'ORIGIN is the departure city: flights, road distance, airport transfers and travel time are for ORIGIN → DEST (e.g. Athens → Sofia), not from Serbia. Roaming is for a typical mobile plan of the FIRST passport country listed (state that assumption in one short phrase). '+
     'Currency facts as of 2026: Bulgaria uses the euro (EUR) since 1 January 2026, Croatia since 2023; never output BGN for Bulgaria. If the DEST currency equals the ORIGIN country currency, set currency_rate to exactly the word SAME (nothing else) instead of a rate. '+
     'Everything that depends on the traveller (visa/entry rules, embassy, roaming, currency_rate, flights and routes, road distance) must be correct for that ORIGIN and PASSPORT — never assume Serbia unless ORIGIN/PASSPORT say so. ' +
+    VISA_RULE +
     'Return ONLY a JSON object with EXACTLY the keys of the schema below, filled with REAL facts about DEST and the country it is in. ' +
     'The schema values in <angle brackets> are instructions, NOT example data: replace every one of them; never output angle brackets and never reuse data of another city or country. ' +
     'Everything (currency, language, flag, plug type, dishes, phrases, landmarks, transport) must be correct for DEST specifically. ' +
@@ -233,7 +240,7 @@ function norm(x) {
 }
 function makeKey(dest, lang, origin, passport) {
   const month = new Date().toISOString().slice(0, 7);
-  return ['v3', norm(dest), lang, norm(origin) || 'default', norm(passport) || 'auto', month].join('|');
+  return ['v4', norm(dest), lang, norm(origin) || 'default', norm(passport) || 'auto', month].join('|');
 }
 async function cacheGet(env, key) {
   try {
