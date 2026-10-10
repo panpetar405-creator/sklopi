@@ -219,6 +219,7 @@ html.dp-sheet-open{overflow:hidden;}
   background:linear-gradient(to top,rgba(17,24,39,0.78) 0%,rgba(17,24,39,0) 100%);color:var(--on-dark-strong);
 }
 /* nema fotografije -> vraća se kompaktan baner kao ranije, a prazan blok (letovi) nestaje */
+.dp-sl-photo:not(.no-photo) .dp-sl-banner.on-photo,.dp-sl-photo:not(.no-photo) .dp-sl-banner.on-photo.alt2,.dp-sl-photo:not(.no-photo) .dp-sl-banner.on-photo.alt3{background:linear-gradient(to top,rgba(10,18,30,0.82) 0%,rgba(10,18,30,0) 100%);color:#fff;}
 .dp-sl-photo.no-photo{aspect-ratio:auto;}
 .dp-sl-photo.no-photo:not(.has-banner){display:none;}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo{
@@ -974,12 +975,15 @@ document.addEventListener('click', e => {
 function fillPhotos(trackId){
   const track = $(trackId);
   if (!track) return;
-  track.querySelectorAll('.dp-sl-photo').forEach(b => { if (!b.querySelector('img')) b.classList.add('no-photo'); });
-  applyDestPhoto(track);
+  track.querySelectorAll('.dp-sl-photo').forEach(b => { if (!b.querySelector('img') && !b.getAttribute('data-pk')) b.classList.add('no-photo'); });
+  hydratePhotos(track);
 }
-/* Fotografije destinacije za kartice: (1) tvoje lokalne slike iz img/ (lagane 560px kopije, bez stranih izvora),
-   (2) ako grad nema lokalnu sliku — Viator preko Worker-a (isti mehanizam kao na početnoj; samo ako je Worker podešen),
-   (3) bez slike kartica ostaje kompaktan baner. Ponuda koja donese sopstveni o.img ima prvenstvo. */
+/* Fotografije u karticama — svaka kartica dobija SVOJU sliku, automatski (bez ručnog dodavanja):
+   • auto  → model automobila (Wikipedia članak modela), • let → avion/aviokompanija (Wikipedia članak),
+   • smeštaj i atrakcije → različite fotografije grada (tvoje lokalne iz img/ + galerija Wikipedia članka o gradu;
+     naziv članka dolazi sa Worker-a /go/dest-image, a ako ga nema — iz DEST_EN / naziva grada).
+   Ponuda koja donese sopstveni o.img (pravi feed) ima prvenstvo. Ako slika ne stigne, kartica ostaje kompaktan baner.
+   Napomena o licenci: Wikimedia slike su slobodne licence, većina traži navođenje autora. */
 const CARD_PHOTOS = {
   'atina':['atina-akropolj','atina-plaka'], 'istanbul':['istanbul-bosfor','istanbul-plava-dzamija'],
   'pariz':['pariz-nocu'], 'lisabon':['lisabon-tramvaj'], 'krf':['krf-uvala'],
@@ -989,74 +993,98 @@ const CARD_PHOTOS = {
   'budva':['budva-stari-grad','crnogorsko-primorje-zaliv'], 'herceg novi':['herceg-novi-stari-grad','herceg-novi-zaliv'],
   'pataja':['pataja-hram','pataja-plaza']
 };
-const CARD_POS = ['50% 50%', '25% 45%', '75% 55%', '50% 30%', '60% 70%'];
-const DEST_EN = {'majorka':'Majorca','ibica':'Ibiza','krit':'Crete','rodos':'Rhodes','mikonos':'Mykonos','kapadokija':'Cappadocia','marakes':'Marrakesh','budimpesta':'Budapest','bec':'Vienna','sofija':'Sofia','solun':'Thessaloniki','skoplje':'Skopje','prag':'Prague','krf':'Corfu','atina':'Athens','rim':'Rome','milano':'Milan','venecija':'Venice','firenca':'Florence','barselona':'Barcelona','lisabon':'Lisbon','pariz':'Paris','nica':'Nice','minhen':'Munich','cirih':'Zurich','antalija':'Antalya','kairo':'Cairo','njujork':'New York City','puket':'Phuket','tokio':'Tokyo','singapur':'Singapore','sidnej':'Sydney','london':'London','dubai':'Dubai','berlin':'Berlin','amsterdam':'Amsterdam','madrid':'Madrid','santorini':'Santorini'};
-let CARD_DEST = '', destPhotoUrl = '', destPhotoAsked = '';
-function withPhoto(o, idx, destName){
-  if (o.img) return o;
-  const list = CARD_PHOTOS[norm(destName || CARD_DEST)];
-  const pos = CARD_POS[idx % CARD_POS.length];
-  if (list && list.length) return Object.assign({}, o, {img:'img/' + list[idx % list.length] + '-560.webp', imgPos:pos});
-  if (destPhotoUrl) return Object.assign({}, o, {img:destPhotoUrl, imgPos:pos});
-  return o;
-}
-/* Automatska slika grada (bez ručnog dodavanja): 1) tvoj Worker /go/dest-image (Wikidata → Wikipedia/Commons, bez ključa,
-   keš 30 dana — isti izvor kao na početnoj), 2) Viator Worker ako je podešen, 3) Wikipedia REST direktno. */
-function destImgEndpoint(){
-  if (window.SKLOPI_DEST_IMG_URL) return window.SKLOPI_DEST_IMG_URL;
-  const b = window.SKLOPI_ALERT_WORKER_URL;
-  return b ? String(b).replace(/\/$/, '') + '/go/destination-images' : '';
-}
-async function fetchCityPhoto(name){
-  const base = window.SKLOPI_ALERT_WORKER_URL;
-  if (base){
-    try {
-      const r = await fetch(String(base).replace(/\/$/, '') + '/go/dest-image?city=' + enc(name));
-      if (r.ok){ const j = await r.json(); if (j && j.url) return j.url; }
-    } catch(e){}
-  }
-  const ep = destImgEndpoint();
-  if (ep){
-    try {
-      const r = await fetch(ep, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({items:[{d:name, q:(DEST_EN[norm(name)] || name) + ' tours'}]})});
-      if (r.ok){ const j = await r.json(); if (j && j.images && j.images[name]) return j.images[name]; }
-    } catch(e){}
-  }
-  try {
-    const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + enc(DEST_EN[norm(name)] || name));
-    if (r.ok){ const j = await r.json(); return (j.thumbnail && j.thumbnail.source) || (j.originalimage && j.originalimage.source) || ''; }
-  } catch(e){}
-  return '';
-}
-function applyDestPhoto(root){
-  if (!destPhotoUrl) return;
-  (root || document).querySelectorAll('.dp-sl-photo').forEach((b, i) => {
-    if (b.querySelector('img')) return;
-    const im = document.createElement('img');
-    im.src = destPhotoUrl; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
-    im.style.objectPosition = CARD_POS[i % CARD_POS.length];
-    b.insertBefore(im, b.firstChild); b.classList.remove('no-photo');
+const DEST_EN = {'majorka':'Majorca','ibica':'Ibiza','krit':'Crete','rodos':'Rhodes','mikonos':'Mykonos','kapadokija':'Cappadocia','marakes':'Marrakesh','budimpesta':'Budapest','bec':'Vienna','sofija':'Sofia','solun':'Thessaloniki','skoplje':'Skopje','prag':'Prague','krf':'Corfu','atina':'Athens','rim':'Rome','milano':'Milan','venecija':'Venice','firenca':'Florence','barselona':'Barcelona','lisabon':'Lisbon','pariz':'Paris','nica':'Nice','minhen':'Munich','cirih':'Zurich','antalija':'Antalya','kairo':'Cairo','njujork':'New York City','puket':'Phuket','tokio':'Tokyo','singapur':'Singapore','sidnej':'Sydney'};
+const CAR_WIKI = {'VW Golf':'Volkswagen Golf','VW Touran':'Volkswagen Touran','VW Tiguan':'Volkswagen Tiguan','Škoda Octavia Combi':'Škoda Octavia','BMW serije 3':'BMW 3 Series','Mini Cabrio':'Mini Convertible'};
+const AIR_WIKI = {'Aegean':'Aegean Airlines','Air Serbia':'Air Serbia','Ryanair':'Ryanair','Lufthansa':'Lufthansa','Wizz Air':'Wizz Air'};
+const WIKI_API = 'https://en.wikipedia.org/api/rest_v1/page/';
+const WIKI_BAD = /(flag|coat[_ ]of[_ ]arms|locator|location[_ ]map|map[_ ]of|_map|seal[_ ]of|logo|blason|signature|portrait)/i;
+let CARD_DEST = '';
+const photoMemo = {};
+function bigThumb(u){ u = String(u || ''); if (u.indexOf('//') === 0) u = 'https:' + u; return u.replace(/\/\d+px-/, '/500px-'); }
+function cacheGet(k, ttl){ try { const c = JSON.parse(localStorage.getItem(k) || 'null'); if (c && Date.now() - c.t < ttl) return c.v; } catch(e){} return null; }
+function cachePut(k, v){ try { localStorage.setItem(k, JSON.stringify({t:Date.now(), v:v})); } catch(e){} }
+function memo(key, fn){ return photoMemo[key] || (photoMemo[key] = Promise.resolve().then(fn).catch(() => null)); }
+function wikiThumb(title){
+  return memo('t:' + title, async () => {
+    const ck = 'sklopi_pt_' + title, hit = cacheGet(ck, 7 * 864e5); if (hit !== null) return hit;
+    const r = await fetch(WIKI_API + 'summary/' + enc(String(title).replace(/ /g, '_')));
+    if (!r.ok) return '';
+    const j = await r.json();
+    const u = j && j.thumbnail ? bigThumb(j.thumbnail.source) : '';
+    cachePut(ck, u); return u;
   });
 }
-function ensureDestPhoto(name){
-  const key = norm(name);
-  if (!key || CARD_PHOTOS[key] || destPhotoAsked === key) return;
-  destPhotoAsked = key; destPhotoUrl = '';
-  const ck = 'sklopi_dp2_' + key;
-  try { const c = JSON.parse(localStorage.getItem(ck) || 'null'); if (c && Date.now() - c.t < 7 * 864e5 && c.u){ destPhotoUrl = c.u; applyDestPhoto(); return; } } catch(e){}
-  fetchCityPhoto(name).then(u => {
-    if (u && destPhotoAsked === key){ destPhotoUrl = u; try { localStorage.setItem(ck, JSON.stringify({t:Date.now(), u:u})); } catch(e){} applyDestPhoto(); }
+async function wikiGallery(title){
+  const ck = 'sklopi_pg_' + title, hit = cacheGet(ck, 7 * 864e5); if (hit) return hit;
+  const r = await fetch(WIKI_API + 'media-list/' + enc(String(title).replace(/ /g, '_')));
+  if (!r.ok) return [];
+  const j = await r.json(), out = [];
+  ((j && j.items) || []).forEach(it => {
+    if (it.type !== 'image' || !it.srcset || !it.srcset.length) return;
+    const ttl = String(it.title || '');
+    if (!/\.jpe?g$/i.test(ttl) || WIKI_BAD.test(ttl)) return;
+    const u = bigThumb(it.srcset[it.srcset.length - 1].src);
+    if (u && out.indexOf(u) < 0) out.push(u);
+  });
+  const res = out.slice(0, 10); if (res.length) cachePut(ck, res); return res;
+}
+function cityGallery(dest){
+  const key = norm(dest);
+  return memo('g:' + key, async () => {
+    const list = (CARD_PHOTOS[key] || []).map(n => 'img/' + n + '-560.webp');
+    let title = DEST_EN[key] || dest;
+    const base = window.SKLOPI_ALERT_WORKER_URL;
+    if (base){
+      try {
+        const r = await fetch(String(base).replace(/\/$/, '') + '/go/dest-image?city=' + enc(dest));
+        if (r.ok){
+          const j = await r.json();
+          if (j && j.url && list.indexOf(j.url) < 0 && !list.length) list.push(bigThumb(j.url));
+          const m = j && j.page && /\/wiki\/([^?#]+)/.exec(j.page); if (m) title = decodeURIComponent(m[1]);
+        }
+      } catch(e){}
+    }
+    try { (await wikiGallery(title)).forEach(u => { if (list.indexOf(u) < 0) list.push(u); }); } catch(e){}
+    return list;
+  });
+}
+function carModel(t){ const m = /·\s*(.+?)\s+ili slično/.exec(String(t || '')); return m ? m[1] : ''; }
+function photoAttrs(o, kind, idx){
+  if (o.img) return '';
+  let pk = '', q = '';
+  if (kind === 'car'){ const m = carModel(o.title); if (m){ pk = 'wiki'; q = CAR_WIKI[m] || m; } }
+  else if (kind === 'flight'){ const a = String(o.airline || String(o.title || '').split(' · ')[0]).trim(); if (a && a !== 'Duffel Airways'){ pk = 'wiki'; q = AIR_WIKI[a] || a; } }
+  else if (kind === 'hotel' || kind === 'act'){ pk = 'city'; q = ''; }
+  return pk ? ' data-pk="' + pk + '" data-q="' + esc(q) + '" data-i="' + (idx | 0) + '"' : '';
+}
+function setPhoto(b, url){
+  if (b.querySelector('img')) return;
+  const im = document.createElement('img');
+  im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
+  im.addEventListener('error', () => { im.remove(); b.classList.add('no-photo'); });
+  im.src = url;
+  b.insertBefore(im, b.firstChild); b.classList.remove('no-photo');
+}
+function hydratePhotos(root){
+  const dest = CARD_DEST;
+  (root || document).querySelectorAll('.dp-sl-photo[data-pk]').forEach(b => {
+    if (b.getAttribute('data-done')) return; b.setAttribute('data-done', '1');
+    const pk = b.getAttribute('data-pk'), q = b.getAttribute('data-q'), i = parseInt(b.getAttribute('data-i'), 10) || 0;
+    const p = pk === 'wiki' ? wikiThumb(q).then(u => u ? [u] : []) : cityGallery(dest);
+    p.then(list => {
+      if (list && list.length) setPhoto(b, list[i % list.length]);
+      else if (!b.querySelector('img')) b.classList.add('no-photo');
+    }).catch(() => b.classList.add('no-photo'));
   });
 }
 function photoBlock(o, attrs, bannerRow){
-  const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async"' + (o.imgPos ? ' style="object-position:' + esc(o.imgPos) + '"' : '') + '>' : '';
+  const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async"' + '>' : '';
   return '<div class="dp-sl-photo' + (bannerRow ? ' has-banner' : '') + '"' + (o.img ? '' : attrs) + '>' + img + (bannerRow || '') + '</div>';
 }
 function offerCard(o, partner, bannerCls, kind, idx){
-  o = withPhoto(o, idx);
   const badge = o.simulated ? '<span class="dp-badge">primer</span>' : (o.badge ? '<span class="dp-badge dp-partner">' + esc(o.badge) + '</span>' : '');
   const bannerRow = o.banner ? '<div class="dp-sl-banner on-photo ' + (bannerCls || '') + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
-  const banner = photoBlock(o, '', bannerRow);
+  const banner = photoBlock(o, photoAttrs(o, kind, idx), bannerRow);
   return '<article class="dp-sl-card">' + banner + '<div class="dp-sl-body">' +
     (o.banner ? '' : badge) +
     '<div class="dp-sl-title">' + esc(o.title) + '</div>' +
@@ -1252,7 +1280,7 @@ function getOffers(kind, c){
     .catch(() => SIM[kind](c).slice(0, 10));
 }
 function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls, token){
-  CARD_DEST = c.dest.name; ensureDestPhoto(c.dest.name);
+  CARD_DEST = c.dest.name;
   return getOffers(kind, c).then(list => {
     if (token !== renderToken) return;
     CARD_DEST = c.dest.name;
@@ -1274,7 +1302,7 @@ function flightCard(o, adults, c, idx){
     '<div class="dp-leg"><div class="dp-fl-route">' + esc(s.origin) + ' <div class="dp-fl-line"></div> ' + esc(s.destination) + '</div>' +
     '<div class="dp-fl-times"><span>' + esc(fmtDT(s.departing_at)) + '</span><span>' + esc(fmtDT(s.arriving_at)) + '</span></div></div>'
   ).join('');
-  return '<article class="dp-sl-card">' + photoBlock(withPhoto(o, idx, c.dest.name), '', '') + '<div class="dp-sl-body">' +
+  return '<article class="dp-sl-card">' + photoBlock(o, photoAttrs(o, 'flight', idx), '') + '<div class="dp-sl-body">' +
     '<div class="dp-flight-row"><div class="dp-fl-logo">' + esc(o.airline_iata || '✈') + '</div>' +
     '<div class="dp-fl-mid"><div class="dp-fl-airline">' + esc(o.airline || 'Aviokompanija') + '</div>' + test + '</div></div>' +
     legs +
@@ -1286,7 +1314,7 @@ function flightCard(o, adults, c, idx){
 
 let flightReq = 0, flightAbort = null;
 function loadFlights(c){
-  CARD_DEST = c.dest.name; ensureDestPhoto(c.dest.name);
+  CARD_DEST = c.dest.name;
   const list = $('dpFlightList'), count = $('dpFlightCount');
   const bar = $('dpTotalBar');
   bar.hidden = true;
