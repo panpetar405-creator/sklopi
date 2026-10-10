@@ -1596,7 +1596,7 @@ function setForm(msg){
 }
 function showForm(){ /* forma je stalno vidljiva u hero sekciji */ }
 
-function render(){
+function render(opts){
   const P = readParams();
   if (!P.to) return renderHome('');
   if (!P.start && !P.end) return renderHome('');   /* stigao sa odredištem, bez datuma: samo prikaži formu */
@@ -1605,7 +1605,7 @@ function render(){
   setForm('');
   showForm(false);
   renderResults(P);
-  window.scrollTo(0, 0);
+  if (!(opts && opts.keepScroll)) window.scrollTo(0, 0);
 }
 
 function init(){
@@ -1638,7 +1638,13 @@ function init(){
     if (err){ $('dpMsg').textContent = err; return; }
     const q = new URLSearchParams({od: P.from || 'Beograd', do: P.to, polazak: P.start, povratak: P.end, putnika: String(P.adults)});
     history.pushState({}, '', location.pathname + '?' + q.toString());
-    render();
+    render({keepScroll: true});
+    /* Forma je na vrhu, a ponude ispod: posle "Prikaži ponude" odvedi korisnika na rezultate, inače ništa ne deluje promenjeno */
+    const res = $('dpResults');
+    if (res && !res.hidden) requestAnimationFrame(() => {
+      const y = res.getBoundingClientRect().top + window.pageYOffset - 64;
+      window.scrollTo({top: Math.max(0, y), behavior: REDUCED ? 'auto' : 'smooth'});
+    });
   });
   window.addEventListener('popstate', render);
   render();
