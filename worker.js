@@ -327,6 +327,39 @@ function json(obj, status = 200, extra = {}) {
   return new Response(JSON.stringify(obj), { status, headers: { ...CORS, 'Content-Type': 'application/json', ...extra } });
 }
 
+
+// Meta podaci destinacije za destinacija.html?do=X (vidi rutu u fetch ispod).
+async function destinationMeta(request, env, ctx, url) {
+  const res = await env.ASSETS.fetch(request);
+  const ct = res.headers.get('content-type') || '';
+  if (res.status !== 200 || !ct.includes('text/html')) return res;
+  const raw = (url.searchParams.get('do') || '').trim().slice(0, 60);
+  const name = raw.replace(/[^\p{L}\p{M}\p{N} .,'’()\/&-]/gu, '').trim();
+  if (!name) return res;
+  let img = '';
+  try {
+    const r = await handleCityImage(new Request(url.origin + '/go/dest-image?city=' + encodeURIComponent(name)), env, ctx, {});
+    img = ((await r.json()) || {}).url || '';
+  } catch (e) {}
+  const title = 'Putovanje: ' + name + ' \u2014 procena ukupne cene | SKLOPI';
+  const desc = 'Procenjena ukupna cena putovanja za ' + name + ': let, sme\u0161taj, rent a car i aktivnosti na jednom mestu.';
+  const set = (v) => ({ element(el) { el.setAttribute('content', v); } });
+  let rw = new HTMLRewriter()
+    .on('title', { element(el) { el.setInnerContent(title); } })
+    .on('meta[name="description"]', set(desc))
+    .on('meta[property="og:title"]', set(title))
+    .on('meta[property="og:description"]', set(desc))
+    .on('meta[name="twitter:title"]', set(title))
+    .on('meta[name="twitter:description"]', set(desc));
+  if (img && /^https:\/\//.test(img)) {
+    rw = rw.on('meta[property="og:image"]', set(img)).on('meta[name="twitter:image"]', set(img));
+  }
+  const out = rw.transform(res);
+  const h = new Headers(out.headers);
+  h.set('Vary', 'Accept-Encoding');
+  return new Response(out.body, { status: out.status, headers: h });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -343,6 +376,12 @@ export default {
           return null;
         }
       });
+    }
+    // Destinacija sa ?do=X: naslov, opis i og/twitter slika se podešavaju AUTOMATSKI na serveru
+    // (botovi za deljenje — WhatsApp, Facebook, Google — ne pokreću JS). Slika ide preko city-image.js
+    // (Wikidata/Wikipedia, keš 30 dana), bez ručnog unosa po destinaciji.
+    if ((url.pathname === '/destinacija.html' || url.pathname === '/destinacija') && url.searchParams.get('do') && (request.method === 'GET' || request.method === 'HEAD')) {
+      try { return await destinationMeta(request, env, ctx, url); } catch (e) { /* padni na običan fajl */ }
     }
     if (alertWorker && typeof alertWorker.fetch === 'function') {
       return alertWorker.fetch(request, env, ctx);
