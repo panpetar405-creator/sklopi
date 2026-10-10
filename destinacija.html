@@ -1403,23 +1403,26 @@ function renderResults(P){
   /* --- letovi (sadržaj se puni asinhrono) --- */
   const simNote = '';
   const jump = '<nav class="dp-jump" aria-label="Brza navigacija">' +
-    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#osiguranje">🛡️ Osiguranje</a><a href="#esim">📶 eSIM</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#prakticno">🧳 Praktično</a></nav>' +
+    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#osiguranje">🛡️ Osiguranje</a><a href="#esim">📶 eSIM</a><a href="#prakticno">🧳 Praktično</a></nav>' +
     '<p class="dp-estimate">Cene su ilustrativne procene. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
   const viaNote = (c.oVia || c.dVia)
     ? '<p class="dp-note dp-note-top">' +
       (c.oVia ? esc(org.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.oVia) + '. ' : '') +
       (c.dVia ? esc(dest.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.dVia) + '. ' : '') + '</p>'
     : '';
-  let html = jump + '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
-    '<p class="dp-note dp-note-top" id="destInfoSub"></p>' +
-    '<div class="dest-info-skeleton" id="destInfoSkeleton" hidden><div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div><div class="di-skel-grid"><div class="di-skel-card"></div><div class="di-skel-card"></div></div></div>' +
-    '<div id="destInfoContent" hidden></div><p class="dp-note di-disclaimer" id="destInfoDisclaimer" hidden></p></div>';
-  html += '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
+  let html = jump + '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
     simNote + viaNote + '<div id="dpFlightList" aria-live="polite"></div></div>';
 
   /* --- smeštaj --- */
   html += '<div class="dp-section" id="smestaj">' + sectionHead('🛏️', 'Smeštaj', '', 'dpHotelCount', 'dpHotelTrack') + simNote +
     '<div id="dpHotelBox"></div></div>';
+
+
+  /* --- o destinaciji (posle letova i smeštaja, da ponude budu pri vrhu) --- */
+  html += '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
+    '<p class="dp-note dp-note-top" id="destInfoSub"></p>' +
+    '<div class="dest-info-skeleton" id="destInfoSkeleton" hidden><div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div><div class="di-skel-grid"><div class="di-skel-card"></div><div class="di-skel-card"></div></div></div>' +
+    '<div id="destInfoContent" hidden></div><p class="dp-note di-disclaimer" id="destInfoDisclaimer" hidden></p></div>';
 
   /* --- atrakcije --- */
   html += '<div class="dp-section" id="aktivnosti">' + sectionHead('🎟️', 'Atrakcije i aktivnosti', '', 'dpActCount', 'dpActTrack') + simNote +
