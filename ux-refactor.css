@@ -467,3 +467,8 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 .hero-reference #searchForm .date-display .dd-range,
 .hero-reference #searchForm .pax-display,
 .hero-reference #searchForm #paxDisplayText{color:#7F92AA}
+
+/* ---- Uvodni tekst početne (SEO + objašnjenje, vidljiv i botovima) ---- */
+.seo-intro{max-width:760px;margin:0 auto;padding:28px 20px 8px;}
+.seo-intro h2{margin:0 0 12px;font-size:clamp(20px,5vw,26px);line-height:1.25;}
+.seo-intro p{margin:0 0 12px;color:var(--nv-muted,#A9B8CA);font-size:15.5px;line-height:1.65;}
