@@ -18,17 +18,21 @@ html,body{background:#0B1626;margin:0;}
 @keyframes splashRing{0%{box-shadow:0 0 0 0 rgba(245,200,66,.55);}100%{box-shadow:0 0 0 26px rgba(245,200,66,0);}}
 @keyframes splashLoad{0%{left:-38%;}100%{left:100%;}}
 </style>
-<title>SKLOPI — sastavi putni paket, jedna cena</title>
-<meta content="SKLOPI sastavlja putni paket od leta, hotela, rentakara i aktivnosti i sabira sve u jednu procenjenu cenu. Napravi sopstveni putni paket ili biraj gotove predloge po budžetu." name="description"/>
+<title>Putni paket po meri: let, hotel, auto, jedna cena | SKLOPI</title>
+<meta content="Sastavi putni paket: let, hotel, rentakar i aktivnosti u jednoj procenjenoj ceni. Uporedi tri plana po budžetu i prilagodi ih svom putovanju." name="description"/>
 <meta content="putni paket, putni paketi, aranžman, izlet paket, kombinovano putovanje, let hotel auto paket, planiranje putovanja, jeftin putni paket" name="keywords"/>
 <!-- Open Graph / Facebook, WhatsApp itd. -->
 <meta content="website" property="og:type"/>
 <meta content="SKLOPI" property="og:site_name"/>
-<meta content="SKLOPI — sastavi putni paket, jedna cena" property="og:title"/>
+<meta content="Putni paket po meri: let, hotel, auto, jedna cena | SKLOPI" property="og:title"/>
 <meta content="Let, hotel, auto i aktivnosti — sve sabrano u jedan putni paket i jednu cenu. Napravi svoj aranžman za par minuta." property="og:description"/>
 <meta content="https://sklopi.rs/hero-photo.jpg?v=2" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="SKLOPI — putni paket u jednoj ceni: let, hotel, auto i aktivnosti" property="og:image:alt"/>
 <meta content="sr_RS" property="og:locale"/>
 <meta content="https://sklopi.rs/" property="og:url"/>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link href="https://sklopi.rs/" rel="canonical"/>
 <!-- hreflang: nabraja SVE jezičke verzije ove stranice (isto na svakoj od njih).
      URL se ne menja (i dalje sklopi.rs/), samo ?lang= parametar bira jezik —
@@ -46,7 +50,8 @@ html,body{background:#0B1626;margin:0;}
 "@type": "TravelAgency",
 "@id": "https://sklopi.rs/#organization",
 "name": "SKLOPI",
-"alternateName": "SKLOPI",
+"alternateName": ["SKLOPI", "sklopi.rs"],
+"logo": "https://sklopi.rs/app-icon-512.png",
 "description": "SKLOPI sastavlja putni paket od leta, hotela, rentakara i aktivnosti i sabira sve u jednu procenjenu cenu.",
 "url": "https://sklopi.rs/",
 "image": "https://sklopi.rs/hero-photo.jpg?v=2",
@@ -65,7 +70,8 @@ html,body{background:#0B1626;margin:0;}
 "@id": "https://sklopi.rs/#website",
 "url": "https://sklopi.rs/",
 "name": "SKLOPI",
-"inLanguage": "sr"
+"inLanguage": ["sr", "en", "ru", "de"],
+"publisher": {"@id": "https://sklopi.rs/#organization"}
 },
 {
 "@type": "FAQPage",
@@ -138,9 +144,10 @@ html,body{background:#0B1626;margin:0;}
 </script>
 <!-- Twitter/X Card -->
 <meta content="summary_large_image" name="twitter:card"/>
-<meta content="SKLOPI — sastavi putni paket, jedna cena" name="twitter:title"/>
+<meta content="Putni paket po meri: let, hotel, auto, jedna cena | SKLOPI" name="twitter:title"/>
 <meta content="Let, hotel, auto i aktivnosti — sve sabrano u jedan putni paket i jednu cenu." name="twitter:description"/>
 <meta content="https://sklopi.rs/hero-photo.jpg?v=2" name="twitter:image"/>
+<meta content="SKLOPI — putni paket u jednoj ceni: let, hotel, auto i aktivnosti" name="twitter:image:alt"/>
 <!-- Favicon -->
 <link href="favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -160,7 +167,7 @@ html,body{background:#0B1626;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=4e929605" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=72a2050c" rel="stylesheet"/><link href="theme-navy.css?v=aa40cbd1" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=deff098e" rel="stylesheet"/>
+<link href="dest-info.css?v=f6705aa1" rel="stylesheet"/><link href="ux-refactor.css?v=72a2050c" rel="stylesheet"/><link href="theme-navy.css?v=aa40cbd1" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=c39b958d" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -1366,9 +1373,9 @@ html,body{background:#0B1626;margin:0;}
 <a aria-label="Piši nam na WhatsApp" class="whatsapp-fab" data-contact="wa" data-i18n-aria-label="whatsapp_aria" href="#" id="whatsappFab" rel="noopener">
 <svg fill="currentColor" viewbox="0 0 32 32"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"></path></svg>
 </a>
-<script defer="" src="config.js?v=60b28611"></script>
+<script defer="" src="config.js?v=29e9b7fc"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
-<script defer="" src="i18n-data.js?v=f4bb4212"></script>
+<script defer="" src="i18n-data.js?v=ac7ca543"></script>
 <script>
 /* Jezički fajl (i18n-<kod>.js) se učitava samo ako je izabran jezik različit od srpskog.
    Mapa kod → hash popunjava translate.mjs (ne menjaj ručno). Ostali jezici se učitavaju kasnije, iz loadLang() u app-01-core.js. */
@@ -1382,8 +1389,8 @@ if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/scri
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
 <script defer="" src="app-03-airports.js?v=81b29008"></script>
 <script defer="" src="app-04-pricing-engine.js?v=fafc7a3c"></script>
-<script defer="" src="app-05-results.js?v=1cab4466"></script>
-<script defer="" src="app-06-form.js?v=2b265021"></script>
+<script defer="" src="app-05-results.js?v=ded66817"></script>
+<script defer="" src="app-06-form.js?v=0fbad14b"></script>
 <script defer="" src="app-07-package-detail.js?v=18b40523"></script>
 <script defer="" src="app-08-popular-airports.js?v=6090b648"></script>
 <script defer="" src="app-14-recent-searches.js?v=a0fa4fa6"></script>
@@ -1401,7 +1408,7 @@ if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/scri
 <script defer="" src="app-09-account.js?v=c058eb8e"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
 <script defer="" src="app-11-sections-hero.js?v=d63b2def"></script>
-<script defer="" src="dest-info.js?v=c1bc5dd1"></script>
+<script defer="" src="dest-info.js?v=97b69eb1"></script>
 <script defer="" src="price-mix.js?v=5e3c1012"></script>
 <script defer="" src="transport.js?v=dcc41813"></script>
 <script defer="" src="transport-i18n.js?v=f616fd98"></script>

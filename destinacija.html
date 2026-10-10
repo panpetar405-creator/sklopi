@@ -14,6 +14,7 @@
 <meta property="og:image" content="https://sklopi.rs/hero-photo.jpg?v=2">
 <meta property="og:locale" content="sr_RS">
 <meta property="og:url" content="https://sklopi.rs/destinacija.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://sklopi.rs/destinacija.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Procena cene putovanja po destinaciji | SKLOPI">
@@ -26,10 +27,10 @@
 <link rel="preload" href="fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts.css?v=0f858672">
 <link rel="stylesheet" href="styles.css?v=4e929605">
-<link rel="stylesheet" href="dest-info.css?v=67d8e547">
+<link rel="stylesheet" href="dest-info.css?v=f6705aa1">
 <link rel="stylesheet" href="ux-refactor.css?v=72a2050c">
 <link rel="stylesheet" href="theme-navy.css?v=aa40cbd1">
-<link rel="stylesheet" href="theme-navy-rest.css?v=deff098e">
+<link rel="stylesheet" href="theme-navy-rest.css?v=c39b958d">
 <style>
 
 [hidden]{display:none !important;}
@@ -229,8 +230,15 @@ html.dp-sheet-open{overflow:hidden;}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt2{background:linear-gradient(135deg,var(--emerald) 0%,var(--deep) 100%);color:var(--on-dark-strong);}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
 </style>
-<link rel="stylesheet" href="destinacija.css?v=7ff8bbb6">
-<script src="dest-i18n.js"></script>
+<link rel="stylesheet" href="destinacija.css?v=98c5c1fd">
+<script src="dest-i18n.js?v=b4581a8c"></script>
+<script id="seo-dyn-title">
+/* Naslov i opis taba/deljenja prate odabranu destinaciju (?do=). Canonical ostaje opšti. */
+(function(){try{var p=new URLSearchParams(location.search),d=(p.get('do')||'').trim().slice(0,60);if(!d)return;
+var t='Putovanje: '+d+' — procena ukupne cene | SKLOPI',ds='Procenjena ukupna cena putovanja za '+d+': let, smeštaj, rent a car i aktivnosti na jednom mestu.';
+document.title=t;function set(sel,v){var e=document.querySelector(sel);if(e)e.setAttribute('content',v);}
+set('meta[name="description"]',ds);set('meta[property="og:title"]',t);set('meta[property="og:description"]',ds);set('meta[name="twitter:title"]',t);set('meta[name="twitter:description"]',ds);}catch(e){}})();
+</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Preskoči na sadržaj</a>
@@ -334,9 +342,9 @@ Nazad na pretragu
 <div class="foot-note">SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu.</div>
 </footer>
 
-<script src="config.js?v=60b28611"></script>
+<script src="config.js?v=29e9b7fc"></script>
 <script src="affiliate.js?v=85396c00"></script>
-<script src="dest-info.js?v=c1bc5dd1"></script>
+<script src="dest-info.js?v=97b69eb1"></script>
 <script>
 (function(){
 'use strict';
