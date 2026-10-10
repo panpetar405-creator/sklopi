@@ -20,27 +20,27 @@
     "lastmod": "2026-10-10"
   },
   "vodic-atina.html": {
-    "hash": "04a0528460",
+    "hash": "633daf0347",
     "lastmod": "2026-10-10"
   },
   "vodic-barselona.html": {
-    "hash": "0b450ff62c",
+    "hash": "7747c62a66",
     "lastmod": "2026-10-10"
   },
   "vodic-bec.html": {
-    "hash": "9008088302",
+    "hash": "e65647abaa",
     "lastmod": "2026-10-10"
   },
   "vodic-beograd.html": {
-    "hash": "6ba4837a9a",
+    "hash": "93c308db43",
     "lastmod": "2026-10-10"
   },
   "vodic-bled.html": {
-    "hash": "4a995f0758",
+    "hash": "c666a11422",
     "lastmod": "2026-10-10"
   },
   "vodic-budimpesta.html": {
-    "hash": "6ffec3f6f0",
+    "hash": "56ad50768d",
     "lastmod": "2026-10-10"
   },
   "vodic-budva-de.html": {
@@ -48,11 +48,11 @@
     "lastmod": "2026-10-10"
   },
   "vodic-budva.html": {
-    "hash": "3f4ed00844",
+    "hash": "872507b498",
     "lastmod": "2026-10-10"
   },
   "vodic-herceg-novi.html": {
-    "hash": "2a7791a17c",
+    "hash": "91104ad6fe",
     "lastmod": "2026-10-10"
   },
   "vodic-istanbul-de.html": {
@@ -60,7 +60,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-istanbul.html": {
-    "hash": "9aebfd69cc",
+    "hash": "a04bb70f42",
     "lastmod": "2026-10-10"
   },
   "vodic-krf-de.html": {
@@ -68,7 +68,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-krf.html": {
-    "hash": "bb77695e01",
+    "hash": "9e1bc000d0",
     "lastmod": "2026-10-10"
   },
   "vodic-lisabon-de.html": {
@@ -76,7 +76,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-lisabon.html": {
-    "hash": "e695c285b2",
+    "hash": "6804baf489",
     "lastmod": "2026-10-10"
   },
   "vodic-pariz-de.html": {
@@ -84,15 +84,15 @@
     "lastmod": "2026-10-10"
   },
   "vodic-pariz.html": {
-    "hash": "50df4f77f8",
+    "hash": "8ca9bd09f5",
     "lastmod": "2026-10-10"
   },
   "vodic-pataja.html": {
-    "hash": "ac104ae033",
+    "hash": "c57d6b0f3d",
     "lastmod": "2026-10-10"
   },
   "vodic-rim.html": {
-    "hash": "a7a8c07fa6",
+    "hash": "8b74e2136d",
     "lastmod": "2026-10-10"
   },
   "vodic-solun-de.html": {
@@ -100,7 +100,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-solun.html": {
-    "hash": "b9c8028603",
+    "hash": "d4731a2c92",
     "lastmod": "2026-10-10"
   },
   "vodic-split-de.html": {
@@ -108,15 +108,15 @@
     "lastmod": "2026-10-10"
   },
   "vodic-split.html": {
-    "hash": "29d18b122b",
+    "hash": "3fc197c949",
     "lastmod": "2026-10-10"
   },
   "vodic-zagreb.html": {
-    "hash": "a6725ca50a",
+    "hash": "efb4b35431",
     "lastmod": "2026-10-10"
   },
   "vodici.html": {
-    "hash": "c6e7bce0d0",
+    "hash": "3bba6b73c7",
     "lastmod": "2026-10-10"
   },
   "vodici-de.html": {
@@ -129,6 +129,10 @@
   },
   "vodici-ru.html": {
     "hash": "02e3a91dde",
+    "lastmod": "2026-10-10"
+  },
+  "vodic-majorka.html": {
+    "hash": "02360c8ba5",
     "lastmod": "2026-10-10"
   }
 }

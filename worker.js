@@ -329,7 +329,7 @@ function json(obj, status = 200, extra = {}) {
 
 
 // Destinacije koje imaju statički vodič (normalizovan naziv → fajl). Ostale dobijaju samo link ka hubu.
-const GUIDE_FILES = { atina: 'vodic-atina.html', barselona: 'vodic-barselona.html', bec: 'vodic-bec.html', beograd: 'vodic-beograd.html', bled: 'vodic-bled.html', budimpesta: 'vodic-budimpesta.html', budva: 'vodic-budva.html', 'herceg novi': 'vodic-herceg-novi.html', istanbul: 'vodic-istanbul.html', krf: 'vodic-krf.html', lisabon: 'vodic-lisabon.html', pariz: 'vodic-pariz.html', pataja: 'vodic-pataja.html', rim: 'vodic-rim.html', solun: 'vodic-solun.html', split: 'vodic-split.html', zagreb: 'vodic-zagreb.html' };
+const GUIDE_FILES = { atina: 'vodic-atina.html', barselona: 'vodic-barselona.html', bec: 'vodic-bec.html', beograd: 'vodic-beograd.html', bled: 'vodic-bled.html', budimpesta: 'vodic-budimpesta.html', budva: 'vodic-budva.html', 'herceg novi': 'vodic-herceg-novi.html', istanbul: 'vodic-istanbul.html', krf: 'vodic-krf.html', lisabon: 'vodic-lisabon.html', majorka: 'vodic-majorka.html', mallorca: 'vodic-majorka.html', pariz: 'vodic-pariz.html', pataja: 'vodic-pataja.html', rim: 'vodic-rim.html', solun: 'vodic-solun.html', split: 'vodic-split.html', zagreb: 'vodic-zagreb.html' };
 const escHtml = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // Meta podaci destinacije za destinacija.html?do=X (vidi rutu u fetch ispod).
