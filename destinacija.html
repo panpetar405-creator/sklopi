@@ -990,7 +990,7 @@ const CARD_PHOTOS = {
   'pataja':['pataja-hram','pataja-plaza']
 };
 const CARD_POS = ['50% 50%', '25% 45%', '75% 55%', '50% 30%', '60% 70%'];
-const DEST_EN = {'budimpesta':'Budapest','bec':'Vienna','sofija':'Sofia','solun':'Thessaloniki','skoplje':'Skopje','prag':'Prague','krf':'Corfu','atina':'Athens','rim':'Rome','milano':'Milan','venecija':'Venice','firenca':'Florence','barselona':'Barcelona','lisabon':'Lisbon','pariz':'Paris','nica':'Nice','minhen':'Munich','cirih':'Zurich','antalija':'Antalya','kairo':'Cairo','njujork':'New York City','puket':'Phuket','tokio':'Tokyo','singapur':'Singapore','sidnej':'Sydney','london':'London','dubai':'Dubai','berlin':'Berlin','amsterdam':'Amsterdam','madrid':'Madrid','santorini':'Santorini'};
+const DEST_EN = {'majorka':'Majorca','ibica':'Ibiza','krit':'Crete','rodos':'Rhodes','mikonos':'Mykonos','kapadokija':'Cappadocia','marakes':'Marrakesh','budimpesta':'Budapest','bec':'Vienna','sofija':'Sofia','solun':'Thessaloniki','skoplje':'Skopje','prag':'Prague','krf':'Corfu','atina':'Athens','rim':'Rome','milano':'Milan','venecija':'Venice','firenca':'Florence','barselona':'Barcelona','lisabon':'Lisbon','pariz':'Paris','nica':'Nice','minhen':'Munich','cirih':'Zurich','antalija':'Antalya','kairo':'Cairo','njujork':'New York City','puket':'Phuket','tokio':'Tokyo','singapur':'Singapore','sidnej':'Sydney','london':'London','dubai':'Dubai','berlin':'Berlin','amsterdam':'Amsterdam','madrid':'Madrid','santorini':'Santorini'};
 let CARD_DEST = '', destPhotoUrl = '', destPhotoAsked = '';
 function withPhoto(o, idx, destName){
   if (o.img) return o;
@@ -1000,10 +1000,33 @@ function withPhoto(o, idx, destName){
   if (destPhotoUrl) return Object.assign({}, o, {img:destPhotoUrl, imgPos:pos});
   return o;
 }
+/* Automatska slika grada (bez ručnog dodavanja): 1) tvoj Worker /go/dest-image (Wikidata → Wikipedia/Commons, bez ključa,
+   keš 30 dana — isti izvor kao na početnoj), 2) Viator Worker ako je podešen, 3) Wikipedia REST direktno. */
 function destImgEndpoint(){
   if (window.SKLOPI_DEST_IMG_URL) return window.SKLOPI_DEST_IMG_URL;
   const b = window.SKLOPI_ALERT_WORKER_URL;
   return b ? String(b).replace(/\/$/, '') + '/go/destination-images' : '';
+}
+async function fetchCityPhoto(name){
+  const base = window.SKLOPI_ALERT_WORKER_URL;
+  if (base){
+    try {
+      const r = await fetch(String(base).replace(/\/$/, '') + '/go/dest-image?city=' + enc(name));
+      if (r.ok){ const j = await r.json(); if (j && j.url) return j.url; }
+    } catch(e){}
+  }
+  const ep = destImgEndpoint();
+  if (ep){
+    try {
+      const r = await fetch(ep, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({items:[{d:name, q:(DEST_EN[norm(name)] || name) + ' tours'}]})});
+      if (r.ok){ const j = await r.json(); if (j && j.images && j.images[name]) return j.images[name]; }
+    } catch(e){}
+  }
+  try {
+    const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + enc(DEST_EN[norm(name)] || name));
+    if (r.ok){ const j = await r.json(); return (j.thumbnail && j.thumbnail.source) || (j.originalimage && j.originalimage.source) || ''; }
+  } catch(e){}
+  return '';
 }
 function applyDestPhoto(root){
   if (!destPhotoUrl) return;
@@ -1019,15 +1042,11 @@ function ensureDestPhoto(name){
   const key = norm(name);
   if (!key || CARD_PHOTOS[key] || destPhotoAsked === key) return;
   destPhotoAsked = key; destPhotoUrl = '';
-  const ep = destImgEndpoint(); if (!ep) return;
-  const ck = 'sklopi_dp_' + key;
-  try { const c = JSON.parse(sessionStorage.getItem(ck) || 'null'); if (c && Date.now() - c.t < 3600e3 && c.u){ destPhotoUrl = c.u; applyDestPhoto(); return; } } catch(e){}
-  fetch(ep, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({items:[{d:name, q:(DEST_EN[key] || name) + ' tours'}]})})
-    .then(r => r.ok ? r.json() : null)
-    .then(j => {
-      const u = j && j.images && j.images[name];
-      if (u && destPhotoAsked === key){ destPhotoUrl = u; try { sessionStorage.setItem(ck, JSON.stringify({t:Date.now(), u:u})); } catch(e){} applyDestPhoto(); }
-    }).catch(() => {});
+  const ck = 'sklopi_dp2_' + key;
+  try { const c = JSON.parse(localStorage.getItem(ck) || 'null'); if (c && Date.now() - c.t < 7 * 864e5 && c.u){ destPhotoUrl = c.u; applyDestPhoto(); return; } } catch(e){}
+  fetchCityPhoto(name).then(u => {
+    if (u && destPhotoAsked === key){ destPhotoUrl = u; try { localStorage.setItem(ck, JSON.stringify({t:Date.now(), u:u})); } catch(e){} applyDestPhoto(); }
+  });
 }
 function photoBlock(o, attrs, bannerRow){
   const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async"' + (o.imgPos ? ' style="object-position:' + esc(o.imgPos) + '"' : '') + '>' : '';
