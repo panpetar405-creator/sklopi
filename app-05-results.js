@@ -1308,8 +1308,8 @@ function matchPkgHtml(pick, idx, budget, answers, month){
         <div class="score-label">${escapeHtml(t('match_score_sub'))}</div>
       </div>
     </div>
-    <div class="match-reason">💡 ${escapeHtml(reasonText)}</div>
-    ${(!pkg.flight && typeof transportCompactHtml === 'function' && transportCompactHtml(dest, pick.adults)) || (busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;">🚌 <b>${escapeHtml(t('match_bus_title'))}</b><br>${escapeHtml(busNote)}</div>` : '')}
+    <div class="match-reason"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.500 10.900c.7.600 1 1.200 1 2.100h5c0-.9.300-1.500 1-2.100A6 6 0 0 0 12 3z"/></svg>${escapeHtml(reasonText)}</div>
+    ${(!pkg.flight && typeof transportCompactHtml === 'function' && transportCompactHtml(dest, pick.adults)) || (busNote ? `<div class="alt-airport-box" style="margin:0 0 14px;"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="16" height="13" rx="2.500"/><path d="M4 11h16M8 17v2.500M16 17v2.500"/><circle cx="8" cy="14" r=".6"/><circle cx="16" cy="14" r=".6"/></svg><b>${escapeHtml(t('match_bus_title'))}</b><br>${escapeHtml(busNote)}</div>` : '')}
     ${itemsRow ? `<div class="items-row">${itemsRow}</div>` : ''}
     <div class="confirm-banner">
       <span>${iconSvg('check')} ${budget ? (fitsBudget ? t('fits_budget') + fmtEUR(budget) + '.' : t('over_budget')) : t('match_no_budget')}</span>
@@ -1343,7 +1343,7 @@ function renderMatchResults(picks, ctxBase, budget, answers, usedFallback){
   head.innerHTML = `
     <div class="status-banner match-status-banner">
       <div class="status-left">
-        <div class="status-check">🧭</div>
+        <div class="status-check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></div>
         <div><h3>${escapeHtml(t('match_results_title'))}</h3><p>${escapeHtml(usedFallback ? t('match_results_sub_fallback') : tf('match_results_sub', {vibe: vibeLab ? ' (' + vibeLab + ')' : ''}))}</p></div>
       </div>
       <div class="status-pills">
@@ -1360,10 +1360,10 @@ function renderMatchResults(picks, ctxBase, budget, answers, usedFallback){
     body.innerHTML = `
       ${packagesSliderHtml(picks.map((p,i)=>matchPkgHtml(p, i, budget, answers, month)))}
       <div class="match-refine-row">
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('sea')">${escapeHtml(t('match_refine_sea'))}</button>
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nightlife')">${escapeHtml(t('match_refine_nightlife'))}</button>
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nature')">${escapeHtml(t('match_refine_nature'))}</button>
-        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('cheaper')">${escapeHtml(t('match_refine_cheaper'))}</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('sea')"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="17.5" cy="6" r="2"/><path d="M3 12q2.25-3 4.5 0t4.5 0 4.5 0 4.5 0"/><path d="M3 17.5q2.25-3 4.5 0t4.5 0 4.5 0 4.5 0"/></svg>${escapeHtml(t('match_refine_sea'))}</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nightlife')"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 17.5V6l10-2v11.5"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/></svg>${escapeHtml(t('match_refine_nightlife'))}</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('nature')"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 19.5 9 8.5l4 6.5 2.5-3.5 6 8z"/><path d="m7.2 11.8 1.8 1.5 1.8-1.5"/></svg>${escapeHtml(t('match_refine_nature'))}</button>
+        <button type="button" class="chip match-refine-chip" onclick="refineMatchSearch('cheaper')"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-1-1.600-1.600-2.800-1.600-1.600 0-2.800.9-2.800 2.200 0 3 5.600 1.500 5.600 4.500 0 1.300-1.200 2.200-2.800 2.200-1.300 0-2.400-.7-2.900-1.700M12 6v1.600M12 16.400V18"/></svg>${escapeHtml(t('match_refine_cheaper'))}</button>
       </div>
       <button type="button" class="btn-alert match-reroll-btn" onclick="runMatchSearch(true)">${escapeHtml(t('match_reroll'))}</button>
     `;

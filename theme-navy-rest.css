@@ -316,3 +316,21 @@ footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13
 .match-chip-wide .mc-ic svg{width:22px;height:22px}
 .match-modal-ic svg{width:26px;height:26px}
 .match-modal .match-submit-btn{background:var(--nv-accent);box-shadow:none}
+
+/* ── Rezultati kviza: navy paleta + linijske ikonice (umesto emoji) ── */
+.match-reason svg,.alt-airport-box svg,.match-refine-chip svg,.status-check svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.match-reason svg,.alt-airport-box svg{width:17px;height:17px;vertical-align:-3px;margin-right:7px;color:var(--nv-accent)}
+.match-refine-chip svg{width:16px;height:16px;vertical-align:-3px;margin-right:7px;color:var(--nv-accent)}
+.match-refine-chip{background:var(--nv-surface);border:1px solid var(--nv-line);color:var(--nv-text)}
+.match-reason{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.28);color:var(--nv-text)}
+.alt-airport-box{background:var(--nv-surface-2);border:1px solid var(--nv-line);color:var(--nv-text)}
+.alt-airport-box b{color:var(--nv-text)}
+.status-check,.match-status-banner .status-check{background:rgba(245,200,66,.14);color:var(--nv-accent)}
+.match-reroll-btn,.match-reroll-btn svg{border-color:var(--nv-accent);color:var(--nv-accent)}
+.confirm-banner{background:rgba(52,199,150,.10);border:1px solid rgba(52,199,150,.35);border-radius:12px;color:var(--nv-text)}
+.confirm-banner svg{color:#4FD8A8}
+.confirm-banner .amt{color:var(--nv-text)}
+.confirm-banner .amt-lab{color:var(--nv-muted)}
+.pkg-alert-btn{color:var(--nv-accent)}
+.pkg .item-btn.flight,.pkg .item-btn.hotel,.pkg .item-btn.car,
+.pkg.budget .item-btn.hotel,.pkg.comfort .item-btn.hotel{background:var(--nv-accent);color:var(--nv-on-accent)}
