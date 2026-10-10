@@ -300,3 +300,19 @@ footer::before{background:linear-gradient(180deg,rgba(11,22,38,.80) 0%,rgba(6,13
 .match-reason{background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.28);color:var(--nv-text)}
 .match-refine-chip{border-color:var(--nv-line);color:var(--nv-text);background:transparent}
 .match-badge{background:rgba(52,199,150,.16);color:#4FD8A8}
+
+/* ── Kviz "Pronađi svoj izlet": navy paleta + linijske ikonice (umesto emoji) ── */
+.match-step-title{color:var(--nv-text)}
+.match-back{color:var(--nv-accent)}
+.match-dot{background:rgba(255,255,255,.16)}
+.match-dot.active{background:var(--nv-accent)}
+.match-chip{background:var(--nv-surface);border:1px solid var(--nv-line);border-radius:14px;color:var(--nv-text)}
+.match-chip:hover{border-color:var(--nv-accent)}
+.match-chip.on{background:rgba(245,200,66,.14);border-color:var(--nv-accent);box-shadow:0 0 0 1px var(--nv-accent)}
+.match-chip .mc-label{color:var(--nv-text)}
+.match-chip .mc-ic{display:flex;align-items:center;justify-content:center;color:var(--nv-accent);line-height:0}
+.match-chip .mc-ic svg,.match-modal-ic svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.match-chip .mc-ic svg{width:28px;height:28px}
+.match-chip-wide .mc-ic svg{width:22px;height:22px}
+.match-modal-ic svg{width:26px;height:26px}
+.match-modal .match-submit-btn{background:var(--nv-accent);box-shadow:none}

@@ -1229,7 +1229,7 @@ html,body{background:#0B1626;margin:0;}
 <div class="alert-modal-backdrop" id="matchModalBackdrop"></div>
 <div aria-labelledby="matchModalTitle" aria-modal="true" class="alert-modal match-modal" id="matchModal" role="dialog">
 <button aria-label="Zatvori" class="alert-modal-close" data-i18n-aria-label="aria_close" id="matchModalClose" type="button">✕</button>
-<div class="alert-modal-ic match-modal-ic">🧭</div>
+<div class="alert-modal-ic match-modal-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5z"/></svg></div>
 <h3 data-i18n="match_modal_title" id="matchModalTitle">Pronađi svoj izlet</h3>
 <p class="alert-modal-sub" data-i18n="match_modal_sub">Tri kratka pitanja — mi bodujemo preko 60 destinacija po poklapanju sa tobom, sezonom i dužinom puta, ne nasumično. Datumi i broj putnika ostaju kao u formi iznad.</p>
 <div class="match-dots">
@@ -1240,21 +1240,21 @@ html,body{background:#0B1626;margin:0;}
 <div class="match-step active" data-step="1">
 <div class="match-step-title" data-i18n="match_step1_title">Sa kim putuješ?</div>
 <div class="match-chip-grid">
-<button class="match-chip" onclick="selectMatchChip('companion','solo',this,2)" type="button"><span class="mc-ic">🧍</span><span class="mc-label" data-i18n="mc_solo">Sam/a</span></button>
-<button class="match-chip" onclick="selectMatchChip('companion','couple',this,2)" type="button"><span class="mc-ic">💑</span><span class="mc-label" data-i18n="mc_couple">Par</span></button>
-<button class="match-chip" onclick="selectMatchChip('companion','friends',this,2)" type="button"><span class="mc-ic">🎉</span><span class="mc-label" data-i18n="mc_friends">Društvo</span></button>
-<button class="match-chip" onclick="selectMatchChip('companion','family',this,2)" type="button"><span class="mc-ic">👨‍👩‍👧</span><span class="mc-label" data-i18n="mc_family">Porodica</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','solo',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="7.5" r="3.2"/><path d="M5.5 20c1.4-4.2 4-6.2 6.5-6.2s5.100 2 6.500 6.200"/></svg></span><span class="mc-label" data-i18n="mc_solo">Sam/a</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','couple',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="8.500" cy="8" r="2.800"/><path d="M3 19.500c.9-3.600 3-5.300 5.500-5.300s4.600 1.700 5.500 5.300"/><circle cx="17" cy="9" r="2.300"/><path d="M15.500 14.400c2.300 0 4.200 1.400 5 4.600"/></svg></span><span class="mc-label" data-i18n="mc_couple">Par</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','friends',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="7.500" r="2.800"/><path d="M6.500 19.500c.8-3.400 3-5 5.500-5s4.700 1.600 5.500 5"/><circle cx="5" cy="10.500" r="2"/><path d="M1.500 18c.4-2.200 1.800-3.400 3.500-3.400"/><circle cx="19" cy="10.500" r="2"/><path d="M22.500 18c-.4-2.200-1.800-3.400-3.500-3.400"/></svg></span><span class="mc-label" data-i18n="mc_friends">Društvo</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','family',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="8" cy="7" r="2.600"/><path d="M2.500 19c.8-3.600 2.800-5.200 5.500-5.200s4.700 1.600 5.500 5.200"/><circle cx="17" cy="12" r="2"/><path d="M13.800 19.500c.5-2.400 1.700-3.600 3.200-3.600s2.700 1.200 3.200 3.600"/></svg></span><span class="mc-label" data-i18n="mc_family">Porodica</span></button>
 </div>
 </div>
 <div class="match-step" data-step="2">
 <button class="match-back" data-back="1" data-i18n="match_back" type="button">← Nazad</button>
 <div class="match-step-title" data-i18n="match_step2_title">Šta ti znači odmor?</div>
 <div class="match-chip-grid">
-<button class="match-chip" onclick="selectMatchChip('vibe','sea',this,3)" type="button"><span class="mc-ic">🌊</span><span class="mc-label" data-i18n="mc_sea">More i plaža</span></button>
-<button class="match-chip" onclick="selectMatchChip('vibe','city',this,3)" type="button"><span class="mc-ic">🏙️</span><span class="mc-label" data-i18n="mc_city">Grad i kultura</span></button>
-<button class="match-chip" onclick="selectMatchChip('vibe','nature',this,3)" type="button"><span class="mc-ic">🌲</span><span class="mc-label" data-i18n="mc_nature">Priroda i planina</span></button>
-<button class="match-chip" onclick="selectMatchChip('vibe','nightlife',this,3)" type="button"><span class="mc-ic">🎶</span><span class="mc-label" data-i18n="mc_nightlife">Noćni život</span></button>
-<button class="match-chip match-chip-wide" onclick="selectMatchChip('vibe','mix',this,3)" type="button"><span class="mc-ic">✨</span><span class="mc-label" data-i18n="mc_mix">Malo od svega</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','sea',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="17.500" cy="6" r="2"/><path d="M3 12q2.250-3 4.500 0t4.500 0 4.500 0 4.500 0"/><path d="M3 17.500q2.250-3 4.500 0t4.500 0 4.500 0 4.500 0"/></svg></span><span class="mc-label" data-i18n="mc_sea">More i plaža</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','city',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 20.500h18"/><path d="M5 20.500V9.500l4.500-2v13"/><path d="M9.500 20.500V5l7 2.500v13"/><path d="M16.500 20.500v-8.500l3.500 1.500v7"/><path d="M12 10.500h2M12 14h2"/></svg></span><span class="mc-label" data-i18n="mc_city">Grad i kultura</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','nature',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.500 19.500 9 8.500l4 6.500 2.500-3.500 6 8z"/><path d="m7.200 11.800 1.800 1.500 1.800-1.500"/></svg></span><span class="mc-label" data-i18n="mc_nature">Priroda i planina</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','nightlife',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 17.500V6l10-2v11.500"/><circle cx="6.500" cy="17.500" r="2.500"/><circle cx="16.500" cy="15.500" r="2.500"/></svg></span><span class="mc-label" data-i18n="mc_nightlife">Noćni život</span></button>
+<button class="match-chip match-chip-wide" onclick="selectMatchChip('vibe','mix',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m11 3 1.900 5.600 5.600 1.900-5.600 1.900L11 18l-1.900-5.600-5.600-1.900 5.600-1.900z"/><path d="M19 15v5M16.500 17.500h5"/></svg></span><span class="mc-label" data-i18n="mc_mix">Malo od svega</span></button>
 </div>
 </div>
 <div class="match-step" data-step="3">
@@ -1266,7 +1266,7 @@ html,body{background:#0B1626;margin:0;}
 <span>€</span><input class="builder-input" data-i18n-placeholder="placeholder_match_budget" id="matchBudget" min="1" placeholder="npr. 400" step="1" style="max-width:none;" type="number"/>
 </div>
 </div>
-<button class="btn-primary match-submit-btn" data-i18n="match_modal_btn" id="matchModalSubmit" type="button">🎯 Pronađi mi 3 destinacije</button>
+<button class="btn-primary match-submit-btn" data-i18n="match_modal_btn" id="matchModalSubmit" type="button">Pronađi mi 3 destinacije</button>
 </div>
 <p class="alert-modal-disclaimer" data-i18n="match_modal_disclaimer">⚠️ Ilustrativna procena cene, kombinovana sa tvojim odgovorima — ne stvarna ponuda partnera.</p>
 </div>
