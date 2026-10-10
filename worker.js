@@ -328,6 +328,10 @@ function json(obj, status = 200, extra = {}) {
 }
 
 
+// Destinacije koje imaju statički vodič (normalizovan naziv → fajl). Ostale dobijaju samo link ka hubu.
+const GUIDE_FILES = { atina: 'vodic-atina.html', barselona: 'vodic-barselona.html', bec: 'vodic-bec.html', beograd: 'vodic-beograd.html', bled: 'vodic-bled.html', budimpesta: 'vodic-budimpesta.html', budva: 'vodic-budva.html', 'herceg novi': 'vodic-herceg-novi.html', istanbul: 'vodic-istanbul.html', krf: 'vodic-krf.html', lisabon: 'vodic-lisabon.html', pariz: 'vodic-pariz.html', pataja: 'vodic-pataja.html', rim: 'vodic-rim.html', solun: 'vodic-solun.html', split: 'vodic-split.html', zagreb: 'vodic-zagreb.html' };
+const escHtml = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
 // Meta podaci destinacije za destinacija.html?do=X (vidi rutu u fetch ispod).
 async function destinationMeta(request, env, ctx, url) {
   const res = await env.ASSETS.fetch(request);
@@ -344,7 +348,20 @@ async function destinationMeta(request, env, ctx, url) {
   const title = 'Putovanje: ' + name + ' \u2014 procena ukupne cene | SKLOPI';
   const desc = 'Procenjena ukupna cena putovanja za ' + name + ': let, sme\u0161taj, rent a car i aktivnosti na jednom mestu.';
   const set = (v) => ({ element(el) { el.setAttribute('content', v); } });
+  const key = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'dj').replace(/\s+/g, ' ').trim();
+  const guide = GUIDE_FILES[key];
+  const pageUrl = url.origin + '/destinacija.html?do=' + encodeURIComponent(name);
+  const crumbs = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Početna', item: url.origin + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Destinacije', item: url.origin + '/destinacija.html' },
+    { '@type': 'ListItem', position: 3, name: name, item: pageUrl } ] }).replace(/</g, '\\u003c');
+  const more = '<section class="dp-section" aria-label="Vodiči"><div class="dp-card"><p class="dp-note">' +
+    (guide ? 'Pre putovanja pročitaj <a href="' + guide + '">vodič za ' + escHtml(name) + '</a> — kad ići, aerodrom i šta obavezno videti. ' : '') +
+    'Pogledaj i <a href="vodici.html">sve vodiče po destinacijama</a>.</p></div></section>';
   let rw = new HTMLRewriter()
+    .on('h1#dpHeroTitle', { element(el) { el.setInnerContent('Putovanje: ' + name); } })
+    .on('main', { element(el) { el.append(more, { html: true }); } })
+    .on('head', { element(el) { el.append('<script type="application/ld+json">' + crumbs + '</script>', { html: true }); } })
     .on('title', { element(el) { el.setInnerContent(title); } })
     .on('meta[name="description"]', set(desc))
     .on('meta[property="og:title"]', set(title))
