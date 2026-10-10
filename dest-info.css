@@ -187,3 +187,10 @@
 .di-disclaimer {
   margin-top: 6px !important;
 }
+
+/* Pasoš: jedna linija u kartici Viza & Ulazak, izbor se otvara na "Promeni" */
+.di-pp-line { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-soft); padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--line); }
+.di-pp-line b { color: var(--ink); font-weight: 600; }
+.di-pp-edit { font: inherit; font-size: 13px; font-weight: 600; min-height: 36px; padding: 0 14px; border-radius: 999px; background: transparent; color: var(--gold-text); border: 1px solid currentColor; cursor: pointer; }
+.di-pp-box { margin-bottom: 12px; }
+.di-pp-box[hidden] { display: none; }
