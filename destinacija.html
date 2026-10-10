@@ -975,12 +975,66 @@ function fillPhotos(trackId){
   const track = $(trackId);
   if (!track) return;
   track.querySelectorAll('.dp-sl-photo').forEach(b => { if (!b.querySelector('img')) b.classList.add('no-photo'); });
+  applyDestPhoto(track);
+}
+/* Fotografije destinacije za kartice: (1) tvoje lokalne slike iz img/ (lagane 560px kopije, bez stranih izvora),
+   (2) ako grad nema lokalnu sliku — Viator preko Worker-a (isti mehanizam kao na početnoj; samo ako je Worker podešen),
+   (3) bez slike kartica ostaje kompaktan baner. Ponuda koja donese sopstveni o.img ima prvenstvo. */
+const CARD_PHOTOS = {
+  'atina':['atina-akropolj','atina-plaka'], 'istanbul':['istanbul-bosfor','istanbul-plava-dzamija'],
+  'pariz':['pariz-nocu'], 'lisabon':['lisabon-tramvaj'], 'krf':['krf-uvala'],
+  'solun':['solun-ano-poli','solun-setaliste'], 'split':['split-marjan','split-riva'],
+  'zagreb':['zagreb-gornji-grad','zagreb-tramvaj'], 'bec':['bec-schonbrunn','bec-stephansdom'],
+  'beograd':['beograd-kalemegdan','beograd-skadarlija'], 'bled':['bled-dvorac','bled-jezero'],
+  'budva':['budva-stari-grad','crnogorsko-primorje-zaliv'], 'herceg novi':['herceg-novi-stari-grad','herceg-novi-zaliv'],
+  'pataja':['pataja-hram','pataja-plaza']
+};
+const CARD_POS = ['50% 50%', '25% 45%', '75% 55%', '50% 30%', '60% 70%'];
+const DEST_EN = {'budimpesta':'Budapest','bec':'Vienna','sofija':'Sofia','solun':'Thessaloniki','skoplje':'Skopje','prag':'Prague','krf':'Corfu','atina':'Athens','rim':'Rome','milano':'Milan','venecija':'Venice','firenca':'Florence','barselona':'Barcelona','lisabon':'Lisbon','pariz':'Paris','nica':'Nice','minhen':'Munich','cirih':'Zurich','antalija':'Antalya','kairo':'Cairo','njujork':'New York City','puket':'Phuket','tokio':'Tokyo','singapur':'Singapore','sidnej':'Sydney','london':'London','dubai':'Dubai','berlin':'Berlin','amsterdam':'Amsterdam','madrid':'Madrid','santorini':'Santorini'};
+let CARD_DEST = '', destPhotoUrl = '', destPhotoAsked = '';
+function withPhoto(o, idx, destName){
+  if (o.img) return o;
+  const list = CARD_PHOTOS[norm(destName || CARD_DEST)];
+  const pos = CARD_POS[idx % CARD_POS.length];
+  if (list && list.length) return Object.assign({}, o, {img:'img/' + list[idx % list.length] + '-560.webp', imgPos:pos});
+  if (destPhotoUrl) return Object.assign({}, o, {img:destPhotoUrl, imgPos:pos});
+  return o;
+}
+function destImgEndpoint(){
+  if (window.SKLOPI_DEST_IMG_URL) return window.SKLOPI_DEST_IMG_URL;
+  const b = window.SKLOPI_ALERT_WORKER_URL;
+  return b ? String(b).replace(/\/$/, '') + '/go/destination-images' : '';
+}
+function applyDestPhoto(root){
+  if (!destPhotoUrl) return;
+  (root || document).querySelectorAll('.dp-sl-photo').forEach((b, i) => {
+    if (b.querySelector('img')) return;
+    const im = document.createElement('img');
+    im.src = destPhotoUrl; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
+    im.style.objectPosition = CARD_POS[i % CARD_POS.length];
+    b.insertBefore(im, b.firstChild); b.classList.remove('no-photo');
+  });
+}
+function ensureDestPhoto(name){
+  const key = norm(name);
+  if (!key || CARD_PHOTOS[key] || destPhotoAsked === key) return;
+  destPhotoAsked = key; destPhotoUrl = '';
+  const ep = destImgEndpoint(); if (!ep) return;
+  const ck = 'sklopi_dp_' + key;
+  try { const c = JSON.parse(sessionStorage.getItem(ck) || 'null'); if (c && Date.now() - c.t < 3600e3 && c.u){ destPhotoUrl = c.u; applyDestPhoto(); return; } } catch(e){}
+  fetch(ep, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({items:[{d:name, q:(DEST_EN[key] || name) + ' tours'}]})})
+    .then(r => r.ok ? r.json() : null)
+    .then(j => {
+      const u = j && j.images && j.images[name];
+      if (u && destPhotoAsked === key){ destPhotoUrl = u; try { sessionStorage.setItem(ck, JSON.stringify({t:Date.now(), u:u})); } catch(e){} applyDestPhoto(); }
+    }).catch(() => {});
 }
 function photoBlock(o, attrs, bannerRow){
-  const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async">' : '';
+  const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async"' + (o.imgPos ? ' style="object-position:' + esc(o.imgPos) + '"' : '') + '>' : '';
   return '<div class="dp-sl-photo' + (bannerRow ? ' has-banner' : '') + '"' + (o.img ? '' : attrs) + '>' + img + (bannerRow || '') + '</div>';
 }
 function offerCard(o, partner, bannerCls, kind, idx){
+  o = withPhoto(o, idx);
   const badge = o.simulated ? '<span class="dp-badge">primer</span>' : (o.badge ? '<span class="dp-badge dp-partner">' + esc(o.badge) + '</span>' : '');
   const bannerRow = o.banner ? '<div class="dp-sl-banner on-photo ' + (bannerCls || '') + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
   const banner = photoBlock(o, '', bannerRow);
@@ -1179,8 +1233,10 @@ function getOffers(kind, c){
     .catch(() => SIM[kind](c).slice(0, 10));
 }
 function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls, token){
+  CARD_DEST = c.dest.name; ensureDestPhoto(c.dest.name);
   return getOffers(kind, c).then(list => {
     if (token !== renderToken) return;
+    CARD_DEST = c.dest.name;
     const key = kind === 'hotels' ? 'hotel' : kind === 'cars' ? 'car' : 'act';
     const ad = c.P.adults;
     REG[key] = list.map(o => ({title:o.title, detail: key === 'act' ? ad + ' × ' + money(o.price, 'EUR') : (o.sub || ''), total: key === 'act' ? o.price * ad : o.price, cur:'EUR', url:o.url, partner:partner}));
@@ -1199,7 +1255,7 @@ function flightCard(o, adults, c, idx){
     '<div class="dp-leg"><div class="dp-fl-route">' + esc(s.origin) + ' <div class="dp-fl-line"></div> ' + esc(s.destination) + '</div>' +
     '<div class="dp-fl-times"><span>' + esc(fmtDT(s.departing_at)) + '</span><span>' + esc(fmtDT(s.arriving_at)) + '</span></div></div>'
   ).join('');
-  return '<article class="dp-sl-card">' + photoBlock(o, '', '') + '<div class="dp-sl-body">' +
+  return '<article class="dp-sl-card">' + photoBlock(withPhoto(o, idx, c.dest.name), '', '') + '<div class="dp-sl-body">' +
     '<div class="dp-flight-row"><div class="dp-fl-logo">' + esc(o.airline_iata || '✈') + '</div>' +
     '<div class="dp-fl-mid"><div class="dp-fl-airline">' + esc(o.airline || 'Aviokompanija') + '</div>' + test + '</div></div>' +
     legs +
@@ -1211,6 +1267,7 @@ function flightCard(o, adults, c, idx){
 
 let flightReq = 0, flightAbort = null;
 function loadFlights(c){
+  CARD_DEST = c.dest.name; ensureDestPhoto(c.dest.name);
   const list = $('dpFlightList'), count = $('dpFlightCount');
   const bar = $('dpTotalBar');
   bar.hidden = true;
