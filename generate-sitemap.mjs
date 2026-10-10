@@ -23,6 +23,7 @@ const RULES = [
   { re: /^index\.html$/,            priority: '1.0', changefreq: 'weekly' },
   { re: /^destinacija\.html$/,      priority: '0.8', changefreq: 'weekly' },
   { re: /^vodici\.html$/,           priority: '0.6', changefreq: 'weekly' },
+  { re: /^putovanje-.+\.html$/,    priority: '0.7', changefreq: 'weekly' },
   { re: /^vodic-.+-(en|ru|de)\.html$/, priority: '0.4', changefreq: 'monthly' },
   { re: /^vodic-.+\.html$/,         priority: '0.5', changefreq: 'monthly' },
 ];
