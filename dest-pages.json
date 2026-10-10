@@ -1,0 +1,15 @@
+{
+  "_info": "Podaci za generate-destination-pages.mjs. Ključ = naziv grada ISTI kao u dest-plans.js. slug → putovanje-<slug>.html i vodic-<slug>.html (vodič je obavezan; bez njega se grad preskače). prep = 'u' ili 'na'. season = opcioni tekst 'Kad ići' (dodaj samo proverene činjenice; svaka stranica treba da ima i nešto svoje).",
+  "Atina": {"slug": "atina", "prep": "u", "season": "Atina je najprijatnija u proleće (april–maj) i ranu jesen (septembar–oktobar). Leti je vruće, što je naporno za šetnju po Akropolju, a termini u sezoni obično su skuplji. Zato u planeru uporedi nekoliko termina pre rezervacije."},
+  "Istanbul": {"slug": "istanbul", "prep": "u"},
+  "Krf": {"slug": "krf", "prep": "na"},
+  "Pariz": {"slug": "pariz", "prep": "u"},
+  "Lisabon": {"slug": "lisabon", "prep": "u"},
+  "Rim": {"slug": "rim", "prep": "u"},
+  "Barselona": {"slug": "barselona", "prep": "u"},
+  "Budva": {"slug": "budva", "prep": "u"},
+  "Beč": {"slug": "bec", "prep": "u"},
+  "Solun": {"slug": "solun", "prep": "u"},
+  "Budimpešta": {"slug": "budimpesta", "prep": "u"},
+  "Zagreb": {"slug": "zagreb", "prep": "u"}
+}

@@ -15,9 +15,11 @@
     "fetch:fonts": "node fetch-fonts.mjs",
     "stamp": "node stamp-assets.mjs",
     "stamp:check": "node stamp-assets.mjs --check",
+    "pages": "node generate-destination-pages.mjs",
+    "pages:check": "node generate-destination-pages.mjs --check",
     "sitemap": "node generate-sitemap.mjs",
     "sitemap:check": "node generate-sitemap.mjs --check",
-    "predeploy": "npm run stamp && npm run sitemap && npm run check:assets",
+    "predeploy": "npm run pages && npm run stamp && npm run sitemap && npm run check:assets",
     "test:store": "node selftest-trip-store.mjs"
   },
   "engines": {

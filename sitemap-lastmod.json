@@ -24,11 +24,11 @@
     "lastmod": "2026-10-10"
   },
   "vodic-barselona.html": {
-    "hash": "a0ae84a366",
+    "hash": "b1de677c60",
     "lastmod": "2026-10-10"
   },
   "vodic-bec.html": {
-    "hash": "e65647abaa",
+    "hash": "fdb28dbd22",
     "lastmod": "2026-10-10"
   },
   "vodic-beograd.html": {
@@ -40,7 +40,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-budimpesta.html": {
-    "hash": "2d1713ebd7",
+    "hash": "29a2484163",
     "lastmod": "2026-10-10"
   },
   "vodic-budva-de.html": {
@@ -48,7 +48,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-budva.html": {
-    "hash": "872507b498",
+    "hash": "faa86f1c78",
     "lastmod": "2026-10-10"
   },
   "vodic-herceg-novi.html": {
@@ -60,7 +60,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-istanbul.html": {
-    "hash": "8e5eb5715c",
+    "hash": "94575ef9f4",
     "lastmod": "2026-10-10"
   },
   "vodic-krf-de.html": {
@@ -68,7 +68,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-krf.html": {
-    "hash": "9e1bc000d0",
+    "hash": "aa75db847e",
     "lastmod": "2026-10-10"
   },
   "vodic-lisabon-de.html": {
@@ -76,7 +76,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-lisabon.html": {
-    "hash": "6804baf489",
+    "hash": "5255376ef6",
     "lastmod": "2026-10-10"
   },
   "vodic-pariz-de.html": {
@@ -84,7 +84,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-pariz.html": {
-    "hash": "8ca9bd09f5",
+    "hash": "71300ad458",
     "lastmod": "2026-10-10"
   },
   "vodic-pataja.html": {
@@ -92,7 +92,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-rim.html": {
-    "hash": "8b74e2136d",
+    "hash": "337b5cdbeb",
     "lastmod": "2026-10-10"
   },
   "vodic-solun-de.html": {
@@ -100,7 +100,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-solun.html": {
-    "hash": "d4731a2c92",
+    "hash": "cf35190e70",
     "lastmod": "2026-10-10"
   },
   "vodic-split-de.html": {
@@ -112,7 +112,7 @@
     "lastmod": "2026-10-10"
   },
   "vodic-zagreb.html": {
-    "hash": "efb4b35431",
+    "hash": "9079bd3706",
     "lastmod": "2026-10-10"
   },
   "vodici.html": {
@@ -136,7 +136,51 @@
     "lastmod": "2026-10-10"
   },
   "putovanje-atina.html": {
-    "hash": "2701b34e83",
+    "hash": "2b95c6d408",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-barselona.html": {
+    "hash": "f8d6e836aa",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-bec.html": {
+    "hash": "d7f955bc4a",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-budimpesta.html": {
+    "hash": "32288a102a",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-budva.html": {
+    "hash": "87114d2b94",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-istanbul.html": {
+    "hash": "4db854171b",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-krf.html": {
+    "hash": "262eb03c0e",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-lisabon.html": {
+    "hash": "70a31bdaa0",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-pariz.html": {
+    "hash": "bab079b086",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-rim.html": {
+    "hash": "d7f6a4588f",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-solun.html": {
+    "hash": "3fa24ed93b",
+    "lastmod": "2026-10-10"
+  },
+  "putovanje-zagreb.html": {
+    "hash": "e1aff28b55",
     "lastmod": "2026-10-10"
   }
 }
