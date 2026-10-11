@@ -106,6 +106,7 @@
     var key={price:priceOf,fast:durOf,early:timeOf}[mode];
     var cards=Array.prototype.slice.call(track.children);
     cards.sort(function(a,b){return key(a)-key(b);});
+    var cur=Array.prototype.slice.call(track.children);if(cur.every(function(c,i){return c===cards[i];}))return;
     cards.forEach(function(c){track.appendChild(c);});
   }
   function run(){
@@ -133,6 +134,56 @@
     if(bar.dataset.sig!==sig){
       bar.dataset.sig=sig;
       bar.querySelector('.fl-route').textContent=val('dpFrom')+' → '+val('dpTo');
+      bar.querySelector('.fl-meta').textContent=meta+n+' '+(n==='1'?'putnik':'putnika');
+    }
+    bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x.dataset.m===mode);});
+    sortCards(track);
+  }
+  var t2;function later(){clearTimeout(t2);t2=setTimeout(run,300);}
+  document.addEventListener('DOMContentLoaded',function(){
+    later();new MutationObserver(later).observe(document.getElementById('main')||document.body,{childList:true,subtree:true});
+  });
+  window.addEventListener('load',later);
+})();
+
+/* Ekran 5: smeštaj — zaglavlje i sortiranje (Najpovoljniji / Više zvezdica) */
+(function(){
+  'use strict';
+  var mode='price';
+  function val(id){var e=document.getElementById(id);return e?String(e.value||'').trim():'';}
+  function dm(iso){var p=String(iso||'').split('-');return p.length===3?p[2]+'.'+p[1]+'.':'';}
+  function priceOf(c){var b=c.querySelector('.dp-sl-price b');return b?parseInt(b.textContent.replace(/[^\d]/g,''),10)||0:0;}
+  function starsOf(c){var t=c.querySelector('.dp-sl-title'),m=t&&t.textContent.match(/(\d)\s*★/);return m?+m[1]:0;}
+  function sortCards(track){
+    var cards=Array.prototype.slice.call(track.children);
+    cards.sort(function(a,b){return mode==='stars'?(starsOf(b)-starsOf(a))||(priceOf(a)-priceOf(b)):priceOf(a)-priceOf(b);});
+    var cur=Array.prototype.slice.call(track.children);if(cur.every(function(c,i){return c===cards[i];}))return;
+    cards.forEach(function(c){track.appendChild(c);});
+  }
+  function run(){
+    var list=document.getElementById('dpHotelBox'),track=document.getElementById('dpHotelTrack');
+    if(!list)list=track&&track.closest('[id$="List"]');
+    if(!list||!track||!track.children.length)return;
+    var bar=document.getElementById('htBar');
+    var n=val('dpAdults')||'2';
+    var meta=(dm(val('dpStart'))&&dm(val('dpEnd')))?dm(val('dpStart'))+'–'+dm(val('dpEnd'))+' · ':'';
+    var sig=val('dpTo')+meta+n;
+    if(!bar){
+      bar=document.createElement('div');bar.id='htBar';bar.className='fl-bar';
+      bar.innerHTML='<p class="fl-route"></p><p class="fl-meta"></p><div class="fl-chips">'+
+        '<button type="button" class="fl-chip on" data-m="price">Najpovoljniji</button>'+
+        '<button type="button" class="fl-chip" data-m="stars">Više zvezdica</button></div>';
+      list.parentNode.insertBefore(bar,list);
+      bar.addEventListener('click',function(e){
+        var b=e.target.closest('.fl-chip');if(!b)return;
+        mode=b.dataset.m;
+        bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x===b);});
+        var t=document.getElementById('dpHotelTrack');if(t)sortCards(t);
+      });
+    }
+    if(bar.dataset.sig!==sig){
+      bar.dataset.sig=sig;
+      bar.querySelector('.fl-route').textContent=val('dpTo');
       bar.querySelector('.fl-meta').textContent=meta+n+' '+(n==='1'?'putnik':'putnika');
     }
     bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x.dataset.m===mode);});
