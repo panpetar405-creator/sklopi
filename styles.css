@@ -4223,3 +4223,6 @@ body:has(.legal-wrap) footer{background:var(--nv-bg);border-top:1px solid var(--
 body:has(.legal-wrap) footer .flinks a,body:has(.legal-wrap) footer .footer-logo{color:var(--nv-text)}
 body:has(.legal-wrap) footer .foot-note{color:var(--nv-muted)}
 body:has(.legal-wrap) footer .footer-logo em{color:var(--nv-accent)}
+
+/* Ikonice u preview chipovima ("Nemaš ideju kuda?") — SVG umesto emoji */
+.match-preview-chip .mp-ic{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;margin-right:5px;flex:none}
