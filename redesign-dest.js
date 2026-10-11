@@ -84,3 +84,63 @@
   });
   window.addEventListener('load',later);
 })();
+
+/* Ekran 4: letovi — bela lista, sortiranje (Najpovoljniji / Najbrži / Najraniji) */
+(function(){
+  'use strict';
+  var mode='price';
+  function val(id){var e=document.getElementById(id);return e?String(e.value||'').trim():'';}
+  function dm(iso){var p=String(iso||'').split('-');return p.length===3?p[2]+'.'+p[1]+'.':'';}
+  function priceOf(c){var b=c.querySelector('.dp-sl-price b');return b?parseInt(b.textContent.replace(/[^\d]/g,''),10)||0:0;}
+  function durOf(c){var s=c.querySelector('.dp-sl-sub'),m=s&&s.textContent.match(/(\d+)\s*h(?:\s*(\d+)\s*min)?/);return m?(+m[1])*60+(+m[2]||0):9999;}
+  function timeOf(c){var t=c.querySelector('.dp-sl-title'),m=t&&t.textContent.match(/(\d{1,2}):(\d{2})/);return m?(+m[1])*60+(+m[2]):9999;}
+  function split(c){
+    var t=c.querySelector('.dp-sl-title');if(!t||t.querySelector('.fl-air'))return;
+    var x=t.textContent.split(' · ');if(x.length<2)return;
+    t.innerHTML='';
+    var a=document.createElement('span');a.className='fl-air';a.textContent=x[0];
+    var b=document.createElement('span');b.className='fl-time';b.textContent=x.slice(1).join(' · ');
+    t.appendChild(a);t.appendChild(b);
+  }
+  function sortCards(track){
+    var key={price:priceOf,fast:durOf,early:timeOf}[mode];
+    var cards=Array.prototype.slice.call(track.children);
+    cards.sort(function(a,b){return key(a)-key(b);});
+    cards.forEach(function(c){track.appendChild(c);});
+  }
+  function run(){
+    var list=document.getElementById('dpFlightList'),track=document.getElementById('dpFlightTrack');
+    if(!list||!track||!track.children.length)return;
+    Array.prototype.forEach.call(track.children,split);
+    var bar=document.getElementById('flBar');
+    var n=val('dpAdults')||'2';
+    var meta=(dm(val('dpStart'))&&dm(val('dpEnd')))?dm(val('dpStart'))+'–'+dm(val('dpEnd'))+' · ':'';
+    var sig=val('dpFrom')+'>'+val('dpTo')+meta+n;
+    if(!bar){
+      bar=document.createElement('div');bar.id='flBar';bar.className='fl-bar';
+      bar.innerHTML='<p class="fl-route"></p><p class="fl-meta"></p><div class="fl-chips">'+
+        '<button type="button" class="fl-chip on" data-m="price">Najpovoljniji</button>'+
+        '<button type="button" class="fl-chip" data-m="fast">Najbrži</button>'+
+        '<button type="button" class="fl-chip" data-m="early">Najraniji</button></div>';
+      list.parentNode.insertBefore(bar,list);
+      bar.addEventListener('click',function(e){
+        var b=e.target.closest('.fl-chip');if(!b)return;
+        mode=b.dataset.m;
+        bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x===b);});
+        var t=document.getElementById('dpFlightTrack');if(t)sortCards(t);
+      });
+    }
+    if(bar.dataset.sig!==sig){
+      bar.dataset.sig=sig;
+      bar.querySelector('.fl-route').textContent=val('dpFrom')+' → '+val('dpTo');
+      bar.querySelector('.fl-meta').textContent=meta+n+' '+(n==='1'?'putnik':'putnika');
+    }
+    bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x.dataset.m===mode);});
+    sortCards(track);
+  }
+  var t2;function later(){clearTimeout(t2);t2=setTimeout(run,300);}
+  document.addEventListener('DOMContentLoaded',function(){
+    later();new MutationObserver(later).observe(document.getElementById('main')||document.body,{childList:true,subtree:true});
+  });
+  window.addEventListener('load',later);
+})();
