@@ -25,7 +25,6 @@
         if(e.target.closest('.mt2-new')){var f=document.getElementById('searchForm-wrap');if(f)f.scrollIntoView({behavior:'smooth',block:'start'});}
       });
     }
-    var h=root.querySelector('.ad-head h2');if(h&&h.textContent!=='Moji putovi')h.textContent='Moji putovi';
     var td=today(),all=read();
     var list=all.filter(function(x){return tab==='done'?(x.to&&x.to<td):!(x.to&&x.to<td);});
     var html='<div class="mt2-tabs"><button type="button" class="mt2-tab'+(tab==='active'?' on':'')+'" data-tab="active">Aktivni</button><button type="button" class="mt2-tab'+(tab==='done'?' on':'')+'" data-tab="done">Završeni</button></div>';
