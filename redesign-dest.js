@@ -245,3 +245,60 @@
   });
   window.addEventListener('load',later);
 })();
+
+/* Ekran 7: aktivnosti — zaglavlje i tip (Sve / Ture / Ulaznice / Hrana i piće), cena rastuće */
+(function(){
+  'use strict';
+  var mode='all';
+  function val(id){var e=document.getElementById(id);return e?String(e.value||'').trim():'';}
+  function dm(iso){var p=String(iso||'').split('-');return p.length===3?p[2]+'.'+p[1]+'.':'';}
+  function priceOf(c){var b=c.querySelector('.dp-sl-price b');return b?parseInt(b.textContent.replace(/[^\d]/g,''),10)||0:0;}
+  function type(c){
+    var t=((c.querySelector('.dp-sl-title')||{}).textContent||'').toLowerCase();
+    if(/kulinar|degustac/.test(t))return 'food';
+    if(/ulaznic/.test(t))return 'tickets';
+    return 'tours';
+  }
+  function apply(track){
+    var cards=Array.prototype.slice.call(track.children);
+    cards.forEach(function(c){c.style.display=(mode==='all'||type(c)===mode)?'':'none';});
+    cards.sort(function(a,b){return priceOf(a)-priceOf(b);});
+    var cur=Array.prototype.slice.call(track.children);
+    if(cur.every(function(c,i){return c===cards[i];}))return;
+    cards.forEach(function(c){track.appendChild(c);});
+  }
+  function run(){
+    var list=document.getElementById('dpActBox'),track=document.getElementById('dpActTrack');
+    if(!list||!track||!track.children.length)return;
+    var bar=document.getElementById('actBar');
+    var n=val('dpAdults')||'2';
+    var meta=(dm(val('dpStart'))&&dm(val('dpEnd')))?dm(val('dpStart'))+'–'+dm(val('dpEnd'))+' · ':'';
+    var sig=val('dpTo')+meta+n;
+    if(!bar){
+      bar=document.createElement('div');bar.id='actBar';bar.className='fl-bar';
+      bar.innerHTML='<p class="fl-route"></p><p class="fl-meta"></p><div class="fl-chips">'+
+        '<button type="button" class="fl-chip on" data-m="all">Sve</button>'+
+        '<button type="button" class="fl-chip" data-m="tours">Ture</button>'+
+        '<button type="button" class="fl-chip" data-m="tickets">Ulaznice</button>'+
+        '<button type="button" class="fl-chip" data-m="food">Hrana i piće</button></div>';
+      list.parentNode.insertBefore(bar,list);
+      bar.addEventListener('click',function(e){
+        var b=e.target.closest('.fl-chip');if(!b)return;
+        mode=b.dataset.m;
+        bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x===b);});
+        var t=document.getElementById('dpActTrack');if(t)apply(t);
+      });
+    }
+    if(bar.dataset.sig!==sig){
+      bar.dataset.sig=sig;
+      bar.querySelector('.fl-route').textContent='Aktivnosti · '+val('dpTo');
+      bar.querySelector('.fl-meta').textContent=meta+n+' '+(n==='1'?'putnik':'putnika');
+    }
+    apply(track);
+  }
+  var t2;function later(){clearTimeout(t2);t2=setTimeout(run,300);}
+  document.addEventListener('DOMContentLoaded',function(){
+    later();new MutationObserver(later).observe(document.getElementById('main')||document.body,{childList:true,subtree:true});
+  });
+  window.addEventListener('load',later);
+})();

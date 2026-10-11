@@ -86,3 +86,22 @@
 #rentacar .dp-sl-cta{grid-area:cta;justify-self:start;margin:4px 0 0;padding:0;border:0;background:none;color:#2f6fd0;font:600 12px Inter,sans-serif;text-decoration:underline}
 #rentacar .aff-badge{display:none}
 #rentacar .dp-sl-photo.no-photo .dp-sl-banner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:0}
+
+/* ===== REDIZAJN — Ekran 7: Aktivnosti (#aktivnosti) ===== */
+#aktivnosti .dp-slider-nav{display:none}
+#aktivnosti .dp-slider-track{display:flex;flex-direction:column;gap:12px;overflow:visible;scroll-snap-type:none}
+#aktivnosti .dp-sl-card{display:grid;grid-template-columns:116px 1fr;min-width:0;width:100%;max-width:none;background:#fff;color:#14213d;border:0;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.25);overflow:hidden}
+#aktivnosti .dp-sl-photo{position:relative;width:auto;height:100%;min-height:140px;aspect-ratio:auto;border-radius:0}
+#aktivnosti .dp-sl-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#aktivnosti .dp-sl-body{display:grid;grid-template-columns:1fr auto;grid-template-areas:"title title" "sub sub" "price pick" "cta cta";align-items:end;column-gap:8px;row-gap:3px;padding:12px}
+#aktivnosti .dp-sl-title{grid-area:title;color:#14213d;font:700 15px/1.25 Sora,Inter,sans-serif}
+#aktivnosti .dp-sl-sub{grid-area:sub;color:#6b7a90;font:500 12px Inter,sans-serif}
+#aktivnosti .dp-sl-price{grid-area:price;display:flex;flex-direction:column;margin-top:6px}
+#aktivnosti .dp-sl-price b{display:block;color:#14213d;font:800 20px Sora,Inter,sans-serif}
+#aktivnosti .dp-sl-price small{color:#6b7a90;font:500 11px Inter,sans-serif}
+#aktivnosti .dp-pick{grid-area:pick;margin:0;width:auto;white-space:nowrap;padding:8px 12px;border:0;border-radius:10px;background:#f6c93b;color:#1a1a1a;font:800 12.5px Inter,sans-serif}
+#aktivnosti .dp-pick[aria-pressed="true"]{background:#14213d;color:#fff}
+#aktivnosti .dp-sl-cta{grid-area:cta;justify-self:start;margin:4px 0 0;padding:0;border:0;background:none;color:#2f6fd0;font:600 12px Inter,sans-serif;text-decoration:underline}
+#aktivnosti .aff-badge{display:none}
+#aktivnosti .dp-sl-photo.no-photo .dp-sl-banner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:0}
+#aktivnosti .dp-sl-banner span:first-child{display:none}
