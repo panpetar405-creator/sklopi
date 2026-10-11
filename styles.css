@@ -4226,3 +4226,12 @@ body:has(.legal-wrap) footer .footer-logo em{color:var(--nv-accent)}
 
 /* Ikonice u preview chipovima ("Nemaš ideju kuda?") — SVG umesto emoji */
 .match-preview-chip .mp-ic{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;margin-right:5px;flex:none}
+
+/* Kartica "Šta je SKLOPI" (sekcija ispod destinacija) */
+.seo-intro{max-width:760px;margin:0 auto;padding:24px 16px 8px}
+.seo-card{background:var(--nv-surface,#122238);border:1px solid var(--nv-line,rgba(255,255,255,.1));border-radius:var(--nv-radius-card,18px);overflow:hidden}
+.seo-card .seo-row{display:flex;gap:14px;align-items:flex-start;padding:18px 16px}
+.seo-card .seo-row+.seo-row{border-top:1px solid var(--nv-line,rgba(255,255,255,.1))}
+.seo-card .seo-ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(245,200,66,.12);color:var(--nv-accent,#F5C842)}
+.seo-card .seo-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.seo-card p{margin:0;color:var(--nv-muted,#A9B8CA);font-size:14.5px;line-height:1.6}
