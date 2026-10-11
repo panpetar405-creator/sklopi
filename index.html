@@ -18,17 +18,21 @@ html,body{background:#0B1626;margin:0;}
 @keyframes splashRing{0%{box-shadow:0 0 0 0 rgba(245,200,66,.55);}100%{box-shadow:0 0 0 26px rgba(245,200,66,0);}}
 @keyframes splashLoad{0%{left:-38%;}100%{left:100%;}}
 </style>
-<title>SKLOPI — sastavi putni paket, jedna cena</title>
-<meta content="SKLOPI sastavlja putni paket od leta, hotela, rentakara i aktivnosti i sabira sve u jednu procenjenu cenu. Napravi sopstveni putni paket ili biraj gotove predloge po budžetu." name="description"/>
+<title>Putni paket po meri: let, hotel, auto, jedna cena | SKLOPI</title>
+<meta content="Sastavi putni paket: let, hotel, rentakar i aktivnosti u jednoj procenjenoj ceni. Uporedi tri plana po budžetu i prilagodi ih svom putovanju." name="description"/>
 <meta content="putni paket, putni paketi, aranžman, izlet paket, kombinovano putovanje, let hotel auto paket, planiranje putovanja, jeftin putni paket" name="keywords"/>
 <!-- Open Graph / Facebook, WhatsApp itd. -->
 <meta content="website" property="og:type"/>
 <meta content="SKLOPI" property="og:site_name"/>
-<meta content="SKLOPI — sastavi putni paket, jedna cena" property="og:title"/>
+<meta content="Putni paket po meri: let, hotel, auto, jedna cena | SKLOPI" property="og:title"/>
 <meta content="Let, hotel, auto i aktivnosti — sve sabrano u jedan putni paket i jednu cenu. Napravi svoj aranžman za par minuta." property="og:description"/>
 <meta content="https://sklopi.rs/hero-photo.jpg?v=2" property="og:image"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="SKLOPI — putni paket u jednoj ceni: let, hotel, auto i aktivnosti" property="og:image:alt"/>
 <meta content="sr_RS" property="og:locale"/>
 <meta content="https://sklopi.rs/" property="og:url"/>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link href="https://sklopi.rs/" rel="canonical"/>
 <!-- hreflang: nabraja SVE jezičke verzije ove stranice (isto na svakoj od njih).
      URL se ne menja (i dalje sklopi.rs/), samo ?lang= parametar bira jezik —
@@ -46,7 +50,8 @@ html,body{background:#0B1626;margin:0;}
 "@type": "TravelAgency",
 "@id": "https://sklopi.rs/#organization",
 "name": "SKLOPI",
-"alternateName": "SKLOPI",
+"alternateName": ["SKLOPI", "sklopi.rs"],
+"logo": "https://sklopi.rs/app-icon-512.png",
 "description": "SKLOPI sastavlja putni paket od leta, hotela, rentakara i aktivnosti i sabira sve u jednu procenjenu cenu.",
 "url": "https://sklopi.rs/",
 "image": "https://sklopi.rs/hero-photo.jpg?v=2",
@@ -65,7 +70,8 @@ html,body{background:#0B1626;margin:0;}
 "@id": "https://sklopi.rs/#website",
 "url": "https://sklopi.rs/",
 "name": "SKLOPI",
-"inLanguage": "sr"
+"inLanguage": ["sr", "en", "ru", "de"],
+"publisher": {"@id": "https://sklopi.rs/#organization"}
 },
 {
 "@type": "FAQPage",
@@ -138,9 +144,10 @@ html,body{background:#0B1626;margin:0;}
 </script>
 <!-- Twitter/X Card -->
 <meta content="summary_large_image" name="twitter:card"/>
-<meta content="SKLOPI — sastavi putni paket, jedna cena" name="twitter:title"/>
+<meta content="Putni paket po meri: let, hotel, auto, jedna cena | SKLOPI" name="twitter:title"/>
 <meta content="Let, hotel, auto i aktivnosti — sve sabrano u jedan putni paket i jednu cenu." name="twitter:description"/>
 <meta content="https://sklopi.rs/hero-photo.jpg?v=2" name="twitter:image"/>
+<meta content="SKLOPI — putni paket u jednoj ceni: let, hotel, auto i aktivnosti" name="twitter:image:alt"/>
 <!-- Favicon -->
 <link href="favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -158,10 +165,12 @@ html,body{background:#0B1626;margin:0;}
 <link as="font" crossorigin="" href="fonts/inter-latin.woff2" rel="preload" type="font/woff2"/>
 <link as="font" crossorigin="" href="fonts/inter-latin-ext.woff2" rel="preload" type="font/woff2"/>
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
+<link rel="preload" as="image" href="hero-sklopi.webp" imagesrcset="hero-sklopi-800.webp 800w, hero-sklopi.webp 1400w" imagesizes="(max-width: 760px) 100vw, 1180px" type="image/webp" fetchpriority="high"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=4e929605" rel="stylesheet"/>
-<link href="dest-info.css?v=67d8e547" rel="stylesheet"/><link href="ux-refactor.css?v=72a2050c" rel="stylesheet"/><link href="theme-navy.css?v=1c8740ce" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=deff098e" rel="stylesheet"/>
+<link href="dest-info.css?v=f6705aa1" rel="stylesheet"/><link href="ux-refactor.css?v=9192cc00" rel="stylesheet"/><link href="theme-navy.css?v=aa40cbd1" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=c39b958d" rel="stylesheet"/><link href="redesign-home.css?v=07456bd5" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
+<link href="info-collapse.css?v=591c6f62" rel="stylesheet"/>
 </head>
 <body>
 <a class="skip-link" data-i18n="x_a11y_skip" href="#main">Preskoči na sadržaj</a>
@@ -232,9 +241,10 @@ html,body{background:#0B1626;margin:0;}
 <button aria-haspopup="true" aria-label="Nalog" class="hero-ui-btn" data-i18n-aria-label="aria_account" id="topAvatarBtn" type="button"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8" viewbox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5 20c1.5-4 4.2-6 7-6s5.5 2 7 6"></path></svg></button>
 </div>
 <div class="hero-reference-copy">
-<p class="hero-reference-eyebrow" data-i18n="x_9bd979">PUTOVANJE PO TVOM UKUSU</p>
+<p class="hero-reference-eyebrow" data-i18n="x_9bd979">PUTNI PAKET PO MERI</p>
 <h1 data-i18n-html="x_76e5d6">Sklopi<br/>svoje putovanje.</h1>
-<p data-i18n="x_76f374">Bez skrivenih troškova, kreni na put</p>
+<p class="hero-reference-sub" data-i18n="x_home_sub">Uporedi opcije. Kontroliši budžet.</p>
+<p data-i18n="x_76f374">Letovi, hoteli, auto i aktivnosti u jednoj aplikaciji — bez skrivenih troškova.</p>
 </div>
 </div>
 <div class="hero-reference-body">
@@ -250,19 +260,19 @@ html,body{background:#0B1626;margin:0;}
 <div class="hero-reference-form">
 <form class="ticket" id="searchForm" novalidate="">
 <div class="stub" id="originStub">
-<label data-i18n="label_origin" for="origin">Polazak</label>
+<label data-i18n="label_origin" for="origin">Odakle putuješ?</label>
 <input aria-autocomplete="list" aria-controls="originSuggestions" aria-expanded="false" autocomplete="off" data-i18n-placeholder="placeholder_origin" id="origin" maxlength="60" placeholder="npr. Beograd, Niš, Podgorica" required="" role="combobox" type="text" value=""/>
 <div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
 <div id="originAirportWarning"></div>
 </div>
 <div class="stub">
-<label data-i18n="label_dest" for="dest">Destinacija</label>
+<label data-i18n="label_dest" for="dest">Gde želiš da ideš?</label>
 <input aria-autocomplete="list" aria-controls="destSuggestions" aria-expanded="false" autocomplete="off" data-i18n-placeholder="placeholder_dest" id="dest" maxlength="60" placeholder="npr. Atina, Rim, Barselona" required="" role="combobox" type="text" value=""/>
 <div class="loc-dropdown" id="destSuggestions" role="listbox"></div>
 <div id="destAirportWarning"></div>
 </div>
 <div class="stub stub-dates" id="dateStub">
-<label data-i18n="label_dates" id="dateStubLabel">Od — Do</label>
+<label data-i18n="label_dates" id="dateStubLabel">Kada putuješ?</label>
 <button aria-controls="calCard" aria-expanded="false" aria-haspopup="dialog" aria-labelledby="dateStubLabel dateDisplayText" class="date-display is-empty" id="dateDisplayBtn" type="button">
 <span class="dd-range" id="dateDisplayText">— – —</span>
 <span class="dd-meta" id="dateNightsText">— – —</span>
@@ -297,7 +307,7 @@ html,body{background:#0B1626;margin:0;}
 </div>
 </div>
 <div class="stub stub-pax" id="paxStub">
-<label data-i18n="label_passengers" for="paxDisplayBtn" id="paxStubLabel">Putnika</label>
+<label data-i18n="label_passengers" for="paxDisplayBtn" id="paxStubLabel">Putnici</label>
 <button aria-controls="paxCard" aria-expanded="false" aria-haspopup="dialog" aria-labelledby="paxStubLabel paxDisplayText" class="pax-display is-empty" id="paxDisplayBtn" type="button">
 <span data-i18n="placeholder_passengers" id="paxDisplayText">Putnika</span>
 </button>
@@ -305,7 +315,7 @@ html,body{background:#0B1626;margin:0;}
 <div class="cal-backdrop" id="paxBackdrop"></div>
 <div aria-label="Izbor broja putnika" aria-modal="true" class="pax-card" data-i18n-aria-label="aria_pax_dialog" id="paxCard" role="dialog">
 <div class="cal-inner">
-<div class="pax-card-title" data-i18n="label_passengers">Putnika</div>
+<div class="pax-card-title" data-i18n="label_passengers">Putnici</div>
 <div aria-label="Broj putnika" class="pax-list" data-i18n-aria-label="aria_pax_dialog" id="paxList" role="listbox"></div>
 <div class="cal-foot" style="justify-content:flex-end">
 <button class="btn-primary cal-apply" data-i18n="btn_done" id="paxApply" type="button">Gotovo</button>
@@ -318,7 +328,7 @@ html,body{background:#0B1626;margin:0;}
 </div>
 </form>
 <div class="ticket-submit-row">
-<button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="ux_hero_go">Kreni</span></button>
+<button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="ux_hero_go">Pronađi moj put</span></button>
 </div><div class="trip-defaults" id="tripDefaults"><span class="trip-defaults-text" id="tripDefaultsText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsEdit" type="button">Promeni</button></div>
 <div class="transport-row">
 <label class="toggle" data-t="flight">
@@ -343,6 +353,7 @@ html,body{background:#0B1626;margin:0;}
 </label>
 </div>
 </div>
+<p class="hero-note" data-i18n="x_home_note">Cene su okvirne procene, a ne potvrđene ponude.</p>
 <div class="hero-spacer"></div>
 </div>
 </div>
@@ -351,6 +362,7 @@ html,body{background:#0B1626;margin:0;}
 <button aria-haspopup="dialog" class="match-trigger" data-i18n-html="match_trigger" data-i18n-title="ux_match_hint" id="matchTriggerBtn" type="button"></button>
 </div>
 <div class="section popular-reference-section" id="popular-destinations">
+<button class="dest-featured" type="button" data-feature="Atina" aria-label="Grčka — Atina"><span class="df-name" data-i18n="x_home_feat">Grčka</span><span class="df-sub" data-i18n="x_home_feat_sub">Top destinacija ovog meseca</span><span class="df-price" data-home-feat-price>od 247 €</span></button>
 <div class="popular-reference-head">
 <div>
 <div class="eyebrow" data-i18n="eyebrow_ideas" id="popularDestEyebrow">Ideje za sledeći izlet</div>
@@ -906,6 +918,29 @@ html,body{background:#0B1626;margin:0;}
 </div>
 </div>
 </div>
+<section aria-labelledby="seoIntroTitle" class="section seo-intro" id="sta-je-sklopi">
+<h2 class="sr-only" data-i18n="x_seo_h" id="seoIntroTitle">Putni paket po meri: let, hotel i auto u jednoj proceni</h2>
+<div class="seo-card">
+<div class="seo-row"><span class="seo-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><p data-i18n="x_seo_p1">SKLOPI sastavlja putni paket po tvojoj meri. Uneseš polazak (npr. Beograd, Niš ili Podgoricu), destinaciju, datume i broj putnika, a mi sabiramo let, smeštaj, rent a car i aktivnosti u jednu procenjenu ukupnu cenu.</p></div>
+<div class="seo-row"><span class="seo-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.500c0 4.300 2.900 7.700 7 9.500 4.100-1.800 7-5.200 7-9.500V6l-7-3Z"/><path d="m9 12 2.200 2.200L15.500 10"/></svg></span><p data-i18n="x_seo_p2">Izabereš način sklapanja — budžet, balans ili komfor — i menjaš samo ono što ti je važno. SKLOPI ne naplaćuje rezervaciju: kad si spreman, rezervišeš kod partnera (KAYAK, Booking.com, Viator), a cene su procena dok ih tamo ne potvrdiš.</p></div>
+</div>
+</section>
+<div class="section business-strip" id="partners">
+<div class="partners-row">
+<span class="partners-label" data-i18n="partners_label">Rezervacija ide direktno preko partnera</span>
+<div class="partners-card">
+<div class="partners-line">
+<span class="partner-badge partner-badge--kayak">KAYAK</span>
+<span class="partner-badge partner-badge--viator">Viator</span>
+<span class="partner-badge partner-badge--airalo">airalo</span>
+</div>
+<div class="partners-line">
+<span class="partner-badge partner-badge--booking">Booking<span class="pb-dotcom">.com</span></span>
+<span class="partner-badge partner-badge--worldnomads">World Nomads</span>
+</div>
+</div>
+</div>
+</div>
 <section aria-labelledby="howItWorksTitle" class="section how-it-works-section" id="how-it-works">
 <div class="how-it-works-wrap">
 <div class="how-it-works-main">
@@ -934,36 +969,44 @@ html,body{background:#0B1626;margin:0;}
 <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Spakovan kofer i putna torba za odmor" loading="lazy" src="img/kofer-putna-torba-300.webp"/></span><span class="gd-info"><b data-i18n="x_3795c2">Šta poneti na put?</b><small data-i18n="x_7ec6b1">Spisak za savršeno putovanje</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
 <a class="gd-card" href="vodici.html"><span class="gd-thumb"><img alt="Novčanik i planiranje budžeta za putovanje" loading="lazy" src="img/novcanik-budzet-300.webp"/></span><span class="gd-info"><b data-i18n="x_455108">Kako uštedeti na putovanju?</b><small data-i18n="x_51467e">Praktični saveti</small><em data-i18n="x_0abb08">Čitaj više →</em></span></a>
 </div>
-</section><div class="section business-strip" id="partners">
-<div class="partners-row">
-<span class="partners-label" data-i18n="partners_label">Rezervacija ide direktno preko partnera</span>
-<div class="partners-card">
-<div class="partners-line">
-<span class="partner-badge partner-badge--kayak">KAYAK</span>
-<span class="partner-badge partner-badge--viator">Viator</span>
-<span class="partner-badge partner-badge--airalo">airalo</span>
-</div>
-<div class="partners-line">
-<span class="partner-badge partner-badge--booking">Booking<span class="pb-dotcom">.com</span></span>
-<span class="partner-badge partner-badge--worldnomads">World Nomads</span>
-</div>
-</div>
-</div>
-</div><section aria-labelledby="myTripTitle" class="section my-trip-section" id="myTrip">
-<div class="ad-head"><h2 data-i18n="x_c79875" id="myTripTitle">Moj put</h2></div>
+<nav aria-labelledby="destTripsTitle" class="dest-trips">
+<h3 data-i18n="h2_dest_trips" id="destTripsTitle" style="margin:26px 0 0;font:800 16px/1.3 Sora,Inter,sans-serif;">Putovanje po destinacijama</h3>
+<ul style="list-style:none;padding:0;margin:12px 0 0;display:flex;flex-wrap:wrap;gap:8px;">
+<li><a href="putovanje-atina.html" data-i18n="city.Atina" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Atina</a></li>
+<li><a href="putovanje-istanbul.html" data-i18n="city.Istanbul" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Istanbul</a></li>
+<li><a href="putovanje-krf.html" data-i18n="city.Krf" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Krf</a></li>
+<li><a href="putovanje-pariz.html" data-i18n="city.Pariz" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Pariz</a></li>
+<li><a href="putovanje-lisabon.html" data-i18n="city.Lisabon" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Lisabon</a></li>
+<li><a href="putovanje-rim.html" data-i18n="city.Rim" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Rim</a></li>
+<li><a href="putovanje-barselona.html" data-i18n="city.Barselona" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Barselona</a></li>
+<li><a href="putovanje-budva.html" data-i18n="city.Budva" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Budva</a></li>
+<li><a href="putovanje-bec.html" data-i18n="city.Beč" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Beč</a></li>
+<li><a href="putovanje-solun.html" data-i18n="city.Solun" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Solun</a></li>
+<li><a href="putovanje-budimpesta.html" data-i18n="city.Budimpešta" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Budimpešta</a></li>
+<li><a href="putovanje-zagreb.html" data-i18n="city.Zagreb" style="display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line,#d9e7ea);background:var(--paper,#fff);color:var(--ink,#0b4a54);font:600 13.5px/1.2 Inter,sans-serif;text-decoration:none;">Zagreb</a></li>
+</ul>
+</nav>
+</section><section aria-labelledby="myTripTitle" class="section my-trip-section" id="myTrip">
+<div class="ad-head"><h2 data-i18n="x_c79875" id="myTripTitle">Moj plan</h2></div>
 <div class="mt-tabs" role="tablist">
 <button aria-selected="true" class="mt-tab is-on" data-i18n="x_a07ce8" data-tab="active" role="tab" type="button">Aktivni</button>
 <button aria-selected="false" class="mt-tab" data-i18n="x_c9283d" data-tab="done" role="tab" type="button">Završeni</button>
 </div>
 <div class="mt-body" id="mtBody"></div>
 </section><div class="section saved-wrap">
-<div class="section-head">
-<div class="eyebrow" data-i18n="eyebrow_for_later">Za kasnije</div>
-<h2 data-i18n="h2_saved_trips">Sačuvani aranžmani</h2>
-</div>
+<h3 class="saved-sub" data-i18n="h2_saved_trips">Sačuvani aranžmani</h3>
 <div class="auth-bar" id="authBar"></div>
 <div id="savedTripsList"></div>
 <div class="compare-wrap" id="compareWrap" style="display:none;"></div>
+</div><div class="section faq-banner-wrap">
+<div class="faq-banner faq-banner-v2">
+<div class="faq-banner-photo"><img alt="Plaža uz more za odmor sa najčešćim pitanjima o rezervaciji" loading="lazy" src="img/crnogorsko-primorje-zaliv-900.webp"/></div>
+<div class="faq-banner-content">
+<svg aria-hidden="true" class="faq-banner-mark" fill="none" viewbox="0 0 24 24"><path d="M3 19l6-10 4 6 2-3 6 7H3z" fill="currentColor"></path></svg>
+<p data-i18n-html="x_9e1232">Nema savršenog putovanja.<br/>Samo dobro isplaniranog.</p>
+<b>SKLOPI</b>
+</div>
+</div>
 </div><div class="section" id="faq">
 <div class="section-head faq-head-v2">
 <h2 data-i18n="x_7fc434">Česta pitanja</h2>
@@ -1006,14 +1049,7 @@ html,body{background:#0B1626;margin:0;}
 <p data-i18n-html="faq_a5">Piši na <a data-contact="mail" data-show="1" href="#">✉ e-mail</a> — rado odgovaramo.</p>
 </details>
 </div>
-<div class="faq-banner faq-banner-v2">
-<div class="faq-banner-photo"><img alt="Plaža uz more za odmor sa najčešćim pitanjima o rezervaciji" loading="lazy" src="img/crnogorsko-primorje-zaliv-900.webp"/></div>
-<div class="faq-banner-content">
-<svg aria-hidden="true" class="faq-banner-mark" fill="none" viewbox="0 0 24 24"><path d="M3 19l6-10 4 6 2-3 6 7H3z" fill="currentColor"></path></svg>
-<p data-i18n-html="x_9e1232">Nema savršenog putovanja.<br/>Samo dobro isplaniranog.</p>
-<b>SKLOPI</b>
-</div>
-</div>
+
 </div><div class="section" id="what-you-can-include"><div class="section-head feature-strip-head"><div class="eyebrow" data-i18n="ux_include_eyebrow">Sve na jednom mestu</div><h2 data-i18n="ux_include_title">Šta možeš uključiti u put</h2><p data-i18n="ux_include_sub">Biraj samo usluge koje su ti potrebne.</p></div>
 <div class="feature-strip">
 <div aria-haspopup="dialog" class="feature f-flight" data-feature="flight" role="button" tabindex="0"><div class="ic"><svg fill="none" stroke="currentColor" stroke-width="1.7" viewbox="0 0 24 24"><path d="M2 16l6-2 4.5-7 2 .6-2.5 6.9 5 1.5 3-2.4 1.6.5-2 3-5.5 1-1 2.6-1.8-.5.7-2.8-5 1.2-1-1.7z"></path></svg></div><div class="feature-text"><div class="name" data-i18n="toggle_flight">Letovi</div><div class="sub" data-i18n="f_flight_sub">Najbolje cene</div></div></div>
@@ -1048,7 +1084,7 @@ html,body{background:#0B1626;margin:0;}
 </div>
 </div></main>
 <footer id="about">
-<div class="footer-photo"><img alt="Obala i zalazak sunca — SKLOPI planiranje putovanja" loading="lazy" src="img/banner-obala-zalazak-1400.webp"/></div>
+<div class="footer-photo"><picture><source sizes="100vw" srcset="banner-jezero-planina-800.webp 800w, banner-jezero-planina.webp 1600w" type="image/webp"/><img alt="Planinsko jezero u sumrak — SKLOPI planiranje putovanja" height="640" loading="lazy" src="banner-jezero-planina.jpg" width="1600"/></picture></div>
 <svg aria-hidden="true" class="footer-mark-v2" fill="none" viewbox="0 0 24 24"><path d="M3 19l6-10 4 6 2-3 6 7H3z" fill="currentColor"></path></svg>
 <div class="footer-tagline-v2">
 <b>SKLOPI</b>
@@ -1229,7 +1265,7 @@ html,body{background:#0B1626;margin:0;}
 <div class="alert-modal-backdrop" id="matchModalBackdrop"></div>
 <div aria-labelledby="matchModalTitle" aria-modal="true" class="alert-modal match-modal" id="matchModal" role="dialog">
 <button aria-label="Zatvori" class="alert-modal-close" data-i18n-aria-label="aria_close" id="matchModalClose" type="button">✕</button>
-<div class="alert-modal-ic match-modal-ic">🧭</div>
+<div class="alert-modal-ic match-modal-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m15.500 8.500-2 5-5 2 2-5z"/></svg></div>
 <h3 data-i18n="match_modal_title" id="matchModalTitle">Pronađi svoj izlet</h3>
 <p class="alert-modal-sub" data-i18n="match_modal_sub">Tri kratka pitanja — mi bodujemo preko 60 destinacija po poklapanju sa tobom, sezonom i dužinom puta, ne nasumično. Datumi i broj putnika ostaju kao u formi iznad.</p>
 <div class="match-dots">
@@ -1240,21 +1276,21 @@ html,body{background:#0B1626;margin:0;}
 <div class="match-step active" data-step="1">
 <div class="match-step-title" data-i18n="match_step1_title">Sa kim putuješ?</div>
 <div class="match-chip-grid">
-<button class="match-chip" onclick="selectMatchChip('companion','solo',this,2)" type="button"><span class="mc-ic">🧍</span><span class="mc-label" data-i18n="mc_solo">Sam/a</span></button>
-<button class="match-chip" onclick="selectMatchChip('companion','couple',this,2)" type="button"><span class="mc-ic">💑</span><span class="mc-label" data-i18n="mc_couple">Par</span></button>
-<button class="match-chip" onclick="selectMatchChip('companion','friends',this,2)" type="button"><span class="mc-ic">🎉</span><span class="mc-label" data-i18n="mc_friends">Društvo</span></button>
-<button class="match-chip" onclick="selectMatchChip('companion','family',this,2)" type="button"><span class="mc-ic">👨‍👩‍👧</span><span class="mc-label" data-i18n="mc_family">Porodica</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','solo',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="7.5" r="3.2"/><path d="M5.5 20c1.4-4.2 4-6.2 6.5-6.2s5.100 2 6.500 6.200"/></svg></span><span class="mc-label" data-i18n="mc_solo">Sam/a</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','couple',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="8.500" cy="8" r="2.800"/><path d="M3 19.500c.9-3.600 3-5.300 5.500-5.300s4.600 1.700 5.500 5.300"/><circle cx="17" cy="9" r="2.300"/><path d="M15.500 14.400c2.300 0 4.200 1.400 5 4.600"/></svg></span><span class="mc-label" data-i18n="mc_couple">Par</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','friends',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="7.500" r="2.800"/><path d="M6.500 19.500c.8-3.400 3-5 5.500-5s4.700 1.600 5.500 5"/><circle cx="5" cy="10.500" r="2"/><path d="M1.500 18c.4-2.200 1.800-3.400 3.500-3.400"/><circle cx="19" cy="10.500" r="2"/><path d="M22.500 18c-.4-2.200-1.800-3.400-3.500-3.400"/></svg></span><span class="mc-label" data-i18n="mc_friends">Društvo</span></button>
+<button class="match-chip" onclick="selectMatchChip('companion','family',this,2)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="8" cy="7" r="2.600"/><path d="M2.500 19c.8-3.600 2.800-5.200 5.500-5.200s4.700 1.600 5.500 5.200"/><circle cx="17" cy="12" r="2"/><path d="M13.800 19.500c.5-2.400 1.700-3.600 3.200-3.600s2.700 1.200 3.200 3.600"/></svg></span><span class="mc-label" data-i18n="mc_family">Porodica</span></button>
 </div>
 </div>
 <div class="match-step" data-step="2">
 <button class="match-back" data-back="1" data-i18n="match_back" type="button">← Nazad</button>
 <div class="match-step-title" data-i18n="match_step2_title">Šta ti znači odmor?</div>
 <div class="match-chip-grid">
-<button class="match-chip" onclick="selectMatchChip('vibe','sea',this,3)" type="button"><span class="mc-ic">🌊</span><span class="mc-label" data-i18n="mc_sea">More i plaža</span></button>
-<button class="match-chip" onclick="selectMatchChip('vibe','city',this,3)" type="button"><span class="mc-ic">🏙️</span><span class="mc-label" data-i18n="mc_city">Grad i kultura</span></button>
-<button class="match-chip" onclick="selectMatchChip('vibe','nature',this,3)" type="button"><span class="mc-ic">🌲</span><span class="mc-label" data-i18n="mc_nature">Priroda i planina</span></button>
-<button class="match-chip" onclick="selectMatchChip('vibe','nightlife',this,3)" type="button"><span class="mc-ic">🎶</span><span class="mc-label" data-i18n="mc_nightlife">Noćni život</span></button>
-<button class="match-chip match-chip-wide" onclick="selectMatchChip('vibe','mix',this,3)" type="button"><span class="mc-ic">✨</span><span class="mc-label" data-i18n="mc_mix">Malo od svega</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','sea',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="17.500" cy="6" r="2"/><path d="M3 12q2.250-3 4.500 0t4.500 0 4.500 0 4.500 0"/><path d="M3 17.500q2.250-3 4.500 0t4.500 0 4.500 0 4.500 0"/></svg></span><span class="mc-label" data-i18n="mc_sea">More i plaža</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','city',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 20.500h18"/><path d="M5 20.500V9.500l4.500-2v13"/><path d="M9.500 20.500V5l7 2.500v13"/><path d="M16.500 20.500v-8.500l3.500 1.500v7"/><path d="M12 10.500h2M12 14h2"/></svg></span><span class="mc-label" data-i18n="mc_city">Grad i kultura</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','nature',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.500 19.500 9 8.500l4 6.500 2.500-3.500 6 8z"/><path d="m7.200 11.800 1.800 1.500 1.800-1.500"/></svg></span><span class="mc-label" data-i18n="mc_nature">Priroda i planina</span></button>
+<button class="match-chip" onclick="selectMatchChip('vibe','nightlife',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 17.500V6l10-2v11.500"/><circle cx="6.500" cy="17.500" r="2.500"/><circle cx="16.500" cy="15.500" r="2.500"/></svg></span><span class="mc-label" data-i18n="mc_nightlife">Noćni život</span></button>
+<button class="match-chip match-chip-wide" onclick="selectMatchChip('vibe','mix',this,3)" type="button"><span class="mc-ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m11 3 1.900 5.600 5.600 1.900-5.600 1.900L11 18l-1.900-5.600-5.600-1.900 5.600-1.900z"/><path d="M19 15v5M16.500 17.500h5"/></svg></span><span class="mc-label" data-i18n="mc_mix">Malo od svega</span></button>
 </div>
 </div>
 <div class="match-step" data-step="3">
@@ -1266,7 +1302,7 @@ html,body{background:#0B1626;margin:0;}
 <span>€</span><input class="builder-input" data-i18n-placeholder="placeholder_match_budget" id="matchBudget" min="1" placeholder="npr. 400" step="1" style="max-width:none;" type="number"/>
 </div>
 </div>
-<button class="btn-primary match-submit-btn" data-i18n="match_modal_btn" id="matchModalSubmit" type="button">🎯 Pronađi mi 3 destinacije</button>
+<button class="btn-primary match-submit-btn" data-i18n="match_modal_btn" id="matchModalSubmit" type="button">Pronađi mi 3 destinacije</button>
 </div>
 <p class="alert-modal-disclaimer" data-i18n="match_modal_disclaimer">⚠️ Ilustrativna procena cene, kombinovana sa tvojim odgovorima — ne stvarna ponuda partnera.</p>
 </div>
@@ -1366,27 +1402,27 @@ html,body{background:#0B1626;margin:0;}
 <a aria-label="Piši nam na WhatsApp" class="whatsapp-fab" data-contact="wa" data-i18n-aria-label="whatsapp_aria" href="#" id="whatsappFab" rel="noopener">
 <svg fill="currentColor" viewbox="0 0 32 32"><path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.26.63 4.38 1.72 6.19L4 29l8.02-2.1a12 12 0 0 0 4 .68c6.62 0 12-5.38 12-12S22.64 3 16.02 3zm0 21.8c-2.02 0-3.9-.58-5.5-1.58l-.4-.24-4.42 1.16 1.18-4.3-.26-.44A9.7 9.7 0 0 1 5.2 15c0-5.96 4.86-10.8 10.82-10.8S26.84 9.04 26.84 15 21.98 24.8 16.02 24.8zm5.94-8.1c-.32-.16-1.9-.94-2.2-1.04-.3-.1-.5-.16-.72.16-.2.32-.84 1.04-1.02 1.26-.2.2-.38.24-.7.08-.32-.16-1.34-.5-2.56-1.6-.94-.84-1.58-1.88-1.76-2.2-.18-.32-.02-.5.14-.66.14-.14.32-.38.48-.56.16-.2.2-.32.32-.54.1-.2.06-.4-.02-.56-.08-.16-.72-1.76-1-2.4-.26-.64-.52-.54-.72-.56h-.6c-.2 0-.54.08-.82.4-.28.32-1.08 1.06-1.08 2.6s1.1 3.02 1.26 3.24c.16.2 2.18 3.36 5.28 4.7.74.32 1.32.5 1.76.66.74.24 1.42.2 1.96.12.6-.1 1.9-.78 2.16-1.52.28-.74.28-1.38.2-1.52-.08-.14-.3-.22-.62-.38z"></path></svg>
 </a>
-<script defer="" src="config.js?v=60b28611"></script>
+<script defer="" src="config.js?v=29e9b7fc"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
-<script defer="" src="i18n-data.js?v=f4bb4212"></script>
+<script defer="" src="i18n-data.js?v=c760cf2f"></script>
 <script>
 /* Jezički fajl (i18n-<kod>.js) se učitava samo ako je izabran jezik različit od srpskog.
    Mapa kod → hash popunjava translate.mjs (ne menjaj ručno). Ostali jezici se učitavaju kasnije, iz loadLang() u app-01-core.js. */
-window.I18N_V=/*I18N_V*/{"en":"75e08431","ru":"1510aa59","de":"8656cbc0"}/*/I18N_V*/;
+window.I18N_V=/*I18N_V*/{"en":"6fb6a413","ru":"4b531382","de":"474bd4e9"}/*/I18N_V*/;
 (function(){var l='sr',V=window.I18N_V;try{var u=new URLSearchParams(location.search).get('lang');if(u&&(u==='sr'||V[u]))l=u;else{var s=localStorage.getItem('sklopi_lang');if(s&&V[s])l=s}}catch(e){}
 if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/script>')})();
 </script>
-<script defer="" src="i18n-extra.js?v=5d4348d4"></script>
+<script defer="" src="i18n-extra.js?v=7ff519f2"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=56849d5c"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
 <script defer="" src="app-03-airports.js?v=81b29008"></script>
 <script defer="" src="app-04-pricing-engine.js?v=fafc7a3c"></script>
-<script defer="" src="app-05-results.js?v=1cab4466"></script>
-<script defer="" src="app-06-form.js?v=2b265021"></script>
+<script defer="" src="app-05-results.js?v=ded66817"></script>
+<script defer="" src="app-06-form.js?v=0535ab60"></script>
 <script defer="" src="app-07-package-detail.js?v=18b40523"></script>
-<script defer="" src="app-08-popular-airports.js?v=194e1ac1"></script>
-<script defer="" src="app-14-recent-searches.js?v=838179ea"></script>
+<script defer="" src="app-08-popular-airports.js?v=6090b648"></script>
+<script defer="" src="app-14-recent-searches.js?v=a0fa4fa6"></script>
 <script defer="" src="app-15-plan-select.js?v=e82434f8"></script>
 <script defer="" src="app-16-trip-prefs.js?v=f03a4be1"></script>
 <script defer="" src="app-17-itinerary.js?v=ca687e65"></script>
@@ -1400,14 +1436,17 @@ if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/scri
 <script defer="" src="app-26-plan-customize.js?v=fe5d4a62"></script>
 <script defer="" src="app-09-account.js?v=c058eb8e"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
-<script defer="" src="app-11-sections-hero.js?v=599fd62c"></script>
-<script defer="" src="dest-info.js?v=c1bc5dd1"></script>
+<script defer="" src="app-11-sections-hero.js?v=d63b2def"></script>
+<script defer="" src="dest-info.js?v=6c5828cb"></script>
+<script defer="" src="info-collapse.js?v=2b6be985"></script>
 <script defer="" src="price-mix.js?v=5e3c1012"></script>
 <script defer="" src="transport.js?v=dcc41813"></script>
 <script defer="" src="transport-i18n.js?v=f616fd98"></script>
 <script defer="" src="contact.js?v=60aecad3"></script>
 <script defer="" src="cookies.js?v=ac951772"></script>
 <script defer="" src="app-12-ux-refactor.js?v=859e04c7"></script>
+<script defer="" src="redesign-home.js?v=39cfe210"></script>
+<script defer="" src="redesign-trips.js?v=0c2209f2"></script>
 <script defer="" src="app-13-destination-value.js?v=5285c82e"></script>
 <script defer="" src="app-28-single-page-flow.js?v=28a1d458"></script>
 </body>
