@@ -428,3 +428,50 @@
   });
   window.addEventListener('load',later);
 })();
+
+/* Ekran 11: vodič za destinaciju — tabovi Pregled / Saveti / Atrakcije / Kultura nad karticama iz dest-info.js */
+(function(){
+  'use strict';
+  var TABS=[['overview','Pregled'],['tips','Saveti'],['sights','Atrakcije'],['culture','Kultura']];
+  var OF={'🌤':'overview','🛂':'overview','💰':'overview','🚇':'overview','🔌':'overview','🚨':'overview','📶':'overview','📅':'overview','🏛':'sights','🎡':'sights','🍽':'culture','💬':'culture','✈':'tips','🚆':'tips','⚠':'tips'};
+  var tab='overview';
+  function tabOf(card){
+    var ic=card.querySelector('.di-card-ic');
+    var k=ic?ic.textContent.replace(/[\uFE0F\u200D]/g,'').trim():'';
+    return OF[k]||'tips';
+  }
+  function apply(){
+    var ct=document.getElementById('destInfoContent');
+    if(!ct||ct.hidden)return;
+    ct.querySelectorAll('.di-card').forEach(function(c){
+      var show=tabOf(c)===tab;
+      if(c.classList.contains('di-hide')===show)c.classList.toggle('di-hide',!show);
+    });
+    ct.querySelectorAll('.di-grid').forEach(function(g){
+      var vis=g.querySelector('.di-card:not(.di-hide)');
+      if(g.classList.contains('di-hide')===!!vis)g.classList.toggle('di-hide',!vis);
+    });
+  }
+  function run(){
+    var ct=document.getElementById('destInfoContent'),body=ct;
+    if(!body||!ct||ct.hidden||!ct.querySelector('.di-card'))return;
+    var bar=document.getElementById('diTabs');
+    if(!bar){
+      bar=document.createElement('div');bar.id='diTabs';bar.className='fl-chips di-tabs';
+      bar.innerHTML=TABS.map(function(t){return '<button type="button" class="fl-chip'+(t[0]===tab?' on':'')+'" data-t="'+t[0]+'">'+t[1]+'</button>';}).join('');
+      body.parentNode.insertBefore(bar,body);
+      bar.addEventListener('click',function(e){
+        var b=e.target.closest('.fl-chip');if(!b)return;
+        tab=b.dataset.t;
+        bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x===b);});
+        apply();
+      });
+    }
+    apply();
+  }
+  var t2;function later(){clearTimeout(t2);t2=setTimeout(run,250);}
+  document.addEventListener('DOMContentLoaded',function(){
+    later();new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  });
+  window.addEventListener('load',later);
+})();

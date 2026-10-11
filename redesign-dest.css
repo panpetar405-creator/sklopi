@@ -164,3 +164,13 @@ html.ps-lock{overflow:hidden}
 .ps-link{display:flex;justify-content:space-between;padding:13px 14px;border-radius:12px;background:#fff;color:#14213d;text-decoration:none;font:600 13.5px Inter,sans-serif}
 .ps-link b{color:#2f6fd0}
 .ps-note{margin:12px 2px 0;font-size:11.5px;color:#8ea2c2}
+
+/* ===== REDIZAJN — Ekran 11: Vodič za destinaciju (#o-destinaciji) ===== */
+.di-tabs{margin:4px 0 12px}
+.di-hide{display:none!important}
+#o-destinaciji .di-card{background:#fff;color:#14213d;border:0;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+#o-destinaciji .di-card-title{color:#14213d;font-weight:800}
+#o-destinaciji .di-row{border-bottom:1px solid #e3e9f1}
+#o-destinaciji .di-label{color:#5b6b82}
+#o-destinaciji .di-val,#o-destinaciji .di-ms-name{color:#14213d}
+#o-destinaciji .di-ms-note,#o-destinaciji .di-tier-note{color:#6b7a90}
