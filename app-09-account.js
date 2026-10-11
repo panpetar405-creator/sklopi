@@ -155,6 +155,7 @@ function promptLogin(message){
 function renderAuthBar(user){
   const bar = document.getElementById('authBar');
   if (!bar) return;
+  document.querySelector('.saved-wrap')?.classList.toggle('is-auth', !!user && _SB_CONFIGURED);
   if (!_SB_CONFIGURED) { bar.innerHTML = ''; return; }
 
   if (user) {

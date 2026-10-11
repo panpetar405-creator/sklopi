@@ -121,3 +121,6 @@
 .mt2-tip-ic{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#1f4fd8;color:#fff;font-size:18px}
 .mt2-tip b{display:block;font:700 14px Inter,sans-serif}
 .mt2-tip small{display:block;margin-top:2px;font:500 12.5px/1.35 Inter,sans-serif;color:#c3d0e4}
+
+.mt2-tip{cursor:pointer}
+.mt2-tip:focus-visible{outline:2px solid #f6c93b;outline-offset:2px}

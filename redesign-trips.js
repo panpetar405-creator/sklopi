@@ -22,6 +22,7 @@
         if(t){tab=t.dataset.tab;render();return;}
         var r=e.target.closest('.mt2-rm');
         if(r){var id=r.dataset.id;write(read().filter(function(x){return x.id!==id;}));render();return;}
+        if(e.target.closest('.mt2-tip')){if(typeof getCurrentUser==='function'&&typeof promptLogin==='function'){getCurrentUser().then(function(u){if(!u)promptLogin('Prijavi se da sačuvaš izlete');});}return;}
         if(e.target.closest('.mt2-new')){var f=document.getElementById('searchForm-wrap');if(f)f.scrollIntoView({behavior:'smooth',block:'start'});}
       });
     }
@@ -42,7 +43,7 @@
           '<button type="button" class="mt2-rm" data-id="'+esc(x.id)+'">Ukloni</button></div>';
       }).join('');
     }
-    html+='<div class="mt2-tip"><span class="mt2-tip-ic" aria-hidden="true">\u2665</span><span><b>Čuvaj svoje planove</b><small>i lako im se vraćaj kad god poželiš.</small></span></div>';
+    html+='<div class="mt2-tip" role="button" tabindex="0"><span class="mt2-tip-ic" aria-hidden="true">\u2665</span><span><b>Čuvaj svoje planove</b><small>i lako im se vraćaj kad god poželiš.</small></span></div>';
     html+='<button type="button" class="mt2-new">+ Novi plan</button>';
     if(wrap.dataset.h!==html){wrap.dataset.h=html;wrap.innerHTML=html;}
   }
