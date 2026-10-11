@@ -312,8 +312,8 @@
     var t=document.getElementById(id);if(!t)return [];
     return Array.prototype.map.call(t.children,function(c){
       var b=c.querySelector('.dp-sl-price b'),p=c.querySelector('.dp-pick');
-      var title=((c.querySelector('.dp-sl-title')||{}).textContent||'').replace(/\s+/g,' ').trim();
-      return {price:b?parseInt(b.textContent.replace(/[^\d]/g,''),10)||0:0,txt:b?b.textContent:'',title:title,sub:((c.querySelector('.dp-sl-sub')||{}).textContent||'').trim(),key:p?p.getAttribute('data-pick'):'',stars:(title.match(/(\d)\s*★/)||[0,0])[1]*1};
+      var title=((c.querySelector('.dp-sl-title')||{}).textContent||'').replace(/\s+/g,' ').trim();title=title.replace(/([^\d\s])(\d{1,2}:\d{2})/,'$1 · $2');
+      return {price:b?parseInt(b.textContent.replace(/[^\d]/g,''),10)||0:0,txt:b?b.textContent:'',title:title,sub:((c.querySelector('.dp-sl-sub')||{}).textContent||'').trim(),key:p?p.getAttribute('data-pick'):'',href:((c.querySelector('.dp-sl-cta')||{}).href||''),partner:(((c.querySelector('.dp-sl-cta')||{}).textContent||'').replace(/^Pogledaj na\s*/i,'').trim()),stars:(title.match(/(\d)\s*★/)||[0,0])[1]*1};
     }).filter(function(x){return x.price>0;}).sort(function(a,b){return a.price-b.price;});
   }
   function days(){
@@ -344,7 +344,7 @@
     if(!main||!ov)return;
     var d=plans();if(!d)return;
     var cs=/RSD|din/i.test(d.sample)?'RSD':'€';
-    var ph=(document.querySelector('#ovPage .ov-hero img')||{}).src||'';
+    var phEl=document.querySelector('#ovPage .ov-hero img');var ph=phEl?phEl.getAttribute('src'):'';
     var name=((document.querySelector('#ovPage .ov-bar h2')||{}).textContent||'');
     var sig=[name,d.n,days()].concat(d.P.map(function(p){return p.total;})).join('|');
     var root=document.getElementById('ovPlans');
@@ -360,35 +360,67 @@
         '<div class="pl-total">Ukupno <b>'+fmt(p.total,cs)+'</b> / '+d.n+' '+(d.n===1?'putnik':'putnika')+'</div>'+
         '<div class="pl-pp">'+fmt(Math.round(p.total/d.n),cs)+' po osobi</div><div class="pl-ic">'+icons+'</div></div>'+
         (ph?'<div class="pl-img" style="background-image:url(\''+esc(ph)+'\')"></div>':'')+'</div>'+
-        '<button type="button" class="pl-more" aria-expanded="false">Pogledaj detalje →</button>'+
-        '<div class="pl-detail" hidden><ul>'+p.items.map(function(x){return '<li><span>'+x[0]+' '+esc(x[1]||'')+' '+esc(x[2].title)+'</span><b>'+fmt(x[2].price*x[3],cs)+'</b></li>';}).join('')+'</ul>'+
-        '<button type="button" class="pl-add">Dodaj plan u put</button></div></article>';
+        '<button type="button" class="pl-more">Pogledaj detalje →</button></article>';
     });
     html+='<p class="pl-note">Cene su okvirne procene sklopljene od ponuda ispod (let, smeštaj, auto i aktivnosti).</p>';
     root.innerHTML=html;
-    root._plans=d.P;
+    root._plans=d.P;root._ctx={n:d.n,cs:cs,ph:ph,name:name,dd:dd};
     root.onclick=function(e){
       var card=e.target.closest('.pl-card');if(!card)return;
       var p=root._plans[+card.dataset.i];
-      var more=e.target.closest('.pl-more');
-      if(more){
-        var det=card.querySelector('.pl-detail'),open=det.hidden;
-        det.hidden=!open;more.setAttribute('aria-expanded',open?'true':'false');
-        more.textContent=open?'Sakrij detalje ↑':'Pogledaj detalje →';return;
-      }
-      if(e.target.closest('.pl-add')){
-        var keys=p.items.map(function(x){return x[2].key;}).filter(Boolean),ix=0;
-        (function step(){
-          if(ix>=keys.length)return;
-          var b=document.querySelector('.dp-pick[data-pick="'+keys[ix++]+'"]');
-          if(b&&b.getAttribute('aria-pressed')!=='true')b.click();
-          setTimeout(step,120);
-        })();
-        var btn=e.target.closest('.pl-add');btn.textContent='Dodato u put ✓';
-        var bar=document.getElementById('dpTotalBar');if(bar&&bar.scrollIntoView){}
-        setTimeout(function(){btn.textContent='Dodaj plan u put';},2500);
-      }
+      if(e.target.closest('.pl-more')){openSheet(p,root._ctx);}
     };
+  }
+
+  var STORE='sklopi_trips_v2';
+  function readTrips(){try{var a=JSON.parse(localStorage.getItem(STORE)||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
+  function writeTrips(a){try{localStorage.setItem(STORE,JSON.stringify(a));return true;}catch(e){return false;}}
+  function closeSheet(){var o=document.getElementById('plSheet');if(o)o.remove();document.documentElement.classList.remove('ps-lock');}
+  var NAMES={'✈':'Let','🛏':'Smeštaj','🚗':'Rent-a-car','🎟':'Aktivnosti'};
+  function openSheet(p,c){
+    closeSheet();
+    var cs=c.cs,n=c.n,groups=[];
+    p.items.forEach(function(x){
+      var g=groups.filter(function(y){return y.ic===x[0];})[0];
+      if(!g){g={ic:x[0],rows:[]};groups.push(g);}
+      g.rows.push(x);
+    });
+    var rows=groups.map(function(g){
+      var sum=g.rows.reduce(function(t,x){return t+x[2].price*x[3];},0);
+      var det=g.rows.map(function(x){return esc(x[2].title)+(x[2].sub?' · '+esc(x[2].sub):'');}).join('<br>');
+      return '<li><span class="ps-ic">'+g.ic+'</span><div class="ps-rt"><b>'+esc(NAMES[g.ic]||'')+'</b><small>'+det+'</small></div><em>'+fmt(sum,cs)+'</em></li>';
+    }).join('');
+    var seen={};
+    var links=p.items.filter(function(x){var u=x[2].href;if(!u||seen[u])return false;seen[u]=1;return true;}).map(function(x){
+      return '<a class="ps-link" href="'+esc(x[2].href)+'" target="_blank" rel="noopener sponsored"><span>'+x[0]+' '+esc(NAMES[x[0]]||'')+'</span><b>'+esc(x[2].partner||'Partner')+' ↗</b></a>';
+    }).join('');
+    var o=document.createElement('div');o.id='plSheet';o.className='ps';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
+    o.innerHTML='<div class="ps-in"><div class="ps-bar"><button type="button" class="ps-back" aria-label="Nazad">‹</button><h2>Plan detalji</h2></div>'+
+      '<div class="ps-hero"'+(c.ph?' style="background-image:linear-gradient(180deg,rgba(6,16,34,.25),rgba(6,16,34,.8)),url(\''+esc(c.ph)+'\')"':'')+'>'+
+      '<span class="ps-badge '+p.cls+'">'+esc(p.name)+'</span><div class="ps-ttl">'+esc(c.name)+(c.dd?' · '+c.dd+' dana':'')+'</div>'+
+      '<div class="ps-tot">'+fmt(p.total,cs)+' <small>/ '+n+' '+(n===1?'putnik':'putnika')+'</small></div><div class="ps-pp">'+fmt(Math.round(p.total/n),cs)+' po osobi</div></div>'+
+      '<div class="ps-card"><ul class="ps-rows">'+rows+'</ul>'+
+      '<button type="button" class="ps-acc" aria-expanded="false">Šta nije uključeno? <span>⌄</span></button>'+
+      '<div class="ps-no" hidden><ul><li>Lokalni prevoz i taksi</li><li>Obroci i piće (osim ako nisu navedeni)</li><li>Putno osiguranje</li><li>eSIM / internet u inostranstvu</li><li>Boravišna taksa i dodatni troškovi na licu mesta</li></ul></div></div>'+
+      '<button type="button" class="ps-save">Sačuvaj plan</button>'+
+      '<button type="button" class="ps-partners">Idi na partnere →</button>'+
+      '<div class="ps-links" hidden>'+links+'</div>'+
+      '<p class="ps-note">Cene su okvirne procene. Tačnu cenu i dostupnost potvrđuješ kod partnera.</p></div>';
+    document.body.appendChild(o);document.documentElement.classList.add('ps-lock');
+    o.addEventListener('click',function(e){
+      if(e.target.closest('.ps-back')||e.target===o){closeSheet();return;}
+      if(e.target.closest('.ps-acc')){var b=e.target.closest('.ps-acc'),no=o.querySelector('.ps-no'),open=no.hidden;no.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');return;}
+      if(e.target.closest('.ps-partners')){var l=o.querySelector('.ps-links');l.hidden=false;l.scrollIntoView({behavior:'smooth',block:'center'});return;}
+      if(e.target.closest('.ps-save')){
+        var btn=e.target.closest('.ps-save');
+        var q='od='+encodeURIComponent(val('dpFrom'))+'&do='+encodeURIComponent(val('dpTo'))+'&polazak='+encodeURIComponent(val('dpStart'))+'&povratak='+encodeURIComponent(val('dpEnd'))+'&putnika='+n;
+        var t={id:[val('dpTo'),val('dpStart'),val('dpEnd'),n,p.k].join('|'),dest:c.name,plan:p.name,days:c.dd,from:val('dpStart'),to:val('dpEnd'),adults:n,total:p.total,cs:cs,photo:c.ph||'',url:'destinacija.html?'+q,saved:Date.now(),items:p.items.map(function(x){return {ic:x[0],t:x[2].title,p:x[2].price*x[3]};})};
+        var all=readTrips().filter(function(y){return y.id!==t.id;});all.unshift(t);
+        var ok=writeTrips(all.slice(0,30));
+        btn.innerHTML=ok?'Sačuvano ✓ <a href="index.html#myTrip">Moji putovi</a>':'Čuvanje nije moguće u ovom pregledaču';
+      }
+    });
+    document.addEventListener('keydown',function esc2(e){if(e.key==='Escape'){closeSheet();document.removeEventListener('keydown',esc2);}});
   }
   var t2;function later(){clearTimeout(t2);t2=setTimeout(build,450);}
   document.addEventListener('DOMContentLoaded',function(){

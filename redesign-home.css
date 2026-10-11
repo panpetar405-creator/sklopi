@@ -96,3 +96,22 @@
 .section.popular-reference-section .popular-reference-grid .pd-price{position:absolute;z-index:2;top:8px;right:8px;margin:0;padding:4px 9px;border-radius:999px;background:rgba(10,26,51,.72);color:#fff;font:700 11px Inter,sans-serif}
 .section.popular-reference-section .popular-reference-grid .pd-arrow{display:none}
 .section.popular-reference-section .popular-reference-grid .popular-dest-card:last-child:nth-child(odd){grid-column:1/-1;aspect-ratio:2.3/1}
+
+/* ===== REDIZAJN — Ekran 10: Moji putovi (#myTrip) ===== */
+#myTrip .mt-tabs,#myTrip #mtBody{display:none}
+#myTrip .mt2{max-width:560px;margin:0 auto}
+.mt2-tabs{display:flex;padding:4px;border-radius:999px;background:#0f2548;margin:6px 0 14px}
+.mt2-tab{flex:1;padding:10px;border:0;border-radius:999px;background:transparent;color:#d4deee;font:700 14px Inter,sans-serif;cursor:pointer}
+.mt2-tab.on{background:#f6c93b;color:#1a1a1a}
+.mt2-empty{padding:16px;border-radius:14px;border:1px dashed #2a4373;color:#c3d0e4;font:500 14px/1.5 Inter,sans-serif;text-align:center}
+.mt2-item{margin-bottom:10px}
+.mt2-card{display:flex;align-items:center;gap:12px;padding:10px;border-radius:16px;background:#12294d;border:1px solid #1d3562;color:#fff;text-decoration:none}
+.mt2-img{flex:none;width:76px;height:76px;border-radius:12px;background:#1d4a85 center/cover no-repeat}
+.mt2-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mt2-info b{font:800 15px Sora,Inter,sans-serif}
+.mt2-info small{font:500 12px Inter,sans-serif;color:#9fb0cc}
+.mt2-plan{color:#c3d0e4}
+.mt2-price{margin-top:2px;font:800 15px Inter,sans-serif;color:#f6c93b}
+.mt2-chev{font-size:24px;color:#9fb0cc}
+.mt2-rm{margin:4px 0 0 4px;padding:2px 6px;border:0;background:none;color:#8ea2c2;font:600 11.5px Inter,sans-serif;text-decoration:underline;cursor:pointer}
+.mt2-new{display:block;width:100%;margin-top:12px;padding:15px;border:0;border-radius:14px;background:#f6c93b;color:#1a1a1a;font:800 16px Inter,sans-serif;cursor:pointer}
