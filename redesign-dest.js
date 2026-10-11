@@ -336,7 +336,7 @@
       {k:'comfort',name:'Komfor',badge:'Više udobnosti',cls:'b3',items:[['✈','Let',at(fl,2),1],['🛏','Smeštaj',hotelBy(5,ho.length-1),1],ca.length?['🚗','Rent-a-car',carAuto[0]||at(ca,2),1]:null,ac.length?['🎟','Aktivnosti (3)',ac[0],n]:null,ac.length>1?['🎟','',ac[1],n]:null,ac.length>2?['🎟','',ac[2],n]:null]}
     ];
     P.forEach(function(p){p.items=p.items.filter(Boolean);p.total=p.items.reduce(function(s,i){return s+i[2].price*i[3];},0);});
-    return {P:P,n:n,sample:fl[0].txt};
+    return {P:P,n:n,sample:fl[0].txt,pool:{fl:fl,ho:ho,ca:ca,ac:ac}};
   }
   function fmt(v,cs){return v.toLocaleString('sr-RS')+' '+cs;}
   function build(){
@@ -364,7 +364,7 @@
     });
     html+='<p class="pl-note">Cene su okvirne procene sklopljene od ponuda ispod (let, smeštaj, auto i aktivnosti).</p>';
     root.innerHTML=html;
-    root._plans=d.P;root._ctx={n:d.n,cs:cs,ph:ph,name:name,dd:dd};
+    root._plans=d.P;root._ctx={n:d.n,cs:cs,ph:ph,name:name,dd:dd,pool:d.pool};
     root.onclick=function(e){
       var card=e.target.closest('.pl-card');if(!card)return;
       var p=root._plans[+card.dataset.i];
@@ -379,45 +379,74 @@
   var NAMES={'✈':'Let','🛏':'Smeštaj','🚗':'Rent-a-car','🎟':'Aktivnosti'};
   function openSheet(p,c){
     closeSheet();
-    var cs=c.cs,n=c.n,groups=[];
-    p.items.forEach(function(x){
-      var g=groups.filter(function(y){return y.ic===x[0];})[0];
-      if(!g){g={ic:x[0],rows:[]};groups.push(g);}
-      g.rows.push(x);
-    });
-    var rows=groups.map(function(g){
-      var sum=g.rows.reduce(function(t,x){return t+x[2].price*x[3];},0);
-      var det=g.rows.map(function(x){return esc(x[2].title)+(x[2].sub?' · '+esc(x[2].sub):'');}).join('<br>');
-      return '<li><span class="ps-ic">'+g.ic+'</span><div class="ps-rt"><b>'+esc(NAMES[g.ic]||'')+'</b><small>'+det+'</small></div><em>'+fmt(sum,cs)+'</em></li>';
-    }).join('');
-    var seen={};
-    var links=p.items.filter(function(x){var u=x[2].href;if(!u||seen[u])return false;seen[u]=1;return true;}).map(function(x){
-      return '<a class="ps-link" href="'+esc(x[2].href)+'" target="_blank" rel="noopener sponsored"><span>'+x[0]+' '+esc(NAMES[x[0]]||'')+'</span><b>'+esc(x[2].partner||'Partner')+' ↗</b></a>';
-    }).join('');
+    var cs=c.cs,n=c.n,pool=c.pool||{fl:[],ho:[],ca:[],ac:[]};
+    var items=p.items.map(function(x){return x.slice();});
+    var changed=false,optOpen=false,noOpen=false,linksOpen=false,saved=false;
+    function total(){return items.reduce(function(t,x){return t+x[2].price*x[3];},0);}
+    function suggestions(){
+      var S=[],hi=items.filter(function(x){return x[0]==='🛏';})[0],fi=items.filter(function(x){return x[0]==='✈';})[0],ci=items.filter(function(x){return x[0]==='🚗';})[0];
+      var ai=items.filter(function(x){return x[0]==='🎟';});
+      if(hi){var ah=pool.ho.filter(function(h){return h.price<hi[2].price;})[0];
+        if(ah)S.push({t:'Zameni smeštaj',d:ah.title+(ah.sub?' · '+ah.sub:''),save:hi[2].price-ah.price,apply:function(){hi[2]=ah;}});}
+      if(fi){var af=pool.fl.filter(function(f){return f.price<fi[2].price;})[0];
+        if(af)S.push({t:'Jeftiniji let',d:af.title+(af.sub?' · '+af.sub:''),save:fi[2].price-af.price,apply:function(){fi[2]=af;}});}
+      if(ci)S.push({t:'Ukloni rent-a-car',d:'Javni prevoz i taksi su često dovoljni u gradu',save:ci[2].price,apply:function(){items=items.filter(function(x){return x[0]!=='🚗';});}});
+      if(ai.length>1){var mx=ai.slice().sort(function(a,b){return b[2].price*b[3]-a[2].price*a[3];})[0];
+        S.push({t:'Izbaci jednu aktivnost',d:mx[2].title,save:mx[2].price*mx[3],apply:function(){items=items.filter(function(x){return x!==mx;});}});}
+      return S;
+    }
+    function paint(){
+      var groups=[];
+      items.forEach(function(x){var g=groups.filter(function(y){return y.ic===x[0];})[0];if(!g){g={ic:x[0],rows:[]};groups.push(g);}g.rows.push(x);});
+      var rows=groups.map(function(g){
+        var sum=g.rows.reduce(function(t,x){return t+x[2].price*x[3];},0);
+        var det=g.rows.map(function(x){return esc(x[2].title)+(x[2].sub?' · '+esc(x[2].sub):'');}).join('<br>');
+        return '<li><span class="ps-ic">'+g.ic+'</span><div class="ps-rt"><b>'+esc(NAMES[g.ic]||'')+'</b><small>'+det+'</small></div><em>'+fmt(sum,cs)+'</em></li>';
+      }).join('');
+      var seen={};
+      var links=items.filter(function(x){var u=x[2].href;if(!u||seen[u])return false;seen[u]=1;return true;}).map(function(x){
+        return '<a class="ps-link" href="'+esc(x[2].href)+'" target="_blank" rel="noopener sponsored"><span>'+x[0]+' '+esc(NAMES[x[0]]||'')+'</span><b>'+esc(x[2].partner||'Partner')+' ↗</b></a>';
+      }).join('');
+      var S=suggestions(),all=S.reduce(function(t,s){return t+s.save;},0),T=total();
+      var opt='';
+      if(optOpen){
+        opt='<div class="ps-opt"><h3>Optimizuj cenu</h3>'+
+          (S.length?'<div class="ps-saveb">Možeš uštedeti do <b>'+fmt(all,cs)+'</b></div>'+S.map(function(s,i){
+            return '<div class="ps-sg"><div class="ps-sgt"><b>'+esc(s.t)+'</b><small>'+esc(s.d)+'</small><span class="ps-sgs">Ušteda: '+fmt(s.save,cs)+'</span></div><button type="button" class="ps-apply" data-s="'+i+'">Primeni</button></div>';
+          }).join('')+'<button type="button" class="ps-applyall">Primeni sve preporuke</button>'
+          :'<p class="ps-none">Za ovaj plan nema jeftinijih zamena u trenutnim ponudama.</p>')+
+          '<p class="ps-warn">Jeftinije zamene mogu značiti manje zvezdica, duži put ili manje sadržaja.</p></div>';
+      }
+      o.querySelector('.ps-in').innerHTML='<div class="ps-bar"><button type="button" class="ps-back" aria-label="Nazad">‹</button><h2>Plan detalji</h2></div>'+
+        '<div class="ps-hero"'+(c.ph?' style="background-image:linear-gradient(180deg,rgba(6,16,34,.25),rgba(6,16,34,.8)),url(\''+esc(c.ph)+'\')"':'')+'>'+
+        '<span class="ps-badge '+p.cls+'">'+esc(p.name)+(changed?' · optimizovano':'')+'</span><div class="ps-ttl">'+esc(c.name)+(c.dd?' · '+c.dd+' dana':'')+'</div>'+
+        '<div class="ps-tot">'+fmt(T,cs)+' <small>/ '+n+' '+(n===1?'putnik':'putnika')+'</small></div><div class="ps-pp">'+fmt(Math.round(T/n),cs)+' po osobi</div></div>'+
+        '<div class="ps-card"><div class="ps-bh">Procena budžeta</div><ul class="ps-rows">'+rows+'</ul>'+
+        '<button type="button" class="ps-acc" aria-expanded="'+noOpen+'">Šta nije uključeno? <span>⌄</span></button>'+
+        '<div class="ps-no"'+(noOpen?'':' hidden')+'><ul><li>Lokalni prevoz i taksi</li><li>Obroci i piće (osim ako nisu navedeni)</li><li>Putno osiguranje</li><li>eSIM / internet u inostranstvu</li><li>Boravišna taksa i dodatni troškovi na licu mesta</li></ul></div></div>'+
+        '<button type="button" class="ps-optbtn">'+(optOpen?'Sakrij optimizaciju':'Optimizuj cenu')+'</button>'+opt+
+        '<button type="button" class="ps-save">'+(saved?'Sačuvano ✓ <a href="index.html#myTrip">Moji putovi</a>':'Sačuvaj plan')+'</button>'+
+        '<button type="button" class="ps-partners">Idi na partnere →</button>'+
+        '<div class="ps-links"'+(linksOpen?'':' hidden')+'>'+links+'</div>'+
+        '<p class="ps-note">Cene su okvirne procene. Tačnu cenu i dostupnost potvrđuješ kod partnera.</p>';
+    }
     var o=document.createElement('div');o.id='plSheet';o.className='ps';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
-    o.innerHTML='<div class="ps-in"><div class="ps-bar"><button type="button" class="ps-back" aria-label="Nazad">‹</button><h2>Plan detalji</h2></div>'+
-      '<div class="ps-hero"'+(c.ph?' style="background-image:linear-gradient(180deg,rgba(6,16,34,.25),rgba(6,16,34,.8)),url(\''+esc(c.ph)+'\')"':'')+'>'+
-      '<span class="ps-badge '+p.cls+'">'+esc(p.name)+'</span><div class="ps-ttl">'+esc(c.name)+(c.dd?' · '+c.dd+' dana':'')+'</div>'+
-      '<div class="ps-tot">'+fmt(p.total,cs)+' <small>/ '+n+' '+(n===1?'putnik':'putnika')+'</small></div><div class="ps-pp">'+fmt(Math.round(p.total/n),cs)+' po osobi</div></div>'+
-      '<div class="ps-card"><ul class="ps-rows">'+rows+'</ul>'+
-      '<button type="button" class="ps-acc" aria-expanded="false">Šta nije uključeno? <span>⌄</span></button>'+
-      '<div class="ps-no" hidden><ul><li>Lokalni prevoz i taksi</li><li>Obroci i piće (osim ako nisu navedeni)</li><li>Putno osiguranje</li><li>eSIM / internet u inostranstvu</li><li>Boravišna taksa i dodatni troškovi na licu mesta</li></ul></div></div>'+
-      '<button type="button" class="ps-save">Sačuvaj plan</button>'+
-      '<button type="button" class="ps-partners">Idi na partnere →</button>'+
-      '<div class="ps-links" hidden>'+links+'</div>'+
-      '<p class="ps-note">Cene su okvirne procene. Tačnu cenu i dostupnost potvrđuješ kod partnera.</p></div>';
+    o.innerHTML='<div class="ps-in"></div>';
     document.body.appendChild(o);document.documentElement.classList.add('ps-lock');
+    paint();
     o.addEventListener('click',function(e){
       if(e.target.closest('.ps-back')||e.target===o){closeSheet();return;}
-      if(e.target.closest('.ps-acc')){var b=e.target.closest('.ps-acc'),no=o.querySelector('.ps-no'),open=no.hidden;no.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');return;}
-      if(e.target.closest('.ps-partners')){var l=o.querySelector('.ps-links');l.hidden=false;l.scrollIntoView({behavior:'smooth',block:'center'});return;}
-      if(e.target.closest('.ps-save')){
-        var btn=e.target.closest('.ps-save');
+      if(e.target.closest('.ps-acc')){noOpen=!noOpen;paint();return;}
+      if(e.target.closest('.ps-optbtn')){optOpen=!optOpen;paint();return;}
+      var ap=e.target.closest('.ps-apply');
+      if(ap){var s=suggestions()[+ap.dataset.s];if(s){s.apply();changed=true;saved=false;paint();}return;}
+      if(e.target.closest('.ps-applyall')){var g=0;while(g++<6){var l=suggestions();if(!l.length)break;l[0].apply();}changed=true;saved=false;paint();return;}
+      if(e.target.closest('.ps-partners')){linksOpen=true;paint();var lk=o.querySelector('.ps-links');if(lk)lk.scrollIntoView({behavior:'smooth',block:'center'});return;}
+      if(e.target.closest('.ps-save')&&!e.target.closest('a')){
         var q='od='+encodeURIComponent(val('dpFrom'))+'&do='+encodeURIComponent(val('dpTo'))+'&polazak='+encodeURIComponent(val('dpStart'))+'&povratak='+encodeURIComponent(val('dpEnd'))+'&putnika='+n;
-        var t={id:[val('dpTo'),val('dpStart'),val('dpEnd'),n,p.k].join('|'),dest:c.name,plan:p.name,days:c.dd,from:val('dpStart'),to:val('dpEnd'),adults:n,total:p.total,cs:cs,photo:c.ph||'',url:'destinacija.html?'+q,saved:Date.now(),items:p.items.map(function(x){return {ic:x[0],t:x[2].title,p:x[2].price*x[3]};})};
+        var t={id:[val('dpTo'),val('dpStart'),val('dpEnd'),n,p.k].join('|'),dest:c.name,plan:p.name+(changed?' (optimizovano)':''),days:c.dd,from:val('dpStart'),to:val('dpEnd'),adults:n,total:total(),cs:cs,photo:c.ph||'',url:'destinacija.html?'+q,saved:Date.now(),items:items.map(function(x){return {ic:x[0],t:x[2].title,p:x[2].price*x[3]};})};
         var all=readTrips().filter(function(y){return y.id!==t.id;});all.unshift(t);
-        var ok=writeTrips(all.slice(0,30));
-        btn.innerHTML=ok?'Sačuvano ✓ <a href="index.html#myTrip">Moji putovi</a>':'Čuvanje nije moguće u ovom pregledaču';
+        saved=writeTrips(all.slice(0,30));paint();
       }
     });
     document.addEventListener('keydown',function esc2(e){if(e.key==='Escape'){closeSheet();document.removeEventListener('keydown',esc2);}});

@@ -174,3 +174,19 @@ html.ps-lock{overflow:hidden}
 #o-destinaciji .di-label{color:#5b6b82}
 #o-destinaciji .di-val,#o-destinaciji .di-ms-name{color:#14213d}
 #o-destinaciji .di-ms-note,#o-destinaciji .di-tier-note{color:#6b7a90}
+
+/* ===== REDIZAJN — Ekrani 12–13: Procena budžeta i Optimizacija cene (u sheet-u) ===== */
+.ps-bh{padding:12px 0 2px;font:800 15px Sora,Inter,sans-serif}
+.ps-optbtn{display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:14px;background:#f6c93b;color:#1a1a1a;font:800 15px Inter,sans-serif;cursor:pointer}
+.ps-opt{margin-top:12px;padding:14px;border-radius:16px;background:#fff;color:#14213d}
+.ps-opt h3{margin:0 0 10px;font:800 16px Sora,Inter,sans-serif}
+.ps-saveb{padding:11px 14px;border-radius:12px;background:#dff5e6;color:#1b7a43;font:600 14px Inter,sans-serif;margin-bottom:10px}
+.ps-saveb b{font-weight:800}
+.ps-sg{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #e3e9f1}
+.ps-sgt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ps-sgt b{font:700 14px Inter,sans-serif}
+.ps-sgt small{font:500 12px/1.35 Inter,sans-serif;color:#6b7a90}
+.ps-sgs{font:700 12px Inter,sans-serif;color:#1b7a43}
+.ps-apply{flex:none;padding:8px 14px;border:1.5px solid #14213d;border-radius:10px;background:transparent;color:#14213d;font:700 13px Inter,sans-serif;cursor:pointer}
+.ps-applyall{display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:12px;background:#f6c93b;color:#1a1a1a;font:800 14.5px Inter,sans-serif;cursor:pointer}
+.ps-none,.ps-warn{margin:10px 0 0;font:500 12px/1.4 Inter,sans-serif;color:#6b7a90}
