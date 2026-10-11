@@ -875,7 +875,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
     const testSel = Object.assign({}, builderState, {hotelStars: builderState.hotelStars - 1});
     const alt = computeCustomPackage(testSel, ctx);
     candidates.push({
-      testSel,
+      testSel, icon:'🏨', title:'Zamena hotela',
       savings: current.total - alt.total,
       message: `Ako promeniš hotel na ${testSel.hotelStars}★, zadržavaš skoro istu lokaciju uz malo nižu ocenu (${alt.hotel.rating} umesto ${current.hotel.rating}).`,
       toastMsg: 'hotel promenjen na ' + testSel.hotelStars + '★.',
@@ -891,7 +891,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
     const testSel = Object.assign({}, builderState, {carPref: carDowngrade});
     const alt = computeCustomPackage(testSel, ctx);
     candidates.push({
-      testSel,
+      testSel, icon:'🚗', title: carDowngrade === 'none' ? 'Bez automobila' : 'Manji automobil',
       savings: current.total - alt.total,
       message: carDowngrade === 'none'
         ? 'Ako odustaneš od iznajmljivanja auta, gubiš deo fleksibilnosti u kretanju, ali štediš i na gorivu i putarinama.'
@@ -908,7 +908,7 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
     const testSel = Object.assign({}, builderState, {activityCount: builderState.activityCount - 1});
     const alt = computeCustomPackage(testSel, ctx);
     candidates.push({
-      testSel,
+      testSel, icon:'🎟️', title:'Manje aktivnosti',
       savings: current.total - alt.total,
       message: `Ako smanjiš broj aktivnosti na ${testSel.activityCount}, ostaje ti i dalje dovoljno vremena za slobodno istraživanje.`,
       toastMsg: 'broj aktivnosti smanjen na ' + testSel.activityCount + '.',
@@ -929,17 +929,32 @@ document.getElementById('optimizeBtn').addEventListener('click', ()=>{
     return;
   }
 
-  const best = viable[0];
-  box.innerHTML = `
-    <span class="save">Možeš uštedeti ${fmtEUR(best.savings)}</span>
-    ${best.message}
-    <button type="button" class="optimize-apply" id="applyOptimize">Primeni ovu izmenu</button>
-  `;
-  document.getElementById('applyOptimize').addEventListener('click', ()=>{
-    Object.assign(builderState, best.testSel);
-    best.apply();
+  // Ukupna ušteda kad se primene SVE preporuke (računa se stvarno, ne zbirom).
+  const allSel = viable.reduce((acc, c) => Object.assign(acc, c.testSel), Object.assign({}, builderState));
+  // testSel svake poluge menja samo svoje polje, pa je spajanje bezbedno.
+  const allTotal = current.total - computeCustomPackage(allSel, ctx).total;
+  const icons = {hotel:'🏨', car:'🚗', act:'🎟️'};
+  const rows = viable.map((c, i) => `
+    <div class="opt-row">
+      <span class="opt-ic" aria-hidden="true">${c.icon || '💡'}</span>
+      <span class="opt-main"><b>${c.title}</b><small>${c.message}</small><em>Ušteda do ${fmtEUR(c.savings)}</em></span>
+      <button type="button" class="opt-apply" data-i="${i}">Primeni</button>
+    </div>`).join('');
+  box.innerHTML = rows + `
+    <div class="opt-total"><span>Potencijalna ušteda</span><b>+ ${fmtEUR(allTotal)}</b></div>
+    <button type="button" class="opt-apply-all" id="applyOptimizeAll">Primeni sve preporuke</button>`;
+  box.querySelectorAll('.opt-apply').forEach(btn => btn.addEventListener('click', () => {
+    const c = viable[+btn.dataset.i];
+    Object.assign(builderState, c.testSel);
+    c.apply();
     renderBuilder();
-    showToast('Izlet ažuriran — ' + best.toastMsg);
+    showToast('Izlet ažuriran — ' + c.toastMsg);
+  }));
+  document.getElementById('applyOptimizeAll').addEventListener('click', () => {
+    Object.assign(builderState, allSel);
+    renderFormUI();
+    renderBuilder();
+    showToast('Izlet ažuriran — primenjene sve preporuke.');
   });
 });
 

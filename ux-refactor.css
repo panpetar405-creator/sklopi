@@ -472,3 +472,16 @@ body.ux-plans-open #destinationPlansBtn{display:none}
 .seo-intro{max-width:760px;margin:0 auto;padding:28px 20px 8px;}
 .seo-intro h2{margin:0 0 12px;font-size:clamp(20px,5vw,26px);line-height:1.25;}
 .seo-intro p{margin:0 0 12px;color:var(--nv-muted,#A9B8CA);font-size:15.5px;line-height:1.65;}
+
+/* ---- Optimizuj cenu: lista predloga sa uštedom (po skrinšotu) ---- */
+.optimize-result:has(.opt-row){padding:6px;border-left:0;border-radius:16px;background:var(--nv-surface-2,#0f2a4d)}
+.opt-row{display:flex;align-items:center;gap:12px;padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.opt-ic{font-size:22px;flex:0 0 auto}
+.opt-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.opt-main b{font-size:15px}
+.opt-main small{font-size:12.5px;line-height:1.4;opacity:.8}
+.opt-main em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--nv-accent,#f5c842)}
+.opt-apply{flex:0 0 auto;border:0;border-radius:10px;padding:8px 14px;font:800 13px 'Inter',sans-serif;background:var(--nv-accent,#f5c842);color:#14213a;cursor:pointer}
+.opt-total{display:flex;justify-content:space-between;align-items:center;padding:12px 10px;font-weight:700}
+.opt-total b{color:var(--nv-accent,#f5c842);font-size:18px}
+.opt-apply-all{display:block;width:100%;border:0;border-radius:14px;padding:13px;font:800 15px 'Inter',sans-serif;background:var(--nv-accent,#f5c842);color:#14213a;cursor:pointer}
