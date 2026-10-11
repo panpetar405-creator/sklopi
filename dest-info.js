@@ -607,8 +607,8 @@
       html += '</div><div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;text-align:center;font-size:11px;margin-top:4px;opacity:.7">';
       for (var j = 0; j < 12; j++) html += '<span>' + esc(L.months[j]) + '</span>';
       html += '</div>';
-      if (cm.sea && cm.sea.length === 12) {
-        html += '<div class="di-row" style="margin-top:8px"><span class="di-label">🌊 ' + L.sea + '</span><span class="di-val">' + cm.sea.map(function (t, k) { return esc(L.months[k] + ' ' + t + '°'); }).join(' · ') + '</span></div>';
+      if (cm.sea && cm.sea.length === 12 && cm.sea.some(function (t) { return t != null && isFinite(t); })) {
+        html += '<div class="di-row" style="margin-top:8px"><span class="di-label">🌊 ' + L.sea + '</span><span class="di-val">' + cm.sea.map(function (t, k) { return esc(L.months[k] + ' ' + (t != null && isFinite(t) ? t + '°' : '–')); }).join(' · ') + '</span></div>';
       }
       html += '<div class="di-tier-note" style="margin-top:6px">▮ ' + L.hi + ' °C · ▬ ' + L.rain + ' (mm)</div></div>';
     }

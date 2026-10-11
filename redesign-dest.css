@@ -190,3 +190,25 @@ html.ps-lock{overflow:hidden}
 .ps-apply{flex:none;padding:8px 14px;border:1.5px solid #14213d;border-radius:10px;background:transparent;color:#14213d;font:700 13px Inter,sans-serif;cursor:pointer}
 .ps-applyall{display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:12px;background:#f6c93b;color:#1a1a1a;font:800 14.5px Inter,sans-serif;cursor:pointer}
 .ps-none,.ps-warn{margin:10px 0 0;font:500 12px/1.4 Inter,sans-serif;color:#6b7a90}
+
+/* ===== SLAJDER umesto liste jedna ispod druge: letovi, smeštaj, rent-a-car, aktivnosti =====
+   Vraća vodoravno listanje sa "snap" efektom; sledeća kartica viri sa desne strane da se vidi da ima još.
+   Zadržava belu karticu iz redizajna; fotografija je na vrhu kartice. Sve ponude su u slajderu (nema "Prikaži još"). */
+#avio .dp-slider-track,#smestaj .dp-slider-track,#rentacar .dp-slider-track,#aktivnosti .dp-slider-track{
+  flex-direction:row;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:12px;align-items:stretch}
+#avio .dp-sl-card,#smestaj .dp-sl-card,#rentacar .dp-sl-card,#aktivnosti .dp-sl-card{
+  display:flex;flex-direction:column;flex:0 0 min(86%,340px);width:auto;min-width:0;scroll-snap-align:start;overflow:hidden}
+#smestaj .dp-sl-photo,#rentacar .dp-sl-photo,#aktivnosti .dp-sl-photo{
+  width:100%;height:auto;min-height:0;aspect-ratio:16/10;flex:none}
+#smestaj .dp-sl-photo.no-photo,#rentacar .dp-sl-photo.no-photo,#aktivnosti .dp-sl-photo.no-photo{aspect-ratio:auto;min-height:96px}
+#smestaj .dp-sl-body,#rentacar .dp-sl-body,#aktivnosti .dp-sl-body,#avio .dp-sl-body{flex:1}
+/* sve ponude vidljive u slajderu, dugme "Prikaži još" više ne treba */
+#avio .dp-slider:not(.dp-all) .dp-extra,#smestaj .dp-slider:not(.dp-all) .dp-extra,
+#rentacar .dp-slider:not(.dp-all) .dp-extra,#aktivnosti .dp-slider:not(.dp-all) .dp-extra{display:flex}
+#avio .dp-more-btn,#smestaj .dp-more-btn,#rentacar .dp-more-btn,#aktivnosti .dp-more-btn{display:none}
+/* strelice za računar/miš; na telefonu se listanje radi prstom */
+@media (min-width:761px){
+  #avio .dp-slider-nav:not([hidden]),#smestaj .dp-slider-nav:not([hidden]),
+  #rentacar .dp-slider-nav:not([hidden]),#aktivnosti .dp-slider-nav:not([hidden]){display:flex}
+  #avio .dp-sl-btn,#smestaj .dp-sl-btn,#rentacar .dp-sl-btn,#aktivnosti .dp-sl-btn{background:#12294d;border-color:#2a4373;color:#fff}
+}
