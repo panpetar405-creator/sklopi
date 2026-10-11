@@ -41,6 +41,7 @@
   T(`Nazad na pretragu`, `Back to search`, `Назад к поиску`, `Zurück zur Suche`);
   T(`Tvoje putovanje`, `Your trip`, `Ваша поездка`, `Deine Reise`);
   T(`Polazak:`, `Departure:`, `Вылет:`, `Abflug:`);
+  T(`Promeni na početnoj`, `Change on the home page`, `Изменить на главной`, `Auf der Startseite ändern`);
   T(`Polazak iz`, `Departing from`, `Вылет из`, `Abflug von`);
   T(`Destinacija`, `Destination`, `Направление`, `Reiseziel`);
   T(`Polazak`, `Departure`, `Вылет`, `Abflug`);

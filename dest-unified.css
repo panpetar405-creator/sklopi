@@ -1,0 +1,109 @@
+/* dest-unified.css — JEDAN vizuelni koncept za celu stranicu destinacije (učitava se poslednji).
+   Koncept (po mockup-u): tamnoplava pozadina, BELE kartice sa mekom senkom za sav sadržaj, žuta (#f6c93b) je jedini
+   akcenat i jedina boja primarnih dugmadi, ista zaobljenost, isti čipovi, jedna širina kolone.
+   Prethodno su se mešali: tamne "staklene" kartice, bele kartice, dve nijanse plave, različite širine i stilovi dugmadi. */
+
+/* ---------- 1) tokeni: jedna paleta (stari --nv-* tokeni se preusmeravaju, pa sve što ih koristi prati isti izgled) ---------- */
+body{
+  --u-bg:#0a1a33; --u-panel:#0f2548; --u-panel-2:#12294d; --u-line:#1d3562; --u-chip:#2a4373;
+  --u-text:#ffffff; --u-soft:#c3d0e4; --u-muted:#9fb0cc;
+  --u-accent:#f6c93b; --u-on-accent:#14213d;
+  --u-card:#ffffff; --u-ink:#14213d; --u-ink-2:#5b6b82; --u-ink-3:#6b7a90; --u-rule:#e3e9f1; --u-link:#2457b8; --u-tint:#fff6d6;
+  --u-r:16px; --u-r-in:12px; --u-shadow:0 6px 18px rgba(0,0,0,.22); --u-col:640px;
+
+  --nv-page:var(--u-bg); --nv-bg:var(--u-bg); --nv-surface:var(--u-panel); --nv-surface-2:var(--u-panel-2);
+  --nv-line:var(--u-line); --nv-text:var(--u-text); --nv-muted:var(--u-muted);
+  --nv-accent:var(--u-accent); --nv-on-accent:var(--u-on-accent); --nv-radius-card:var(--u-r); --nv-radius-panel:20px;
+  background:var(--u-bg);
+}
+html{background:var(--u-bg)}
+
+/* ---------- 2) jedna širina kolone ---------- */
+.topbar{max-width:var(--u-col)}
+.dp-hero{max-width:var(--u-col);width:calc(100% - 32px);margin:14px auto 0}
+.dp-wrap{max-width:var(--u-col)}
+.ov-page,.pl-page{max-width:var(--u-col)}
+.topbar-wrap{background:var(--u-bg);border-bottom:1px solid var(--u-line)}
+
+/* ---------- 3) hero: ravna tamna ploča (bez sjaja i staklenog efekta) ---------- */
+.dp-hero{background:var(--u-panel);border:1px solid var(--u-line);border-radius:20px;padding:22px 20px 20px;box-shadow:none}
+.dp-kicker{color:var(--u-accent);letter-spacing:.14em}
+.dp-hero h1{color:var(--u-text)}
+.dp-hero-facts{gap:8px}
+.dp-hero-fact{background:transparent;border:1px solid var(--u-chip);color:var(--u-soft);min-height:36px;padding:0 14px;font:500 13.5px Inter,sans-serif}
+.dp-hero-fact b{color:var(--u-text);font-weight:700}
+.dp-hero-change{color:var(--u-accent);border-color:rgba(246,201,59,.55);font-weight:700}
+
+/* dokumenta za put: ista ugnežđena ploča kao ostale unutar hero-a */
+.travel-checklist{background:var(--u-panel-2);border:1px solid var(--u-line);border-radius:var(--u-r-in);margin-top:16px}
+.travel-checklist .tc-head{min-height:0;padding:14px 16px;gap:10px;font:700 15px Inter,sans-serif;color:var(--u-text)}
+.travel-checklist .tc-title{display:flex;align-items:center;gap:8px;min-width:0}
+.travel-checklist .tc-score{color:var(--u-on-accent);background:var(--u-accent);font-weight:800;padding:4px 10px}
+.travel-checklist .tc-head::after{color:var(--u-muted)}
+.travel-checklist .tc-item{border-top-color:var(--u-line)}
+.travel-checklist .tc-item p,.travel-checklist .travel-updated{color:var(--u-muted)}
+
+/* ---------- 4) čipovi: jedan stil za brzu navigaciju i filtere ---------- */
+.dp-jump a,.fl-chip{
+  min-height:40px;padding:0 16px;display:inline-flex;align-items:center;white-space:nowrap;
+  background:transparent;border:1px solid var(--u-chip);border-radius:999px;color:var(--u-soft);font:600 13.5px Inter,sans-serif;text-decoration:none;
+}
+.dp-jump a:hover,.fl-chip:hover{border-color:var(--u-accent);color:var(--u-text)}
+.fl-chip.on{background:var(--u-accent);border-color:var(--u-accent);color:var(--u-on-accent);font-weight:800}
+.dp-estimate,.ov-note,.pl-note{color:var(--u-muted)}
+
+/* ---------- 5) lepljiva traka sa zbirom ---------- */
+.dp-total-bar{background:rgba(10,26,51,.96);border-bottom:1px solid var(--u-line);box-shadow:0 10px 24px -14px rgba(0,0,0,.6)}
+.dp-total-bar .dp-tb-label{color:var(--u-muted);letter-spacing:.12em}
+.dp-total-bar .dp-tb-price{color:var(--u-text)}
+.dp-total-bar .btn-primary,.dp-tb-open{background:var(--u-accent);color:var(--u-on-accent);border-radius:999px;font-weight:800}
+.dp-total-bar .btn-primary::after{background:rgba(20,33,61,.14);color:var(--u-on-accent)}   /* bez narandžastog kruga — kao ostatak sajta */
+.dp-tb-share{color:var(--u-accent)}
+.dp-dock{background:var(--u-panel);border:1px solid var(--u-line)}
+.dp-dock-cta{background:var(--u-accent);color:var(--u-on-accent)}
+
+/* ---------- 6) naslovi sekcija ---------- */
+.dp-section-head h2{color:var(--u-text);font:700 clamp(20px,5.4vw,24px)/1.2 Sora,sans-serif}
+.dp-section-ic{background:var(--u-panel);border:1px solid var(--u-line);color:var(--u-accent)}
+.dp-section-head .dp-sh-count,.dp-note{color:var(--u-muted)}
+
+/* ---------- 7) SVE kartice sadržaja: bela kartica, isti radijus i senka ---------- */
+.dp-card,.dp-act-card,.dp-hotel-card,.dp-car-card,.dp-more-sum,
+#o-destinaciji .di-card,.pl-card,.ps-card,
+#avio .dp-sl-card,#smestaj .dp-sl-card,#rentacar .dp-sl-card,#aktivnosti .dp-sl-card{
+  background:var(--u-card);color:var(--u-ink);border:0;border-radius:var(--u-r);box-shadow:var(--u-shadow);
+}
+.dp-card{padding:16px}
+/* tekst unutar belih kartica */
+.dp-card .dp-note,.dp-card .dp-tip-text,.dp-card .dp-disclosure{color:var(--u-ink-2)}
+.dp-card .dp-tip-title,.dp-card h3,.dp-card b{color:var(--u-ink)}
+.dp-tip{border-bottom-color:var(--u-rule)}
+.dp-tip-ic{background:var(--u-tint)}
+.dp-gc{border-top-color:var(--u-rule)}
+.dp-gc-needed b{color:#b3261e}
+/* "Praktične informacije" — ista kartica kao ostale, sa istim zaglavljem */
+.dp-more-sum{min-height:64px;border:0}
+.dp-more-sum:hover{box-shadow:0 0 0 2px var(--u-accent),var(--u-shadow)}
+.dp-more-ic{background:var(--u-tint)}
+.dp-more-txt b{color:var(--u-ink)}
+.dp-more-txt small{color:var(--u-ink-2)}
+.dp-more-chev{color:var(--u-ink)}
+
+/* ---------- 8) dugmad i linkovi ---------- */
+/* primarno: žuto sa tamnoplavim tekstom */
+.dp-linkbtn.dp-primary,.dp-pick.on,.dp-pick[aria-pressed="true"]{background:var(--u-accent);color:var(--u-on-accent);border-color:transparent}
+.ov-cta,.pl-add,.ps-save,.ps-optbtn,.ps-applyall{background:var(--u-accent);color:var(--u-on-accent)}
+/* sekundarno u beloj kartici: obrub tamnoplave boje */
+.dp-card .dp-linkbtn,.pl-more,.ps-apply{background:transparent;color:var(--u-ink);border:1.5px solid var(--u-ink);border-radius:var(--u-r-in);font-weight:700}
+.dp-card .dp-linkbtn:hover{background:var(--u-tint)}
+.dp-card .dp-linkbtn.dp-primary{border:0}
+/* tekstualni link: jedna plava */
+#avio .dp-sl-cta,#smestaj .dp-sl-cta,#rentacar .dp-sl-cta,#aktivnosti .dp-sl-cta,.ps-link b{color:var(--u-link)}
+/* strelice slajdera */
+.dp-sl-btn{background:var(--u-panel);border-color:var(--u-chip);color:var(--u-text)}
+
+/* ---------- 9) donji sloj: sheet, toast, pregled puta ---------- */
+.dp-trip-panel,#dpTripPanel.is-sheet .dp-sheet-head{background:var(--u-bg)}
+.dp-toast{background:var(--u-panel);border:1px solid var(--u-line)}
+.ps{background:var(--u-bg)}
+.dp-more-body > .dp-section:first-child{margin-top:26px}
