@@ -1,0 +1,12 @@
+/* info-collapse.css — zatvorene/otvorene kartice sa informacijama o destinaciji */
+.di-card.di-collapsible > .di-card-head{cursor:pointer;margin-bottom:0;user-select:none;-webkit-tap-highlight-color:transparent}
+.di-card.di-collapsible.di-open > .di-card-head{margin-bottom:12px}
+.di-card.di-collapsible:not(.di-open) > :not(.di-card-head){display:none!important}
+.di-card.di-collapsible > .di-card-head:focus-visible{outline:2px solid var(--nv-accent,#f6c93b);outline-offset:4px;border-radius:8px}
+.di-card-pv{flex:1;min-width:0;text-align:right;font:600 12.5px Inter,sans-serif;color:var(--nv-accent,#f6c93b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.di-card.di-open .di-card-pv{display:none}
+.di-card-title{flex:1}
+.di-card-pv + .di-card-chev,.di-card-chev{flex:none;margin-left:auto;font:400 22px/1 Inter,sans-serif;opacity:.7;transform:rotate(90deg);transition:transform .2s}
+.di-card-pv ~ .di-card-chev{margin-left:4px}
+.di-card.di-open .di-card-chev{transform:rotate(-90deg)}
+@media (prefers-reduced-motion:reduce){.di-card-chev{transition:none}}
