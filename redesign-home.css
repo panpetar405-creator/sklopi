@@ -124,3 +124,20 @@
 
 .mt2-tip{cursor:pointer}
 .mt2-tip:focus-visible{outline:2px solid #f6c93b;outline-offset:2px}
+
+/* ===== Ravnomeran razmak između sekcija početne =====
+   Jedan razmak (--sec-gap) iznad svake sekcije; unutrašnji gornji/donji padding sekcija i stare ivice se poništavaju,
+   tako da ritam ne zavisi od toga koja sekcija je do koje. */
+:root{--sec-gap:32px}
+@media (min-width:761px){:root{--sec-gap:48px}}
+#popular-destinations,#sta-je-sklopi,#partners,#how-it-works,#guidesTeaser,#myTrip,
+.saved-wrap.is-auth,.faq-banner-wrap,#faq,#what-you-can-include{
+  margin-top:var(--sec-gap)!important;
+  margin-bottom:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  border-top:0!important;
+}
+#partners .partners-row{padding-bottom:0!important;margin-bottom:0!important;border-bottom:0!important}
+.faq-banner-wrap .faq-banner{margin-top:0!important}
+#faq .section-head{margin-top:0}
