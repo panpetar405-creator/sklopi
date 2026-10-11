@@ -1,0 +1,98 @@
+/* ===== REDIZAJN — Ekran 1: Početna (hero + forma) =====
+   Samo vizuelni sloj. Svi id-jevi, klase i JS ostaju netaknuti.
+   Učitava se POSLEDNJI (posle theme-navy-rest.css). */
+.hero.hero-reference{padding:0}
+.hero.hero-reference .hero-reference-shell{max-width:560px;width:100%;margin:0 auto;background:transparent;border:0;box-shadow:none;border-radius:0;overflow:visible}
+.hero.hero-reference .hero-reference-visual{min-height:340px;border-radius:0}
+.hero.hero-reference .hero-reference-visual-overlay{background:linear-gradient(180deg,rgba(6,16,34,.40) 0%,rgba(6,16,34,0) 38%,var(--nv-bg,#0a1a33) 100%)}
+.hero.hero-reference .hero-reference-copy{width:100%;padding:92px 20px 70px}
+.hero.hero-reference .hero-reference-copy h1{font-size:clamp(32px,9vw,40px);line-height:1.08;letter-spacing:-.03em;font-weight:800;max-width:320px}
+.hero.hero-reference .hero-reference-sub{margin:14px 0 0;font-size:15px;font-weight:700;color:#fff}
+.hero.hero-reference .hero-reference-copy p:last-child{margin:8px 0 0;font-size:13.5px;line-height:1.45;max-width:330px;color:rgba(255,255,255,.9)}
+
+.hero.hero-reference .hero-reference-body{position:relative;z-index:3;display:flex;flex-direction:column;margin-top:-38px;padding:0 16px 8px;background:transparent}
+.hero.hero-reference .hero-benefits,
+.hero.hero-reference .hero-reference-formhead,
+.hero.hero-reference .hero-spacer{display:none}
+
+/* Bela kartica */
+.hero.hero-reference .hero-reference-form{display:flex;flex-direction:column;background:#fff;color:#14213d;border-radius:20px;padding:4px 14px 16px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+
+/* Tabovi: Letovi / Smeštaj / Auto / Aktivnost */
+.hero.hero-reference .transport-row{display:flex!important;order:1;max-width:none;transform:none;margin:0;padding:0;gap:0;flex-wrap:nowrap;justify-content:space-between;border-bottom:1px solid #e3e9f1}
+.hero.hero-reference .transport-row .toggle{flex:1;width:auto;flex-direction:row;justify-content:center;gap:5px;padding:12px 0 10px;background:transparent!important;border:0!important;border-bottom:2px solid transparent!important;border-radius:0;box-shadow:none!important;color:#6b7a90}
+.hero.hero-reference .transport-row .toggle .tt-icon{width:16px;height:16px;background:none!important;box-shadow:none!important;color:inherit!important}
+.hero.hero-reference .transport-row .toggle .tt-icon svg{width:16px;height:16px}
+.hero.hero-reference .transport-row .toggle .tt-label{font-size:12px;font-weight:600;color:inherit!important}
+.hero.hero-reference .transport-row .toggle.on{color:#14213d;border-bottom-color:#f6c93b!important}
+
+/* Polja */
+.hero.hero-reference .ticket{order:2;display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:10px 0 0;background:transparent;border:0;box-shadow:none;border-radius:0}
+.hero.hero-reference #searchForm .stub{position:relative;width:100%;box-sizing:border-box;overflow:visible;background:#f3f6fa;border:0!important;border-radius:12px;padding:10px 12px 10px 48px;min-height:56px}
+.hero.hero-reference #searchForm .stub::before{content:"";position:absolute;inset:auto;left:14px;top:50%;transform:translateY(-50%);width:24px;height:auto;background:none;border:0;border-radius:0;box-shadow:none;opacity:1;font-size:18px;line-height:1;text-align:center}
+.hero.hero-reference #searchForm #originStub::before{content:"✈"}
+.hero.hero-reference #searchForm .stub:nth-of-type(2)::before{content:"📍"}
+.hero.hero-reference #searchForm .stub-dates::before{content:"📅"}
+.hero.hero-reference #searchForm .stub-pax::before{content:"👥"}
+.hero.hero-reference #searchForm .stub:focus-within{box-shadow:0 0 0 2px #f6c93b inset;border-radius:12px}
+.hero.hero-reference #searchForm .stub > label{display:block;margin:0 0 1px;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:#6b7a90!important}
+.hero.hero-reference #searchForm .stub > input,
+.hero.hero-reference #searchForm .date-display,
+.hero.hero-reference #searchForm .pax-display,
+.hero.hero-reference #searchForm .date-display .dd-range{font-family:'Inter',system-ui,sans-serif;font-size:15px;font-weight:600;color:#14213d!important;background:transparent;padding:2px 0;border:0}
+.hero.hero-reference #searchForm .stub > input::placeholder{color:#8795aa;font-weight:500}
+.hero.hero-reference #searchForm .date-display .dd-meta{display:none}
+
+/* CTA */
+.hero.hero-reference .ticket-submit-row{order:3;display:block;margin:14px 0 0}
+.hero.hero-reference .ticket-submit-row .btn-search-main{width:100%;justify-content:center;padding:15px;border-radius:14px;background:#f6c93b;color:#1a1a1a;font-size:16px;font-weight:800;letter-spacing:0;box-shadow:none}
+.hero.hero-reference .ticket-submit-row .btn-search-main .btn-search-icon{display:none}
+.hero.hero-reference .ticket-submit-row .btn-search-main::after{content:"→";position:static;inset:auto;width:auto;height:auto;margin-left:8px;background:none;color:inherit;font-size:18px;transform:none;display:inline}
+.hero.hero-reference .trip-defaults{order:4;margin-top:10px;background:#f3f6fa;border-color:#e3e9f1;color:#6b7a90}
+.hero.hero-reference .trip-defaults-text{color:#6b7a90}
+.hero.hero-reference .trip-defaults-edit{color:#14213d;font-weight:700}
+
+/* Napomena ispod kartice */
+.hero-note{display:flex;align-items:center;gap:8px;margin:14px 4px 0;font-size:12px;color:#c6d3e6}
+.hero-note::before{content:"i";flex:none;width:18px;height:18px;border-radius:50%;background:#2f6fd0;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+
+/* Visina hero-a prati sadržaj (napomena ispod kartice ne sme da se preklapa sa sledećom sekcijom) */
+.hero.hero-reference,
+.hero.hero-reference .hero-reference-shell{height:auto;min-height:0;max-height:none}
+.hero.hero-reference .hero-reference-visual{flex:0 0 auto}
+.hero.hero-reference .hero-reference-body{flex:0 0 auto;padding-bottom:18px}
+.hero.hero-reference #searchForm .stub:nth-of-type(1)::before{color:#14213d}
+
+/* ===== REDIZAJN — Ekran 2: Istraživanje destinacija ===== */
+.section.popular-reference-section{display:flex;flex-direction:column;max-width:560px;margin:0 auto!important;padding:16px 16px 8px;background:transparent;border:0;box-shadow:none}
+.section.popular-reference-section .popular-reference-head{display:contents}
+.section.popular-reference-section .popular-reference-head > div:first-child{order:3}
+.section.popular-reference-section .popular-reference-search-wrap{order:1;width:100%;min-width:0;margin:0 0 14px}
+.section.popular-reference-section .dest-featured{order:2}
+.section.popular-reference-section .popular-reference-chips{order:4}
+.section.popular-reference-section .popular-reference-grid{order:5}
+.section.popular-reference-section .recent-searches{order:6}
+.section.popular-reference-section #popularDestEyebrow,
+.section.popular-reference-section .popular-reference-sub{display:none}
+.section.popular-reference-section #popularDestHead{margin:20px 0 12px;font-size:17px;font-weight:800;color:#fff!important;letter-spacing:-.01em}
+
+/* Istaknuta destinacija */
+.dest-featured{position:relative;display:block;width:100%;height:150px;padding:0;border:0;border-radius:18px;overflow:hidden;text-align:left;color:#fff;cursor:pointer;background:#1d4a85 url(hero-santorini.webp) center/cover no-repeat}
+.dest-featured::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,16,34,0) 35%,rgba(6,16,34,.78) 100%)}
+.dest-featured .df-name{position:absolute;left:14px;bottom:30px;font:800 22px Sora,Inter,sans-serif;letter-spacing:-.02em}
+.dest-featured .df-sub{position:absolute;left:14px;bottom:12px;font:500 12px Inter,sans-serif;opacity:.9}
+.dest-featured .df-price{position:absolute;top:10px;right:10px;padding:5px 10px;border-radius:999px;background:rgba(10,26,51,.7);font:700 12px Inter,sans-serif}
+
+/* Kartice 2×N sa fotografijom preko cele kartice */
+.section.popular-reference-section .popular-reference-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.section.popular-reference-section .popular-reference-grid .popular-dest-card{position:relative;display:block;aspect-ratio:1/1.1;min-height:0;padding:0;border:0;border-radius:16px;overflow:hidden;background:#12294d;box-shadow:none;text-align:left}
+.section.popular-reference-section .popular-reference-grid .popular-dest-card[hidden]{display:none}
+.section.popular-reference-section .popular-reference-grid .pd-thumb{position:absolute;inset:0;width:100%;height:100%;border-radius:0}
+.section.popular-reference-section .popular-reference-grid .pd-thumb img{width:100%;height:100%;object-fit:cover}
+.section.popular-reference-section .popular-reference-grid .popular-dest-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,16,34,0) 45%,rgba(6,16,34,.82) 100%);pointer-events:none}
+.section.popular-reference-section .popular-reference-grid .pd-copy{position:static;display:block;padding:0}
+.section.popular-reference-section .popular-reference-grid .pd-name{position:absolute;z-index:2;left:12px;right:12px;bottom:26px;font:800 16px Sora,Inter,sans-serif;color:#fff}
+.section.popular-reference-section .popular-reference-grid .pd-meta{position:absolute;z-index:2;left:12px;right:12px;bottom:10px;font:500 11px Inter,sans-serif;color:rgba(255,255,255,.88);margin:0}
+.section.popular-reference-section .popular-reference-grid .pd-price{position:absolute;z-index:2;top:8px;right:8px;margin:0;padding:4px 9px;border-radius:999px;background:rgba(10,26,51,.72);color:#fff;font:700 11px Inter,sans-serif}
+.section.popular-reference-section .popular-reference-grid .pd-arrow{display:none}
+.section.popular-reference-section .popular-reference-grid .popular-dest-card:last-child:nth-child(odd){grid-column:1/-1;aspect-ratio:2.3/1}

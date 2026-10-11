@@ -8,11 +8,11 @@
   "hero_title": "SKLOPI",
   "hero_lede": "Alles zu einem Preis.",
   "partners_label": "Die Buchung läuft direkt über unsere Partner",
-  "label_origin": "Von",
+  "label_origin": "Wo startest du?",
   "placeholder_origin": "z. B. Belgrad, Niš, Podgorica",
-  "label_dest": "Reiseziel",
+  "label_dest": "Wohin möchtest du?",
   "placeholder_dest": "z. B. Athen, Rom, Barcelona",
-  "label_dates": "Von – Bis",
+  "label_dates": "Wann reist du?",
   "aria_prev_month": "Vorheriger Monat",
   "aria_next_month": "Nächster Monat",
   "aria_today": "heute",
@@ -1075,7 +1075,7 @@
   "ux_price_alert_text": "Sag mir Bescheid, wenn der geschätzte Preis sinkt.",
   "ux_detail_trust": "Das ist eine Schätzung, kein verbindliches Angebot. Buchung und Endpreis werden beim Partner bestätigt.",
   "ux_match_hint": "Finde ein Reiseziel nach deinen Wünschen",
-  "ux_hero_go": "Los geht’s",
+  "ux_hero_go": "Meine Reise finden",
   "ux_defaults_from": "Abflug:",
   "ux_defaults_change": "Ändern"
 }

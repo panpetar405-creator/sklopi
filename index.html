@@ -168,7 +168,7 @@ html,body{background:#0B1626;margin:0;}
 <link rel="preload" as="image" href="hero-sklopi.webp" imagesrcset="hero-sklopi-800.webp 800w, hero-sklopi.webp 1400w" imagesizes="(max-width: 760px) 100vw, 1180px" type="image/webp" fetchpriority="high"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
 <link href="styles.css?v=4e929605" rel="stylesheet"/>
-<link href="dest-info.css?v=f6705aa1" rel="stylesheet"/><link href="ux-refactor.css?v=04d406ac" rel="stylesheet"/><link href="theme-navy.css?v=aa40cbd1" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=c39b958d" rel="stylesheet"/>
+<link href="dest-info.css?v=f6705aa1" rel="stylesheet"/><link href="ux-refactor.css?v=04d406ac" rel="stylesheet"/><link href="theme-navy.css?v=aa40cbd1" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=c39b958d" rel="stylesheet"/><link href="redesign-home.css?v=79654b1a" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 </head>
 <body>
@@ -241,8 +241,9 @@ html,body{background:#0B1626;margin:0;}
 </div>
 <div class="hero-reference-copy">
 <p class="hero-reference-eyebrow" data-i18n="x_9bd979">PUTNI PAKET PO MERI</p>
-<h1 data-i18n-html="x_76e5d6">Sklopi<br/>svoje putovanje.</h1>
-<p data-i18n="x_76f374">Let, hotel, auto i aktivnosti u jednoj procenjenoj ceni — bez skrivenih troškova.</p>
+<h1 data-i18n-html="x_76e5d6">Sastavi<br/>svoje putovanje.</h1>
+<p class="hero-reference-sub" data-i18n="x_home_sub">Uporedi opcije. Kontroliši budžet.</p>
+<p data-i18n="x_76f374">Letovi, hoteli, auto i aktivnosti u jednoj aplikaciji — bez skrivenih troškova.</p>
 </div>
 </div>
 <div class="hero-reference-body">
@@ -258,19 +259,19 @@ html,body{background:#0B1626;margin:0;}
 <div class="hero-reference-form">
 <form class="ticket" id="searchForm" novalidate="">
 <div class="stub" id="originStub">
-<label data-i18n="label_origin" for="origin">Polazak</label>
+<label data-i18n="label_origin" for="origin">Odakle putuješ?</label>
 <input aria-autocomplete="list" aria-controls="originSuggestions" aria-expanded="false" autocomplete="off" data-i18n-placeholder="placeholder_origin" id="origin" maxlength="60" placeholder="npr. Beograd, Niš, Podgorica" required="" role="combobox" type="text" value=""/>
 <div class="loc-dropdown" id="originSuggestions" role="listbox"></div>
 <div id="originAirportWarning"></div>
 </div>
 <div class="stub">
-<label data-i18n="label_dest" for="dest">Destinacija</label>
+<label data-i18n="label_dest" for="dest">Gde želiš da ideš?</label>
 <input aria-autocomplete="list" aria-controls="destSuggestions" aria-expanded="false" autocomplete="off" data-i18n-placeholder="placeholder_dest" id="dest" maxlength="60" placeholder="npr. Atina, Rim, Barselona" required="" role="combobox" type="text" value=""/>
 <div class="loc-dropdown" id="destSuggestions" role="listbox"></div>
 <div id="destAirportWarning"></div>
 </div>
 <div class="stub stub-dates" id="dateStub">
-<label data-i18n="label_dates" id="dateStubLabel">Od — Do</label>
+<label data-i18n="label_dates" id="dateStubLabel">Kada putuješ?</label>
 <button aria-controls="calCard" aria-expanded="false" aria-haspopup="dialog" aria-labelledby="dateStubLabel dateDisplayText" class="date-display is-empty" id="dateDisplayBtn" type="button">
 <span class="dd-range" id="dateDisplayText">— – —</span>
 <span class="dd-meta" id="dateNightsText">— – —</span>
@@ -305,7 +306,7 @@ html,body{background:#0B1626;margin:0;}
 </div>
 </div>
 <div class="stub stub-pax" id="paxStub">
-<label data-i18n="label_passengers" for="paxDisplayBtn" id="paxStubLabel">Putnika</label>
+<label data-i18n="label_passengers" for="paxDisplayBtn" id="paxStubLabel">Putnici</label>
 <button aria-controls="paxCard" aria-expanded="false" aria-haspopup="dialog" aria-labelledby="paxStubLabel paxDisplayText" class="pax-display is-empty" id="paxDisplayBtn" type="button">
 <span data-i18n="placeholder_passengers" id="paxDisplayText">Putnika</span>
 </button>
@@ -313,7 +314,7 @@ html,body{background:#0B1626;margin:0;}
 <div class="cal-backdrop" id="paxBackdrop"></div>
 <div aria-label="Izbor broja putnika" aria-modal="true" class="pax-card" data-i18n-aria-label="aria_pax_dialog" id="paxCard" role="dialog">
 <div class="cal-inner">
-<div class="pax-card-title" data-i18n="label_passengers">Putnika</div>
+<div class="pax-card-title" data-i18n="label_passengers">Putnici</div>
 <div aria-label="Broj putnika" class="pax-list" data-i18n-aria-label="aria_pax_dialog" id="paxList" role="listbox"></div>
 <div class="cal-foot" style="justify-content:flex-end">
 <button class="btn-primary cal-apply" data-i18n="btn_done" id="paxApply" type="button">Gotovo</button>
@@ -326,7 +327,7 @@ html,body{background:#0B1626;margin:0;}
 </div>
 </form>
 <div class="ticket-submit-row">
-<button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="ux_hero_go">Kreni</span></button>
+<button class="btn-primary btn-search-main" form="searchForm" type="submit"><svg aria-hidden="true" class="btn-search-icon" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><span data-i18n="ux_hero_go">Pronađi moj put</span></button>
 </div><div class="trip-defaults" id="tripDefaults"><span class="trip-defaults-text" id="tripDefaultsText"></span><button aria-expanded="false" class="trip-defaults-edit" data-i18n="ux_defaults_change" id="tripDefaultsEdit" type="button">Promeni</button></div>
 <div class="transport-row">
 <label class="toggle" data-t="flight">
@@ -351,6 +352,7 @@ html,body{background:#0B1626;margin:0;}
 </label>
 </div>
 </div>
+<p class="hero-note" data-i18n="x_home_note">Cene su okvirne procene, a ne potvrđene ponude.</p>
 <div class="hero-spacer"></div>
 </div>
 </div>
@@ -359,6 +361,7 @@ html,body{background:#0B1626;margin:0;}
 <button aria-haspopup="dialog" class="match-trigger" data-i18n-html="match_trigger" data-i18n-title="ux_match_hint" id="matchTriggerBtn" type="button"></button>
 </div>
 <div class="section popular-reference-section" id="popular-destinations">
+<button class="dest-featured" type="button" data-feature="Atina" aria-label="Grčka — Atina"><span class="df-name" data-i18n="x_home_feat">Grčka</span><span class="df-sub" data-i18n="x_home_feat_sub">Top destinacija ovog meseca</span><span class="df-price" data-home-feat-price>od 247 €</span></button>
 <div class="popular-reference-head">
 <div>
 <div class="eyebrow" data-i18n="eyebrow_ideas" id="popularDestEyebrow">Ideje za sledeći izlet</div>
@@ -1398,15 +1401,15 @@ html,body{background:#0B1626;margin:0;}
 </a>
 <script defer="" src="config.js?v=29e9b7fc"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
-<script defer="" src="i18n-data.js?v=a83ab7fe"></script>
+<script defer="" src="i18n-data.js?v=c760cf2f"></script>
 <script>
 /* Jezički fajl (i18n-<kod>.js) se učitava samo ako je izabran jezik različit od srpskog.
    Mapa kod → hash popunjava translate.mjs (ne menjaj ručno). Ostali jezici se učitavaju kasnije, iz loadLang() u app-01-core.js. */
-window.I18N_V=/*I18N_V*/{"en":"460e32f4","ru":"dd65d663","de":"229501de"}/*/I18N_V*/;
+window.I18N_V=/*I18N_V*/{"en":"6fb6a413","ru":"4b531382","de":"474bd4e9"}/*/I18N_V*/;
 (function(){var l='sr',V=window.I18N_V;try{var u=new URLSearchParams(location.search).get('lang');if(u&&(u==='sr'||V[u]))l=u;else{var s=localStorage.getItem('sklopi_lang');if(s&&V[s])l=s}}catch(e){}
 if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/script>')})();
 </script>
-<script defer="" src="i18n-extra.js?v=90c71b74"></script>
+<script defer="" src="i18n-extra.js?v=7ff519f2"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=56849d5c"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
@@ -1438,6 +1441,7 @@ if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/scri
 <script defer="" src="contact.js?v=60aecad3"></script>
 <script defer="" src="cookies.js?v=ac951772"></script>
 <script defer="" src="app-12-ux-refactor.js?v=859e04c7"></script>
+<script defer="" src="redesign-home.js?v=39cfe210"></script>
 <script defer="" src="app-13-destination-value.js?v=5285c82e"></script>
 <script defer="" src="app-28-single-page-flow.js?v=28a1d458"></script>
 </body>

@@ -10,11 +10,11 @@
   "promo_banner_kicker": "A moment for yourself",
   "promo_banner_quote": "Some places simply have no price.",
   "partners_label": "Booking goes directly through our partners",
-  "label_origin": "From",
+  "label_origin": "Where are you leaving from?",
   "placeholder_origin": "e.g. Belgrade, Niš, Podgorica",
-  "label_dest": "Destination",
+  "label_dest": "Where do you want to go?",
   "placeholder_dest": "e.g. Athens, Rome, Barcelona",
-  "label_dates": "From — To",
+  "label_dates": "When are you travelling?",
   "aria_prev_month": "Previous month",
   "aria_next_month": "Next month",
   "aria_today": "today",
@@ -1075,7 +1075,7 @@
   "ux_price_alert_text": "Let me know if the estimated price drops.",
   "ux_detail_trust": "This is an estimate, not a final offer. Booking and the final price are confirmed with the partner.",
   "ux_match_hint": "Find a destination that fits your wishes",
-  "ux_hero_go": "Go",
+  "ux_hero_go": "Find my trip",
   "ux_defaults_from": "From:",
   "ux_defaults_change": "Change"
 }
