@@ -128,8 +128,8 @@
 /* ===== Ravnomeran razmak između sekcija početne =====
    Jedan razmak (--sec-gap) iznad svake sekcije; unutrašnji gornji/donji padding sekcija i stare ivice se poništavaju,
    tako da ritam ne zavisi od toga koja sekcija je do koje. */
-:root{--sec-gap:32px}
-@media (min-width:761px){:root{--sec-gap:48px}}
+:root{--sec-gap:40px}
+@media (min-width:761px){:root{--sec-gap:56px}}
 #popular-destinations,#sta-je-sklopi,#partners,#how-it-works,#guidesTeaser,#myTrip,
 .saved-wrap.is-auth,.faq-banner-wrap,#faq,#what-you-can-include{
   margin-top:var(--sec-gap)!important;
@@ -141,3 +141,26 @@
 #partners .partners-row{padding-bottom:0!important;margin-bottom:0!important;border-bottom:0!important}
 .faq-banner-wrap .faq-banner{margin-top:0!important}
 #faq .section-head{margin-top:0}
+
+/* Isti razmak (--sec-gap) i UNUTAR sekcije destinacija:
+   kartica „Pronađi mi destinaciju“ → pretraga → istaknuta destinacija → „Gde bi sledeće?“.
+   Naslov ostaje blizu svoje mreže kartica (pripada njoj), zato je razmak ispod njega manji. */
+.hero.hero-reference .hero-reference-body{padding-bottom:0}
+.match-below{margin-top:var(--sec-gap)!important}
+.section.popular-reference-section .popular-reference-search-wrap{margin:0 0 var(--sec-gap)}
+.section.popular-reference-section .dest-featured{margin:0}
+.section.popular-reference-section #popularDestHead{margin:var(--sec-gap) 0 14px}
+.section.popular-reference-section .popular-reference-chips{margin:0 0 14px}
+
+/* ===== Isti razmak između SVIH sekcija na sajtu =====
+   Sekcije plana putovanja (spotlight, info o destinaciji, itinerer, let, smeštaj, auto, aktivnosti, dodaci, ukupno)
+   i podnožje dobijaju isti --sec-gap kao i ostale. Unutrašnji vertikalni padding se poništava (kartice unutra ostaju iste). */
+#destinationSpotlight,#destInfoSection,#planItinerary,#flightDetail,#hotelDetail,#carDetail,
+#activitiesDetail,#extrasDetail,#totalDetail{
+  margin-top:var(--sec-gap)!important;
+  margin-bottom:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  border-top:0!important;
+}
+footer#about{margin-top:var(--sec-gap)!important}
