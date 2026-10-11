@@ -30,10 +30,12 @@
 .hero.hero-reference .ticket{order:2;display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:10px 0 0;background:transparent;border:0;box-shadow:none;border-radius:0}
 .hero.hero-reference #searchForm .stub{position:relative;width:100%;box-sizing:border-box;overflow:visible;background:#f3f6fa;border:0!important;border-radius:12px;padding:10px 12px 10px 48px;min-height:56px}
 .hero.hero-reference #searchForm .stub::before{content:"";position:absolute;inset:auto;left:14px;top:50%;transform:translateY(-50%);width:24px;height:auto;background:none;border:0;border-radius:0;box-shadow:none;opacity:1;font-size:18px;line-height:1;text-align:center}
-.hero.hero-reference #searchForm #originStub::before{content:"✈"}
-.hero.hero-reference #searchForm .stub:nth-of-type(2)::before{content:"📍"}
-.hero.hero-reference #searchForm .stub-dates::before{content:"📅"}
-.hero.hero-reference #searchForm .stub-pax::before{content:"👥"}
+/* Ikonice polja: SVG umesto emoji */
+.hero.hero-reference #searchForm .stub::before{content:"";width:22px;height:22px;color:#14213d;background-color:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
+.hero.hero-reference #searchForm #originStub::before{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.8 19.2 16 11l3.5-3.5a2.1 2.1 0 0 0-3-3L13 8 4.8 6.2 3.5 7.5 10 11l-3 3-3-.5-1 1 4 2 2 4 1-1-.5-3 3-3 3.5 6.5 1.3-1.3Z'/%3E%3C/svg%3E")}
+.hero.hero-reference #searchForm .stub:nth-of-type(2)::before{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z'/%3E%3Ccircle cx='12' cy='9.5' r='2.5'/%3E%3C/svg%3E")}
+.hero.hero-reference #searchForm .stub-dates::before{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='3'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E")}
+.hero.hero-reference #searchForm .stub-pax::before{--ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='8' r='3.5'/%3E%3Cpath d='M2.5 20a6.5 6.5 0 0 1 13 0'/%3E%3Cpath d='M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6'/%3E%3C/svg%3E")}
 .hero.hero-reference #searchForm .stub:focus-within{box-shadow:0 0 0 2px #f6c93b inset;border-radius:12px}
 .hero.hero-reference #searchForm .stub > label{display:block;margin:0 0 1px;font-size:11px;font-weight:500;letter-spacing:0;text-transform:none;color:#6b7a90!important}
 .hero.hero-reference #searchForm .stub > input,
