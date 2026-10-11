@@ -212,3 +212,9 @@ html.ps-lock{overflow:hidden}
   #rentacar .dp-slider-nav:not([hidden]),#aktivnosti .dp-slider-nav:not([hidden]){display:flex}
   #avio .dp-sl-btn,#smestaj .dp-sl-btn,#rentacar .dp-sl-btn,#aktivnosti .dp-sl-btn{background:#12294d;border-color:#2a4373;color:#fff}
 }
+
+/* ===== Hero na stranici destinacije: kad su ponude prikazane, nema forme — samo pregled puta ===== */
+/* Polja ostaju u DOM-u (iz njih čitaju ostale skripte), samo se ne prikazuju. Izmene se rade na početnoj. */
+.dp-hero--summary #dpSearch{display:none}
+.dp-hero-change{text-decoration:none;color:#f6c93b;border-color:rgba(246,201,59,.55);font-weight:700;cursor:pointer}
+.dp-hero-change:hover,.dp-hero-change:focus-visible{background:rgba(246,201,59,.14)}

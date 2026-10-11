@@ -231,8 +231,8 @@ html.dp-sheet-open{overflow:hidden;}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
 </style>
 <link rel="stylesheet" href="destinacija.css?v=5f21524f">
-<link rel="stylesheet" href="redesign-dest.css?v=e30f2ab5">
-<script src="dest-i18n.js?v=b4581a8c"></script>
+<link rel="stylesheet" href="redesign-dest.css?v=7959e10d">
+<script src="dest-i18n.js?v=59078ba8"></script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"WebPage","@id":"https://sklopi.rs/destinacija.html#webpage","url":"https://sklopi.rs/destinacija.html","name":"Procena cene putovanja po destinaciji | SKLOPI","inLanguage":"sr","isPartOf":{"@id":"https://sklopi.rs/#website"},"publisher":{"@id":"https://sklopi.rs/#organization"}},
@@ -1421,7 +1421,9 @@ function renderResults(P){
   $('dpHeroFacts').innerHTML =
     '<div class="dp-hero-fact">📅 <b>' + esc(fmtRange(s, e)) + '</b> · ' + nights + (nights === 1 ? ' noćenje' : ' noćenja') + '</div>' +
     '<div class="dp-hero-fact">👥 <b>' + P.adults + '</b> ' + (P.adults === 1 ? 'putnik' : 'putnika') + '</div>' +
-    '<div class="dp-hero-fact">✈️ Polazak: <b>' + esc(org.name) + '</b></div>';
+    '<div class="dp-hero-fact">✈️ Polazak: <b>' + esc(org.name) + '</b></div>' +
+    '<a class="dp-hero-fact dp-hero-change" href="index.html#searchForm-wrap">✏️ Promeni na početnoj</a>';
+  document.querySelector('.dp-hero').classList.add('dp-hero--summary');   /* forma je skrivena kad su ponude prikazane; izmene idu preko početne */
   const isIsland = ISLANDS.has(norm(dest.name));
   const canDrive = (!dest.country || DRIVABLE.has(dest.country)) && !isIsland;
   $('dpHeroChecklist').innerHTML = dest.country ? travelChecklistHtml(dest.country, canDrive) : '';
@@ -1592,6 +1594,7 @@ function renderHome(msg){
   setMeta('Procena cene putovanja po destinaciji | SKLOPI', 'Unesi grad, datume i broj putnika — SKLOPI sabira let, smeštaj, rent a car i aktivnosti u jednu procenjenu cenu za tvoje putovanje.');
   $('dpHeroTitle').textContent = 'Kuda putuješ?';
   $('dpHeroFacts').innerHTML = '';
+  document.querySelector('.dp-hero').classList.remove('dp-hero--summary');   /* bez datuma ili sa greškom forma mora biti vidljiva */
   $('dpResults').hidden = true;
   $('dpResults').innerHTML = '';
   $('dpTotalBar').hidden = true;
@@ -1613,7 +1616,7 @@ function setForm(msg){
   $('dpEnd').min = isoOf(addDays(t, 1));
   $('dpMsg').textContent = msg || '';
 }
-function showForm(){ /* forma je stalno vidljiva u hero sekciji */ }
+function showForm(){ /* forma je vidljiva samo dok nema ponuda (bez datuma / greška); inače je skrivena CSS-om (.dp-hero--summary) */ }
 
 function render(opts){
   const P = readParams();
