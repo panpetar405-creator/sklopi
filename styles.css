@@ -4240,10 +4240,10 @@ body:has(.legal-wrap) footer .footer-logo em{color:var(--nv-accent)}
 #partners .partners-row{gap:12px;padding-bottom:8px;margin-bottom:0;border-bottom:0}
 #partners .partners-label{display:flex;align-items:center;gap:10px;margin:0;font-size:14px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--nv-muted,#A9B8CA)}
 #partners .partners-label::before{content:"";width:34px;height:34px;border-radius:10px;flex:none;background-color:rgba(245,200,66,.12);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F5C842' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 5 6v5.5c0 4.3 2.9 7.7 7 9.5 4.1-1.8 7-5.2 7-9.5V6l-7-3Z'/%3E%3Cpath d='m9 12 2.2 2.2L15.5 10'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:20px}
-#partners .partners-card{background:var(--nv-surface,#122238);border:1px solid var(--nv-line,rgba(255,255,255,.1));border-radius:var(--nv-radius-card,18px);box-shadow:none;padding:16px;display:flex;flex-direction:row;flex-wrap:wrap;gap:10px}
-#partners .partners-line{display:contents}
-#partners .partner-badge{background:var(--nv-surface-2,#182B45);border:1px solid var(--nv-line,rgba(255,255,255,.1));border-radius:999px;padding:9px 14px;gap:8px;font-size:15px;font-weight:700;color:var(--nv-text,#F2F5F8)}
+#partners .partners-card{background:var(--nv-surface,#122238);border:1px solid var(--nv-line,rgba(255,255,255,.1));border-radius:var(--nv-radius-card,18px);box-shadow:none;padding:14px;display:flex;flex-direction:column;gap:8px}
+#partners .partners-line{display:flex;flex-wrap:nowrap;justify-content:stretch;gap:8px}
+#partners .partner-badge{flex:1 1 auto;justify-content:center;white-space:nowrap;background:var(--nv-surface-2,#182B45);border:1px solid var(--nv-line,rgba(255,255,255,.1));border-radius:999px;padding:9px 10px;gap:6px;font-size:13.5px;font-weight:700;color:var(--nv-text,#F2F5F8)}
 #partners .partner-badge::before{width:8px;height:8px}
-#partners .partner-badge .pb-dotcom{color:#5BB8F0}
+#partners .partner-badge .pb-dotcom{color:#5BB8F0;margin-left:-6px}
 #partners .partner-badge--airalo{text-transform:lowercase}
 @media (hover:hover){#partners .partner-badge:hover{opacity:1;border-color:var(--nv-accent,#F5C842)}}
