@@ -43,6 +43,7 @@
           '<button type="button" class="mt2-rm" data-id="'+esc(x.id)+'">Ukloni</button></div>';
       }).join('');
     }
+    html+='<div class="mt2-tip"><span class="mt2-tip-ic" aria-hidden="true">\u2665</span><span><b>Čuvaj svoje planove</b><small>i lako im se vraćaj kad god poželiš.</small></span></div>';
     html+='<button type="button" class="mt2-new">+ Novi plan</button>';
     if(wrap.dataset.h!==html){wrap.dataset.h=html;wrap.innerHTML=html;}
   }

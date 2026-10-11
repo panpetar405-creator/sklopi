@@ -115,3 +115,7 @@
 .mt2-chev{font-size:24px;color:#9fb0cc}
 .mt2-rm{margin:4px 0 0 4px;padding:2px 6px;border:0;background:none;color:#8ea2c2;font:600 11.5px Inter,sans-serif;text-decoration:underline;cursor:pointer}
 .mt2-new{display:block;width:100%;margin-top:12px;padding:15px;border:0;border-radius:14px;background:#f6c93b;color:#1a1a1a;font:800 16px Inter,sans-serif;cursor:pointer}
+.mt2-tip{display:flex;align-items:center;gap:12px;margin:14px 0 10px;padding:12px 14px;border-radius:14px;background:#16305a;border:1px solid #1d3562;color:#fff}
+.mt2-tip-ic{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#1f4fd8;color:#fff;font-size:18px}
+.mt2-tip b{display:block;font:700 14px Inter,sans-serif}
+.mt2-tip small{display:block;margin-top:2px;font:500 12.5px/1.35 Inter,sans-serif;color:#c3d0e4}
