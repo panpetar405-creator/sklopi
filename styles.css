@@ -4247,3 +4247,7 @@ body:has(.legal-wrap) footer .footer-logo em{color:var(--nv-accent)}
 #partners .partner-badge .pb-dotcom{color:#5BB8F0;margin-left:-6px}
 #partners .partner-badge--airalo{text-transform:lowercase}
 @media (hover:hover){#partners .partner-badge:hover{opacity:1;border-color:var(--nv-accent,#F5C842)}}
+
+/* Footer: tamni navy sloj preko fotografije radi čitljivosti teksta */
+.footer-photo img{object-position:68% center}
+.footer-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,22,38,.78) 0%,rgba(11,22,38,.82) 55%,rgba(11,22,38,.94) 100%);pointer-events:none}
