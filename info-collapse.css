@@ -1,12 +1,59 @@
-/* info-collapse.css — zatvorene/otvorene kartice sa informacijama o destinaciji */
-.di-card.di-collapsible > .di-card-head{cursor:pointer;margin-bottom:0;user-select:none;-webkit-tap-highlight-color:transparent}
-.di-card.di-collapsible.di-open > .di-card-head{margin-bottom:12px}
-.di-card.di-collapsible:not(.di-open) > :not(.di-card-head){display:none!important}
-.di-card.di-collapsible > .di-card-head:focus-visible{outline:2px solid var(--nv-accent,#f6c93b);outline-offset:4px;border-radius:8px}
-.di-card-pv{flex:1;min-width:0;text-align:right;font:600 12.5px Inter,sans-serif;color:var(--nv-accent,#f6c93b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.di-card.di-open .di-card-pv{display:none}
-.di-card-title{flex:1}
-.di-card-pv + .di-card-chev,.di-card-chev{flex:none;margin-left:auto;font:400 22px/1 Inter,sans-serif;opacity:.7;transform:rotate(90deg);transition:transform .2s}
-.di-card-pv ~ .di-card-chev{margin-left:4px}
-.di-card.di-open .di-card-chev{transform:rotate(-90deg)}
-@media (prefers-reduced-motion:reduce){.di-card-chev{transition:none}}
+/* info-collapse.css — zatvorene/otvorene kartice sa informacijama o destinaciji
+   Zaglavlje: [ikona] naslov (do 2 reda) + ključna informacija ispod, strelica desno u krugu. */
+
+/* kartice nikad ne šire stranicu (nowrap u zaglavlju je ranije guralo karticu van ekrana) */
+#destInfoContent .di-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:480px){#destInfoContent .di-grid{grid-template-columns:minmax(0,1fr)}}
+#destInfoContent .di-card{min-width:0;max-width:100%;box-sizing:border-box}
+#destInfoContent .di-grid{gap:10px}
+#destInfoContent .di-card.di-collapsible{padding:14px 16px;margin-bottom:10px}
+#destInfoContent .di-grid .di-card.di-collapsible{margin-bottom:0}
+
+/* zaglavlje */
+#destInfoContent .di-card.di-collapsible > .di-card-head{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:center;
+  margin:0;min-height:44px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#destInfoContent .di-card.di-collapsible > .di-card-head:focus-visible{outline:2px solid #f6c93b;outline-offset:4px;border-radius:10px}
+#destInfoContent .di-card-ic{grid-column:1;grid-row:1 / span 2;width:40px;height:40px;border-radius:12px;font-size:19px}
+#destInfoContent .di-card-title{
+  grid-column:2;grid-row:1;align-self:end;min-width:0;margin:0;
+  font:700 15.5px/1.25 Sora,Inter,sans-serif;letter-spacing:-.01em;text-transform:none;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+}
+#destInfoContent .di-card-pv{
+  grid-column:2;grid-row:2;align-self:start;min-width:0;text-align:left;
+  font:600 13px/1.3 Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* kartica bez pregleda: naslov vertikalno na sredini */
+#destInfoContent .di-card-head:not(:has(.di-card-pv)) .di-card-title{grid-row:1 / span 2;align-self:center}
+#destInfoContent .di-card.di-open .di-card-pv{display:none}
+#destInfoContent .di-card.di-open > .di-card-head:has(.di-card-pv) .di-card-title{grid-row:1 / span 2;align-self:center}
+
+/* strelica u krugu (crta se CSS-om; tekst iz skripte se sakriva) */
+#destInfoContent .di-card-chev{
+  grid-column:3;grid-row:1 / span 2;position:relative;width:30px;height:30px;border-radius:50%;
+  font-size:0;line-height:0;margin:0;opacity:1;transform:none;transition:background .2s;
+}
+#destInfoContent .di-card-chev::before{
+  content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-6px 0 0 -4px;
+  border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;
+  transform:rotate(45deg);transition:transform .2s,margin .2s;
+}
+#destInfoContent .di-card.di-open .di-card-chev::before{transform:rotate(-135deg);margin-top:-2px}
+
+/* otvorena kartica: razdvojnik ispod zaglavlja */
+#destInfoContent .di-card.di-collapsible.di-open > .di-card-head{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid rgba(127,140,165,.28)}
+#destInfoContent .di-card.di-collapsible:not(.di-open) > :not(.di-card-head){display:none!important}
+
+/* boje: bela kartica (stranica destinacije) */
+#o-destinaciji .di-card-title{color:#14213d}
+#o-destinaciji .di-card-pv{color:#4a5d7a}
+#o-destinaciji .di-card-chev{background:#eef2f8;color:#14213d}
+#o-destinaciji .di-card.di-open .di-card-chev{background:#f6c93b;color:#14213d}
+/* tamna kartica (početna) */
+#destInfoSection:not(#o-destinaciji) .di-card-pv{color:var(--nv-muted,#a9b8ca)}
+#destInfoSection:not(#o-destinaciji) .di-card-chev{background:rgba(255,255,255,.08);color:var(--nv-text,#fff)}
+#destInfoSection:not(#o-destinaciji) .di-card.di-open .di-card-chev{background:var(--nv-accent,#f6c93b);color:#14213d}
+
+@media (prefers-reduced-motion:reduce){#destInfoContent .di-card-chev,#destInfoContent .di-card-chev::before{transition:none}}
