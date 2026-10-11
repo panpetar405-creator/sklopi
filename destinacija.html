@@ -14,7 +14,6 @@
 <meta property="og:image" content="https://sklopi.rs/hero-photo.jpg?v=2">
 <meta property="og:locale" content="sr_RS">
 <meta property="og:url" content="https://sklopi.rs/destinacija.html">
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link rel="canonical" href="https://sklopi.rs/destinacija.html">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Procena cene putovanja po destinaciji | SKLOPI">
@@ -27,10 +26,10 @@
 <link rel="preload" href="fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts.css?v=0f858672">
 <link rel="stylesheet" href="styles.css?v=4e929605">
-<link rel="stylesheet" href="dest-info.css?v=f6705aa1">
-<link rel="stylesheet" href="ux-refactor.css?v=9192cc00">
-<link rel="stylesheet" href="theme-navy.css?v=aa40cbd1">
-<link rel="stylesheet" href="theme-navy-rest.css?v=c39b958d">
+<link rel="stylesheet" href="dest-info.css?v=67d8e547">
+<link rel="stylesheet" href="ux-refactor.css?v=72a2050c">
+<link rel="stylesheet" href="theme-navy.css?v=1c8740ce">
+<link rel="stylesheet" href="theme-navy-rest.css?v=deff098e">
 <style>
 
 [hidden]{display:none !important;}
@@ -89,7 +88,13 @@
 .dp-dock-label{font-size:12.5px;font-weight:500;color:#A9B8CA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .dp-dock-price{font:700 20px/1.1 Sora,Inter,sans-serif;color:#fff;}
 .dp-dock-cta{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 20px;border-radius:999px;background:#F5C842;color:#1A1405;font:700 15px Inter,sans-serif;}
-.dp-dock-cta::after{content:"";width:8px;height:8px;border:solid currentColor;border-width:2px 2px 0 0;transform:rotate(-45deg) translate(-1px,1px);}
+.dp-dock-cta::after,.dp-toast-act::after,.dp-tb-open::after{content:"";display:inline-block;width:9px;height:9px;margin-left:8px;border:solid currentColor;border-width:0 0 0 0;border-top-width:2.5px;border-right-width:2.5px;border-radius:1px;transform:translateY(2px) rotate(-45deg);flex:0 0 auto;}
+.dp-toast-act{display:inline-flex;align-items:center;}
+.dp-tb-open{display:inline-flex;align-items:center;justify-content:center;}
+.dp-tb-open::after{transform:translateY(-2px) rotate(135deg);transition:transform .2s;}
+.dp-tb-open[aria-expanded="true"]::after{transform:translateY(2px) rotate(-45deg);}
+@media (max-width:700px){.dp-tb-open::after{transform:translateY(2px) rotate(-45deg);}}
+@media (prefers-reduced-motion:reduce){.dp-tb-open::after{transition:none;}}
 .dp-dock:active .dp-dock-cta{filter:brightness(.94);}
 .dp-dock:focus-visible,.dp-toast-act:focus-visible{outline:3px solid #F5C842;outline-offset:3px;}
 .dp-dock.bump{animation:dpBump .35s ease-out;}
@@ -220,7 +225,6 @@ html.dp-sheet-open{overflow:hidden;}
   background:linear-gradient(to top,rgba(17,24,39,0.78) 0%,rgba(17,24,39,0) 100%);color:var(--on-dark-strong);
 }
 /* nema fotografije -> vraća se kompaktan baner kao ranije, a prazan blok (letovi) nestaje */
-.dp-sl-photo:not(.no-photo) .dp-sl-banner.on-photo,.dp-sl-photo:not(.no-photo) .dp-sl-banner.on-photo.alt2,.dp-sl-photo:not(.no-photo) .dp-sl-banner.on-photo.alt3{background:linear-gradient(to top,rgba(10,18,30,0.82) 0%,rgba(10,18,30,0) 100%);color:#fff;}
 .dp-sl-photo.no-photo{aspect-ratio:auto;}
 .dp-sl-photo.no-photo:not(.has-banner){display:none;}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo{
@@ -230,26 +234,7 @@ html.dp-sheet-open{overflow:hidden;}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt2{background:linear-gradient(135deg,var(--emerald) 0%,var(--deep) 100%);color:var(--on-dark-strong);}
 .dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
 </style>
-<link rel="stylesheet" href="destinacija.css?v=5f21524f">
-<link rel="stylesheet" href="redesign-dest.css?v=7959e10d">
-<script src="dest-i18n.js?v=59078ba8"></script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[
-{"@type":"WebPage","@id":"https://sklopi.rs/destinacija.html#webpage","url":"https://sklopi.rs/destinacija.html","name":"Procena cene putovanja po destinaciji | SKLOPI","inLanguage":"sr","isPartOf":{"@id":"https://sklopi.rs/#website"},"publisher":{"@id":"https://sklopi.rs/#organization"}},
-{"@type":"BreadcrumbList","itemListElement":[
-{"@type":"ListItem","position":1,"name":"Početna","item":"https://sklopi.rs/"},
-{"@type":"ListItem","position":2,"name":"Destinacije","item":"https://sklopi.rs/destinacija.html"}]}
-]}
-</script>
-<script id="seo-dyn-title">
-/* Naslov i opis taba/deljenja prate odabranu destinaciju (?do=). Canonical ostaje opšti. */
-(function(){try{var p=new URLSearchParams(location.search),d=(p.get('do')||'').trim().slice(0,60);if(!d)return;
-var t='Putovanje: '+d+' — procena ukupne cene | SKLOPI',ds='Procenjena ukupna cena putovanja za '+d+': let, smeštaj, rent a car i aktivnosti na jednom mestu.';
-document.title=t;function set(sel,v){var e=document.querySelector(sel);if(e)e.setAttribute('content',v);}
-set('meta[name="description"]',ds);set('meta[property="og:title"]',t);set('meta[property="og:description"]',ds);set('meta[name="twitter:title"]',t);set('meta[name="twitter:description"]',ds);}catch(e){}})();
-</script>
-<link rel="stylesheet" href="info-collapse.css?v=591c6f62">
-<link rel="stylesheet" href="dest-unified.css?v=d10b7b6d">
+<link rel="stylesheet" href="destinacija.css?v=7ff8bbb6">
 </head>
 <body>
 <a class="skip-link" href="#main">Preskoči na sadržaj</a>
@@ -330,7 +315,7 @@ Nazad na pretragu
 
 <div class="dp-wrap">
 
-<noscript><div class="dp-card"><p class="dp-note">Za prikaz ponuda potreban je uključen JavaScript. SKLOPI sabira let, smeštaj, rent a car i aktivnosti u jednu procenjenu cenu putovanja. Dok ne uključiš JavaScript, pročitaj <a href="vodici.html">vodiče po destinacijama</a> ili se vrati na <a href="index.html">početnu</a>.</p></div></noscript>
+<noscript><div class="dp-card"><p class="dp-note">Za prikaz ponuda potreban je uključen JavaScript.</p></div></noscript>
 
 <div id="dpResults" hidden></div>
 
@@ -340,23 +325,16 @@ Nazad na pretragu
 </main>
 <footer id="about">
 <div class="footer-inner">
-<div class="footer-logo"><img alt="" aria-hidden="true" src="sklopi-mark.svg" width="30" height="30" style="border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.18)"/><svg aria-label="SKLOPI" class="logo-v2-svg" role="img" style="height:18px;width:auto;display:block" viewbox="166 66 420 89" xmlns="http://www.w3.org/2000/svg">
-<path d="M 561 77 L 561 144 L 576 144 L 576 77 Z" fill="#fff" fill-rule="evenodd"></path>
-<path d="M 531 79 L 523 77 L 487 77 L 487 144 L 502 144 L 503 122 L 524 122 L 533 119 L 540 113 L 543 106 L 543 92 L 540 86 Z M 502 91 L 523 91 L 528 97 L 526 106 L 521 109 L 503 109 Z" fill="#fff" fill-rule="evenodd"></path>
-<path d="M 336 77 L 336 144 L 384 144 L 384 131 L 353 131 L 351 129 L 351 77 Z" fill="#fff" fill-rule="evenodd"></path>
-<path d="M 254 77 L 254 144 L 269 144 L 269 127 L 278 117 L 298 144 L 317 144 L 289 107 L 289 105 L 316 77 L 297 77 L 271 105 L 269 104 L 269 77 Z" fill="#fff" fill-rule="evenodd"></path>
-<path d="M 424 76 L 411 81 L 401 91 L 396 103 L 396 118 L 400 129 L 409 139 L 423 145 L 439 145 L 453 139 L 463 128 L 467 115 L 466 100 L 458 86 L 450 80 L 438 76 Z M 427 90 L 436 90 L 442 93 L 450 103 L 450 118 L 444 127 L 436 131 L 426 131 L 420 128 L 412 116 L 412 105 L 414 100 L 419 94 Z" fill="#fff" fill-rule="evenodd"></path>
-<path d="M 187 80 L 179 90 L 178 100 L 180 106 L 190 114 L 213 120 L 217 124 L 217 128 L 211 132 L 200 132 L 183 125 L 176 136 L 186 142 L 196 145 L 214 145 L 221 143 L 230 136 L 233 130 L 233 119 L 231 115 L 223 108 L 196 100 L 194 95 L 199 90 L 207 89 L 224 96 L 231 84 L 225 80 L 211 76 L 198 76 Z" fill="#fff" fill-rule="evenodd"></path>
-</svg></div>
+<div class="footer-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><g transform="rotate(-18 12 12)"><rect x="4" y="5" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="7" r="1.4" fill="var(--deep)"/><circle cx="20" cy="7" r="1.4" fill="var(--deep)"/><line x1="12" y1="5" x2="12" y2="9" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="10.5" width="16" height="4" rx="2" fill="#fff"/><circle cx="4" cy="12.5" r="1.4" fill="var(--deep)"/><circle cx="20" cy="12.5" r="1.4" fill="var(--deep)"/><line x1="12" y1="10.5" x2="12" y2="14.5" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="var(--deep)"/><circle cx="20" cy="18" r="1.4" fill="var(--deep)"/><line x1="12" y1="16" x2="12" y2="20" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/></g></svg></div>SKLOPI<em>.</em></div>
 <div class="flinks"><a href="index.html#faq">Pomoć i FAQ</a><a href="vodici.html">Vodiči</a><a href="#" data-contact="mail">Kontakt</a><a href="privatnost.html">Privatnost</a><a href="uslovi-koriscenja.html">Uslovi</a><a href="kolacici.html">Kolačići</a></div>
 </div>
 <div class="foot-note">SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu.</div>
 </footer>
 
-<script src="config.js?v=29e9b7fc"></script>
+<script src="config.js?v=60b28611"></script>
 <script src="affiliate.js?v=85396c00"></script>
-<script src="dest-info.js?v=6c5828cb"></script>
-<script src="info-collapse.js?v=2b6be985"></script>
+<script src="dest-i18n.js?v=e716b2a7"></script>
+<script src="dest-info.js?v=c1bc5dd1"></script>
 <script>
 (function(){
 'use strict';
@@ -921,7 +899,7 @@ function applyPending(){
   if (!left){
     const st = $('dpTbStatus');
     if (st && PENDING.skipped) st.textContent = PENDING.restored ? 'Neke stavke iz tvog prethodnog izbora više nisu dostupne.' : 'Neke stavke iz podeljenog linka više nisu dostupne pa nisu dodate.';
-    else if (st && PENDING.restored){ const m = 'Vraćen je tvoj prethodni izbor.'; st.textContent = m; setTimeout(() => { if (st.textContent === m) st.textContent = ''; }, 4000); }
+    else if (st && PENDING.restored){ const m = 'Vraćen je tvoj prethodni izbor.'; st.textContent = m; st.dataset.m = m; setTimeout(() => { if (st.dataset.m === m) st.textContent = ''; }, 4000); }
     PENDING = null;
   }
 }
@@ -929,7 +907,7 @@ function shareTrip(){
   const enc = encodePicks(); if (!enc) return;
   const u = new URL(location.href); u.searchParams.set('izbor', enc); u.hash = '';
   const url = u.toString(), st = $('dpTbStatus'), btn = $('dpTbShare');
-  const done = msg => { const ss = $('dpSheetStatus'); if (ss) ss.textContent = msg; if (st) st.textContent = msg; setTimeout(() => { if (st && st.textContent === msg) st.textContent = ''; }, 4000); };
+  const done = msg => { const ss = $('dpSheetStatus'); if (ss) ss.textContent = msg; if (st){ st.textContent = msg; st.dataset.m = msg; } setTimeout(() => { if (st && st.dataset.m === msg) st.textContent = ''; }, 4000); };
   const copy = () => {
     const ok = () => done('Link do tvog puta je kopiran.');
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url).then(ok, () => done(url));
@@ -1002,116 +980,16 @@ document.addEventListener('click', e => {
 function fillPhotos(trackId){
   const track = $(trackId);
   if (!track) return;
-  track.querySelectorAll('.dp-sl-photo').forEach(b => { if (!b.querySelector('img') && !b.getAttribute('data-pk')) b.classList.add('no-photo'); });
-  hydratePhotos(track);
-}
-/* Fotografije u karticama — svaka kartica dobija SVOJU sliku, automatski (bez ručnog dodavanja):
-   • auto  → model automobila (Wikipedia članak modela), • let → avion/aviokompanija (Wikipedia članak),
-   • smeštaj i atrakcije → različite fotografije grada (tvoje lokalne iz img/ + galerija Wikipedia članka o gradu;
-     naziv članka dolazi sa Worker-a /go/dest-image, a ako ga nema — iz DEST_EN / naziva grada).
-   Ponuda koja donese sopstveni o.img (pravi feed) ima prvenstvo. Ako slika ne stigne, kartica ostaje kompaktan baner.
-   Napomena o licenci: Wikimedia slike su slobodne licence, većina traži navođenje autora. */
-const CARD_PHOTOS = {
-  'atina':['atina-akropolj','atina-plaka'], 'istanbul':['istanbul-bosfor','istanbul-plava-dzamija'],
-  'pariz':['pariz-nocu'], 'lisabon':['lisabon-tramvaj'], 'krf':['krf-uvala'],
-  'solun':['solun-ano-poli','solun-setaliste'], 'split':['split-marjan','split-riva'],
-  'zagreb':['zagreb-gornji-grad','zagreb-tramvaj'], 'bec':['bec-schonbrunn','bec-stephansdom'],
-  'beograd':['beograd-kalemegdan','beograd-skadarlija'], 'bled':['bled-dvorac','bled-jezero'],
-  'budva':['budva-stari-grad','crnogorsko-primorje-zaliv'], 'herceg novi':['herceg-novi-stari-grad','herceg-novi-zaliv'],
-  'pataja':['pataja-hram','pataja-plaza']
-};
-const DEST_EN = {'majorka':'Majorca','ibica':'Ibiza','krit':'Crete','rodos':'Rhodes','mikonos':'Mykonos','kapadokija':'Cappadocia','marakes':'Marrakesh','budimpesta':'Budapest','bec':'Vienna','sofija':'Sofia','solun':'Thessaloniki','skoplje':'Skopje','prag':'Prague','krf':'Corfu','atina':'Athens','rim':'Rome','milano':'Milan','venecija':'Venice','firenca':'Florence','barselona':'Barcelona','lisabon':'Lisbon','pariz':'Paris','nica':'Nice','minhen':'Munich','cirih':'Zurich','antalija':'Antalya','kairo':'Cairo','njujork':'New York City','puket':'Phuket','tokio':'Tokyo','singapur':'Singapore','sidnej':'Sydney'};
-const CAR_WIKI = {'VW Golf':'Volkswagen Golf','VW Touran':'Volkswagen Touran','VW Tiguan':'Volkswagen Tiguan','Škoda Octavia Combi':'Škoda Octavia','BMW serije 3':'BMW 3 Series','Mini Cabrio':'Mini Convertible'};
-const AIR_WIKI = {'Aegean':'Aegean Airlines','Air Serbia':'Air Serbia','Ryanair':'Ryanair','Lufthansa':'Lufthansa','Wizz Air':'Wizz Air'};
-const WIKI_API = 'https://en.wikipedia.org/api/rest_v1/page/';
-const WIKI_BAD = /(flag|coat[_ ]of[_ ]arms|locator|location[_ ]map|map[_ ]of|_map|seal[_ ]of|logo|blason|signature|portrait)/i;
-let CARD_DEST = '';
-const photoMemo = {};
-function bigThumb(u){ u = String(u || ''); if (u.indexOf('//') === 0) u = 'https:' + u; return u.replace(/\/\d+px-/, '/500px-'); }
-function cacheGet(k, ttl){ try { const c = JSON.parse(localStorage.getItem(k) || 'null'); if (c && Date.now() - c.t < ttl) return c.v; } catch(e){} return null; }
-function cachePut(k, v){ try { localStorage.setItem(k, JSON.stringify({t:Date.now(), v:v})); } catch(e){} }
-function memo(key, fn){ return photoMemo[key] || (photoMemo[key] = Promise.resolve().then(fn).catch(() => null)); }
-function wikiThumb(title){
-  return memo('t:' + title, async () => {
-    const ck = 'sklopi_pt_' + title, hit = cacheGet(ck, 7 * 864e5); if (hit !== null) return hit;
-    const r = await fetch(WIKI_API + 'summary/' + enc(String(title).replace(/ /g, '_')));
-    if (!r.ok) return '';
-    const j = await r.json();
-    const u = j && j.thumbnail ? bigThumb(j.thumbnail.source) : '';
-    cachePut(ck, u); return u;
-  });
-}
-async function wikiGallery(title){
-  const ck = 'sklopi_pg_' + title, hit = cacheGet(ck, 7 * 864e5); if (hit) return hit;
-  const r = await fetch(WIKI_API + 'media-list/' + enc(String(title).replace(/ /g, '_')));
-  if (!r.ok) return [];
-  const j = await r.json(), out = [];
-  ((j && j.items) || []).forEach(it => {
-    if (it.type !== 'image' || !it.srcset || !it.srcset.length) return;
-    const ttl = String(it.title || '');
-    if (!/\.jpe?g$/i.test(ttl) || WIKI_BAD.test(ttl)) return;
-    const u = bigThumb(it.srcset[it.srcset.length - 1].src);
-    if (u && out.indexOf(u) < 0) out.push(u);
-  });
-  const res = out.slice(0, 10); if (res.length) cachePut(ck, res); return res;
-}
-function cityGallery(dest){
-  const key = norm(dest);
-  return memo('g:' + key, async () => {
-    const list = (CARD_PHOTOS[key] || []).map(n => 'img/' + n + '-560.webp');
-    let title = DEST_EN[key] || dest;
-    const base = window.SKLOPI_ALERT_WORKER_URL;
-    if (base){
-      try {
-        const r = await fetch(String(base).replace(/\/$/, '') + '/go/dest-image?city=' + enc(dest));
-        if (r.ok){
-          const j = await r.json();
-          if (j && j.url && list.indexOf(j.url) < 0 && !list.length) list.push(bigThumb(j.url));
-          const m = j && j.page && /\/wiki\/([^?#]+)/.exec(j.page); if (m) title = decodeURIComponent(m[1]);
-        }
-      } catch(e){}
-    }
-    try { (await wikiGallery(title)).forEach(u => { if (list.indexOf(u) < 0) list.push(u); }); } catch(e){}
-    return list;
-  });
-}
-function carModel(t){ const m = /·\s*(.+?)\s+ili slično/.exec(String(t || '')); return m ? m[1] : ''; }
-function photoAttrs(o, kind, idx){
-  if (o.img) return '';
-  let pk = '', q = '';
-  if (kind === 'car'){ const m = carModel(o.title); if (m){ pk = 'wiki'; q = CAR_WIKI[m] || m; } }
-  else if (kind === 'flight'){ const a = String(o.airline || String(o.title || '').split(' · ')[0]).trim(); if (a && a !== 'Duffel Airways'){ pk = 'wiki'; q = AIR_WIKI[a] || a; } }
-  else if (kind === 'hotel' || kind === 'act'){ pk = 'city'; q = ''; }
-  return pk ? ' data-pk="' + pk + '" data-q="' + esc(q) + '" data-i="' + (idx | 0) + '"' : '';
-}
-function setPhoto(b, url){
-  if (b.querySelector('img')) return;
-  const im = document.createElement('img');
-  im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
-  im.addEventListener('error', () => { im.remove(); b.classList.add('no-photo'); });
-  im.src = url;
-  b.insertBefore(im, b.firstChild); b.classList.remove('no-photo');
-}
-function hydratePhotos(root){
-  const dest = CARD_DEST;
-  (root || document).querySelectorAll('.dp-sl-photo[data-pk]').forEach(b => {
-    if (b.getAttribute('data-done')) return; b.setAttribute('data-done', '1');
-    const pk = b.getAttribute('data-pk'), q = b.getAttribute('data-q'), i = parseInt(b.getAttribute('data-i'), 10) || 0;
-    const p = pk === 'wiki' ? wikiThumb(q).then(u => u ? [u] : []) : cityGallery(dest);
-    p.then(list => {
-      if (list && list.length) setPhoto(b, list[i % list.length]);
-      else if (!b.querySelector('img')) b.classList.add('no-photo');
-    }).catch(() => b.classList.add('no-photo'));
-  });
+  track.querySelectorAll('.dp-sl-photo').forEach(b => { if (!b.querySelector('img')) b.classList.add('no-photo'); });
 }
 function photoBlock(o, attrs, bannerRow){
-  const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async"' + '>' : '';
+  const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async">' : '';
   return '<div class="dp-sl-photo' + (bannerRow ? ' has-banner' : '') + '"' + (o.img ? '' : attrs) + '>' + img + (bannerRow || '') + '</div>';
 }
 function offerCard(o, partner, bannerCls, kind, idx){
   const badge = o.simulated ? '<span class="dp-badge">primer</span>' : (o.badge ? '<span class="dp-badge dp-partner">' + esc(o.badge) + '</span>' : '');
   const bannerRow = o.banner ? '<div class="dp-sl-banner on-photo ' + (bannerCls || '') + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
-  const banner = photoBlock(o, photoAttrs(o, kind, idx), bannerRow);
+  const banner = photoBlock(o, '', bannerRow);
   return '<article class="dp-sl-card">' + banner + '<div class="dp-sl-body">' +
     (o.banner ? '' : badge) +
     '<div class="dp-sl-title">' + esc(o.title) + '</div>' +
@@ -1307,10 +1185,8 @@ function getOffers(kind, c){
     .catch(() => SIM[kind](c).slice(0, 10));
 }
 function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls, token){
-  CARD_DEST = c.dest.name;
   return getOffers(kind, c).then(list => {
     if (token !== renderToken) return;
-    CARD_DEST = c.dest.name;
     const key = kind === 'hotels' ? 'hotel' : kind === 'cars' ? 'car' : 'act';
     const ad = c.P.adults;
     REG[key] = list.map(o => ({title:o.title, detail: key === 'act' ? ad + ' × ' + money(o.price, 'EUR') : (o.sub || ''), total: key === 'act' ? o.price * ad : o.price, cur:'EUR', url:o.url, partner:partner}));
@@ -1329,7 +1205,7 @@ function flightCard(o, adults, c, idx){
     '<div class="dp-leg"><div class="dp-fl-route">' + esc(s.origin) + ' <div class="dp-fl-line"></div> ' + esc(s.destination) + '</div>' +
     '<div class="dp-fl-times"><span>' + esc(fmtDT(s.departing_at)) + '</span><span>' + esc(fmtDT(s.arriving_at)) + '</span></div></div>'
   ).join('');
-  return '<article class="dp-sl-card">' + photoBlock(o, photoAttrs(o, 'flight', idx), '') + '<div class="dp-sl-body">' +
+  return '<article class="dp-sl-card">' + photoBlock(o, '', '') + '<div class="dp-sl-body">' +
     '<div class="dp-flight-row"><div class="dp-fl-logo">' + esc(o.airline_iata || '✈') + '</div>' +
     '<div class="dp-fl-mid"><div class="dp-fl-airline">' + esc(o.airline || 'Aviokompanija') + '</div>' + test + '</div></div>' +
     legs +
@@ -1341,7 +1217,6 @@ function flightCard(o, adults, c, idx){
 
 let flightReq = 0, flightAbort = null;
 function loadFlights(c){
-  CARD_DEST = c.dest.name;
   const list = $('dpFlightList'), count = $('dpFlightCount');
   const bar = $('dpTotalBar');
   bar.hidden = true;
@@ -1422,9 +1297,7 @@ function renderResults(P){
   $('dpHeroFacts').innerHTML =
     '<div class="dp-hero-fact">📅 <b>' + esc(fmtRange(s, e)) + '</b> · ' + nights + (nights === 1 ? ' noćenje' : ' noćenja') + '</div>' +
     '<div class="dp-hero-fact">👥 <b>' + P.adults + '</b> ' + (P.adults === 1 ? 'putnik' : 'putnika') + '</div>' +
-    '<div class="dp-hero-fact">✈️ Polazak: <b>' + esc(org.name) + '</b></div>' +
-    '<a class="dp-hero-fact dp-hero-change" href="index.html#searchForm-wrap">✏️ Promeni na početnoj</a>';
-  document.querySelector('.dp-hero').classList.add('dp-hero--summary');   /* forma je skrivena kad su ponude prikazane; izmene idu preko početne */
+    '<div class="dp-hero-fact">✈️ Polazak: <b>' + esc(org.name) + '</b></div>';
   const isIsland = ISLANDS.has(norm(dest.name));
   const canDrive = (!dest.country || DRIVABLE.has(dest.country)) && !isIsland;
   $('dpHeroChecklist').innerHTML = dest.country ? travelChecklistHtml(dest.country, canDrive) : '';
@@ -1432,26 +1305,23 @@ function renderResults(P){
   /* --- letovi (sadržaj se puni asinhrono) --- */
   const simNote = '';
   const jump = '<nav class="dp-jump" aria-label="Brza navigacija">' +
-    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#osiguranje">🛡️ Osiguranje</a><a href="#esim">📶 eSIM</a><a href="#prakticno">🧳 Praktično</a></nav>' +
+    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#osiguranje">🛡️ Osiguranje</a><a href="#esim">📶 eSIM</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#prakticno">🧳 Praktično</a></nav>' +
     '<p class="dp-estimate">Cene su ilustrativne procene. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
   const viaNote = (c.oVia || c.dVia)
     ? '<p class="dp-note dp-note-top">' +
       (c.oVia ? esc(org.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.oVia) + '. ' : '') +
       (c.dVia ? esc(dest.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.dVia) + '. ' : '') + '</p>'
     : '';
-  let html = jump + '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
+  let html = jump + '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
+    '<p class="dp-note dp-note-top" id="destInfoSub"></p>' +
+    '<div class="dest-info-skeleton" id="destInfoSkeleton" hidden><div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div><div class="di-skel-grid"><div class="di-skel-card"></div><div class="di-skel-card"></div></div></div>' +
+    '<div id="destInfoContent" hidden></div><p class="dp-note di-disclaimer" id="destInfoDisclaimer" hidden></p></div>';
+  html += '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
     simNote + viaNote + '<div id="dpFlightList" aria-live="polite"></div></div>';
 
   /* --- smeštaj --- */
   html += '<div class="dp-section" id="smestaj">' + sectionHead('🛏️', 'Smeštaj', '', 'dpHotelCount', 'dpHotelTrack') + simNote +
     '<div id="dpHotelBox"></div></div>';
-
-
-  /* --- o destinaciji (posle letova i smeštaja, da ponude budu pri vrhu) --- */
-  html += '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
-    '<p class="dp-note dp-note-top" id="destInfoSub"></p>' +
-    '<div class="dest-info-skeleton" id="destInfoSkeleton" hidden><div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div><div class="di-skel-grid"><div class="di-skel-card"></div><div class="di-skel-card"></div></div></div>' +
-    '<div id="destInfoContent" hidden></div><p class="dp-note di-disclaimer" id="destInfoDisclaimer" hidden></p></div>';
 
   /* --- atrakcije --- */
   html += '<div class="dp-section" id="aktivnosti">' + sectionHead('🎟️', 'Atrakcije i aktivnosti', '', 'dpActCount', 'dpActTrack') + simNote +
@@ -1595,7 +1465,6 @@ function renderHome(msg){
   setMeta('Procena cene putovanja po destinaciji | SKLOPI', 'Unesi grad, datume i broj putnika — SKLOPI sabira let, smeštaj, rent a car i aktivnosti u jednu procenjenu cenu za tvoje putovanje.');
   $('dpHeroTitle').textContent = 'Kuda putuješ?';
   $('dpHeroFacts').innerHTML = '';
-  document.querySelector('.dp-hero').classList.remove('dp-hero--summary');   /* bez datuma ili sa greškom forma mora biti vidljiva */
   $('dpResults').hidden = true;
   $('dpResults').innerHTML = '';
   $('dpTotalBar').hidden = true;
@@ -1617,9 +1486,9 @@ function setForm(msg){
   $('dpEnd').min = isoOf(addDays(t, 1));
   $('dpMsg').textContent = msg || '';
 }
-function showForm(){ /* forma je vidljiva samo dok nema ponuda (bez datuma / greška); inače je skrivena CSS-om (.dp-hero--summary) */ }
+function showForm(){ /* forma je stalno vidljiva u hero sekciji */ }
 
-function render(opts){
+function render(){
   const P = readParams();
   if (!P.to) return renderHome('');
   if (!P.start && !P.end) return renderHome('');   /* stigao sa odredištem, bez datuma: samo prikaži formu */
@@ -1628,7 +1497,7 @@ function render(opts){
   setForm('');
   showForm(false);
   renderResults(P);
-  if (!(opts && opts.keepScroll)) window.scrollTo(0, 0);
+  window.scrollTo(0, 0);
 }
 
 function init(){
@@ -1661,13 +1530,7 @@ function init(){
     if (err){ $('dpMsg').textContent = err; return; }
     const q = new URLSearchParams({od: P.from || 'Beograd', do: P.to, polazak: P.start, povratak: P.end, putnika: String(P.adults)});
     history.pushState({}, '', location.pathname + '?' + q.toString());
-    render({keepScroll: true});
-    /* Forma je na vrhu, a ponude ispod: posle "Prikaži ponude" odvedi korisnika na rezultate, inače ništa ne deluje promenjeno */
-    const res = $('dpResults');
-    if (res && !res.hidden) requestAnimationFrame(() => {
-      const y = res.getBoundingClientRect().top + window.pageYOffset - 64;
-      window.scrollTo({top: Math.max(0, y), behavior: REDUCED ? 'auto' : 'smooth'});
-    });
+    render();
   });
   window.addEventListener('popstate', render);
   render();
@@ -1677,7 +1540,6 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 
 </script>
 <script src="contact.js?v=60aecad3"></script>
-<script src="redesign-dest.js?v=dad75a62"></script>
 <div class="dp-sheet-back" id="dpSheetBack" hidden></div>
 <div class="dp-toast" id="dpToast" role="status" aria-live="polite" hidden></div>
 <button type="button" class="dp-dock" id="dpDock" aria-controls="dpTripPanel" hidden>

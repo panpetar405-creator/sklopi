@@ -198,7 +198,10 @@ function popularPriceLabel(pr){ return String(pr || '').replace(/^od\s+/i, () =>
 const POPULAR_LOCAL_IMG = {
   'rim':'rim-koloseum', 'dubai':'dubai-burdz-halifa', 'bangkok':'bangkok-hram', 'tokio':'tokio-shibuya',
   'njujork':'njujork-menhetn', 'kankun':'kankun-plaza', 'marakes':'marakes-medina',
-  'kairo':'kairo-piramide', 'hurgada':'hurgada-more'
+  'kairo':'kairo-piramide', 'hurgada':'hurgada-more',
+  'dubrovnik':'dubrovnik-stari-grad', 'ohrid':'ohrid-sveti-jovan-kaneo', 'ljubljana':'ljubljana-tromostovlje',
+  'prag':'prag-karlov-most', 'budimpesta':'budimpesta-lancani-most-noc', 'santorini':'santorini-oija-kupole',
+  'barselona':'barselona-park-gvelj', 'kotor':'kotor-zaliv'
 };
 function popularCardData(card){
   const key = normalizeSr(card.dest || '');
@@ -255,7 +258,7 @@ async function popularFillImages(grid){
       const card = need[next++], d = card.dataset.dest;
       let url = '';
       try {
-        url = await destFetchOneImage({dest:d, row:''});
+        if (destImgEndpoint()) url = await destFetchOneImage({dest:d, row:''});
         if (!url) url = await fetchWikiImage(POPULAR_WIKI_TITLES[d] || destWikiTitle({dest:d}));
       } catch(e){}
       if (url){ cache.m[d] = url; _destImgMap[d] = url; put(card, url); }
@@ -263,12 +266,6 @@ async function popularFillImages(grid){
   }
   await Promise.all(Array.from({length: Math.min(4, need.length)}, worker));
   destWriteImgCache(WIKI_IMG_CACHE_KEY, cache);
-  // ništa nije našlo sliku → gradijent sa početnim slovom (nikad prazan okvir)
-  need.forEach(card => {
-    if (card.isConnected && card.dataset.noimg === '1' && window.SKLOPI_thumbFallback){
-      const th = card.querySelector('.pd-thumb'); if (th) window.SKLOPI_thumbFallback(th, card.dataset.dest || '');
-    }
-  });
 }
 function attachPopularDestCardHandlers(grid){
   // odloženo: DEST_* podaci i pomoćnici su definisani niže u fajlu

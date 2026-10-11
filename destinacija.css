@@ -223,27 +223,3 @@ body{background:var(--nv-page,#060D18);color:var(--nv-text);}
 .dp-esim-pick{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:14px;color:var(--nv-muted);}
 .dp-esim-pick b{color:var(--nv-text);}
 .dp-trip-panel{max-height:60vh;}
-
-/* Datum: na uskim ekranima cela vrednost (dd. mm. gggg.) mora da stane, bez odsecanja godine */
-.dp-form .dp-field input[type="date"]{min-width:0;font-size:13px;padding-left:10px;padding-right:8px;letter-spacing:-.02em;}
-.dp-form .dp-field input[type="date"]::-webkit-datetime-edit,
-.dp-form .dp-field input[type="date"]::-webkit-datetime-edit-fields-wrapper{padding:0;white-space:nowrap;}
-.dp-form .dp-field input[type="date"]::-webkit-datetime-edit-text{padding:0 1px;}
-.dp-form .dp-field input[type="date"]::-webkit-calendar-picker-indicator{margin:0 0 0 2px;padding:0;width:16px;flex:0 0 16px;}
-@media (max-width:380px){
-  .dp-form .dp-field input[type="date"]{font-size:12.5px;}
-}
-
-/* ---- Partnerski CTA (World Nomads, Airalo): pun red, pilula kao „Dodaj u put“, oznaka ispod ---- */
-.dp-links.dp-links-after{flex-direction:column;align-items:stretch;gap:10px;margin-top:16px;}
-.dp-links.dp-links-after .dp-linkbtn{
-  width:100%;box-sizing:border-box;min-height:52px;padding:0 20px;border-radius:999px;
-  font-size:16px;font-weight:700;letter-spacing:.1px;gap:8px;
-  box-shadow:0 6px 18px rgba(245,200,66,.18);transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
-}
-.dp-links.dp-links-after .dp-linkbtn::after{content:"↗";font-size:17px;line-height:1;font-weight:700;opacity:.8;}
-.dp-links.dp-links-after .dp-linkbtn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 8px 22px rgba(245,200,66,.26);}
-.dp-links.dp-links-after .dp-linkbtn:active{transform:translateY(0);}
-.dp-links.dp-links-after .aff-badge{align-self:center;margin:0;font-size:12px;opacity:.85;}
-/* razmak između „Dodaj u put“ i partnerskog dugmeta */
-.dp-esim-pick{margin-bottom:6px;}

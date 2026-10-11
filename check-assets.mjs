@@ -37,7 +37,7 @@ const files = walk(root);
 // 1) Ovo NE sme biti javno (ako postoji u repou).
 const mustHide = [
   'worker.js', 'worker-dest-info.js', 'price-alert-worker.js', 'viator-activities.js',
-  'destination-images.js', 'pricing-core.js', 'rate-limit.js', 'city-image.js', 'wrangler.toml', 'package.json',
+  'destination-images.js', 'pricing-core.js', 'rate-limit.js', 'wrangler.toml', 'package.json',
   '.assetsignore', 'assetsignore.txt', 'README.txt', 'translate.yml', 'translate.mjs',
   'sr.json', 'en.json', 'de.json', 'ru.json', 'languages.json', '_glossary.json', '_notes.json',
   'transport-sr-keys.json', 'check-assets.mjs',
@@ -51,8 +51,8 @@ const APP_PARTS = files.filter((f) => /^app-\d+-.+\.js$/.test(f));
 if (APP_PARTS.length === 0) { console.error('✗ nema app-*.js fajlova'); process.exit(1); }
 const mustServe = [
   'index.html', ...APP_PARTS, 'styles.css', 'i18n-data.js', 'i18n-extra.js', 'config.js', 'contact.js',
-  'cookies.js', 'affiliate.js', 'price-mix.js', 'transport.js', 'transport-i18n.js', 'dest-info.js',
-  'dest-info.css', 'dest-plans.js', 'guide-lang.js', 'fonts.css', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
+  'cookies.js', 'affiliate.js', 'price-mix.js', 'transport.js', 'transport-i18n.js', 'dest-info.js', 'dest-i18n.js',
+  'dest-info.css', 'dest-plans.js', 'fonts.css', 'sw.js', 'manifest.json', 'robots.txt', 'sitemap.xml', '_headers',
 ];
 
 // jezički fajlovi (i18n-en.js, i18n-ru.js...) učitavaju se dinamički, ali MORAJU biti javni

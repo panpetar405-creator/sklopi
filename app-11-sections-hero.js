@@ -226,7 +226,12 @@ window.onLangChange = function(lang){
 const DEST_API_URL = '';
 // Tvoje sopstvene fotografije po gradu, npr. {'Budva':'img/destinacije/budva.jpg'}.
 // Ključ je naziv grada na srpskom, kao u MATCH_DESTINATIONS.
-const DEST_IMG_OVERRIDES = {};
+const DEST_IMG_OVERRIDES = {
+  'Dubrovnik':'img/dubrovnik-stari-grad-500.webp', 'Ohrid':'img/ohrid-sveti-jovan-kaneo-500.webp',
+  'Ljubljana':'img/ljubljana-tromostovlje-500.webp', 'Prag':'img/prag-karlov-most-500.webp',
+  'Budimpešta':'img/budimpesta-lancani-most-noc-500.webp', 'Santorini':'img/santorini-oija-kupole-500.webp',
+  'Barselona':'img/barselona-park-gvelj-500.webp', 'Kotor':'img/kotor-zaliv-500.webp'
+};
 // Srpski naziv → engleski naziv za Viator pretragu (gde se razlikuje).
 const DEST_EN_NAMES = {
   'Budimpešta':'Budapest','Beč':'Vienna','Sofija':'Sofia','Solun':'Thessaloniki','Skoplje':'Skopje',
@@ -396,19 +401,7 @@ async function destLoadImagesWiki(rows){
 }
 // Traži sliku za JEDNU destinaciju (Viator ako je Worker podešen, inače/uz to Wikipedia) —
 // koristi se pri zameni kartice koja nije dobila sliku.
-// Automatska slika grada sa Worker-a (/go/dest-image: Wikidata → Wikipedia/Commons, keš 30 dana) — radi za bilo koji grad.
-async function destFetchCityImage(dest){
-  const base = window.SKLOPI_ALERT_WORKER_URL;
-  if (!base || !dest) return '';
-  try {
-    const r = await fetch(String(base).replace(/\/$/, '') + '/go/dest-image?city=' + encodeURIComponent(dest));
-    if (!r.ok) return '';
-    return ((await r.json()) || {}).url || '';
-  } catch(e){ return ''; }
-}
 async function destFetchOneImage(it){
-  const own = await destFetchCityImage(it.dest);
-  if (own) return own;
   const endpoint = destImgEndpoint();
   if (endpoint){
     try {
