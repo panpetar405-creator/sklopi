@@ -195,3 +195,53 @@
   });
   window.addEventListener('load',later);
 })();
+
+/* Ekran 6: rent-a-car — zaglavlje i filter menjača (Svi / Manuelni / Automatik) */
+(function(){
+  'use strict';
+  var mode='all';
+  function val(id){var e=document.getElementById(id);return e?String(e.value||'').trim():'';}
+  function dm(iso){var p=String(iso||'').split('-');return p.length===3?p[2]+'.'+p[1]+'.':'';}
+  function apply(track){
+    Array.prototype.forEach.call(track.children,function(c){
+      var s=(c.querySelector('.dp-sl-sub')||{}).textContent||'';
+      var auto=/automat/i.test(s);
+      var show=mode==='all'||(mode==='auto'&&auto)||(mode==='manual'&&!auto);
+      if(c.hidden!==!show)c.hidden=!show;
+      c.style.display=show?'':'none';
+    });
+  }
+  function run(){
+    var list=document.getElementById('dpCarBox'),track=document.getElementById('dpCarTrack');
+    if(!list||!track||!track.children.length)return;
+    var bar=document.getElementById('carBar');
+    var n=val('dpAdults')||'2';
+    var meta=(dm(val('dpStart'))&&dm(val('dpEnd')))?dm(val('dpStart'))+'–'+dm(val('dpEnd'))+' · ':'';
+    var sig=val('dpTo')+meta+n;
+    if(!bar){
+      bar=document.createElement('div');bar.id='carBar';bar.className='fl-bar';
+      bar.innerHTML='<p class="fl-route"></p><p class="fl-meta"></p><div class="fl-chips">'+
+        '<button type="button" class="fl-chip on" data-m="all">Svi</button>'+
+        '<button type="button" class="fl-chip" data-m="manual">Manuelni</button>'+
+        '<button type="button" class="fl-chip" data-m="auto">Automatik</button></div>';
+      list.parentNode.insertBefore(bar,list);
+      bar.addEventListener('click',function(e){
+        var b=e.target.closest('.fl-chip');if(!b)return;
+        mode=b.dataset.m;
+        bar.querySelectorAll('.fl-chip').forEach(function(x){x.classList.toggle('on',x===b);});
+        var t=document.getElementById('dpCarTrack');if(t)apply(t);
+      });
+    }
+    if(bar.dataset.sig!==sig){
+      bar.dataset.sig=sig;
+      bar.querySelector('.fl-route').textContent='Rent-a-car · '+val('dpTo');
+      bar.querySelector('.fl-meta').textContent=meta+n+' '+(n==='1'?'putnik':'putnika');
+    }
+    apply(track);
+  }
+  var t2;function later(){clearTimeout(t2);t2=setTimeout(run,300);}
+  document.addEventListener('DOMContentLoaded',function(){
+    later();new MutationObserver(later).observe(document.getElementById('main')||document.body,{childList:true,subtree:true});
+  });
+  window.addEventListener('load',later);
+})();
