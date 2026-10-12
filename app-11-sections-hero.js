@@ -242,6 +242,7 @@ const DEST_EN_NAMES = {
   'Kapadokija':'Cappadocia','Kairo':'Cairo','Šarm El Šeik':'Sharm El Sheikh','Marakeš':'Marrakesh',
   'Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
   'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town',
+  'Kankun':'Cancún','Hurgada':'Hurghada',
   'St. Anton am Arlberg':'St. Anton am Arlberg'
 };
 // Šta kartica nudi po vrsti slajdera: 'hotel' (Booking.com) ili 'activity' (Viator).

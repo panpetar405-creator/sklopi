@@ -147,7 +147,7 @@
       G.forEach(function(g){var b=a.filter(function(x){return !used[x.key]&&g[1](x);});b.forEach(function(x){used[x.key]=1;});if(b.length)html+='<section class="dx-group"><h2 class="dx-gh">'+g[0]+'</h2>'+grid(b)+'</section>';});
     }else html=grid(a);
     list.innerHTML=html;
-    list.querySelectorAll('.dx-thumb img').forEach(function(im){im.addEventListener('error',function(){var d=im.closest('.dx-card').dataset.dest;var p=null;try{p=window.SKLOPI_destPhoto&&window.SKLOPI_destPhoto(d,500);}catch(e){}var t=im.parentNode;if(p&&im.src.indexOf(p)<0){im.src=p;return;}if(window.SKLOPI_thumbFallback)window.SKLOPI_thumbFallback(t,d);},{once:false});});
+    list.querySelectorAll('.dx-thumb img').forEach(function(im){im.addEventListener('error',function(){var d=im.closest('.dx-card').dataset.dest;var p=null;try{p=window.SKLOPI_destPhoto&&window.SKLOPI_destPhoto(d,500);}catch(e){}var t=im.parentNode;if(p&&im.src.indexOf(p)<0){im.src=p;return;}if(im.dataset.lk)return;im.dataset.lk='1';var hit=imgCached(d);if(hit&&hit[0]&&im.src.indexOf(hit[0])<0){im.src=hit[0];return;}if(hit&&!hit[0]){if(window.SKLOPI_thumbFallback)window.SKLOPI_thumbFallback(t,d);return;}imgLookup(d).then(function(u){if(!t.isConnected)return;if(u)im.src=u;else if(window.SKLOPI_thumbFallback)window.SKLOPI_thumbFallback(t,d);});},{once:false});});
     list.querySelectorAll('.dx-thumb[data-fb]').forEach(function(t){var d=t.dataset.fb,p=null;try{p=window.SKLOPI_destPhoto&&window.SKLOPI_destPhoto(d,500);}catch(e){}if(p){t.innerHTML='<img src="'+esc(p)+'" alt="'+esc(d)+'" loading="lazy">';}else if(window.SKLOPI_thumbFallback)window.SKLOPI_thumbFallback(t,d);});
     autoPhotos(list);
   }
