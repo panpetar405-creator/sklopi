@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#123A44">
+<title>Procena cene putovanja po destinaciji | SKLOPI</title>
+<meta name="description" content="Unesi grad, datume i broj putnika — SKLOPI sabira let, smeštaj, rent a car i aktivnosti u jednu procenjenu cenu za tvoje putovanje.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SKLOPI">
+<meta property="og:title" content="Procena cene putovanja po destinaciji | SKLOPI">
+<meta property="og:description" content="Unesi grad, datume i broj putnika — SKLOPI sabira let, smeštaj, rent a car i aktivnosti u jednu procenjenu cenu za tvoje putovanje.">
+<meta property="og:image" content="https://sklopi.rs/hero-photo.jpg?v=2">
+<meta property="og:locale" content="sr_RS">
+<meta property="og:url" content="https://sklopi.rs/destinacija.html">
+<link rel="canonical" href="https://sklopi.rs/destinacija.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Procena cene putovanja po destinaciji | SKLOPI">
+<meta name="twitter:description" content="Unesi grad, datume i broj putnika — SKLOPI sabira let, smeštaj, rent a car i aktivnosti u jednu procenjenu cenu za tvoje putovanje.">
+<meta name="twitter:image" content="https://sklopi.rs/hero-photo.jpg?v=2">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/sora-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css?v=0f858672">
+<link rel="stylesheet" href="styles.css?v=412974dd">
+<link rel="stylesheet" href="dest-info.css?v=f6705aa1">
+<link rel="stylesheet" href="ux-refactor.css?v=9192cc00">
+<link rel="stylesheet" href="theme-navy.css?v=aa40cbd1">
+<link rel="stylesheet" href="theme-navy-rest.css?v=c39b958d">
+<style>
+
+[hidden]{display:none !important;}
+/* ---- dinamički deo stranice destinacije (prefiks dp-, kao ostatak) ---- */
+.skip-link{position:absolute;left:12px;top:-60px;z-index:100000;background:#0b4a54;color:#fff;padding:10px 16px;border-radius:10px;font:700 14px/1.2 'Inter',sans-serif;text-decoration:none;}
+.skip-link:focus{top:12px;outline:3px solid #f5c04e;outline-offset:2px;}
+#main:focus{outline:none;}
+.travel-updated{margin:10px 0 0;color:#5c7077;font-size:12.5px;line-height:1.45;}
+.travel-updated time{font-weight:700;}
+.dp-search{margin-top:18px;}
+.dp-form{display:grid;gap:12px;}
+.dp-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.dp-field label{font-size:12.5px;font-weight:600;color:var(--ink-soft);}
+.dp-field input,.dp-field select{
+  font:inherit;font-size:16px;color:var(--ink);background:#fff;width:100%;box-sizing:border-box;
+  min-height:46px;padding:10px 12px;border:1px solid var(--line-form);border-radius:10px;
+}
+.dp-field input:focus-visible,.dp-field select:focus-visible,
+.dp-linkbtn:focus-visible{outline:2px solid var(--deep);outline-offset:2px;}
+.dp-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.dp-form-msg{min-height:0;margin:0;font-size:13px;color:var(--coral-text);}
+.dp-form-msg:empty{display:none;}
+.dp-form .btn-primary{width:100%;}
+
+.dp-note{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-soft);}
+.dp-note-top{margin-bottom:10px;}
+.dp-card .dp-note + .dp-links{margin-top:12px;}
+.dp-card .dp-links + .dp-badge,.dp-card .dp-links + .dp-note{margin-top:12px;}
+.dp-card .dp-badge{display:inline-flex;}
+.dp-card .dp-tip-title + .dp-note{margin-top:4px;}
+.dp-links{display:flex;flex-wrap:wrap;gap:8px;}
+.dp-links-after{margin-top:2px;}
+.dp-chips{display:inline-flex;gap:8px;}
+.dp-linkbtn{
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;
+  border-radius:10px;border:1px solid var(--deep);background:var(--paper);color:var(--deep);
+  font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;text-decoration:none;
+}
+.dp-linkbtn:hover{background:var(--deep-soft);}
+.dp-linkbtn.dp-primary{background:var(--deep);color:var(--on-dark-strong);}
+.dp-linkbtn.dp-primary:hover{background:var(--deep2);}
+.dp-leg{margin-top:12px;}
+.dp-flight-row + .dp-leg{margin-top:14px;}
+.dp-fl-airline .dp-badge{margin-left:6px;vertical-align:middle;}
+.dp-gc{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+.dp-gc-needed b{color:var(--coral-text);}
+.dp-disclosure{margin:26px 0 0;font-size:12px;line-height:1.55;color:var(--ink-soft);}
+/* ---------- donja traka "Tvoj put" + toast ---------- */
+.dp-dock,.dp-toast{position:fixed;left:12px;right:12px;z-index:65;box-sizing:border-box;max-width:736px;margin:0 auto;}
+.dp-dock[hidden],.dp-toast[hidden]{display:none;}
+.dp-dock{bottom:calc(76px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;width:calc(100% - 24px);
+  min-height:60px;padding:8px 8px 8px 20px;border-radius:999px;border:1.5px solid #F5C842;cursor:pointer;text-align:left;font-family:Inter,sans-serif;
+  background:rgba(11,22,38,.96);color:#EAF1F8;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  box-shadow:0 12px 32px -8px rgba(0,0,0,.8),0 0 0 4px rgba(245,200,66,.12);-webkit-tap-highlight-color:transparent;}
+.dp-dock-txt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.dp-dock-label{font-size:12.5px;font-weight:500;color:#A9B8CA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dp-dock-price{font:700 20px/1.1 Sora,Inter,sans-serif;color:#fff;}
+.dp-dock-cta{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 20px;border-radius:999px;background:#F5C842;color:#1A1405;font:700 15px Inter,sans-serif;}
+.dp-dock-cta::after,.dp-toast-act::after,.dp-tb-open::after{content:"";display:inline-block;width:9px;height:9px;margin-left:8px;border:solid currentColor;border-width:0 0 0 0;border-top-width:2.5px;border-right-width:2.5px;border-radius:1px;transform:translateY(2px) rotate(-45deg);flex:0 0 auto;}
+.dp-toast-act{display:inline-flex;align-items:center;}
+.dp-tb-open{display:inline-flex;align-items:center;justify-content:center;}
+.dp-tb-open::after{transform:translateY(-2px) rotate(135deg);transition:transform .2s;}
+.dp-tb-open[aria-expanded="true"]::after{transform:translateY(2px) rotate(-45deg);}
+@media (max-width:700px){.dp-tb-open::after{transform:translateY(2px) rotate(-45deg);}}
+@media (prefers-reduced-motion:reduce){.dp-tb-open::after{transition:none;}}
+.dp-dock:active .dp-dock-cta{filter:brightness(.94);}
+.dp-dock:focus-visible,.dp-toast-act:focus-visible{outline:3px solid #F5C842;outline-offset:3px;}
+.dp-dock.bump{animation:dpBump .35s ease-out;}
+@keyframes dpBump{0%{transform:scale(1);}40%{transform:scale(1.03);}100%{transform:scale(1);}}
+.dp-toast{bottom:calc(146px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;padding:10px 6px 10px 14px;border-radius:14px;
+  background:#14233A;border:1px solid #243A57;color:#EAF1F8;font:600 14px Inter,sans-serif;box-shadow:0 10px 28px -10px rgba(0,0,0,.75);}
+.dp-toast-ic{flex:0 0 auto;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#F5C842;color:#1A1405;font-size:13px;}
+.dp-toast-msg{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dp-toast-act{flex:0 0 auto;min-height:44px;padding:0 12px;border:0;background:transparent;color:#F5C842;font:700 14px Inter,sans-serif;cursor:pointer;}
+@media (min-width:701px){.dp-dock{bottom:16px;} .dp-toast{bottom:92px;}}
+@media (prefers-reduced-motion:reduce){.dp-dock.bump{animation:none;}}
+/* ---------- specifikacija kao donji panel (telefon) ---------- */
+.dp-sheet-head{display:none;}
+.dp-trip-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;}
+.dp-sheet-share{flex:1 1 auto;min-height:48px;padding:0 20px;border:1.5px solid #F5C842;border-radius:999px;background:transparent;color:#F5C842;font:700 15px Inter,sans-serif;cursor:pointer;}
+.dp-sheet-share:focus-visible{outline:3px solid #F5C842;outline-offset:2px;}
+.dp-sheet-status{min-height:0;margin-top:6px;font-size:13px;color:#A9B8CA;}
+.dp-sheet-status:empty{display:none;}
+.dp-trip-clear{flex:0 0 auto;display:block;margin:0;padding:0 2px;min-height:44px;border:0;background:transparent;color:#A9B8CA;font:600 13.5px Inter,sans-serif;text-decoration:underline;cursor:pointer;}
+.dp-trip-clear:focus-visible{outline:3px solid #F5C842;outline-offset:2px;}
+.dp-sheet-back{position:fixed;inset:0;z-index:80;background:rgba(3,8,16,.62);}
+.dp-sheet-back[hidden]{display:none;}
+html.dp-sheet-open{overflow:hidden;}
+#dpTripPanel.is-sheet{position:fixed;left:0;right:0;bottom:0;z-index:81;box-sizing:border-box;flex:none;margin:0 auto;max-width:760px;
+  max-height:86vh;max-height:86dvh;overflow:auto;overscroll-behavior:contain;background:#0B1626;border:1px solid #243A57;border-bottom:0;border-radius:22px 22px 0 0;
+  padding:0 16px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 -18px 48px -12px rgba(0,0,0,.8);outline:none;}
+#dpTripPanel.is-sheet:not([hidden]){animation:dpSheetUp .26s ease-out;}
+@keyframes dpSheetUp{from{transform:translateY(40px);opacity:0;}to{transform:none;opacity:1;}}
+#dpTripPanel.is-sheet .dp-sheet-head{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1;background:#0B1626;
+  padding:18px 0 10px;margin-bottom:4px;color:#EAF1F8;font:700 17px Sora,Inter,sans-serif;}
+#dpTripPanel.is-sheet .dp-sheet-head::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:4px;background:#3A5170;}
+.dp-sheet-close{width:44px;height:44px;margin-right:-10px;border:0;border-radius:50%;background:transparent;color:#A9B8CA;font-size:26px;line-height:1;cursor:pointer;}
+.dp-sheet-close:focus-visible{outline:3px solid #F5C842;outline-offset:-3px;}
+@media (prefers-reduced-motion:reduce){#dpTripPanel.is-sheet:not([hidden]){animation:none;}}
+.dp-total-bar:not(.has-trip) .aff-badge{display:none;}
+@media (max-width:700px){
+  .dp-field input[type="date"]{font-size:14px;padding-left:12px;padding-right:26px;letter-spacing:-.01em;}
+}
+.dp-tb-cta{display:flex;flex-direction:column;align-items:center;gap:0;}
+.dp-total-bar{flex-wrap:wrap;}
+.dp-tb-open{border:0;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;background:var(--deep);color:var(--on-dark-strong);}
+.dp-tb-open:hover{background:var(--deep2);}
+.dp-tb-share{border:1.5px solid currentColor;cursor:pointer;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;min-height:44px;padding:0 16px;border-radius:999px;background:transparent;color:inherit;}
+.dp-total-bar.has-trip .dp-tb-cta{flex-direction:row;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;}
+.dp-tb-share:focus-visible{outline:3px solid var(--gold,#E7A93E);outline-offset:2px;}
+.dp-tb-status{flex-basis:100%;font-size:12.5px;min-height:0;}
+.dp-tb-status:empty{display:none;}
+/* ---- Praktične informacije (sklopljena grupa) ---- */
+.dp-more{margin-top:34px;scroll-margin-top:calc(var(--topbar-h) + 84px);}
+.dp-more-sum{list-style:none;display:flex;align-items:center;gap:14px;min-height:64px;padding:12px 16px;cursor:pointer;border:1px solid var(--nv-line,rgba(255,255,255,.14));border-radius:var(--nv-radius-card,18px);background:var(--nv-surface,rgba(255,255,255,.06));color:var(--nv-text,#fff);}
+.dp-more-sum::-webkit-details-marker{display:none;}
+.dp-more-sum:hover{border-color:rgba(245,200,66,.55);}
+.dp-more-sum:focus-visible{outline:3px solid var(--gold,#E7A93E);outline-offset:3px;}
+.dp-more-ic{flex:none;width:40px;height:40px;display:inline-grid;place-items:center;border-radius:12px;background:rgba(245,200,66,.14);font-size:20px;}
+.dp-more-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.dp-more-txt b{font:700 16px/1.25 Inter,sans-serif;}
+.dp-more-txt small{font:500 12.5px/1.35 Inter,sans-serif;color:var(--nv-muted,rgba(255,255,255,.7));}
+.dp-more-chev{flex:none;width:10px;height:10px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:rotate(45deg);transition:transform .2s;margin:-4px 4px 0 0;}
+.dp-more[open] > .dp-more-sum .dp-more-chev{transform:rotate(-135deg);margin-top:4px;}
+.dp-more-body > .dp-section:first-child{margin-top:26px;}
+@media (prefers-reduced-motion:reduce){.dp-more-chev{transition:none;}}
+.dp-trip-panel{flex:1 1 100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);max-height:48vh;overflow:auto;}
+.dp-trip-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px;}
+.dp-trip-row:last-of-type{border-bottom:0;}
+.dp-trip-ic{flex:0 0 auto;font-size:18px;}
+.dp-trip-txt{flex:1 1 auto;min-width:0;}
+.dp-trip-txt b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dp-trip-txt a{font-size:12.5px;color:var(--deep);}
+.dp-trip-price{flex:0 0 auto;font-weight:700;color:var(--deep);}
+.dp-trip-rm{flex:0 0 auto;border:0;background:transparent;cursor:pointer;font-size:18px;line-height:1;color:var(--ink-soft);padding:4px 6px;}
+.dp-trip-note{margin:8px 0 0;font-size:12px;color:var(--ink-soft);}
+.dp-pick{margin-top:8px;width:100%;box-sizing:border-box;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:9px 14px;border-radius:999px;border:1.5px solid var(--deep);background:transparent;color:var(--deep);}
+.dp-pick.on{background:var(--deep-soft);}
+.dp-slider:not(.dp-all) .dp-extra{display:none;}
+.dp-more-btn{display:block;margin:12px auto 0;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;padding:9px 20px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);color:var(--deep);}
+.dp-tb-cta .aff-badge{margin-top:4px;}
+.dp-sl-body .aff-badge{align-self:flex-start;margin-top:6px;}
+.dp-links .aff-badge{margin-top:0;align-self:center;}
+
+/* ---- slajderi (letovi, smeštaj, atrakcije, auto) ---- */
+.dp-slider-nav{display:flex;gap:6px;margin-left:10px;}
+.dp-sl-btn{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--line-form);background:var(--paper);color:var(--deep);
+  font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 0 3px;
+}
+.dp-sl-btn:disabled{opacity:.35;cursor:default;}
+.dp-sl-btn:focus-visible{outline:2px solid var(--deep);outline-offset:2px;}
+.dp-slider-track{
+  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:20px;
+  margin:0 -20px;padding:2px 20px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+}
+.dp-slider-track::-webkit-scrollbar{display:none;}
+.dp-slider-track:focus-visible{outline:2px solid var(--deep);outline-offset:-2px;border-radius:14px;}
+.dp-sl-card{
+  flex:0 0 min(78%,290px);scroll-snap-align:start;background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
+}
+.dp-sl-banner{
+  height:64px;display:flex;align-items:flex-end;justify-content:space-between;padding:10px 14px;
+  color:var(--gold-soft);font-family:'Sora',sans-serif;font-weight:700;font-size:18px;letter-spacing:.06em;
+  background:linear-gradient(135deg,var(--deep) 0%,var(--deep2) 100%);
+}
+.dp-sl-banner.alt2{background:linear-gradient(135deg,var(--emerald) 0%,var(--deep) 100%);color:var(--on-dark-strong);}
+.dp-sl-banner.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
+.dp-sl-body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1;}
+.dp-sl-title{font-size:15px;font-weight:600;line-height:1.3;}
+.dp-sl-sub{font-size:12.5px;color:var(--ink-soft);line-height:1.4;}
+.dp-sl-price{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px;}
+.dp-sl-price b{font-family:'Sora',sans-serif;font-size:20px;color:var(--deep);white-space:nowrap;}
+.dp-sl-price small{font-size:11.5px;color:var(--ink-soft);text-align:right;line-height:1.3;}
+.dp-sl-cta{margin-top:8px;width:100%;box-sizing:border-box;font-size:14px;}
+.dp-sl-body .dp-badge{align-self:flex-start;}
+.dp-sl-body .dp-flight-row + .dp-leg{margin-top:12px;}
+.dp-subhead{margin-top:22px;}
+.dp-section-head h2{flex:1 1 auto;min-width:0;}
+.dp-section-head .dp-sh-count{white-space:nowrap;}
+@media (max-width:760px){
+  .dp-slider-track{margin:0 -16px;padding-left:16px;padding-right:16px;scroll-padding-left:16px;}
+}
+/* fotografija na vrhu kartice (prava slika odredišta / modela auta / aviona; vidi "fotografije u karticama") */
+.dp-sl-photo{
+  position:relative;aspect-ratio:16/10;overflow:hidden;
+  background:linear-gradient(135deg,var(--deep) 0%,var(--aqua) 100%);
+}
+.dp-sl-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.dp-sl-banner.on-photo{
+  position:absolute;left:0;right:0;bottom:0;height:auto;padding:28px 14px 10px;
+  background:linear-gradient(to top,rgba(17,24,39,0.78) 0%,rgba(17,24,39,0) 100%);color:var(--on-dark-strong);
+}
+/* nema fotografije -> vraća se kompaktan baner kao ranije, a prazan blok (letovi) nestaje */
+.dp-sl-photo.no-photo{aspect-ratio:auto;}
+.dp-sl-photo.no-photo:not(.has-banner){display:none;}
+.dp-sl-photo.no-photo .dp-sl-banner.on-photo{
+  position:static;height:64px;padding:10px 14px;color:var(--gold-soft);
+  background:linear-gradient(135deg,var(--deep) 0%,var(--deep2) 100%);
+}
+.dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt2{background:linear-gradient(135deg,var(--emerald) 0%,var(--deep) 100%);color:var(--on-dark-strong);}
+.dp-sl-photo.no-photo .dp-sl-banner.on-photo.alt3{background:linear-gradient(135deg,var(--gold) 0%,var(--coral) 100%);color:var(--on-gold);}
+</style>
+<link rel="stylesheet" href="destinacija.css?v=7ff8bbb6">
+</head>
+<body>
+<a class="skip-link" href="#main">Preskoči na sadržaj</a>
+
+<!-- ====== TOPBAR (isti kao na početnoj) ====== -->
+<div class="topbar-wrap">
+<div class="topbar">
+<a class="logo logo-v2" href="index.html" aria-label="SKLOPI — početna">
+<img alt="" aria-hidden="true" class="logo-v2-mark" height="36" src="sklopi-mark.svg" style="border-radius:8px;" width="36"/>
+<svg aria-label="SKLOPI" class="logo-v2-svg" role="img" style="height:20px!important;width:auto!important;" viewbox="166 66 420 89" xmlns="http://www.w3.org/2000/svg">
+<path d="M 561 77 L 561 144 L 576 144 L 576 77 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 531 79 L 523 77 L 487 77 L 487 144 L 502 144 L 503 122 L 524 122 L 533 119 L 540 113 L 543 106 L 543 92 L 540 86 Z M 502 91 L 523 91 L 528 97 L 526 106 L 521 109 L 503 109 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 336 77 L 336 144 L 384 144 L 384 131 L 353 131 L 351 129 L 351 77 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 254 77 L 254 144 L 269 144 L 269 127 L 278 117 L 298 144 L 317 144 L 289 107 L 289 105 L 316 77 L 297 77 L 271 105 L 269 104 L 269 77 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 424 76 L 411 81 L 401 91 L 396 103 L 396 118 L 400 129 L 409 139 L 423 145 L 439 145 L 453 139 L 463 128 L 467 115 L 466 100 L 458 86 L 450 80 L 438 76 Z M 427 90 L 436 90 L 442 93 L 450 103 L 450 118 L 444 127 L 436 131 L 426 131 L 420 128 L 412 116 L 412 105 L 414 100 L 419 94 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+<path d="M 187 80 L 179 90 L 178 100 L 180 106 L 190 114 L 213 120 L 217 124 L 217 128 L 211 132 L 200 132 L 183 125 L 176 136 L 186 142 L 196 145 L 214 145 L 221 143 L 230 136 L 233 130 L 233 119 L 231 115 L 223 108 L 196 100 L 194 95 L 199 90 L 207 89 L 224 96 L 231 84 L 225 80 L 211 76 L 198 76 Z" fill="rgb(7,59,71)" fill-rule="evenodd"></path>
+</svg>
+</a>
+<div class="topbar-right">
+<button type="button" class="lang-switch currency-switch" data-currency="EUR" aria-label="Promeni valutu"><span class="cs-eur">EUR</span><span class="ls-sep">/</span><span class="cs-rsd">RSD</span></button>
+<button type="button" class="lang-switch" data-lang="sr">SR</button>
+</div>
+</div>
+</div>
+
+<!-- ====== DUGME "NAZAD" (isti stil kao .results-back-btn) ====== -->
+<div class="dp-back-row">
+<a href="index.html" class="results-back-btn" style="text-decoration:none;">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+Nazad na pretragu
+</a>
+</div>
+
+<!-- ====== HERO / FORMA / REZULTATI (dinamički, popunjava JS) ====== -->
+<main id="main" tabindex="-1">
+<div class="dp-hero">
+<div class="dp-hero-inner">
+<p class="dp-kicker">Tvoje putovanje</p>
+<h1 id="dpHeroTitle">Kuda putuješ?</h1>
+<div class="dp-hero-facts" id="dpHeroFacts"></div>
+<div class="dp-search" id="dpSearch">
+<form class="dp-card dp-form" id="dpForm" novalidate>
+<div class="dp-row2 dp-row-route">
+<div class="dp-field"><label for="dpFrom">Polazak iz</label><input id="dpFrom" type="text" list="dpCities" autocomplete="off" placeholder="npr. Beograd"></div>
+<div class="dp-field"><label for="dpTo">Destinacija</label><input id="dpTo" type="text" list="dpCities" autocomplete="off" placeholder="npr. Atina"></div>
+</div>
+<div class="dp-row2">
+<div class="dp-field"><label for="dpStart">Polazak</label><input id="dpStart" type="date"></div>
+<div class="dp-field"><label for="dpEnd">Povratak</label><input id="dpEnd" type="date"></div>
+</div>
+<div class="dp-row2 dp-row-go">
+<div class="dp-field"><label for="dpAdults">Broj putnika</label>
+<select id="dpAdults"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></div>
+<button type="submit" class="btn-primary q-submit">Prikaži ponude</button>
+</div>
+<p class="dp-form-msg" id="dpMsg" role="alert"></p>
+</form>
+<datalist id="dpCities"></datalist>
+</div>
+<div id="dpHeroChecklist"></div>
+</div>
+</div>
+
+<div class="dp-total-bar" id="dpTotalBar" hidden>
+<div>
+<div class="dp-tb-label" id="dpTbLabel">Najjeftiniji let</div>
+<div class="dp-tb-price" id="dpTbPrice"></div>
+</div>
+<div class="dp-tb-cta">
+<a class="btn-primary" id="dpTbLink" href="#avio" style="padding:10px 18px;text-decoration:none;">Pogledaj letove</a>
+<button type="button" class="dp-tb-open" id="dpTbOpen" aria-expanded="false" aria-controls="dpTripPanel" hidden>Pregled puta</button>
+<button type="button" class="dp-tb-share" id="dpTbShare" aria-label="Podeli ovaj put" hidden>Podeli</button>
+<span class="aff-badge" title="Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.">🔗 Afilijacija</span>
+</div>
+<div class="dp-tb-status" id="dpTbStatus" role="status" aria-live="polite"></div>
+<div class="dp-trip-panel" id="dpTripPanel" hidden></div>
+</div>
+
+<div class="dp-wrap">
+
+<noscript><div class="dp-card"><p class="dp-note">Za prikaz ponuda potreban je uključen JavaScript.</p></div></noscript>
+
+<div id="dpResults" hidden></div>
+
+</div>
+
+<!-- ====== FOOTER (identičan onom sa index.html) ====== -->
+</main>
+<footer id="about">
+<div class="footer-inner">
+<div class="footer-logo"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><g transform="rotate(-18 12 12)"><rect x="4" y="5" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="7" r="1.4" fill="var(--deep)"/><circle cx="20" cy="7" r="1.4" fill="var(--deep)"/><line x1="12" y1="5" x2="12" y2="9" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="10.5" width="16" height="4" rx="2" fill="#fff"/><circle cx="4" cy="12.5" r="1.4" fill="var(--deep)"/><circle cx="20" cy="12.5" r="1.4" fill="var(--deep)"/><line x1="12" y1="10.5" x2="12" y2="14.5" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/><rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="var(--deep)"/><circle cx="20" cy="18" r="1.4" fill="var(--deep)"/><line x1="12" y1="16" x2="12" y2="20" stroke="var(--deep)" stroke-width="0.6" stroke-dasharray="1 1"/></g></svg></div>SKLOPI<em>.</em></div>
+<div class="flinks"><a href="index.html#faq">Pomoć i FAQ</a><a href="vodici.html">Vodiči</a><a href="#" data-contact="mail">Kontakt</a><a href="privatnost.html">Privatnost</a><a href="uslovi-koriscenja.html">Uslovi</a><a href="kolacici.html">Kolačići</a></div>
+</div>
+<div class="foot-note">SKLOPI — prototip proizvoda u razvoju. Prikazane cene su ilustrativne (simulirane radi demonstracije), ne dolaze uživo od partnera i ne predstavljaju stvarnu ponudu ni obavezu na cenu.</div>
+</footer>
+
+<script src="config.js?v=29e9b7fc"></script>
+<script src="affiliate.js?v=85396c00"></script>
+<script src="dest-i18n.js?v=e716b2a7"></script>
+<script src="dest-info.js?v=c1bc5dd1"></script>
+<script>
+(function(){
+'use strict';
+
+/* ==========================================================
+   PODACI — izvučeni iz app.js (isti izvor kao na glavnoj stranici):
+   iata  : IATA kodovi aerodroma (ključ = grad bez dijakritika)
+   ap    : 1 = grad ima aerodrom, "Grad" = najbliži aerodrom
+   pop   : [naziv, država] — sve poznate destinacije
+   months: najbolja sezona (meseci 1-12) za kuriranu listu
+   ostalo: pravila za dokumenta i zelenu kartu (državljani Srbije)
+========================================================== */
+const DATA = {"iata":{"beograd":"BEG","nis":"INI","podgorica":"TGD","tivat":"TIV","zagreb":"ZAG","split":"SPU","dubrovnik":"DBV","zadar":"ZAD","pula":"PUY","sarajevo":"SJJ","mostar":"OMO","skoplje":"SKP","ohrid":"OHD","pristina":"PRN","ljubljana":"LJU","tirana":"TIA","budimpesta":"BUD","temisvar":"TSR","bukurest":"OTP","sofija":"SOF","varna":"VAR","solun":"SKG","atina":"ATH","krf":"CFU","santorini":"JTR","mikonos":"JMK","rodos":"RHO","krit":"HER","iraklion":"HER","rim":"FCO","milano":"MXP","venecija":"VCE","napulj":"NAP","barselona":"BCN","madrid":"MAD","malaga":"AGP","ibica":"IBZ","lisabon":"LIS","porto":"OPO","pariz":"CDG","nica":"NCE","london":"LON","amsterdam":"AMS","berlin":"BER","minhen":"MUC","frankfurt":"FRA","cirih":"ZRH","bec":"VIE","prag":"PRG","bratislava":"BTS","varsava":"WAW","krakov":"KRK","istanbul":"IST","antalija":"AYT","bodrum":"BJV","tel aviv":"TLV","dubai":"DXB","kairo":"CAI","marakes":"RAK","larnaka":"LCA","valeta":"MLA","majorka":"PMI","kopenhagen":"CPH","stokholm":"ARN","oslo":"OSL","helsinki":"HEL","dablin":"DUB","brisel":"BRU","bazel":"BSL","zeneva":"GVA","njujork":"NYC","bangkok":"BKK","tokio":"TYO"},"ap":{"beograd":1,"nis":1,"novi sad":"Beograd","subotica":"Budimpešta","kragujevac":"Beograd","kraljevo":"Niš","novi pazar":"Beograd","sabac":"Beograd","zrenjanin":"Beograd","pancevo":"Beograd","cacak":"Beograd","krusevac":"Niš","leskovac":"Niš","vranje":"Niš","uzice":"Beograd","valjevo":"Beograd","smederevo":"Beograd","sombor":"Beograd","zajecar":"Niš","pirot":"Niš","loznica":"Beograd","pozarevac":"Beograd","sremska mitrovica":"Beograd","vrsac":"Beograd","kikinda":"Beograd","jagodina":"Niš","paracin":"Niš","bor":"Niš","negotin":"Niš","prijepolje":"Podgorica","priboj":"Podgorica","sjenica":"Beograd","prokuplje":"Niš","vrnjacka banja":"Niš","sokobanja":"Niš","aleksinac":"Niš","vlasotince":"Niš","surdulica":"Niš","ivanjica":"Beograd","cuprija":"Niš","svilajnac":"Beograd","senta":"Beograd","becej":"Beograd","vrbas":"Beograd","backa palanka":"Beograd","ruma":"Beograd","indjija":"Beograd","stara pazova":"Beograd","sid":"Beograd","podgorica":1,"tivat":1,"budva":"Tivat","danilovgrad":"Podgorica","pljevlja":"Podgorica","berane":"Podgorica","rozaje":"Podgorica","bijelo polje":"Podgorica","bar":"Tivat","herceg novi":"Tivat","igalo":"Tivat","niksic":"Podgorica","cetinje":"Podgorica","ulcinj":"Tivat","petrovac":"Tivat","sutomore":"Tivat","perast":"Tivat","risan":"Tivat","kotor":"Tivat","kolasin":"Podgorica","zabljak":"Podgorica","sarajevo":1,"banja luka":1,"tuzla":1,"mostar":1,"zenica":"Sarajevo","prijedor":"Banja Luka","bihac":"Banja Luka","doboj":"Banja Luka","trebinje":"Dubrovnik","foca":"Sarajevo","bijeljina":"Tuzla","brcko":"Tuzla","travnik":"Sarajevo","livno":"Split","gorazde":"Sarajevo","zagreb":1,"split":1,"dubrovnik":1,"zadar":1,"rijeka":1,"pula":1,"osijek":1,"vukovar":"Osijek","slavonski brod":"Zagreb","varazdin":"Zagreb","knin":"Split","sibenik":"Split","makarska":"Split","trogir":"Split","hvar":"Split","rovinj":"Pula","sisak":"Zagreb","karlovac":"Zagreb","skoplje":1,"ohrid":1,"bitola":"Ohrid","tetovo":"Skoplje","kumanovo":"Skoplje","gostivar":"Skoplje","strumica":"Skoplje","prilep":"Ohrid","struga":"Ohrid","veles":"Skoplje","pristina":1,"prizren":"Priština","pec":"Priština","djakovica":"Priština","mitrovica":"Priština","tirana":1,"skadar":"Podgorica","sarande":"Tirana","vlore":"Tirana","durres":"Tirana","ljubljana":1,"maribor":1,"bled":"Ljubljana","kranjska gora":"Ljubljana","kranj":"Ljubljana","bohinj":"Ljubljana","bovec":"Ljubljana","kobarid":"Ljubljana","logarska dolina":"Ljubljana","idrija":"Ljubljana","postojna":"Ljubljana","škocjanske jame":"Ljubljana","predjama":"Ljubljana","vintgar":"Ljubljana","kamnik":"Ljubljana","celje":"Ljubljana","novo mesto":"Ljubljana","rogaška slatina":"Ljubljana","dolenjske toplice":"Ljubljana","laško":"Ljubljana","triglav":"Ljubljana","vogel":"Ljubljana","krvavec":"Ljubljana","mangart":"Ljubljana","škofja loka":"Ljubljana","nova gorica":"Ljubljana","jesenice":"Ljubljana","velenje":"Ljubljana","čatež":"Ljubljana","ptuj":"Maribor","terme ptuj":"Maribor","pohorje":"Maribor","slovenj gradec":"Maribor","murska sobota":"Maribor","moravske toplice":"Maribor","radenci":"Maribor","koper":"Trst","piran":"Trst","portorož":"Trst","izola":"Trst","ankaran":"Trst","budimpesta":1,"segedin":"Budimpešta","istanbul":1,"ankara":1,"izmir":1,"antalija":1,"bodrum":1,"kajseri":1,"adana":1,"gaziantep":1,"trabzon":1,"samsun":1,"konja":1,"denizli":1,"malatja":1,"eskišehir":1,"bursa":1,"dalaman":1,"canakkale":1,"sanliurfa":1,"nevsehir":1,"van":1,"dijarbakir":1,"erzurum":1,"sivas":1,"gazipasa":1,"mersin":"Adana","kapadokija":"Nevsehir","marmaris":"Dalaman","fetije":"Dalaman","side":"Antalija","alanja":"Antalija","kušadasi":"Izmir","česme":"Izmir","pamukale":"Denizli","jalova":"Istanbul","afjon karahisar":"Ankara","haymana":"Ankara","kizildžahamam":"Ankara","efes":"Izmir","troja":"Canakkale","pergamon":"Izmir","hijerapolis":"Denizli","sumela":"Trabzon","nemrut":"Malatja","safranbolu":"Ankara","gjobekli tepe":"Sanliurfa","kaš":"Dalaman","kalkan":"Dalaman","datča":"Dalaman","didim":"Izmir","ajvalik":"Izmir","silifke":"Adana","foča (turska)":"Izmir","lisabon":1,"porto":1,"faro":1,"madeira":1,"azori":1,"tersejra":1,"koimbra":"Porto","braga":"Porto","sintra":"Lisabon","albufeira":"Faro","evora":"Lisabon","kaskais":"Lisabon","nazare":"Lisabon","fatima":"Lisabon","pariz":1,"nica":1,"lion":1,"bordo":1,"marselj":1,"london":1,"edinburg":1,"mancester":1,"liverpul":1,"amsterdam":1,"roterdam":1,"berlin":1,"minhen":1,"hamburg":1,"frankfurt":1,"keln":1,"diseldorf":1,"stutgart":1,"drezden":1,"varsava":1,"krakov":1,"vroclav":1,"gdanjsk":1,"poznanj":1,"lodj":1,"katovice":1,"zesuv":1,"scecin":1,"bidgosc":1,"lublin":1,"zakopane":"Krakov","torunj":"Bidgosc","vjelicka":"Krakov","gdinja":"Gdanjsk","censtohova":"Katovice","prag":1,"brno":1,"karlovi vari":1,"ostrava":1,"plzenj":"Prag","ceski krumlov":"Linc","olomouc":"Ostrava","kutna hora":"Prag","ceske budejovice":"Prag","hradec kralove":"Prag","liberec":"Prag","stokholm":1,"geteborg":1,"cirih":1,"zeneva":1,"oslo":1,"kopenhagen":1,"helsinki":1,"dablin":1,"brisel":1,"antverpen":1,"sarlroa":1,"lijez":1,"ostende":1,"briz":"Brisel","gent":"Brisel","namir":"Šarlroa","atina":1,"solun":1,"krf":1,"rodos":1,"krit":1,"kos":1,"iraklion":1,"santorini":1,"mikonos":1,"zakintos":1,"kefalonija":1,"paros":1,"naksos":1,"kavala":1,"janjina":1,"kalamata":1,"samos":1,"hios":1,"skijatos":1,"milos":1,"halkidiki":"Solun","lefkada":"Preveza","volos":"Solun","patra":"Araksos","larisa":"Solun","lutraki":"Atina","edipsos":"Atina","olimp":"Solun","pilion":"Solun","meteori":"Solun","delfi":"Atina","nafplion":"Atina","tasos":"Kavala","skopelos":"Skijatos","evija":"Atina","idra":"Atina","spece":"Atina","ios":"Santorini","egina":"Atina","poros":"Atina","sofija":1,"varna":1,"burgas":1,"plovdiv":1,"nesebar":"Burgas","bansko":"Sofija","ruse":"Sofija","stara zagora":"Plovdiv","pleven":"Sofija","veliko trnovo":"Sofija","blagoevgrad":"Sofija","sumen":"Varna","sliven":"Burgas","vidin":"Sofija","dobric":"Varna","kjustendil":"Sofija","gabrovo":"Sofija","haskovo":"Plovdiv","sandanski":"Sofija","velingrad":"Sofija","hisarja":"Plovdiv","devin":"Plovdiv","pavel banja":"Plovdiv","bankja":"Sofija","borovec":"Sofija","pamporovo":"Plovdiv","vitosa":"Sofija","cepelare":"Plovdiv","rila":"Sofija","koprivstica":"Sofija","melnik":"Sofija","rilski manastir":"Sofija","trjavna":"Sofija","arbanasi":"Varna","sozopol":"Burgas","suncev breg":"Burgas","zlatni pjasci":"Varna","primorsko":"Burgas","balcik":"Varna","kavarna":"Varna","carevo":"Burgas","pomorije":"Burgas","ahtopol":"Burgas","bukurest":1,"kluz":1,"konstanca":1,"sibiu":1,"temisvar":1,"jasi":1,"brasov":1,"sinaja":"Bukurešt","bran":"Brašov","mamaja":"Konstanca","rim":1,"milano":1,"napulj":1,"venecija":1,"bolonja":1,"torino":1,"bari":1,"sicilija":1,"sardinija":1,"kaljari":1,"palermo":1,"katanija":1,"pisa":1,"trst":1,"firenca":1,"verona":1,"djenova":1,"parma":1,"perudja":1,"rimini":1,"bolcano":1,"brindizi":1,"olbija":1,"algero":1,"trapani":1,"ankona":1,"bergamo":1,"peskara":1,"redjokalabrija":1,"lamecijaterme":1,"lece":"Brindizi","padova":"Venecija","modena":"Bolonja","bresija":"Milano","salerno":"Napulj","abano terme":"Venecija","montekatini terme":"Firenca","fjudji":"Rim","salsomadjore terme":"Parma","dolomiti":"Verona","kortina d'ampeco":"Verona","val gardena":"Bolcano","livinjo":"Milano","etna":"Katanija","pompeji":"Napulj","asizi":"Perudja","sijena":"Firenca","san djimonjano":"Firenca","orvieto":"Rim","ravena":"Bolonja","amalfi":"Napulj","pozitano":"Napulj","sorento":"Napulj","kapri":"Napulj","portofino":"Đenova","elba":"Pisa","taormina":"Katanija","luka":"Pisa","cinkve tere":"Đenova","san marino":"Rimini","vatikan":"Rim","mantova":"Verona","ferara":"Bolonja","urbino":"Ankona","matera":"Bari","alberobelo":"Bari","ostuni":"Brindizi","poljinjano a mare":"Bari","barselona":1,"madrid":1,"valensija":1,"malaga":1,"majorka":1,"sevilja":1,"alikante":1,"bilbao":1,"tenerife":1,"gran kanarija":1,"lanzarote":1,"fuerteventura":1,"ibica":1,"granada":1,"san sebastijan":1,"santjago de kompostela":1,"saragosa":1,"vigo":1,"korunja":1,"ovijedo":1,"santander":1,"valjadolid":1,"mursija":1,"almerija":1,"herez":1,"reus":1,"girona":1,"menorka":1,"pamplona":1,"melilja":1,"salamanka":"Madrid","toledo":"Madrid","kordoba":"Sevilja","segovija":"Madrid","ronda":"Malaga","kadiz":"Herez","marbelja":"Malaga","kuenka":"Madrid","avila":"Madrid","bec":1,"salcburg":1,"grac":1,"insbruk":1,"linc":1,"klagenfurt":1,"halstat":"Salcburg","zeloamze":"Salcburg","kicbuel":"Insbruk","sanktanton":"Insbruk","baden kod beca":"Beč","melk":"Beč","verfen":"Salcburg","bratislava":1,"kosice":1,"poprad":1,"banska bistrica":"Bratislava","vysoke tatre":"Poprad","talin":1,"riga":1,"vilnjus":1,"kaunas":1,"malta":1,"larnaka":1,"pafos":1,"luksemburg":1,"rejkjavik":1,"kisinjev":1,"birmingem":1,"glazgov":1,"belfast":1,"bristol":1,"lids":1,"njukasl":1,"kembridz":"London","oksford":"London","tuluz":1,"nant":1,"strazbur":1,"monpelje":1,"korzika":1,"lil":1,"ren":1,"brest":1,"klermonferan":1,"bijaric":1,"perpinjan":1,"tulon":1,"limoz":1,"grenobl":1,"samberi":1,"anesi":1,"nansi":1,"larosel":1,"tur":1,"versaj":"Pariz","kan":"Nica","dizon":"Lion","anze":"Nant","lemans":"Pariz","amjen":"Pariz","orlean":"Pariz","mec":"Nansi","nirnberg":1,"hanover":1,"lajpcig":1,"bremen":1,"dortmund":1,"karlsrue":1,"minster":1,"paderborn":1,"zarbriken":1,"rostok":1,"erfurt":1,"fridrihshafen":1,"libek":1,"memingen":1,"kasel":1,"hajdelberg":"Frankfurt","bon":"Keln","visbaden":"Frankfurt","majnc":"Frankfurt","ahen":"Keln","regensburg":"Nirnberg","vurcburg":"Frankfurt","trir":"Luksemburg","potsdam":"Berlin","kil":"Hamburg","magdeburg":"Berlin","kemnic":"Lajpcig","ulm":"Stutgart","frajburg":"Bazel","konstanc":"Fridrihshafen","ajndhoven":1,"mastriht":1,"groningen":1,"hag":"Roterdam","utreht":"Amsterdam","bergen":1,"trondhajm":1,"stavanger":1,"tromso":1,"bodo":1,"olesund":1,"kristiansand":1,"harstad":1,"alta":1,"kirkenes":1,"svalbard":1,"lilehamer":"Oslo","gejrangerfjord":"Olesund","malme":1,"umeo":1,"lulea":1,"vizbi":1,"sundsval":1,"kalmar":1,"upsala":"Stokholm","lund":"Malme","olborg":1,"bilund":1,"arhus":1,"bornholm":1,"esbjerg":1,"odense":"Bilund","roskilde":"Kopenhagen","helsingor":"Kopenhagen","tampere":1,"turku":1,"rovanijemi":1,"ulu":1,"vaasa":1,"kuopio":1,"ivalo":1,"lahti":"Helsinki","bazel":1,"bern":1,"lugano":1,"sankt moric":"Cirih","lucern":"Cirih","interlaken":"Bern","cermat":"Ženeva","davos":"Cirih","debrecin":1,"moskva":1,"sanktpeterburg":1,"soci":1,"kalinjingrad":1,"kazanj":1,"krasnodar":1,"kijev":"Varsava","lavov":"Zesuv","odesa":"Kisinjev","harkov":"Varsava"},"pop":[["Budimpešta","Mađarska"],["Beč","Austrija"],["Sofija","Bugarska"],["Solun","Grčka"],["Skoplje","Severna Makedonija"],["Ohrid","Severna Makedonija"],["Tirana","Albanija"],["Sarande","Albanija"],["Budva","Crna Gora"],["Kotor","Crna Gora"],["Herceg Novi","Crna Gora"],["Dubrovnik","Hrvatska"],["Split","Hrvatska"],["Hvar","Hrvatska"],["Zagreb","Hrvatska"],["Ljubljana","Slovenija"],["Bled","Slovenija"],["Sarajevo","Bosna i Hercegovina"],["Mostar","Bosna i Hercegovina"],["Bukurešt","Rumunija"],["Varna","Bugarska"],["Istanbul","Turska"],["Prag","Češka"],["Bratislava","Slovačka"],["Krf","Grčka"],["Atina","Grčka"],["Santorini","Grčka"],["Mikonos","Grčka"],["Rodos","Grčka"],["Krit","Grčka"],["Rim","Italija"],["Milano","Italija"],["Venecija","Italija"],["Firenca","Italija"],["Barselona","Španija"],["Madrid","Španija"],["Malaga","Španija"],["Ibica","Španija"],["Lisabon","Portugalija"],["Porto","Portugalija"],["Pariz","Francuska"],["Nica","Francuska"],["London","Velika Britanija"],["Amsterdam","Holandija"],["Berlin","Nemačka"],["Minhen","Nemačka"],["Cirih","Švajcarska"],["Antalija","Turska"],["Bodrum","Turska"],["Kapadokija","Turska"],["Tel Aviv","Izrael"],["Dubai","UAE"],["Kairo","Egipat"],["Šarm El Šeik","Egipat"],["Marakeš","Maroko"],["Njujork","SAD"],["Majami","SAD"],["Los Anđeles","SAD"],["Bangkok","Tajland"],["Puket","Tajland"],["Tokio","Japan"],["Bali","Indonezija"],["Singapur","Singapur"],["Sidnej","Australija"],["Kejptaun","Južnoafrička Republika"],["Beograd","Srbija"],["Novi Sad","Srbija"],["Niš","Srbija"],["Kragujevac","Srbija"],["Subotica","Srbija"],["Zlatibor","Srbija"],["Kopaonik","Srbija"],["Vrnjačka Banja","Srbija"],["Čačak","Srbija"],["Kraljevo","Srbija"],["Kruševac","Srbija"],["Šabac","Srbija"],["Smederevo","Srbija"],["Užice","Srbija"],["Vranje","Srbija"],["Leskovac","Srbija"],["Zaječar","Srbija"],["Valjevo","Srbija"],["Sombor","Srbija"],["Zrenjanin","Srbija"],["Pančevo","Srbija"],["Vršac","Srbija"],["Loznica","Srbija"],["Sremska Mitrovica","Srbija"],["Bečej","Srbija"],["Kikinda","Srbija"],["Pirot","Srbija"],["Jagodina","Srbija"],["Paraćin","Srbija"],["Aranđelovac","Srbija"],["Požarevac","Srbija"],["Bor","Srbija"],["Negotin","Srbija"],["Priboj","Srbija"],["Prijepolje","Srbija"],["Sjenica","Srbija"],["Novi Pazar","Srbija"],["Ivanjica","Srbija"],["Gornji Milanovac","Srbija"],["Vrbas","Srbija"],["Inđija","Srbija"],["Ruma","Srbija"],["Sremski Karlovci","Srbija"],["Bajina Bašta","Srbija"],["Tara","Srbija"],["Divčibare","Srbija"],["Stara Planina","Srbija"],["Golija","Srbija"],["Rtanj","Srbija"],["Zlatar","Srbija"],["Mokra Gora","Srbija"],["Fruška Gora","Srbija"],["Vlasina","Srbija"],["Goč","Srbija"],["Sokobanja","Srbija"],["Niška Banja","Srbija"],["Banja Koviljača","Srbija"],["Banja Vrujci","Srbija"],["Banja Kanjiža","Srbija"],["Prolom Banja","Srbija"],["Bukovička Banja","Srbija"],["Vranjska Banja","Srbija"],["Mataruška Banja","Srbija"],["Sijarinska Banja","Srbija"],["Josanička Banja","Srbija"],["Ribarska Banja","Srbija"],["Palić","Srbija"],["Zlatarsko jezero","Srbija"],["Perućac","Srbija"],["Srebrno jezero","Srbija"],["Borsko jezero","Srbija"],["Gružansko jezero","Srbija"],["Đerdap","Srbija"],["Uvac","Srbija"],["Golubac","Srbija"],["Ćuprija","Srbija"],["Prokuplje","Srbija"],["Svilajnac","Srbija"],["Senta","Srbija"],["Kanjiža","Srbija"],["Temerin","Srbija"],["Podgorica","Crna Gora"],["Igalo","Crna Gora"],["Bar","Crna Gora"],["Tivat","Crna Gora"],["Petrovac","Crna Gora"],["Sutomore","Crna Gora"],["Ulcinj","Crna Gora"],["Perast","Crna Gora"],["Risan","Crna Gora"],["Žabljak","Crna Gora"],["Kolašin","Crna Gora"],["Nikšić","Crna Gora"],["Cetinje","Crna Gora"],["Rožaje","Crna Gora"],["Bijelo Polje","Crna Gora"],["Pljevlja","Crna Gora"],["Berane","Crna Gora"],["Plav","Crna Gora"],["Mojkovac","Crna Gora"],["Danilovgrad","Crna Gora"],["Andrijevica","Crna Gora"],["Gusinje","Crna Gora"],["Plužine","Crna Gora"],["Šavnik","Crna Gora"],["Durmitor","Crna Gora"],["Biogradska Gora","Crna Gora"],["Lovćen","Crna Gora"],["Skadarsko Jezero","Crna Gora"],["Virpazar","Crna Gora"],["Ada Bojana","Crna Gora"],["Čanj","Crna Gora"],["Buljarica","Crna Gora"],["Prčanj","Crna Gora"],["Ostrog","Crna Gora"],["Banja Luka","Bosna i Hercegovina"],["Trebinje","Bosna i Hercegovina"],["Bihać","Bosna i Hercegovina"],["Tuzla","Bosna i Hercegovina"],["Zenica","Bosna i Hercegovina"],["Jajce","Bosna i Hercegovina"],["Travnik","Bosna i Hercegovina"],["Konjic","Bosna i Hercegovina"],["Neum","Bosna i Hercegovina"],["Bijeljina","Bosna i Hercegovina"],["Doboj","Bosna i Hercegovina"],["Prijedor","Bosna i Hercegovina"],["Brčko","Bosna i Hercegovina"],["Foča","Bosna i Hercegovina"],["Višegrad","Bosna i Hercegovina"],["Bjelašnica","Bosna i Hercegovina"],["Jahorina","Bosna i Hercegovina"],["Vlašić","Bosna i Hercegovina"],["Kupres","Bosna i Hercegovina"],["Blagaj","Bosna i Hercegovina"],["Počitelj","Bosna i Hercegovina"],["Vrelo Bosne","Bosna i Hercegovina"],["Sutjeska","Bosna i Hercegovina"],["Una","Bosna i Hercegovina"],["Livno","Bosna i Hercegovina"],["Zadar","Hrvatska"],["Rijeka","Hrvatska"],["Pula","Hrvatska"],["Makarska","Hrvatska"],["Trogir","Hrvatska"],["Šibenik","Hrvatska"],["Rovinj","Hrvatska"],["Osijek","Hrvatska"],["Krk","Hrvatska"],["Poreč","Hrvatska"],["Umag","Hrvatska"],["Opatija","Hrvatska"],["Cavtat","Hrvatska"],["Vis","Hrvatska"],["Varaždin","Hrvatska"],["Karlovac","Hrvatska"],["Sisak","Hrvatska"],["Vukovar","Hrvatska"],["Slavonski Brod","Hrvatska"],["Vinkovci","Hrvatska"],["Đakovo","Hrvatska"],["Čakovec","Hrvatska"],["Bjelovar","Hrvatska"],["Koprivnica","Hrvatska"],["Požega","Hrvatska"],["Virovitica","Hrvatska"],["Biograd na Moru","Hrvatska"],["Vodice","Hrvatska"],["Primošten","Hrvatska"],["Omiš","Hrvatska"],["Baška Voda","Hrvatska"],["Brela","Hrvatska"],["Tučepi","Hrvatska"],["Korčula","Hrvatska"],["Vela Luka","Hrvatska"],["Supetar","Hrvatska"],["Bol","Hrvatska"],["Mali Lošinj","Hrvatska"],["Cres","Hrvatska"],["Rab","Hrvatska"],["Novalja","Hrvatska"],["Pag","Hrvatska"],["Vrsar","Hrvatska"],["Fažana","Hrvatska"],["Kaštela","Hrvatska"],["Mljet","Hrvatska"],["Lastovo","Hrvatska"],["Šolta","Hrvatska"],["Plitvička Jezera","Hrvatska"],["Krka","Hrvatska"],["Paklenica","Hrvatska"],["Učka","Hrvatska"],["Medvednica","Hrvatska"],["Varaždinske Toplice","Hrvatska"],["Stubičke Toplice","Hrvatska"],["Krapinske Toplice","Hrvatska"],["Daruvarske Toplice","Hrvatska"],["Velebit","Hrvatska"],["Biokovo","Hrvatska"],["Bitola","Severna Makedonija"],["Tetovo","Severna Makedonija"],["Kumanovo","Severna Makedonija"],["Prilep","Severna Makedonija"],["Strumica","Severna Makedonija"],["Gevgelija","Severna Makedonija"],["Veles","Severna Makedonija"],["Struga","Severna Makedonija"],["Kruševo","Severna Makedonija"],["Mavrovo","Severna Makedonija"],["Priština","Kosovo"],["Prizren","Kosovo"],["Peć","Kosovo"],["Gnjilane","Kosovo"],["Mitrovica","Kosovo"],["Đakovica","Kosovo"],["Uroševac","Kosovo"],["Brezovica","Kosovo"],["Rugova","Kosovo"],["Dečani","Kosovo"],["Gračanica","Kosovo"],["Piran","Slovenija"],["Maribor","Slovenija"],["Kranjska Gora","Slovenija"],["Portorož","Slovenija"],["Kranj","Slovenija"],["Celje","Slovenija"],["Novo Mesto","Slovenija"],["Koper","Slovenija"],["Ptuj","Slovenija"],["Škofja Loka","Slovenija"],["Kamnik","Slovenija"],["Idrija","Slovenija"],["Postojna","Slovenija"],["Bohinj","Slovenija"],["Bovec","Slovenija"],["Kobarid","Slovenija"],["Logarska Dolina","Slovenija"],["Rogaška Slatina","Slovenija"],["Murska Sobota","Slovenija"],["Nova Gorica","Slovenija"],["Velenje","Slovenija"],["Jesenice","Slovenija"],["Slovenj Gradec","Slovenija"],["Čatež","Slovenija"],["Terme Ptuj","Slovenija"],["Dolenjske Toplice","Slovenija"],["Moravske Toplice","Slovenija"],["Laško","Slovenija"],["Radenci","Slovenija"],["Triglav","Slovenija"],["Vogel","Slovenija"],["Krvavec","Slovenija"],["Pohorje","Slovenija"],["Mangart","Slovenija"],["Škocjanske jame","Slovenija"],["Predjama","Slovenija"],["Vintgar","Slovenija"],["Izola","Slovenija"],["Ankaran","Slovenija"],["Drač","Albanija"],["Vlora","Albanija"],["Ksamil","Albanija"],["Skadar","Albanija"],["Kruja","Albanija"],["Berat","Albanija"],["Gjirokastra","Albanija"],["Pogradec","Albanija"],["Dhermi","Albanija"],["Himara","Albanija"],["Theth","Albanija"],["Valbona","Albanija"],["Kluž","Rumunija"],["Brašov","Rumunija"],["Konstanca","Rumunija"],["Sibiu","Rumunija"],["Temišvar","Rumunija"],["Jaši","Rumunija"],["Sinaja","Rumunija"],["Bran","Rumunija"],["Mamaja","Rumunija"],["Burgas","Bugarska"],["Plovdiv","Bugarska"],["Nesebar","Bugarska"],["Bansko","Bugarska"],["Ruse","Bugarska"],["Stara Zagora","Bugarska"],["Pleven","Bugarska"],["Veliko Trnovo","Bugarska"],["Blagoevgrad","Bugarska"],["Šumen","Bugarska"],["Sliven","Bugarska"],["Vidin","Bugarska"],["Dobrič","Bugarska"],["Kjustendil","Bugarska"],["Gabrovo","Bugarska"],["Haskovo","Bugarska"],["Sandanski","Bugarska"],["Velingrad","Bugarska"],["Hisarja","Bugarska"],["Devin","Bugarska"],["Pavel Banja","Bugarska"],["Bankja","Bugarska"],["Borovec","Bugarska"],["Pamporovo","Bugarska"],["Vitoša","Bugarska"],["Čepelare","Bugarska"],["Rila","Bugarska"],["Koprivštica","Bugarska"],["Melnik","Bugarska"],["Rilski manastir","Bugarska"],["Trjavna","Bugarska"],["Arbanasi","Bugarska"],["Sozopol","Bugarska"],["Sunčev Breg","Bugarska"],["Zlatni Pjasci","Bugarska"],["Primorsko","Bugarska"],["Balčik","Bugarska"],["Kavarna","Bugarska"],["Carevo","Bugarska"],["Pomorije","Bugarska"],["Ahtopol","Bugarska"],["Halkidiki","Grčka"],["Zakintos","Grčka"],["Kefalonija","Grčka"],["Lefkada","Grčka"],["Paros","Grčka"],["Naksos","Grčka"],["Kos","Grčka"],["Volos","Grčka"],["Patra","Grčka"],["Larisa","Grčka"],["Kavala","Grčka"],["Janjina","Grčka"],["Iraklion","Grčka"],["Kalamata","Grčka"],["Lutraki","Grčka"],["Edipsos","Grčka"],["Olimp","Grčka"],["Pilion","Grčka"],["Meteori","Grčka"],["Delfi","Grčka"],["Nafplion","Grčka"],["Tasos","Grčka"],["Samos","Grčka"],["Hios","Grčka"],["Skijatos","Grčka"],["Skopelos","Grčka"],["Evija","Grčka"],["Idra","Grčka"],["Spece","Grčka"],["Milos","Grčka"],["Ios","Grčka"],["Egina","Grčka"],["Poros","Grčka"],["Napulj","Italija"],["Bolonja","Italija"],["Verona","Italija"],["Torino","Italija"],["Bari","Italija"],["Sicilija","Italija"],["Đenova","Italija"],["Pisa","Italija"],["Trst","Italija"],["Leče","Italija"],["Sardinija","Italija"],["Kaljari","Italija"],["Palermo","Italija"],["Katanija","Italija"],["Padova","Italija"],["Parma","Italija"],["Modena","Italija"],["Perudja","Italija"],["Brešija","Italija"],["Salerno","Italija"],["Abano Terme","Italija"],["Montekatini Terme","Italija"],["Fjuđi","Italija"],["Salsomađore Terme","Italija"],["Dolomiti","Italija"],["Kortina d'Ampeco","Italija"],["Val Gardena","Italija"],["Livinjo","Italija"],["Etna","Italija"],["Pompeji","Italija"],["Asizi","Italija"],["Sijena","Italija"],["San Đimonjano","Italija"],["Orvieto","Italija"],["Ravena","Italija"],["Amalfi","Italija"],["Pozitano","Italija"],["Sorento","Italija"],["Rimini","Italija"],["Kapri","Italija"],["Portofino","Italija"],["Elba","Italija"],["Taormina","Italija"],["Valensija","Španija"],["Majorka","Španija"],["Sevilja","Španija"],["Alikante","Španija"],["Granada","Španija"],["Bilbao","Španija"],["Tenerife","Španija"],["Gran Kanarija","Španija"],["San Sebastijan","Španija"],["Salamanka","Španija"],["Toledo","Španija"],["Santjago de Kompostela","Španija"],["Lanzarote","Španija"],["Fuerteventura","Španija"],["Faro","Portugalija"],["Kordoba","Španija"],["Koimbra","Portugalija"],["Braga","Portugalija"],["Sintra","Portugalija"],["Albufeira","Portugalija"],["Madeira","Portugalija"],["Azori","Portugalija"],["Lion","Francuska"],["Bordo","Francuska"],["Marselj","Francuska"],["Strazbur","Francuska"],["Tuluz","Francuska"],["Kan","Francuska"],["Avinjon","Francuska"],["Anesi","Francuska"],["Šamoni","Francuska"],["Korzika","Francuska"],["Edinburg","Velika Britanija"],["Mančester","Velika Britanija"],["Liverpul","Velika Britanija"],["Glazgov","Velika Britanija"],["Belfast","Velika Britanija"],["Oksford","Velika Britanija"],["Kembridž","Velika Britanija"],["Bat","Velika Britanija"],["Roterdam","Holandija"],["Hag","Holandija"],["Utreht","Holandija"],["Delft","Holandija"],["Mastriht","Holandija"],["Hamburg","Nemačka"],["Frankfurt","Nemačka"],["Keln","Nemačka"],["Diseldorf","Nemačka"],["Štutgart","Nemačka"],["Drezden","Nemačka"],["Nirnberg","Nemačka"],["Lajpcig","Nemačka"],["Bremen","Nemačka"],["Hanover","Nemačka"],["Zalcburg","Austrija"],["Insbruk","Austrija"],["Graz","Austrija"],["Linc","Austrija"],["Klagenfurt","Austrija"],["Filah","Austrija"],["Vels","Austrija"],["Sankt Pelten","Austrija"],["Bad Gastajn","Austrija"],["Bad Išl","Austrija"],["Bad Ausee","Austrija"],["Baden kod Beča","Austrija"],["Kicbil","Austrija"],["Zel am Zi","Austrija"],["Solden","Austrija"],["Išgl","Austrija"],["Majrhofen","Austrija"],["Halštat","Austrija"],["Verfen","Austrija"],["Melk","Austrija"],["Volfgangze","Austrija"],["Ahenze","Austrija"],["Vertersee","Austrija"],["Brno","Češka"],["Karlovi Vari","Češka"],["Češki Krumlov","Češka"],["Plzenj","Češka"],["Olomouc","Češka"],["Kutna Hora","Češka"],["Segedin","Mađarska"],["Pečuj","Mađarska"],["Debrecin","Mađarska"],["Đer","Mađarska"],["Balaton","Mađarska"],["Heviz","Mađarska"],["Šiofok","Mađarska"],["Kečkemet","Mađarska"],["Varšava","Poljska"],["Krakov","Poljska"],["Vroclav","Poljska"],["Gdanjsk","Poljska"],["Poznanj","Poljska"],["Lođ","Poljska"],["Zakopane","Poljska"],["Torunj","Poljska"],["Vjelička","Poljska"],["Stokholm","Švedska"],["Geteborg","Švedska"],["Malme","Švedska"],["Oslo","Norveška"],["Bergen","Norveška"],["Tromse","Norveška"],["Stavanger","Norveška"],["Lofoti","Norveška"],["Kopenhagen","Danska"],["Arhus","Danska"],["Odense","Danska"],["Helsinki","Finska"],["Rovanijemi","Finska"],["Tampere","Finska"],["Dablin","Irska"],["Kork","Irska"],["Golvej","Irska"],["Brisel","Belgija"],["Briž","Belgija"],["Gent","Belgija"],["Antverpen","Belgija"],["Ženeva","Švajcarska"],["Bern","Švajcarska"],["Lucern","Švajcarska"],["Bazel","Švajcarska"],["Cermat","Švajcarska"],["Interlaken","Švajcarska"],["Lugano","Švajcarska"],["Talin","Estonija"],["Tartu","Estonija"],["Riga","Letonija"],["Jurmala","Letonija"],["Viljnus","Litvanija"],["Kaunas","Litvanija"],["Klaipeda","Litvanija"],["Valeta","Malta"],["Sliema","Malta"],["Mdina","Malta"],["Gozo","Malta"],["Nikozija","Kipar"],["Limasol","Kipar"],["Larnaka","Kipar"],["Pafos","Kipar"],["Ajia Napa","Kipar"],["Rejkjavik","Island"],["Akurejri","Island"],["Monako","Monako"],["Monte Karlo","Monako"],["Luksemburg","Luksemburg"],["Marmaris","Turska"],["Fetije","Turska"],["Izmir","Turska"],["Ankara","Turska"],["Alanja","Turska"],["Kušadasi","Turska"],["Side","Turska"],["Pamukale","Turska"],["Bursa","Turska"],["Česme","Turska"],["Adana","Turska"],["Konja","Turska"],["Gaziantep","Turska"],["Kajseri","Turska"],["Mersin","Turska"],["Eskišehir","Turska"],["Denizli","Turska"],["Trabzon","Turska"],["Samsun","Turska"],["Malatja","Turska"],["Jalova","Turska"],["Afjon Karahisar","Turska"],["Haymana","Turska"],["Kizildžahamam","Turska"],["Efes","Turska"],["Troja","Turska"],["Pergamon","Turska"],["Hijerapolis","Turska"],["Sumela","Turska"],["Nemrut","Turska"],["Safranbolu","Turska"],["Gjobekli Tepe","Turska"],["Kaš","Turska"],["Kalkan","Turska"],["Datča","Turska"],["Didim","Turska"],["Ajvalik","Turska"],["Silifke","Turska"],["Foča (Turska)","Turska"],["Abu Dabi","UAE"],["Hurgada","Egipat"],["Luksor","Egipat"],["Rabat","Maroko"],["Kazablanka","Maroko"],["Tanger","Maroko"],["Las Vegas","SAD"],["Čikago","SAD"],["San Francisko","SAD"],["Boston","SAD"],["Vašington","SAD"],["Orlando","SAD"],["Honolulu","SAD"],["Filadelfija","SAD"],["Sijetl","SAD"],["Denver","SAD"],["Atlanta","SAD"],["Toronto","Kanada"],["Vankuver","Kanada"],["Montreal","Kanada"],["Otava","Kanada"],["Meksiko Siti","Meksiko"],["Kankun","Meksiko"],["Rio de Žaneiro","Brazil"],["Sao Paulo","Brazil"],["Buenos Ajres","Argentina"],["Bogota","Kolumbija"],["Lima","Peru"],["Osaka","Japan"],["Kjoto","Japan"],["Džakarta","Indonezija"],["Ho Ši Min","Vijetnam"],["Hanoj","Vijetnam"],["Peking","Kina"],["Šangaj","Kina"],["Hongkong","Kina"],["Seul","Južna Koreja"],["Kuala Lumpur","Malezija"],["Manila","Filipini"],["Nju Delhi","Indija"],["Mumbaj","Indija"],["Male","Maldivi"],["Baku","Azerbejdžan"],["Tbilisi","Gruzija"],["Melburn","Australija"],["Brizbejn","Australija"],["Okland","Novi Zeland"],["Velington","Novi Zeland"],["Doha","Katar"],["Rijad","Saudijska Arabija"],["Najrobi","Kenija"]],"months":{"budimpesta":[3,4,5,6,9,10,11,12],"bec":[1,2,3,4,5,9,10,11,12],"sofija":[4,5,6,9,10],"solun":[5,6,7,8,9,10],"skoplje":[4,5,6,9,10],"ohrid":[6,7,8,9],"tirana":[4,5,6,9,10],"sarande":[6,7,8,9],"budva":[6,7,8,9],"kotor":[5,6,7,8,9,10],"herceg novi":[5,6,7,8,9],"dubrovnik":[5,6,7,8,9,10],"split":[5,6,7,8,9,10],"hvar":[6,7,8,9],"zagreb":[3,4,5,6,9,10,11,12],"ljubljana":[4,5,6,9,10],"bled":[5,6,7,8,9],"sarajevo":[4,5,6,9,10],"mostar":[4,5,6,9,10],"bukurest":[4,5,6,9,10],"varna":[6,7,8,9],"istanbul":[4,5,6,9,10],"prag":[3,4,5,6,9,10,11,12],"bratislava":[4,5,6,9,10],"krf":[5,6,7,8,9],"atina":[4,5,6,9,10],"santorini":[5,6,7,8,9,10],"mikonos":[6,7,8,9],"rodos":[5,6,7,8,9,10],"krit":[5,6,7,8,9,10],"rim":[3,4,5,9,10,11],"milano":[3,4,5,9,10],"venecija":[3,4,5,9,10],"firenca":[4,5,9,10],"barselona":[4,5,6,9,10],"madrid":[4,5,9,10],"malaga":[5,6,7,8,9],"ibica":[6,7,8,9],"lisabon":[4,5,6,9,10],"porto":[4,5,6,9,10],"pariz":[4,5,6,9,10],"nica":[5,6,7,8,9],"london":[4,5,6,9],"amsterdam":[4,5,6,9],"berlin":[5,6,7,8,9],"minhen":[5,6,9],"cirih":[5,6,7,8,9],"antalija":[5,6,7,8,9,10],"bodrum":[6,7,8,9],"kapadokija":[4,5,9,10],"tel aviv":[4,5,6,9,10],"dubai":[11,12,1,2,3],"kairo":[10,11,12,1,2,3],"sarm el seik":[10,11,12,1,2,3,4],"marakes":[3,4,10,11],"njujork":[4,5,9,10,12],"majami":[11,12,1,2,3,4],"los andjeles":[3,4,5,9,10],"bangkok":[11,12,1,2],"puket":[11,12,1,2,3],"tokio":[3,4,5,10,11],"bali":[5,6,7,8,9],"singapur":[1,2,3,4,11,12],"sidnej":[10,11,12,1,2,3],"kejptaun":[10,11,12,1,2,3]},"sea":["solun","ohrid","sarande","budva","kotor","herceg novi","dubrovnik","split","hvar","varna","krf","atina","santorini","mikonos","rodos","krit","barselona","malaga","ibica","lisabon","nica","antalija","bodrum","tel aviv","sarm el seik","majami","los andjeles","puket","bali","sidnej","kejptaun"],"schengen":["Austrija","Belgija","Hrvatska","Češka","Danska","Estonija","Finska","Francuska","Nemačka","Grčka","Mađarska","Italija","Letonija","Litvanija","Luksemburg","Malta","Holandija","Poljska","Portugalija","Slovačka","Slovenija","Španija","Švedska","Island","Lihtenštajn","Norveška","Švajcarska"],"regional":["Crna Gora","Bosna i Hercegovina","Severna Makedonija","Albanija"],"visa":{"Velika Britanija":"Državljanima Srbije je potrebna prava viza za Veliku Britaniju (uključujući London i tranzit bez izlaska iz aerodroma) — ovo nije samo provera pasoša. Standardna turistička viza obično se obrađuje oko 3 nedelje, pa prijavu treba podneti mnogo pre kupovine nepovratnih karata.","Irska":"Državljanima Srbije je potrebna prava viza za Irsku — stara pogodnost putovanja preko britanske vize je ukinuta 2020. i nije vraćena. Prijavu za vizu treba podneti mnogo pre kupovine nepovratnih karata.","SAD":"Državljanima Srbije je potrebna prava viza za SAD (obično turistička B1/B2) — ovo nije samo provera pasoša. Traži se obavezan intervju u ambasadi u Beogradu, taksa oko 185 USD, a na termin se čeka od par nedelja do više meseci u zavisnosti od perioda. Prijavu treba podneti mnogo pre kupovine nepovratnih karata.","Kanada":"Državljanima Srbije je potrebna prava viza za Kanadu (Kanada nema eTA olakšicu za srpski pasoš) — ovo nije samo provera pasoša. Obrada uključuje biometriju i obično traje oko 2-4 nedelje, pa prijavu treba podneti mnogo pre kupovine nepovratnih karata."},"greenNeeded":{"Severna Makedonija":"Za Severnu Makedoniju je zelena karta i dalje obavezna — nije potpisnica Multilateralnog sporazuma sa Srbijom.","Turska":"Za Tursku je zelena karta obavezna.","Albanija":"Za Albaniju je zelena karta obavezna.","Rusija":"Za Rusiju je zelena karta obavezna.","Belorusija":"Za Belorusiju je zelena karta obavezna.","Ukrajina":"Za Ukrajinu je zelena karta obavezna.","Moldavija":"Za Moldaviju je zelena karta obavezna.","Izrael":"Za Izrael je zelena karta obavezna.","Iran":"Za Iran je zelena karta obavezna.","Maroko":"Za Maroko je zelena karta obavezna.","Tunis":"Za Tunis je zelena karta obavezna."}};
+
+/* ==========================================================
+   PARTNERI — pravi ID-jevi se upisuju SAMO u config.js
+   (window.SKLOPI_AFF_IDS); čitaju se preko affiliate.js, isto kao na
+   glavnoj stranici. Dok ih nema, koristi se 'SKLOPI' (test).
+========================================================== */
+const aff = provider => window.SKLOPI_AFF.id(provider);
+/* Vidljiva oznaka partnerskog linka (ista klasa/tekst kao na glavnoj stranici). */
+const AFF_BADGE = '<span class="aff-badge" title="Ovo je afilijacijski (sponzorisan) link — ako rezervišeš preko njega, SKLOPI može ostvariti provizuju od partnera. Cena za tebe ostaje ista.">🔗 Afilijacija</span>';
+const API_BASE = window.SKLOPI_API_BASE || '';
+
+/* ==========================================================
+   OSIGURANJE / TRANSFERI / eSIM / AUTOBUS — isti izvor uredničkog
+   znanja kao na glavnoj stranici (app.js: DEST_AIRPORT_NOTES,
+   COUNTRY_SLUG_SR/airaloCountrySlug). Preneto ovde jer stranica
+   destinacije nema pristup app.js globalima (drugi HTML dokument).
+========================================================== */
+/* "Pazi na koji aerodrom slećeš" — isti tekst i isti gradovi kao na
+   glavnoj stranici, sad iskorišćeno i u sekciji Transferi. */
+const DEST_AIRPORT_NOTES = {
+  'london': 'London ima više aerodroma — Hitrou je najbliži centru, ali low-cost kompanije često slede na Stansted ili Luton, 45-75 minuta dalje od grada. Proveri tačan aerodrom pre nego što planiraš prevoz do centra.',
+  'pariz': 'Pariz ima tri aerodroma — Šarl de Gol i Orli su blizu grada, ali Ryanair i slične kompanije često koriste Bove (Beauvais), oko 85km severno, sa transferom od preko sat vremena do centra.',
+  'brisel': 'Brisel ima glavni aerodrom blizu grada, ali low-cost letovi često slede u Šarlroa, oko 50km južnije — računaj dodatni sat vožnje i trošak prevoza do centra.',
+  'frankfurt': 'Frankfurt ima dva aerodroma pod sličnim imenom — glavni je blizu grada, dok je Han (Hahn) oko 120km zapadno, bliže Luksemburgu nego Frankfurtu. Ryanair često leti baš tamo, sa transferom i do 2h.',
+  'milano': 'Milano ima tri aerodroma — Malpensa i Linate su praktični, ali Ryanair često leti u Bergamo, oko 45km od centra, sa transferom od preko sat vremena.',
+  'barselona': 'Barselona ima glavni aerodrom blizu grada (El Prat), ali neki low-cost letovi slede u Đironu ili Reus, stotinak kilometara dalje, sa transferom od preko sat vremena.',
+  'rim': 'Rim ima dva aerodroma — Fjumičino (glavni, malo dalji od centra) i Čampino (bliži centru, manji, koriste ga neke low-cost kompanije).',
+  'stokholm': 'Stokholm ima glavni aerodrom Arlanda, ali Ryanair često leti u Skavstu, oko 100km južnije — transfer do centra traje i do sat i po.',
+  'oslo': 'Oslo ima glavni aerodrom Gardermoen, ali neki low-cost letovi ka "Oslu" slede u Torp kod Sandefjorda, oko 110km južnije — transfer je i do 2h.',
+  'kopenhagen': 'Neki letovi oglašeni ka "Kopenhagenu" zapravo slede u Malme, u Švedskoj, s druge strane mosta — računaj dodatno vreme za prelazak i eventualnu graničnu kontrolu.'
+};
+/* Airalo prodaje eSIM po DRŽAVI (npr. airalo.com/greece-esim) — mapa
+   nazivi država na srpskom → engleski URL slug, ista lista kao u app.js. */
+const COUNTRY_SLUG_SR = {
+  'Srbija':'serbia', 'Crna Gora':'montenegro', 'Bosna i Hercegovina':'bosnia-and-herzegovina',
+  'Hrvatska':'croatia', 'Severna Makedonija':'north-macedonia', 'Kosovo':'kosovo',
+  'Slovenija':'slovenia', 'Albanija':'albania', 'Rumunija':'romania', 'Bugarska':'bulgaria',
+  'Grčka':'greece', 'Italija':'italy', 'Španija':'spain', 'Portugalija':'portugal',
+  'Francuska':'france', 'Velika Britanija':'united-kingdom', 'Holandija':'netherlands',
+  'Nemačka':'germany', 'Austrija':'austria', 'Češka':'czech-republic', 'Mađarska':'hungary',
+  'Slovačka':'slovakia', 'Poljska':'poland', 'Švedska':'sweden', 'Norveška':'norway',
+  'Danska':'denmark', 'Finska':'finland', 'Irska':'ireland', 'Belgija':'belgium',
+  'Švajcarska':'switzerland', 'Turska':'turkey', 'Izrael':'israel', 'UAE':'united-arab-emirates',
+  'Egipat':'egypt', 'Maroko':'morocco', 'SAD':'united-states', 'Tajland':'thailand',
+  'Japan':'japan', 'Indonezija':'indonesia', 'Singapur':'singapore'
+};
+
+/* Država → ISO kod (za zastavicu) i valuta */
+const COUNTRY = {
+  'Srbija':['RS','Srpski dinar (RSD)'],'Crna Gora':['ME','Evro (€)'],'Bosna i Hercegovina':['BA','Konvertibilna marka (BAM)'],
+  'Hrvatska':['HR','Evro (€)'],'Severna Makedonija':['MK','Makedonski denar (MKD)'],'Kosovo':['','Evro (€)'],
+  'Slovenija':['SI','Evro (€)'],'Albanija':['AL','Albanski lek (ALL)'],'Rumunija':['RO','Rumunski leu (RON)'],
+  'Bugarska':['BG','Evro (€)'],'Grčka':['GR','Evro (€)'],'Italija':['IT','Evro (€)'],'Španija':['ES','Evro (€)'],
+  'Portugalija':['PT','Evro (€)'],'Francuska':['FR','Evro (€)'],'Velika Britanija':['GB','Funta sterlinga (GBP)'],
+  'Holandija':['NL','Evro (€)'],'Nemačka':['DE','Evro (€)'],'Austrija':['AT','Evro (€)'],'Češka':['CZ','Češka kruna (CZK)'],
+  'Mađarska':['HU','Forinta (HUF)'],'Slovačka':['SK','Evro (€)'],'Poljska':['PL','Zlot (PLN)'],'Švedska':['SE','Švedska kruna (SEK)'],
+  'Norveška':['NO','Norveška kruna (NOK)'],'Danska':['DK','Danska kruna (DKK)'],'Finska':['FI','Evro (€)'],'Irska':['IE','Evro (€)'],
+  'Belgija':['BE','Evro (€)'],'Švajcarska':['CH','Švajcarski franak (CHF)'],'Estonija':['EE','Evro (€)'],'Letonija':['LV','Evro (€)'],
+  'Litvanija':['LT','Evro (€)'],'Malta':['MT','Evro (€)'],'Kipar':['CY','Evro (€)'],'Island':['IS','Islandska kruna (ISK)'],
+  'Monako':['MC','Evro (€)'],'Luksemburg':['LU','Evro (€)'],'Turska':['TR','Turska lira (TRY)'],'Izrael':['IL','Šekel (ILS)'],
+  'UAE':['AE','Dirham (AED)'],'Egipat':['EG','Egipatska funta (EGP)'],'Maroko':['MA','Marokanski dirham (MAD)'],
+  'SAD':['US','Američki dolar (USD)'],'Kanada':['CA','Kanadski dolar (CAD)'],'Meksiko':['MX','Meksičko pezo (MXN)'],
+  'Brazil':['BR','Brazilski real (BRL)'],'Argentina':['AR','Argentinsko pezo (ARS)'],'Kolumbija':['CO','Kolumbijsko pezo (COP)'],
+  'Peru':['PE','Peruanski sol (PEN)'],'Tajland':['TH','Bat (THB)'],'Japan':['JP','Jen (JPY)'],'Indonezija':['ID','Rupija (IDR)'],
+  'Singapur':['SG','Singapurski dolar (SGD)'],'Vijetnam':['VN','Dong (VND)'],'Kina':['CN','Juan (CNY)'],
+  'Južna Koreja':['KR','Južnokorejski von (KRW)'],'Malezija':['MY','Ringit (MYR)'],'Filipini':['PH','Filipinsko pezo (PHP)'],
+  'Indija':['IN','Indijska rupija (INR)'],'Maldivi':['MV','Maldivska rufija (MVR)'],'Azerbejdžan':['AZ','Manat (AZN)'],
+  'Gruzija':['GE','Lari (GEL)'],'Australija':['AU','Australijski dolar (AUD)'],'Novi Zeland':['NZ','Novozelandski dolar (NZD)'],
+  'Katar':['QA','Katarski rijal (QAR)'],'Saudijska Arabija':['SA','Saudijski rijal (SAR)'],
+  'Južnoafrička Republika':['ZA','Rand (ZAR)'],'Kenija':['KE','Kenijski šiling (KES)']
+};
+
+/* Zemlje do kojih se iz Srbije može stići automobilom (kopnom) */
+const DRIVABLE = new Set(['Srbija','Crna Gora','Bosna i Hercegovina','Hrvatska','Severna Makedonija','Kosovo','Slovenija',
+  'Albanija','Rumunija','Bugarska','Grčka','Italija','Španija','Portugalija','Francuska','Holandija','Nemačka','Austrija',
+  'Češka','Mađarska','Slovačka','Poljska','Švedska','Norveška','Danska','Finska','Belgija','Švajcarska','Estonija',
+  'Letonija','Litvanija','Luksemburg','Monako','Turska']);
+/* Ostrva do kojih se ide trajektom ili avionom */
+const ISLANDS = new Set(['krf','krit','rodos','santorini','mikonos','ibica','majorka','hvar','malta','kipar']);
+
+const MONTHS_SHORT = ['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec'];
+const MONTHS_FULL = ['januar','februar','mart','april','maj','jun','jul','avgust','septembar','oktobar','novembar','decembar'];
+
+/* ---------- pomoćne ---------- */
+const $ = id => document.getElementById(id);
+
+function setMeta(title, desc){
+  document.title = title;
+  // Kanonski URL je UVEK čist (bez ?od=&do=&polazak=…): svaki upit je lična procena sa datumima,
+  // pa ne sme da pravi nove indeksirane duplikate iste stranice.
+  const url = 'https://sklopi.rs/destinacija.html';
+  const set = (sel, attr, val) => { const el = document.querySelector(sel); if (el) el.setAttribute(attr, val); };
+  set('meta[name="description"]', 'content', desc);
+  set('meta[property="og:title"]', 'content', title);
+  set('meta[property="og:description"]', 'content', desc);
+  set('meta[property="og:url"]', 'content', url);
+  set('meta[name="twitter:title"]', 'content', title);
+  set('meta[name="twitter:description"]', 'content', desc);
+  set('link[rel="canonical"]', 'href', url);
+}
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s || '').replace(/đ/g,'dj').replace(/Đ/g,'Dj').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+const enc = encodeURIComponent;
+
+const POP_MAP = new Map();
+DATA.pop.forEach(p => POP_MAP.set(norm(p[0]), {name:p[0], country:p[1]}));
+
+function resolveDest(raw){
+  const typed = String(raw || '').trim();
+  const key = norm(typed.split(',')[0]);
+  if (!key) return {name:'', country:'', known:false};
+  if (POP_MAP.has(key)) return Object.assign({known:true}, POP_MAP.get(key));
+  if (key.length >= 3){
+    const hits = [];
+    POP_MAP.forEach((v,k) => { if (k.startsWith(key)) hits.push(v); });
+    if (hits.length === 1) return Object.assign({known:true}, hits[0]);
+  }
+  const shown = typed.split(',')[0].trim();
+  return {name: shown.charAt(0).toUpperCase() + shown.slice(1), country:'', known:false};
+}
+
+/* Isto pravilo kao na glavnoj stranici (airportInfoFor) */
+function airportInfoFor(cityRaw){
+  const n = norm(cityRaw);
+  if (!n) return null;
+  const AP = DATA.ap;
+  for (const key in AP){
+    if (n === key || n.startsWith(key + ' ') || n.startsWith(key + ',') || n.includes(' ' + key)) return AP[key];
+  }
+  if (n.length >= 4){
+    const c = Object.keys(AP).filter(k => k.startsWith(n));
+    if (c.length === 1) return AP[c[0]];
+  }
+  return null;
+}
+/* Vraća {code, via}: IATA kod aerodroma i, ako grad nema svoj, naziv najbližeg */
+function airportFor(cityName){
+  const info = airportInfoFor(cityName);
+  let target = cityName, via = '';
+  if (typeof info === 'string'){ target = info; via = info; }
+  const code = DATA.iata[norm(String(target).split(',')[0])] || null;
+  return {code, via};
+}
+
+function flagEmoji(iso){
+  if (!iso || iso.length !== 2) return '';
+  return String.fromCodePoint(...iso.toUpperCase().split('').map(c => 127397 + c.charCodeAt(0)));
+}
+
+/* ---------- datumi ---------- */
+function pad(n){ return String(n).padStart(2,'0'); }
+function isoOf(d){ return d.getUTCFullYear() + '-' + pad(d.getUTCMonth()+1) + '-' + pad(d.getUTCDate()); }
+function parseISO(s){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+  if (!m) return null;
+  const d = new Date(Date.UTC(+m[1], +m[2]-1, +m[3]));
+  return (d.getUTCFullYear() === +m[1] && d.getUTCMonth() === +m[2]-1 && d.getUTCDate() === +m[3]) ? d : null;
+}
+function todayUTC(){
+  const n = new Date();
+  return new Date(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()));
+}
+function addDays(d, n){ return new Date(d.getTime() + n*86400000); }
+function fmtRange(a, b){
+  const da = a.getUTCDate(), db = b.getUTCDate();
+  if (a.getUTCMonth() === b.getUTCMonth() && a.getUTCFullYear() === b.getUTCFullYear())
+    return da + ' – ' + db + '. ' + MONTHS_SHORT[b.getUTCMonth()];
+  return da + '. ' + MONTHS_SHORT[a.getUTCMonth()] + ' – ' + db + '. ' + MONTHS_SHORT[b.getUTCMonth()];
+}
+function fmtDT(iso){
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso || '');
+  if (!m) return '';
+  return (+m[3]) + '. ' + MONTHS_SHORT[+m[2]-1] + ' · ' + m[4] + ':' + m[5];
+}
+function monthRanges(list){
+  const set = new Set(list);
+  const out = [];
+  for (let m = 1; m <= 12; m++){
+    const prev = m === 1 ? 12 : m - 1;
+    if (!set.has(m) || set.has(prev)) continue;
+    let end = m, next = m === 12 ? 1 : m + 1;
+    while (set.has(next) && next !== m){ end = next; next = next === 12 ? 1 : next + 1; }
+    out.push(end === m ? MONTHS_FULL[m-1] : MONTHS_FULL[m-1] + '–' + MONTHS_FULL[end-1]);
+  }
+  return out.join(', ');
+}
+
+/* ---------- upit iz adrese ---------- */
+function readParams(){
+  const p = new URLSearchParams(location.search);
+  const a = parseInt(p.get('putnika'), 10);
+  return {
+    from: (p.get('od') || '').trim(),
+    to: (p.get('do') || '').trim(),
+    start: p.get('polazak') || '',
+    end: p.get('povratak') || '',
+    adults: (a >= 1 && a <= 9) ? a : 2
+  };
+}
+function validate(P){
+  const s = parseISO(P.start), e = parseISO(P.end);
+  if (!P.to) return 'Upiši destinaciju.';
+  if (!s || !e) return 'Izaberi datum polaska i povratka.';
+  if (s < todayUTC()) return 'Datum polaska je u prošlosti.';
+  if (e <= s) return 'Povratak mora biti posle polaska.';
+  return '';
+}
+
+/* ---------- partnerski linkovi (isti oblik kao buildAffiliateLink u app.js) ---------- */
+function linkFlights(c){
+  const route = (c.oCode && c.dCode) ? c.oCode + '-' + c.dCode : 'anywhere-' + enc(c.dest.name);
+  return 'https://www.kayak.com/flights/' + route + '/' + c.P.start + '/' + c.P.end +
+    '?adults=' + c.P.adults + '&sort=bestflight_a&a=' + enc(aff('kayak'));
+}
+function linkHotels(c, stars, order){
+  const rooms = Math.max(1, Math.ceil(c.P.adults / 2));
+  return 'https://www.booking.com/searchresults.html?ss=' + enc(c.dest.name) + '&checkin=' + c.P.start +
+    '&checkout=' + c.P.end + '&group_adults=' + c.P.adults + '&no_rooms=' + rooms +
+    (stars ? '&nflt=class%3D' + stars : '') + (order ? '&order=' + order : '') + '&aid=' + enc(aff('booking'));
+}
+function linkCars(c){
+  return 'https://www.booking.com/cars/results.html?ss=' + enc(c.dest.name) + '&pickupDate=' + c.P.start +
+    '&dropoffDate=' + c.P.end + '&aid=' + enc(aff('booking'));
+}
+function linkActivities(c, keyword){
+  return 'https://www.viator.com/searchResults/all?text=' + enc(c.dest.name + (keyword ? ' ' + keyword : '')) + '&pid=' + enc(aff('viator'));
+}
+function linkRoute(c){
+  const o = c.org.name + (c.org.country ? ', ' + c.org.country : '');
+  const d = c.dest.name + (c.dest.country ? ', ' + c.dest.country : '');
+  return 'https://www.google.com/maps/dir/?api=1&origin=' + enc(o) + '&destination=' + enc(d) + '&travelmode=driving';
+}
+const ext = 'target="_blank" rel="noopener sponsored"';
+const REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+/* ---------- dokumenta (pravila iz app.js: getPassportRule / getGreenCardRule) ---------- */
+function passportText(country){
+  const c = country || '';
+  if (DATA.regional.includes(c))
+    return c + ': pasoš nije potreban. Državljani Srbije ulaze sa važećom biometrijskom ličnom kartom (do 90 dana boravka u periodu od 6 meseci).';
+  if (DATA.schengen.includes(c))
+    return 'Za Šengen zonu potreban je pasoš, a on mora da važi još najmanje 3 meseca nakon planiranog datuma povratka. Bez viza, do 90 dana u periodu od 180 dana.';
+  if (c === 'Turska') return 'Za Tursku pasoš mora da važi još najmanje 150 dana (oko 5 meseci) od dana ulaska u zemlju.';
+  if (c === 'Egipat' || c === 'Tunis') return c + ': pasoš mora da važi još najmanje 6 meseci nakon planiranog datuma povratka.';
+  if (c === 'Kina') return 'Za Kinu državljanima Srbije nije potrebna viza za turistički boravak do 30 dana, ali pasoš mora da važi još najmanje 6 meseci nakon povratka.';
+  if (DATA.visa[c]) return 'Uz vizu, pasoš uglavnom mora da važi još najmanje 6 meseci nakon planiranog povratka — konkretan rok proverava ambasada.';
+  return c
+    ? 'Nemamo potvrđeno pravilo za zemlju „' + c + '“. Mnoge zemlje van Šengena traže da pasoš važi još 6 meseci nakon povratka, ali obavezno proveri kod ambasade ili aviokompanije.'
+    : 'Ne znamo tačno u kojoj je zemlji ova destinacija, pa nemamo potvrđeno pravilo za dokumenta. Proveri uslove ulaska kod ambasade ili aviokompanije.';
+}
+function greenCard(country){
+  const c = country || '';
+  if (!c) return {tone:'unknown', text:'Ne znamo u kojoj je zemlji ova destinacija, pa ne možemo da proverimo da li je potrebna zelena karta.'};
+  if (DATA.schengen.includes(c) || c === 'Crna Gora' || c === 'Bosna i Hercegovina')
+    return {tone:'ok', text:c + ': zelena karta nije potrebna za vozila registrovana u Srbiji.'};
+  if (DATA.greenNeeded[c]) return {tone:'needed', text:DATA.greenNeeded[c]};
+  return {tone:'unknown', text:'Nemamo potvrđeno pravilo za „' + c + '“ — proveri kod osiguravača da li ti treba zelena karta.'};
+}
+/* ---------- "Da li si sve pokrio?" — isti checklist kao na naslovnoj (app.js),
+   ovde nad lokalnim passportText/greenCard/DATA.visa jer ova stranica ne
+   učitava app.js. Namerno konzervativno: samo prikazuje postojeća pravila. ---------- */
+function travelRulesUpdatedHtml(){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(window.SKLOPI_TRAVEL_RULES_UPDATED || '');
+  if (!m) return '';
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  if (isNaN(d)) return '';
+  return '<p class="travel-updated">Pravila ažurirana: <time datetime="' + m[0] + '">' + d.getDate() + '. ' +
+    d.toLocaleString('sr-Latn', {month:'long'}) + ' ' + d.getFullYear() + '.</time> Uslovi ulaska se menjaju — proveri kod ambasade ili MUP-a pre puta.</p>';
+}
+function travelChecklistHtml(country, includeCar){
+  const items = [];
+  const c = country || '';
+  const passportConfident = !!c && (DATA.regional.includes(c) || DATA.schengen.includes(c) ||
+    c === 'Turska' || c === 'Egipat' || c === 'Tunis' || c === 'Kina' || !!DATA.visa[c]);
+  items.push({ok:passportConfident, icon:passportConfident ? '✅' : '◻️', title:'Pasoš', text:passportText(c)});
+  if (DATA.visa[c]){
+    items.push({ok:false, icon:'⚠️', title:'Viza', text:DATA.visa[c]});
+  } else if (c){
+    items.push({ok:true, icon:'✅', title:'Viza',
+      text:'Nije potrebna viza za ' + c + ' — proveri ipak tik pred put ako se pravila u međuvremenu promene.'});
+  }
+  if (includeCar){
+    const g = greenCard(c);
+    items.push({ok:g.tone === 'ok', icon:g.tone === 'ok' ? '✅' : (g.tone === 'needed' ? '⚠️' : '◻️'), title:'Zelena karta', text:g.text});
+  }
+  items.push({ok:false, icon:'◻️', title:'Putno osiguranje',
+    text:'Preporučeno za svaki put van zemlje — proveri ponudu World Nomads ili sličnog partnera pre polaska.'});
+  const doneCount = items.filter(i => i.ok).length;
+  const rows = items.map(i =>
+    '<li class="tc-item ' + (i.ok ? 'tc-ok' : 'tc-todo') + '"><span class="tc-ic">' + i.icon + '</span><div><b>' + esc(i.title) + '</b><p>' + esc(i.text) + '</p></div></li>'
+  ).join('');
+  return '<details class="travel-checklist"><summary class="tc-head"><span class="tc-title">🧳 Dokumenta za put</span><span class="tc-score">' +
+    doneCount + '/' + items.length + ' spremno</span></summary><ul class="tc-list">' + rows + '</ul>' + travelRulesUpdatedHtml() + '</details>';
+    doneCount + '/' + items.length + '</span></div><ul class="tc-list">' + rows + '</ul>' + travelRulesUpdatedHtml() + '</div>';
+}
+
+/* ---------- prikaz ---------- */
+function sectionHead(icon, title, count, countId, navFor){
+  const nav = navFor
+    ? '<span class="dp-slider-nav" hidden>' +
+      '<button type="button" class="dp-sl-btn" data-for="' + navFor + '" data-dir="-1" aria-label="Prethodne ponude">‹</button>' +
+      '<button type="button" class="dp-sl-btn" data-for="' + navFor + '" data-dir="1" aria-label="Sledeće ponude">›</button></span>'
+    : '';
+  return '<div class="dp-section-head"><div class="dp-section-ic">' + icon + '</div><h2>' + esc(title) + '</h2>' +
+    (count || countId ? '<span class="dp-sh-count"' + (countId ? ' id="' + countId + '"' : '') + '>' + esc(count || '') + '</span>' : '') + nav + '</div>';
+}
+function money(amount, cur){
+  const n = Math.round(parseFloat(amount));
+  if (!isFinite(n)) return '';
+  return (cur === 'EUR' || cur === undefined) ? '€' + n.toLocaleString('de-DE') : n.toLocaleString('de-DE') + ' ' + esc(cur || '');
+}
+function countLabel(n){
+  const m10 = n % 10, m100 = n % 100;
+  return n + ((m10 === 1 && m100 !== 11) ? ' ponuda' : (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) ? ' ponude' : ' ponuda');
+}
+
+/* ==========================================================
+   SLAJDER — jedna komponenta za letove, smeštaj, atrakcije i auto.
+   Kartica ponude: {title, sub, price (EUR), priceNote, url, banner,
+   simulated, badge}. Prave ponude partnera se ubacuju preko
+   window.SKLOPI_FEEDS (vidi getOffers) — kartice ostaju iste.
+========================================================== */
+const VISIBLE = 5;
+function visibleSet(n, spread){
+  const set = new Set();
+  if (n <= VISIBLE || !spread){ for (let i = 0; i < Math.min(n, VISIBLE); i++) set.add(i); return set; }
+  for (let i = 0; i < VISIBLE; i++) set.add(Math.round(i * (n - 1) / (VISIBLE - 1)));
+  return set;
+}
+/* Prikazuje 5 ponuda (spread = ravnomerno raspoređene po ceni, inače 5 prvih); ostale iza dugmeta "Prikaži još". */
+function slider(id, label, cards, spread){
+  const vis = visibleSet(cards.length, spread);
+  const extra = cards.length - vis.size;
+  const html = cards.map((c, i) => vis.has(i) ? c : c.replace('<article class="dp-sl-card"', '<article class="dp-sl-card dp-extra"')).join('');
+  return '<div class="dp-slider"><div class="dp-slider-track" id="' + id + '" tabindex="0" role="region" aria-label="' + esc(label) + '">' +
+    html + '</div>' +
+    (extra > 0 ? '<button type="button" class="dp-more-btn" data-more="' + id + '" data-extra="' + extra + '">Prikaži još (' + extra + ')</button>' : '') +
+    '</div>';
+}
+/* ---- izbor ponuda i zbir puta ---- */
+const REG = {flight:[], hotel:[], car:[], act:[], esim:[]};
+const TRIP = {flight:null, hotel:null, car:null, act:new Set(), esim:false};
+let PANEL_OPEN = false, PREV_COUNT = 0;
+/* Okvirne procene za stavke koje partneri ne daju kroz ponude (ilustrativno, EUR).
+   Boravišna taksa: po osobi (odraslom) po noći, plaća se na licu mesta u smeštaju. */
+const TAX_PER_NIGHT = {'Hrvatska':1.5,'Crna Gora':1.5,'Bosna i Hercegovina':1,'Srbija':1.5,'Severna Makedonija':1,'Slovenija':3,
+  'Albanija':1,'Grčka':2,'Italija':3,'Španija':1.5,'Portugalija':2,'Francuska':2,'Nemačka':2.5,'Austrija':2.5,'Mađarska':2,
+  'Češka':1,'Bugarska':1,'Turska':1.5,'Švajcarska':3,'Holandija':4,'Velika Britanija':0};
+function taxEstimate(c){
+  const rate = TAX_PER_NIGHT[c.dest.country];
+  const r = rate == null ? 1.5 : rate;
+  return {rate:r, total:Math.round(r * c.nights * c.P.adults * 10) / 10, known:rate != null};
+}
+function esimEstimate(c){
+  const n = c.nights, per = n <= 4 ? 5 : n <= 8 ? 8 : n <= 12 ? 11 : n <= 20 ? 15 : 20;
+  return {per:per, total:per * c.P.adults};
+}
+const BAR_DEF = {html:'', href:'#'};
+let CUR = null;
+function pickBtn(kind, i){
+  return '<button type="button" class="dp-pick" data-pick="' + kind + ':' + i + '" aria-pressed="false">＋ Dodaj u put</button>';
+}
+function tripItems(){
+  const out = [];
+  if (TRIP.flight != null && REG.flight[TRIP.flight]) out.push(['flight', TRIP.flight, '✈️', REG.flight[TRIP.flight]]);
+  if (TRIP.hotel != null && REG.hotel[TRIP.hotel]) out.push(['hotel', TRIP.hotel, '🛏️', REG.hotel[TRIP.hotel]]);
+  if (TRIP.car != null && REG.car[TRIP.car]) out.push(['car', TRIP.car, '🚗', REG.car[TRIP.car]]);
+  [...TRIP.act].sort((a, b) => a - b).forEach(i => { if (REG.act[i]) out.push(['act', i, '🎟️', REG.act[i]]); });
+  if (TRIP.esim && REG.esim[0]) out.push(['esim', 0, '📶', REG.esim[0]]);
+  /* boravišna taksa se računa sama čim je u putu smeštaj; plaća se na licu mesta */
+  if (TRIP.hotel != null && REG.hotel[TRIP.hotel] && CUR){
+    const t = taxEstimate(CUR);
+    if (t.total > 0) out.push(['tax', 0, '🏛️', {title:'Boravišna taksa (okvirno)', detail:CUR.P.adults + ' × ' + CUR.nights + ' noć. × ' + money(t.rate, 'EUR') + (t.known ? '' : ' · procena'),
+      total:t.total, cur:'EUR', onsite:true}]);
+  }
+  return out;
+}
+function itemsWord(n){ return n + (n === 1 ? ' stavka' : (n >= 2 && n <= 4) ? ' stavke' : ' stavki'); }
+function syncPicks(){
+  document.querySelectorAll('.dp-pick').forEach(b => {
+    const [k, i] = b.getAttribute('data-pick').split(':');
+    const on = k === 'act' ? TRIP.act.has(+i) : k === 'esim' ? TRIP.esim : TRIP[k] === +i;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.classList.toggle('on', on);
+    b.textContent = on ? '✓ U tvom putu' : '＋ Dodaj u put';
+  });
+}
+function tripRow(it){
+  const r = it[3];
+  const sub = r.detail ? '<span class="dp-trip-detail">' + esc(r.detail) + '</span>' : '';
+  const link = r.url ? '<a href="' + esc(r.url) + '" ' + ext + '>Otvori na ' + esc(r.partner) + ' ↗</a>' : '<span class="dp-trip-detail">plaća se u smeštaju</span>';
+  const rm = it[0] === 'tax' ? '' : '<button type="button" class="dp-trip-rm" data-rm="' + it[0] + ':' + it[1] + '" aria-label="Ukloni">×</button>';
+  return '<div class="dp-trip-row"><span class="dp-trip-ic">' + it[2] + '</span><div class="dp-trip-txt"><b>' + esc(r.title) + '</b>' + sub + link + '</div>' +
+    '<span class="dp-trip-price">' + money(r.total, r.cur) + '</span>' + rm + '</div>';
+}
+function sumEUR(list){ let t = 0, sk = 0; list.forEach(it => { if (it[3].cur === 'EUR' && isFinite(it[3].total)) t += it[3].total; else sk++; }); return {t:t, sk:sk}; }
+function updateBar(){
+  const bar = $('dpTotalBar'); if (!bar) return;
+  const items = tripItems();
+  saveTrip();
+  bar.classList.toggle('has-trip', items.length > 0);
+  const label = $('dpTbLabel'), price = $('dpTbPrice'), link = $('dpTbLink'), open = $('dpTbOpen'), panel = $('dpTripPanel');
+  syncPicks();
+  if (!items.length){
+    PANEL_OPEN = false; PREV_COUNT = 0;
+    label.textContent = 'Najjeftiniji let';
+    price.innerHTML = BAR_DEF.html;
+    link.style.display = BAR_DEF.html ? '' : 'none';   /* vodi do sekcije Let (#avio); partnerski linkovi su na karticama letova */
+    open.hidden = true; open.setAttribute('aria-expanded', 'false'); panel.hidden = true; panel.innerHTML = '';
+    { const sh = $('dpTbShare'); if (sh) sh.hidden = true; }
+    if (!BAR_DEF.html) bar.hidden = true;
+    syncDock(0, 0);
+    syncSheet();
+    return;
+  }
+  bar.hidden = false;
+  /* na telefonu se specifikacija ne otvara sama (gurala bi sadržaj); korisnika vodi donja traka i toast */
+  if (PREV_COUNT === 0 && !PHONE.matches) PANEL_OPEN = true;
+  PREV_COUNT = items.length;
+  const online = items.filter(it => !it[3].onsite), onsite = items.filter(it => it[3].onsite);
+  const a = sumEUR(online), b = sumEUR(onsite);
+  const sum = a.t + b.t, skipped = a.sk + b.sk;
+  const ad = CUR ? CUR.P.adults : 1;
+  label.textContent = 'Tvoj put · ' + itemsWord(items.length);
+  price.innerHTML = money(sum, 'EUR') + ' <small>/ ukupno za ' + ad + (ad === 1 ? ' putnika' : ' putnika') + '</small>';
+  link.style.display = 'none'; open.hidden = false;
+  { const sh = $('dpTbShare'); if (sh) sh.hidden = false; }
+  open.setAttribute('aria-expanded', PANEL_OPEN ? 'true' : 'false');
+  open.textContent = PANEL_OPEN ? 'Sakrij specifikaciju' : 'Specifikacija';
+  panel.hidden = !PANEL_OPEN;
+  placePanel();
+  panel.innerHTML =
+    '<div class="dp-sheet-head"><span>Tvoj put · ' + itemsWord(items.length) + '</span><button type="button" class="dp-sheet-close" data-close-sheet aria-label="Zatvori specifikaciju">×</button></div>' +
+    '<div class="dp-trip-grp">Rezervišeš kod partnera</div>' + online.map(tripRow).join('') +
+    (online.length > 1 ? '<div class="dp-trip-sub"><span>Međuzbir</span><b>' + money(a.t, 'EUR') + '</b></div>' : '') +
+    (onsite.length ? '<div class="dp-trip-grp">Plaćaš na licu mesta</div>' + onsite.map(tripRow).join('') : '') +
+    '<div class="dp-trip-total"><span>UKUPNO</span><b>' + money(sum, 'EUR') + '</b></div>' +
+    '<div class="dp-trip-pp">≈ ' + money(sum / ad, 'EUR') + ' po osobi</div>' +
+    '<div class="dp-trip-actions"><button type="button" class="dp-sheet-share" data-share-trip>Podeli put</button>' +
+    '<button type="button" class="dp-trip-clear" data-clear-trip>Isprazni put</button></div>' +
+    '<div class="dp-sheet-status" id="dpSheetStatus" role="status" aria-live="polite"></div>' +
+    '<p class="dp-trip-note">Ilustrativna procena. Aktivnosti, eSIM i boravišna taksa računati su za sve putnike. Tačnu cenu i dostupnost potvrđuješ kod partnera pre rezervacije. ' + AFF_BADGE + '</p>' +
+    (skipped ? '<p class="dp-trip-note">' + skipped + ' stavka je u drugoj valuti i nije uračunata u zbir.</p>' : '');
+  syncDock(items.length, sum);
+  syncSheet();
+}
+/* ---- donja traka "Tvoj put" + toast: potvrda i prečica do specifikacije ---- */
+const PHONE = window.matchMedia ? window.matchMedia('(max-width:700px)') : {matches:false};
+let toastTimer = 0, dockCount = 0;
+/* Na telefonu se specifikacija prebacuje iz lepljive gornje trake u donji panel (fixed ne radi unutar elementa sa backdrop-filter) */
+function placePanel(){
+  const panel = $('dpTripPanel'), bar = $('dpTotalBar'); if (!panel || !bar) return;
+  if (PHONE.matches){
+    if (panel.parentNode !== document.body) document.body.insertBefore(panel, $('dpDock'));
+    panel.classList.add('is-sheet'); panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-label', 'Tvoj put'); panel.tabIndex = -1;
+  } else {
+    if (panel.parentNode !== bar) bar.appendChild(panel);
+    panel.classList.remove('is-sheet'); ['role', 'aria-modal', 'aria-label', 'tabindex'].forEach(a => panel.removeAttribute(a));
+  }
+  syncSheet();
+}
+function syncSheet(){
+  const panel = $('dpTripPanel'), back = $('dpSheetBack'); if (!panel || !back) return;
+  const open = PHONE.matches && PANEL_OPEN && !panel.hidden;
+  back.hidden = !open;
+  document.documentElement.classList.toggle('dp-sheet-open', open);
+}
+function closeSheet(){
+  PANEL_OPEN = false; updateBar();
+  const d = $('dpDock'); if (d && !d.hidden) d.focus({preventScroll:true});
+}
+if (PHONE.addEventListener) PHONE.addEventListener('change', () => { placePanel(); updateBar(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && PHONE.matches && PANEL_OPEN){ closeSheet(); } });
+function syncDock(n, sum){
+  const dock = $('dpDock'); if (!dock) return;
+  if (!n){ dock.hidden = true; dockCount = 0; hideToast(); return; }
+  $('dpDockLabel').textContent = 'Tvoj put · ' + itemsWord(n);
+  $('dpDockPrice').textContent = money(sum, 'EUR');
+  dock.hidden = PANEL_OPEN;                       /* kad je specifikacija otvorena, traka je suvišna */
+  dock.setAttribute('aria-label', 'Tvoj put, ' + itemsWord(n) + ', ' + money(sum, 'EUR') + '. Otvori specifikaciju');
+  if (n !== dockCount && dockCount !== 0 && !REDUCED){ dock.classList.remove('bump'); void dock.offsetWidth; dock.classList.add('bump'); }
+  dockCount = n;
+}
+function hideToast(){ const t = $('dpToast'); if (t){ t.hidden = true; t.innerHTML = ''; } clearTimeout(toastTimer); }
+function showAddedToast(title){
+  const t = $('dpToast'); if (!t || PANEL_OPEN) return;
+  t.innerHTML = '<span class="dp-toast-ic" aria-hidden="true">✓</span><span class="dp-toast-msg">Dodato u Tvoj put' + (title ? ': ' + esc(title) : '') + '</span><button type="button" class="dp-toast-act" data-open-trip>Pogledaj</button>';
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(hideToast, 4000);
+}
+/* ---- Podeli put: izbor stavki ide u URL kao ?izbor=f0-ab12.h2-cd34.a3-ef56.e  (vrsta + redni broj + kratak otisak naslova) ----
+   Otisak štiti od pogrešne stavke: ako ponude više nisu iste (stvarni feed), stavka se preskače, a ne dodaje pogrešna. */
+const PICK_RE = /^([fhca])(\d{1,3})-([0-9a-z]{1,6})$/;
+let PENDING = null, SHARED_USED = false;
+function h4(str){ let h = 5381; str = String(str); for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36).slice(0, 6); }
+function encodePicks(){
+  const out = [];
+  [['f','flight'],['h','hotel'],['c','car']].forEach(([l, k]) => { if (TRIP[k] != null && REG[k][TRIP[k]]) out.push(l + TRIP[k] + '-' + h4(REG[k][TRIP[k]].title)); });
+  [...TRIP.act].sort((a, b) => a - b).forEach(i => { if (REG.act[i]) out.push('a' + i + '-' + h4(REG.act[i].title)); });
+  if (TRIP.esim) out.push('e');
+  return out.join('.');
+}
+function parsePicks(str){
+  if (typeof str !== 'string' || str.length > 200) return null;
+  const res = {flight:null, hotel:null, car:null, act:[], esim:false, total:0, skipped:0};
+  str.split('.').slice(0, 20).forEach(t => {
+    if (t === 'e'){ res.esim = true; res.total++; return; }
+    const m = PICK_RE.exec(t); if (!m) return;
+    const kind = {f:'flight', h:'hotel', c:'car', a:'act'}[m[1]];
+    const item = {i:+m[2], h:m[3]};
+    if (kind === 'act') res.act.push(item); else res[kind] = item;
+    res.total++;
+  });
+  return res.total ? res : null;
+}
+/* ---- pamćenje izbora: preživi osvežavanje stranice. Čuva se jedan put, vezan za pretragu (odakle, dokle, datumi, putnici). ---- */
+const STORE_KEY = 'sklopi_dest_trip_v1', STORE_TTL = 30 * 864e5;
+function ctxKey(c){ return [c.P.from, c.P.to, c.P.start, c.P.end, c.P.adults].join('|'); }
+function readStore(){ try { const o = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); return o && typeof o.k === 'string' && typeof o.e === 'string' ? o : null; } catch(e){ return null; } }
+function saveTrip(){
+  if (!CUR || PENDING) return;                       /* dok se stari izbor još vraća, ne prepisuj ga */
+  const enc = encodePicks(), key = ctxKey(CUR), old = readStore();
+  if (!enc && (!old || old.k !== key)) return;       /* prazan put u novoj pretrazi ne briše prethodno sačuvan */
+  try { if (enc) localStorage.setItem(STORE_KEY, JSON.stringify({k:key, e:enc, t:Date.now()})); else localStorage.removeItem(STORE_KEY); } catch(e){}
+}
+function storedPicks(c){
+  const o = readStore();
+  if (!o || o.k !== ctxKey(c) || !(Date.now() - o.t < STORE_TTL) || c.P.start < new Date().toISOString().slice(0, 10)) return null;
+  const p = parsePicks(o.e); if (p) p.restored = true; return p;
+}
+function applyPending(){
+  if (!PENDING) return;
+  const hit = (k, it) => it && REG[k][it.i] ? (h4(REG[k][it.i].title) === it.h ? 'ok' : 'bad') : 'wait';
+  let changed = false;
+  ['flight','hotel','car'].forEach(k => {
+    const it = PENDING[k], r = hit(k, it); if (r === 'wait') return;
+    if (r === 'ok'){ TRIP[k] = it.i; changed = true; } else PENDING.skipped++;
+    PENDING[k] = null;
+  });
+  PENDING.act = PENDING.act.filter(it => {
+    const r = hit('act', it); if (r === 'wait') return true;
+    if (r === 'ok'){ TRIP.act.add(it.i); changed = true; } else PENDING.skipped++;
+    return false;
+  });
+  if (PENDING.esim && REG.esim[0]){ TRIP.esim = true; PENDING.esim = false; changed = true; }
+  if (changed) updateBar();
+  const left = PENDING.flight || PENDING.hotel || PENDING.car || PENDING.act.length || PENDING.esim;
+  if (!left){
+    const st = $('dpTbStatus');
+    if (st && PENDING.skipped) st.textContent = PENDING.restored ? 'Neke stavke iz tvog prethodnog izbora više nisu dostupne.' : 'Neke stavke iz podeljenog linka više nisu dostupne pa nisu dodate.';
+    else if (st && PENDING.restored){ const m = 'Vraćen je tvoj prethodni izbor.'; st.textContent = m; st.dataset.m = m; setTimeout(() => { if (st.dataset.m === m) st.textContent = ''; }, 4000); }
+    PENDING = null;
+  }
+}
+function shareTrip(){
+  const enc = encodePicks(); if (!enc) return;
+  const u = new URL(location.href); u.searchParams.set('izbor', enc); u.hash = '';
+  const url = u.toString(), st = $('dpTbStatus'), btn = $('dpTbShare');
+  const done = msg => { const ss = $('dpSheetStatus'); if (ss) ss.textContent = msg; if (st){ st.textContent = msg; st.dataset.m = msg; } setTimeout(() => { if (st && st.dataset.m === msg) st.textContent = ''; }, 4000); };
+  const copy = () => {
+    const ok = () => done('Link do tvog puta je kopiran.');
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url).then(ok, () => done(url));
+    try { const ta = document.createElement('textarea'); ta.value = url; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:-1000px;opacity:0'; document.body.appendChild(ta); ta.select(); const r = document.execCommand('copy'); ta.remove(); r ? ok() : done(url); } catch(e){ done(url); }
+  };
+  if (navigator.share){
+    navigator.share({title:'Moje putovanje — SKLOPI', text:(CUR && CUR.dest ? CUR.dest.name + ' — ' : '') + 'pogledaj moj plan puta', url}).catch(e => { if (!e || e.name !== 'AbortError') copy(); });
+  } else copy();
+}
+function setBarDefault(html, href){ BAR_DEF.html = html; BAR_DEF.href = href; updateBar(); }
+/* grupa "Praktične informacije": otvori je kad link ili adresa (#saveti, #esim...) pokazuje na nešto unutra */
+function openMoreFor(id){
+  const t = id && document.getElementById(id); if (!t) return false;
+  const d = t.id === 'prakticno' ? t : t.closest('details.dp-more');
+  if (d && !d.open){ d.open = true; return true; }
+  return false;
+}
+window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (openMoreFor(h)) document.getElementById(h).scrollIntoView(); });
+document.addEventListener('click', e => {
+  const jl = e.target.closest('a[href^="#"]');
+  if (jl && jl.getAttribute('href').length > 1) openMoreFor(jl.getAttribute('href').slice(1));
+  const pk = e.target.closest('.dp-pick');
+  if (pk){
+    const [k, i] = pk.getAttribute('data-pick').split(':'), n = +i;
+    if (k === 'act'){ TRIP.act.has(n) ? TRIP.act.delete(n) : TRIP.act.add(n); }
+    else if (k === 'esim') TRIP.esim = !TRIP.esim;
+    else TRIP[k] = TRIP[k] === n ? null : n;
+    const added = k === 'act' ? TRIP.act.has(n) : k === 'esim' ? TRIP.esim : TRIP[k] === n;
+    updateBar();
+    if (added){ const r = k === 'esim' ? REG.esim[0] : (REG[k] || [])[n]; showAddedToast(r && r.title ? r.title : ''); } else hideToast();
+    return;
+  }
+  if (e.target.closest('[data-clear-trip]')){
+    TRIP.flight = TRIP.hotel = TRIP.car = null; TRIP.act.clear(); TRIP.esim = false; hideToast(); updateBar(); return;
+  }
+  if (e.target.closest('[data-close-sheet], #dpSheetBack')){ closeSheet(); return; }
+  if (e.target.closest('#dpDock, [data-open-trip]')){
+    PANEL_OPEN = true; hideToast(); updateBar();
+    if (PHONE.matches){ const pn = $('dpTripPanel'); if (pn) pn.focus({preventScroll:true}); }
+    else {
+      const bar = $('dpTotalBar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({block:'nearest', behavior: REDUCED ? 'auto' : 'smooth'});
+      const op = $('dpTbOpen'); if (op) op.focus({preventScroll:true});
+    }
+    return;
+  }
+  const rm = e.target.closest('[data-rm]');
+  if (rm){
+    const [k, i] = rm.getAttribute('data-rm').split(':'), n = +i;
+    if (k === 'act') TRIP.act.delete(n); else if (k === 'esim') TRIP.esim = false; else TRIP[k] = null;
+    updateBar(); return;
+  }
+  if (e.target.closest('#dpTbShare, [data-share-trip]')){ shareTrip(); return; }
+  if (e.target.closest('#dpTbOpen')){
+    PANEL_OPEN = !PANEL_OPEN;
+    if (PANEL_OPEN) hideToast();
+    updateBar();
+    return;
+  }
+  const more = e.target.closest('.dp-more-btn');
+  if (more){
+    const wrap = more.parentNode, on = wrap.classList.toggle('dp-all');
+    more.textContent = on ? 'Prikaži manje' : 'Prikaži još (' + more.getAttribute('data-extra') + ')';
+    const track = wrap.querySelector('.dp-slider-track'); if (track) updateSliderNav(track);
+  }
+});
+/* ---- fotografije u karticama ----
+   Kartice nemaju fotografije iz stranih izvora (Wikipedija je uklonjena). Ponuda može doneti
+   sopstveni o.img (npr. iz pravog Booking.com / Viator feed-a preko window.SKLOPI_FEEDS) —
+   prikazuje se odmah. Bez njega kartica ostaje kompaktan baner (klasa no-photo). */
+function fillPhotos(trackId){
+  const track = $(trackId);
+  if (!track) return;
+  track.querySelectorAll('.dp-sl-photo').forEach(b => { if (!b.querySelector('img')) b.classList.add('no-photo'); });
+}
+function photoBlock(o, attrs, bannerRow){
+  const img = o.img ? '<img src="' + esc(o.img) + '" alt="' + esc(o.title || '') + '" loading="lazy" decoding="async">' : '';
+  return '<div class="dp-sl-photo' + (bannerRow ? ' has-banner' : '') + '"' + (o.img ? '' : attrs) + '>' + img + (bannerRow || '') + '</div>';
+}
+function offerCard(o, partner, bannerCls, kind, idx){
+  const badge = o.simulated ? '<span class="dp-badge">primer</span>' : (o.badge ? '<span class="dp-badge dp-partner">' + esc(o.badge) + '</span>' : '');
+  const bannerRow = o.banner ? '<div class="dp-sl-banner on-photo ' + (bannerCls || '') + '"><span>' + esc(o.banner) + '</span>' + badge + '</div>' : '';
+  const banner = photoBlock(o, '', bannerRow);
+  return '<article class="dp-sl-card">' + banner + '<div class="dp-sl-body">' +
+    (o.banner ? '' : badge) +
+    '<div class="dp-sl-title">' + esc(o.title) + '</div>' +
+    (o.sub ? '<div class="dp-sl-sub">' + esc(o.sub) + '</div>' : '') +
+    '<div class="dp-sl-price"><b>' + money(o.price, 'EUR') + '</b><small>' + esc(o.priceNote || '') + '</small></div>' +
+    (kind ? pickBtn(kind, idx) : '') +
+    '<a class="dp-linkbtn dp-sl-cta" href="' + esc(o.url) + '" ' + ext + '>Pogledaj na ' + esc(partner) + '</a>' + AFF_BADGE +
+    '</div></article>';
+}
+function updateSliderNav(track){
+  const btns = document.querySelectorAll('.dp-sl-btn[data-for="' + track.id + '"]');
+  btns.forEach(b => {
+    const dir = +b.getAttribute('data-dir');
+    b.disabled = dir < 0 ? track.scrollLeft <= 2 : track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+  });
+}
+function initSlider(id){
+  const track = $(id); if (!track) return;
+  const nav = document.querySelector('.dp-sl-btn[data-for="' + id + '"]');
+  if (nav) nav.parentNode.hidden = false;
+  let raf = 0;
+  track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => updateSliderNav(track)); }, {passive:true});
+  updateSliderNav(track);
+}
+
+/* ==========================================================
+   PONUDE — izvor podataka za smeštaj, auto i atrakcije.
+   Dok partneri (Booking.com, Viator) ne daju API pristup, koristi se
+   ista ilustrativna procena cene kao na glavnoj stranici (isti seed,
+   isti tržišni i sezonski faktor), pa se brojevi poklapaju sa
+   karticama ponuda. Kad pravi izvor postoji, dovoljno je definisati:
+     window.SKLOPI_FEEDS = { hotels: ctx => Promise<offers[]>, cars: ..., activities: ... };
+   gde je ctx = {dest, origin, start, end, adults, nights}, a offers[]
+   imaju oblik kartice iznad (do 10 komada).
+========================================================== */
+function seededRandom(seed){
+  let s = seed % 2147483647; if (s <= 0) s += 2147483646;
+  return function(){ s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+}
+function hashSeed(str){
+  let h = 0; for (let i = 0; i < str.length; i++){ h = (h * 31 + str.charCodeAt(i)) | 0; }
+  return Math.abs(h) || 1;
+}
+const GENERIC_SEASON = [0.88,0.86,0.90,0.97,1.00,1.08,1.20,1.22,1.05,0.97,0.88,0.95];
+function seasonFactor(destRaw, fromStr){
+  const m = Number(String(fromStr || '').slice(5, 7)), d = Number(String(fromStr || '').slice(8, 10)) || 1;
+  if (!(m >= 1 && m <= 12)) return 1;
+  const key = norm(String(destRaw || '').split(',')[0]);
+  const months = DATA.months[key];
+  let f;
+  if (months){
+    const prev = m === 1 ? 12 : m - 1, next = m === 12 ? 1 : m + 1;
+    const sea = DATA.sea.includes(key);
+    if (months.includes(m)) f = sea && (m === 7 || m === 8) ? 1.22 : sea && (m === 6 || m === 9) ? 1.08 : 1.0;
+    else if (months.includes(prev) || months.includes(next)) f = 0.92;
+    else f = 0.82;
+    if (!sea) f = 0.5 * f + 0.5 * GENERIC_SEASON[m - 1];
+  } else { f = GENERIC_SEASON[m - 1]; }
+  if ((m === 12 && d >= 20) || (m === 1 && d <= 3)) f *= 1.15;
+  return Math.round(f * 100) / 100;
+}
+function marketFactor(dest, dateStr){
+  const f = seededRandom(hashSeed('mkt|' + dest.toLowerCase() + '|' + dateStr));
+  return 0.88 + f() * 0.24;
+}
+function simContext(c){
+  const dest = c.P.to.trim(), nights = c.nights, adults = String(c.P.adults);
+  const rng = seededRandom(hashSeed(dest.toLowerCase() + dest.length + nights + adults));
+  rng();                                   // flightBase (ne koristimo, ali čuva redosled izvlačenja)
+  const seeds = {hotel: rng() * 14, car: rng() * 10, activity: rng() * 20};
+  return {nights, adults:c.P.adults, seeds, factor: marketFactor(dest, new Date().toISOString().slice(0, 10)), season: seasonFactor(dest, c.P.start)};
+}
+const HOTEL_BASE = {3:36, 4:66, 5:122};
+const HOTEL_SPECS = [
+  {stars:3, mult:0.85, tag:'najpovoljniji', order:'price'},
+  {stars:3, mult:1.00, tag:'standard'},
+  {stars:3, mult:1.06, tag:'blizu centra', order:'distance_from_search'},
+  {stars:4, mult:0.85, tag:'povoljniji', order:'price'},
+  {stars:4, mult:1.00, tag:'najbolji odnos cene i kvaliteta'},
+  {stars:4, mult:1.06, tag:'blizu centra', order:'distance_from_search'},
+  {stars:4, mult:1.08, tag:'najbolje ocenjeni', order:'review_score_and_price'},
+  {stars:4, mult:1.20, tag:'više komfora'},
+  {stars:5, mult:1.00, tag:'standard'},
+  {stars:5, mult:1.20, tag:'luksuz'}
+];
+function simHotels(c){
+  const x = simContext(c), rooms = Math.max(1, Math.ceil(x.adults / 2));
+  return HOTEL_SPECS.map(h => {
+    const perNight = Math.round(HOTEL_BASE[h.stars] * h.mult + x.seeds.hotel);
+    const price = Math.round(perNight * x.nights * rooms * x.factor * x.season);
+    return {
+      title:'Hotel ' + h.stars + '★ · ' + h.tag,
+      sub: x.nights + (x.nights === 1 ? ' noćenje' : ' noćenja') + ' · ' + rooms + (rooms === 1 ? ' soba' : ' sobe'),
+      price:price, priceNote:'ukupno · ≈ ' + money(Math.round(price / x.nights), 'EUR') + ' po noći',
+      banner:'★'.repeat(h.stars), url:linkHotels(c, h.stars, h.order), simulated:true
+    };
+  }).sort((a, b) => a.price - b.price);
+}
+const CAR_SPECS = [
+  {name:'Mini · Fiat Panda ili slično',        base:27, gear:'manuelni menjač'},
+  {name:'Ekonomik · Kia Picanto ili slično',   base:31, gear:'manuelni menjač'},
+  {name:'Kompakt · VW Golf ili slično',        base:36, gear:'manuelni menjač'},
+  {name:'Kompakt automatik · Toyota Corolla ili slično', base:44, gear:'automatski menjač'},
+  {name:'Kombi · Škoda Octavia Combi ili slično', base:42, gear:'manuelni menjač'},
+  {name:'Porodični · VW Touran ili slično',    base:50, gear:'manuelni menjač'},
+  {name:'Mali SUV · Dacia Duster ili slično',  base:51, gear:'manuelni menjač'},
+  {name:'SUV · VW Tiguan ili slično',          base:57, gear:'automatski menjač'},
+  {name:'Kabriolet · Mini Cabrio ili slično',  base:72, gear:'automatski menjač'},
+  {name:'Premium · BMW serije 3 ili slično',   base:78, gear:'automatski menjač'}
+];
+function simCars(c){
+  const x = simContext(c);
+  return CAR_SPECS.map(k => {
+    const perDay = Math.round(k.base + x.seeds.car);
+    const price = Math.round(perDay * x.nights * x.factor * x.season);
+    return {
+      title:k.name, sub:x.nights + (x.nights === 1 ? ' dan' : ' dana') + ' · ' + k.gear,
+      price:price, priceNote:'ukupno · ≈ ' + money(Math.round(price / x.nights), 'EUR') + ' dnevno',
+      banner:'🚗', url:linkCars(c), simulated:true
+    };
+  }).sort((a, b) => a.price - b.price);
+}
+const ACT_SPECS = [
+  {name:'Pešačka tura starim gradom', kw:'walking tour', mult:0.85},
+  {name:'Ulaznice za glavne atrakcije', kw:'tickets', mult:1.00},
+  {name:'Poludnevna tura sa vodičem', kw:'half day tour', mult:1.00},
+  {name:'Obilazak grada autobusom (hop-on hop-off)', kw:'hop on hop off', mult:1.15},
+  {name:'Obilazak biciklom', kw:'bike tour', mult:1.10},
+  {name:'Večernja tura', kw:'evening tour', mult:1.20},
+  {name:'Kulinarska tura', kw:'food tour', mult:1.30},
+  {name:'Privatna tura', kw:'private tour', mult:1.35},
+  {name:'Degustacija vina', kw:'wine tasting', mult:1.50},
+  {name:'Celodnevni izlet iz grada', kw:'day trip', mult:1.70}
+];
+function simActivities(c){
+  const x = simContext(c);
+  return ACT_SPECS.map(a => {
+    const per = Math.round(Math.round((18 + x.seeds.activity) * a.mult) * x.factor);
+    return {
+      title:a.name, sub:c.dest.name,
+      price:per, priceNote:'po osobi' + (x.adults > 1 ? ' · ' + money(per * x.adults, 'EUR') + ' za ' + x.adults : ''),
+      banner:'🎟️', url:linkActivities(c, a.kw), simulated:true
+    };
+  }).sort((a, b) => a.price - b.price);
+}
+const SIM = {hotels:simHotels, cars:simCars, activities:simActivities, flights:simFlights};
+/* ==========================================================
+   LETOVI (simulacija) — realan broj poletanja po ruti je mali
+   (obično 3–6 dnevno za rute koje ova aplikacija pokriva), pa se
+   generiše baš toliko kartica, raspoređenih tokom dana, sa cenom
+   koja zavisi od doba poletanja (rano ujutru/kasno uveče jeftinije,
+   sredina dana skuplje) — isti seed/faktor pristup kao simHotels
+   itd., tako da se brojevi ne menjaju osvežavanjem stranice za isti
+   upit, a menjaju se čim se promeni destinacija ili datum. */
+const FLIGHT_CARRIERS = ['Wizz Air','Air Serbia','Ryanair','Aegean','Lufthansa'];
+function simFlights(c){
+  const x = simContext(c);
+  const rng = seededRandom(hashSeed('flight|' + c.dest.name.toLowerCase() + '|' + c.org.name.toLowerCase() + '|' + c.P.start));
+  const depCount = 5 + Math.floor(rng() * 2); // 5–6 poletanja (5 vidljivih + eventualno 6. iza "Prikaži još")
+  const base = 45 + rng() * 130;
+  const rows = [];
+  for (let i = 0; i < depCount; i++){
+    const hour = Math.floor(6 + rng() * 16); // 06:00–22:00
+    const minute = Math.floor(rng() * 12) * 5;
+    const carrier = FLIGHT_CARRIERS[Math.floor(rng() * FLIGHT_CARRIERS.length)];
+    const durationMin = 60 + Math.floor(rng() * 180); // 1h–4h
+    const timeMult = (hour < 8 || hour >= 20) ? 0.85 : (hour >= 11 && hour <= 15) ? 1.15 : 1.0;
+    const price = Math.round(base * timeMult * (0.85 + rng() * 0.3) * x.factor * x.season * x.adults);
+    const depTotal = hour * 60 + minute, arrTotal = depTotal + durationMin;
+    const arrHour = Math.floor(arrTotal / 60) % 24, arrMinute = arrTotal % 60, nextDay = arrTotal >= 24 * 60;
+    rows.push({
+      dep: pad(hour) + ':' + pad(minute),
+      arr: pad(arrHour) + ':' + pad(arrMinute) + (nextDay ? ' (+1d)' : ''),
+      carrier, durationMin, price, sortKey: depTotal
+    });
+  }
+  rows.sort((a, b) => a.sortKey - b.sortKey);
+  return rows.map(r => ({
+    title: r.carrier + ' · ' + r.dep + ' – ' + r.arr,
+    sub: c.org.name + ' → ' + c.dest.name + ' · ' + Math.floor(r.durationMin / 60) + 'h ' + (r.durationMin % 60) + 'min · direktan let',
+    price: r.price,
+    priceNote: x.adults > 1 ? 'ukupno za ' + x.adults + ' putnika' : 'ukupno, povratna karta',
+    banner: '✈️', url: linkFlights(c), simulated: true
+  })).sort((a, b) => a.price - b.price);
+}
+let renderToken = 0;
+/* Vraća Promise<offers[]>: pravi izvor (SKLOPI_FEEDS) ako postoji, inače procena. */
+function getOffers(kind, c){
+  const feed = window.SKLOPI_FEEDS && window.SKLOPI_FEEDS[kind];
+  const ctx = {dest:c.dest.name, origin:c.org.name, start:c.P.start, end:c.P.end, adults:c.P.adults, nights:c.nights};
+  return Promise.resolve().then(() => typeof feed === 'function' ? feed(ctx) : null)
+    .then(list => (Array.isArray(list) && list.length) ? list.slice(0, 10) : SIM[kind](c).slice(0, 10))
+    .catch(() => SIM[kind](c).slice(0, 10));
+}
+function fillOffers(kind, c, boxId, countId, sliderId, label, partner, bannerCls, token){
+  return getOffers(kind, c).then(list => {
+    if (token !== renderToken) return;
+    const key = kind === 'hotels' ? 'hotel' : kind === 'cars' ? 'car' : 'act';
+    const ad = c.P.adults;
+    REG[key] = list.map(o => ({title:o.title, detail: key === 'act' ? ad + ' × ' + money(o.price, 'EUR') : (o.sub || ''), total: key === 'act' ? o.price * ad : o.price, cur:'EUR', url:o.url, partner:partner}));
+    $(boxId).innerHTML = slider(sliderId, label, list.map((o, i) => offerCard(o, partner, bannerCls, key, i)), true);
+    $(countId).textContent = countLabel(list.length);
+    initSlider(sliderId);
+    applyPending();
+    fillPhotos(sliderId);
+  });
+}
+
+function flightCard(o, adults, c, idx){
+  const per = adults > 1 ? 'ukupno za ' + adults + ' putnika' : 'ukupno, povratna karta';
+  const test = o.airline === 'Duffel Airways' ? '<span class="dp-badge">test podaci</span>' : '';
+  const legs = (o.slices || []).map(s =>
+    '<div class="dp-leg"><div class="dp-fl-route">' + esc(s.origin) + ' <div class="dp-fl-line"></div> ' + esc(s.destination) + '</div>' +
+    '<div class="dp-fl-times"><span>' + esc(fmtDT(s.departing_at)) + '</span><span>' + esc(fmtDT(s.arriving_at)) + '</span></div></div>'
+  ).join('');
+  return '<article class="dp-sl-card">' + photoBlock(o, '', '') + '<div class="dp-sl-body">' +
+    '<div class="dp-flight-row"><div class="dp-fl-logo">' + esc(o.airline_iata || '✈') + '</div>' +
+    '<div class="dp-fl-mid"><div class="dp-fl-airline">' + esc(o.airline || 'Aviokompanija') + '</div>' + test + '</div></div>' +
+    legs +
+    '<div class="dp-sl-price"><b>' + money(o.total_amount, o.total_currency) + '</b><small>' + esc(per) + '</small></div>' +
+    pickBtn('flight', idx) +
+    '<a class="dp-linkbtn dp-sl-cta" href="' + esc(linkFlights(c)) + '" ' + ext + '>Pogledaj na KAYAK</a>' + AFF_BADGE +
+    '</div></article>';
+}
+
+let flightReq = 0, flightAbort = null;
+function loadFlights(c){
+  const list = $('dpFlightList'), count = $('dpFlightCount');
+  const bar = $('dpTotalBar');
+  bar.hidden = true;
+
+  function showSimulated(){
+    const offers = SIM.flights(c).slice(0, 6);
+    count.textContent = countLabel(offers.length);
+    REG.flight = offers.map(o => ({title:o.title, total:o.price, cur:'EUR', url:o.url, partner:'KAYAK'}));
+    list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map((o, i) => offerCard(o, 'KAYAK', '', 'flight', i)), false);
+    initSlider('dpFlightTrack');
+    applyPending();
+    fillPhotos('dpFlightTrack');
+    const cheapest = offers[0];
+    if (cheapest){
+      bar.hidden = false;
+      setBarDefault(money(cheapest.price, 'EUR') + ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>', linkFlights(c));
+    }
+  }
+
+  const my = ++flightReq;
+  if (flightAbort) flightAbort.abort();
+  if (!c.oCode || !c.dCode){
+    // Aerodrom nije u našoj bazi za tačnu KAYAK rutu, ali destinaciju i
+    // dalje znamo po imenu — ilustrativna procena i dalje ima smisla.
+    showSimulated();
+    return;
+  }
+  flightAbort = new AbortController();
+  const timer = setTimeout(() => flightAbort.abort(), 25000);
+  list.innerHTML = '<div class="dp-card"><p class="dp-note">Tražimo letove za tvoje datume…</p></div>';
+  count.textContent = '';
+  const url = API_BASE + '/api/flights?origin=' + enc(c.oCode) + '&destination=' + enc(c.dCode) +
+    '&departure_date=' + c.P.start + '&return_date=' + c.P.end + '&adults=' + c.P.adults;
+  fetch(url, {signal: flightAbort.signal})
+    .then(r => r.json().then(j => ({ok:r.ok, j})))
+    .then(res => {
+      if (my !== flightReq) return;
+      clearTimeout(timer);
+      if (!res.ok) throw new Error('api');
+      const offers = ((res.j && res.j.offers) || []).slice()
+        .sort((a,b) => parseFloat(a.total_amount) - parseFloat(b.total_amount)).slice(0, 6);
+      if (!offers.length) throw new Error('empty');
+      count.textContent = countLabel(offers.length);
+      REG.flight = offers.map(o => {
+        const s0 = (o.slices || [])[0];
+        return {title:(o.airline || 'Let') + (s0 ? ' · ' + s0.origin + ' → ' + s0.destination : ''),
+          total:parseFloat(o.total_amount), cur:o.total_currency || 'EUR', url:linkFlights(c), partner:'KAYAK'};
+      });
+      list.innerHTML = slider('dpFlightTrack', 'Ponude letova', offers.map((o, i) => flightCard(o, c.P.adults, c, i)), false);
+      initSlider('dpFlightTrack');
+      applyPending();
+      fillPhotos('dpFlightTrack');
+      const cheapest = offers[0];
+      bar.hidden = false;
+      setBarDefault(money(cheapest.total_amount, cheapest.total_currency) +
+        ' <small>/ ' + c.P.adults + (c.P.adults === 1 ? ' putnik' : ' putnika') + '</small>', linkFlights(c));
+    })
+    .catch(() => {
+      if (my !== flightReq) return;
+      clearTimeout(timer);
+      showSimulated();
+    });
+}
+
+function renderResults(P){
+  const dest = resolveDest(P.to);
+  const org = resolveDest(P.from || 'Beograd');
+  const oAp = airportFor(org.name), dAp = airportFor(dest.name);
+  const s = parseISO(P.start), e = parseISO(P.end);
+  const nights = Math.round((e - s) / 86400000);
+  const c = {P, dest, org, oCode:oAp.code, dCode:dAp.code, oVia:oAp.via, dVia:dAp.via, nights};
+
+  const meta = COUNTRY[dest.country];
+  const flag = meta ? flagEmoji(meta[0]) : '';
+  setMeta(dest.name + ' — procena cene putovanja | SKLOPI',
+    dest.name + ': let, smeštaj, rent a car i aktivnosti za ' + fmtRange(s, e) + ' (' + nights + (nights === 1 ? ' noćenje' : ' noćenja') + '). SKLOPI sabira sve u jednu procenjenu cenu, rezervacija kod partnera.');
+  $('dpHeroTitle').innerHTML = (flag ? '<span class="dp-flag">' + flag + '</span>' : '') + esc(dest.name);
+  $('dpHeroFacts').innerHTML =
+    '<div class="dp-hero-fact">📅 <b>' + esc(fmtRange(s, e)) + '</b> · ' + nights + (nights === 1 ? ' noćenje' : ' noćenja') + '</div>' +
+    '<div class="dp-hero-fact">👥 <b>' + P.adults + '</b> ' + (P.adults === 1 ? 'putnik' : 'putnika') + '</div>' +
+    '<div class="dp-hero-fact">✈️ Polazak: <b>' + esc(org.name) + '</b></div>';
+  const isIsland = ISLANDS.has(norm(dest.name));
+  const canDrive = (!dest.country || DRIVABLE.has(dest.country)) && !isIsland;
+  $('dpHeroChecklist').innerHTML = dest.country ? travelChecklistHtml(dest.country, canDrive) : '';
+
+  /* --- letovi (sadržaj se puni asinhrono) --- */
+  const simNote = '';
+  const jump = '<nav class="dp-jump" aria-label="Brza navigacija">' +
+    '<a href="#avio">✈️ Let</a><a href="#smestaj">🛏️ Smeštaj</a><a href="#aktivnosti">🎟️ Atrakcije</a><a href="#rentacar">🚗 Auto</a><a href="#osiguranje">🛡️ Osiguranje</a><a href="#esim">📶 eSIM</a><a href="#o-destinaciji">🧭 O mestu</a><a href="#prakticno">🧳 Praktično</a></nav>' +
+    '<p class="dp-estimate">Cene su ilustrativne procene. Dugme otvara pretragu kod partnera sa tvojim datumima, a tačnu cenu i dostupnost potvrđuješ tamo.</p>';
+  const viaNote = (c.oVia || c.dVia)
+    ? '<p class="dp-note dp-note-top">' +
+      (c.oVia ? esc(org.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.oVia) + '. ' : '') +
+      (c.dVia ? esc(dest.name) + ' nema svoj aerodrom, najbliži je: ' + esc(c.dVia) + '. ' : '') + '</p>'
+    : '';
+  let html = jump + '<div class="dp-section" id="o-destinaciji"><div class="dp-section-head"><div class="dp-section-ic">🧭</div><h2 id="destInfoTitle">O destinaciji</h2></div>' +
+    '<p class="dp-note dp-note-top" id="destInfoSub"></p>' +
+    '<div class="dest-info-skeleton" id="destInfoSkeleton" hidden><div class="di-skel-row"></div><div class="di-skel-row di-skel-short"></div><div class="di-skel-grid"><div class="di-skel-card"></div><div class="di-skel-card"></div></div></div>' +
+    '<div id="destInfoContent" hidden></div><p class="dp-note di-disclaimer" id="destInfoDisclaimer" hidden></p></div>';
+  html += '<div class="dp-section" id="avio">' + sectionHead('✈️', 'Avio prevoz', '', 'dpFlightCount', 'dpFlightTrack') +
+    simNote + viaNote + '<div id="dpFlightList" aria-live="polite"></div></div>';
+
+  /* --- smeštaj --- */
+  html += '<div class="dp-section" id="smestaj">' + sectionHead('🛏️', 'Smeštaj', '', 'dpHotelCount', 'dpHotelTrack') + simNote +
+    '<div id="dpHotelBox"></div></div>';
+
+  /* --- atrakcije --- */
+  html += '<div class="dp-section" id="aktivnosti">' + sectionHead('🎟️', 'Atrakcije i aktivnosti', '', 'dpActCount', 'dpActTrack') + simNote +
+    '<div id="dpActBox"></div></div>';
+
+  /* --- auto i ruta --- */
+  const gc = greenCard(dest.country);
+  html += '<div class="dp-section" id="rentacar">' + sectionHead('🚗', 'Rent a car', '', 'dpCarCount', 'dpCarTrack') + simNote +
+    '<div id="dpCarBox"></div></div>' +
+    '@@EXTRA@@' +   /* ovde se ubacuju Osiguranje i eSIM (grade se niže) — vidljivi, van sklopljene grupe */
+    /* Praktične informacije: sklopljeno po defaultu da stranica ne bude jedan beskonačan zid sekcija.
+       Grupa je pravi <details> (tastatura i čitač ekrana rade bez dodatnog koda); sav sadržaj je u DOM-u. */
+    '<details class="dp-more" id="prakticno"><summary class="dp-more-sum">' +
+      '<span class="dp-more-ic" aria-hidden="true">🧳</span>' +
+      '<span class="dp-more-txt"><b>Praktične informacije</b><small>Ruta · Transferi · Autobus · Saveti</small></span>' +
+      '<span class="dp-more-chev" aria-hidden="true"></span></summary>' +
+    '<div class="dp-more-body">' +
+    '<div class="dp-section" id="ruta">' + sectionHead('🧭', 'Ruta', '');
+  if (canDrive){
+    html += '<div class="dp-card"><div class="dp-tip-title">Ako voziš do destinacije</div>' +
+      '<p class="dp-note">' + (dest.country ? '' : 'Ako se do ovog mesta stiže kopnom: ') + 'Trasa ' + esc(org.name) + ' – ' + esc(dest.name) + ' sa vremenom vožnje i putarinama u Google Maps-u.</p>' +
+      '<div class="dp-links"><a class="dp-linkbtn" href="' + esc(linkRoute(c)) + '" target="_blank" rel="noopener">Otvori rutu</a></div>' +
+      '<p class="dp-note dp-gc dp-gc-' + gc.tone + '"><b>Zelena karta.</b> ' + esc(gc.text) + '</p></div>';
+  } else if (isIsland){
+    html += '<div class="dp-card"><p class="dp-note">Do ovog ostrva se ide avionom ili trajektom, pa auto obično iznajmljuješ tek na licu mesta.</p></div>';
+  } else {
+    html += '<div class="dp-card"><p class="dp-note">Do ove destinacije se ne stiže automobilom iz Srbije, pa auto iznajmljuješ na licu mesta.</p></div>';
+  }
+  html += '</div>';   /* kraj #ruta */
+
+  /* --- transferi (aerodrom/pristanište → smeštaj) --- */
+  const airportNote = DEST_AIRPORT_NOTES[norm(dest.name)] || null;
+  const transferTips = [];
+  if (c.dVia) transferTips.push(['🛬', 'Nema sopstveni aerodrom',
+    dest.name + ' nema svoj aerodrom — najbliži je ' + c.dVia + '. Transfer do konačnog odredišta računaj kao poseban trošak i vreme, ne kao deo cene leta.']);
+  if (airportNote) transferTips.push(['✈️', 'Pazi na koji aerodrom slećeš', airportNote]);
+  transferTips.push(['💡', 'Kako uštedeti',
+    'Javni prevoz od aerodroma je u većini evropskih gradova 5–10x jeftiniji od taksija, uz razliku od 20–30 minuta u vremenu. Deljeni šatl je kompromis, a privatni transfer rezervisan unapred (fiksna cena) skoro je uvek jeftiniji i sigurniji od pregovaranja sa taksistom na licu mesta.']);
+  transferTips.push(['⚠️', 'Zamka na koju paziti',
+    'Taksi bez taksimetra ili sa „specijalnom turističkom cenom" na aerodromu je čest trik na mnogim destinacijama — unapred rezervisan transfer ili proverena aplikacija (gde je dostupna) eliminišu taj rizik.']);
+  html += '<div class="dp-section" id="transferi">' + sectionHead('🚕', 'Transferi', '') + '<div class="dp-card">' +
+    transferTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
+
+  /* --- autobus (kopnena alternativa letu) --- */
+  const busTips = [];
+  if (canDrive){
+    busTips.push(['🚌', 'Autobus kao alternativa',
+      'Za ovu destinaciju autobus je sporija, ali obično znatno jeftinija alternativa letu. Međugradski i međunarodni prevoznici (npr. FlixBus i regionalne linije) često voze direktno iz Beograda ili obližnjih gradova.']);
+    busTips.push(['💡', 'Kada se isplati',
+      'Autobus najviše ima smisla za putovanja do 8–10h vožnje, ili kad je razlika u ceni prema letu velika — za duže rute vreme provedeno na putu obično nadmaši uštedu.']);
+  } else if (isIsland){
+    busTips.push(['🚌', 'Nije realna opcija iz Srbije',
+      'Do ovog ostrva se ne stiže autobusom iz Srbije — do najbližeg kopna ili luke ideš avionom ili trajektom, a autobus dolazi u obzir tek na samom ostrvu.']);
+  } else {
+    busTips.push(['🚌', 'Nije realna opcija iz Srbije',
+      'Do ove destinacije se ne stiže autobusom iz Srbije zbog udaljenosti — let je jedina praktična opcija.']);
+  }
+  html += '<div class="dp-section" id="autobus">' + sectionHead('🚌', 'Autobus', '') + '<div class="dp-card">' +
+    busTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
+
+  /* --- osiguranje --- */
+  const insuranceLink = 'https://www.worldnomads.com/travel-insurance?ref=' + enc(aff('worldnomads'));
+  const insTips = [['🛡️', 'Zašto je važno',
+    'Zdravstveni tretman u inostranstvu bez osiguranja može koštati hiljade evra za ozbiljniji slučaj — ovo je stavka gde ušteda od par evra nosi nesrazmeran rizik.']];
+  if (DATA.visa[dest.country]) insTips.push(['🛂', 'Uz vizu',
+    'Ambasada zna da traži dokaz o putnom zdravstvenom osiguranju kao deo vizne prijave za ' + dest.country + ' — proveri pre podnošenja dokumenata.']);
+  insTips.push(['💳', 'Pre kupovine nove polise',
+    'Neke bankovne kartice (premium paketi) uključuju putno osiguranje besplatno — proveri to pre nego što platiš novu polisu.']);
+  let extraHtml = '<div class="dp-section" id="osiguranje">' + sectionHead('🛡️', 'Osiguranje', '') + '<div class="dp-card">' +
+    insTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') +
+    '<div class="dp-links dp-links-after"><a class="dp-linkbtn dp-primary" href="' + esc(insuranceLink) + '" ' + ext + '>Uporedi ponude na World Nomads</a>' + AFF_BADGE + '</div>' +
+    '</div></div>';
+
+  /* --- eSIM --- */
+  const esimSlug = COUNTRY_SLUG_SR[dest.country] || null;
+  const esimLink = esimSlug
+    ? 'https://www.airalo.com/' + esimSlug + '-esim?ref=' + enc(aff('airalo'))
+    : 'https://www.airalo.com/esim?ref=' + enc(aff('airalo'));
+  const esimEst = esimEstimate(c);
+  const esimTips = [['📶', 'Zašto je važno',
+    'Roming van paketa operatera (van EU ili van regiona) može biti i desetine puta skuplji od lokalnog interneta. eSIM se kupuje unapred i aktivira tek po sletanju.']];
+  if (!esimSlug) esimTips.push(['ℹ️', 'Napomena',
+    'Ne znamo tačno u kojoj je državi ova destinacija, pa link vodi na opštu Airalo prodavnicu — potraži tamo „' + dest.name + '“ ili državu u kojoj se nalazi.']);
+  else esimTips.push(['📱', 'Pre kupovine proveri',
+    'Da li telefon podržava eSIM (uglavnom noviji modeli od 2019+), i da li ti je za ovu dužinu putovanja isplativiji fiksni paket (npr. 10GB/10 dana) od dnevnog.']);
+  extraHtml += '<div class="dp-section" id="esim">' + sectionHead('📶', 'eSIM', '') + '<div class="dp-card">' +
+    esimTips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') +
+    '<div class="dp-esim-pick"><span>Procena za ' + c.P.adults + (c.P.adults === 1 ? ' putnika' : ' putnika') + ' · ' + c.nights + (c.nights === 1 ? ' dan' : ' dana') + ': <b>' + money(esimEst.total, 'EUR') + '</b></span>' + pickBtn('esim', 0) + '</div>' +
+    '<div class="dp-links dp-links-after"><a class="dp-linkbtn dp-primary" href="' + esc(esimLink) + '" ' + ext + '>Pogledaj pakete na Airalo</a>' + AFF_BADGE + '</div>' +
+    '</div></div>';
+
+  /* --- saveti --- */
+  const tips = [];
+  if (DATA.visa[dest.country]) tips.push(['🛂','Viza je obavezna', DATA.visa[dest.country]]);
+  tips.push(['🛂','Dokumenta', passportText(dest.country)]);
+  const months = DATA.months[norm(dest.name)];
+  if (months){
+    const m = s.getUTCMonth() + 1;
+    tips.push(['🌤️','Najbolje vreme za posetu',
+      'Najbolja sezona: ' + monthRanges(months) + '. ' +
+      (months.includes(m) ? 'Tvoj termin (' + MONTHS_FULL[m-1] + ') spada u najbolju sezonu.'
+                          : 'Tvoj termin (' + MONTHS_FULL[m-1] + ') je van glavne sezone — proveri vreme i radno vreme atrakcija.')]);
+  }
+  if (meta) tips.push(['💳','Valuta', meta[1] + '.']);
+  const note = dest.known ? '' : '<p class="dp-note dp-note-top">Ovu destinaciju još nemamo u bazi saveta, pa su prikazani samo opšti podaci.</p>';
+  html += '<div class="dp-section" id="saveti">' + sectionHead('💡', 'Saveti za putovanje', '') + note + '<div class="dp-card">' +
+    tips.map(t => '<div class="dp-tip"><div class="dp-tip-ic">' + t[0] + '</div><div><div class="dp-tip-title">' + esc(t[1]) +
+      '</div><div class="dp-tip-text">' + esc(t[2]) + '</div></div></div>').join('') + '</div></div>';
+
+  html = html.replace('@@EXTRA@@', () => extraHtml);   /* Osiguranje + eSIM odmah posle rent a car-a */
+  html += '</div></details>';   /* kraj grupe "Praktične informacije" (obaveštenje o partnerima ostaje vidljivo ispod) */
+
+  html += '<p class="dp-disclosure">Linkovi ka KAYAK-u, Booking.com-u, Viator-u, Airalo-u i World Nomads-u su partnerski: SKLOPI može da dobije proviziju, a tebi cena ostaje ista. Cene i dostupnost potvrđuješ na sajtu partnera.</p>';
+
+  $('dpResults').innerHTML = html;
+  { const h = location.hash.slice(1); if (h && openMoreFor(h)) setTimeout(() => { const t = document.getElementById(h); if (t) t.scrollIntoView(); }, 0); }
+  $('dpResults').hidden = false;
+  if (window.SklopiDestInfo) SklopiDestInfo.load(dest.name, c.org ? c.org.name + (c.org.country ? ', ' + c.org.country : '') : '');
+  const token = ++renderToken;
+  CUR = c;
+  REG.flight = []; REG.hotel = []; REG.car = []; REG.act = [];
+  const es = esimEstimate(c);
+  REG.esim = [{title:'eSIM paket · ' + (dest.country || dest.name), detail:c.P.adults + ' × ' + money(es.per, 'EUR') + ' · ' + c.nights + (c.nights === 1 ? ' dan' : ' dana'), total:es.total, cur:'EUR', url:esimLink, partner:'Airalo'}];
+  TRIP.flight = TRIP.hotel = TRIP.car = null; TRIP.act.clear(); TRIP.esim = false; PANEL_OPEN = false; PREV_COUNT = 0;
+  /* podeljeni link (?izbor=…) važi samo za prvo otvaranje stranice; kasnije pretrage kreću od praznog puta */
+  if (!SHARED_USED){ SHARED_USED = true; PENDING = parsePicks(new URLSearchParams(location.search).get('izbor')); } else PENDING = null;
+  if (!PENDING) PENDING = storedPicks(c);           /* inače vrati izbor sa prethodnog otvaranja iste pretrage */
+  if (PENDING){ const pp = PENDING; setTimeout(() => { if (PENDING === pp) PENDING = null; }, 10000); }   /* ponuda koja se ne pojavi ne sme večno blokirati čuvanje */
+  BAR_DEF.html = ''; BAR_DEF.href = '#';
+  loadFlights(c);
+  fillOffers('hotels', c, 'dpHotelBox', 'dpHotelCount', 'dpHotelTrack', 'Ponude smeštaja', 'Booking.com', '', token);
+  fillOffers('activities', c, 'dpActBox', 'dpActCount', 'dpActTrack', 'Ponude atrakcija', 'Viator', 'alt3', token);
+  fillOffers('cars', c, 'dpCarBox', 'dpCarCount', 'dpCarTrack', 'Ponude rent a car', 'Booking.com', 'alt2', token);
+}
+
+function renderHome(msg){
+  setMeta('Procena cene putovanja po destinaciji | SKLOPI', 'Unesi grad, datume i broj putnika — SKLOPI sabira let, smeštaj, rent a car i aktivnosti u jednu procenjenu cenu za tvoje putovanje.');
+  $('dpHeroTitle').textContent = 'Kuda putuješ?';
+  $('dpHeroFacts').innerHTML = '';
+  $('dpResults').hidden = true;
+  $('dpResults').innerHTML = '';
+  $('dpTotalBar').hidden = true;
+  if (flightAbort) flightAbort.abort();
+  setForm(msg || '');
+  showForm(true);
+}
+
+/* ---------- forma ---------- */
+function setForm(msg){
+  const P = readParams();
+  const t = todayUTC();
+  $('dpFrom').value = P.from || 'Beograd';
+  $('dpTo').value = P.to;
+  $('dpStart').value = P.start || '';   /* bez unapred zadatih datuma — korisnik bira sam */
+  $('dpEnd').value = P.end || '';
+  $('dpAdults').value = String(P.adults);
+  $('dpStart').min = isoOf(t);
+  $('dpEnd').min = isoOf(addDays(t, 1));
+  $('dpMsg').textContent = msg || '';
+}
+function showForm(){ /* forma je stalno vidljiva u hero sekciji */ }
+
+function render(){
+  const P = readParams();
+  if (!P.to) return renderHome('');
+  if (!P.start && !P.end) return renderHome('');   /* stigao sa odredištem, bez datuma: samo prikaži formu */
+  const err = validate(P);
+  if (err) return renderHome(err);
+  setForm('');
+  showForm(false);
+  renderResults(P);
+  window.scrollTo(0, 0);
+}
+
+function init(){
+  const dl = $('dpCities');
+  dl.innerHTML = DATA.pop.map(p => '<option value="' + esc(p[0]) + '"></option>').join('');
+  $('dpResults').addEventListener('click', ev => {
+    const b = ev.target.closest && ev.target.closest('.dp-sl-btn');
+    if (!b) return;
+    const track = $(b.getAttribute('data-for'));
+    if (!track) return;
+    const card = track.querySelector('.dp-sl-card');
+    const step = card ? card.getBoundingClientRect().width + 12 : track.clientWidth * 0.8;
+    const n = Math.max(1, Math.floor(track.clientWidth / step));
+    track.scrollBy({left: +b.getAttribute('data-dir') * step * n, behavior: REDUCED ? 'auto' : 'smooth'});
+  });
+  $('dpStart').addEventListener('change', () => {
+    const s = parseISO($('dpStart').value);
+    if (!s) return;
+    $('dpEnd').min = isoOf(addDays(s, 1));
+    const e = parseISO($('dpEnd').value);
+    if (e && e <= s) $('dpEnd').value = '';
+  });
+  $('dpForm').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const P = {
+      from: $('dpFrom').value.trim(), to: $('dpTo').value.trim(),
+      start: $('dpStart').value, end: $('dpEnd').value, adults: parseInt($('dpAdults').value, 10) || 2
+    };
+    const err = validate(P);
+    if (err){ $('dpMsg').textContent = err; return; }
+    const q = new URLSearchParams({od: P.from || 'Beograd', do: P.to, polazak: P.start, povratak: P.end, putnika: String(P.adults)});
+    history.pushState({}, '', location.pathname + '?' + q.toString());
+    render();
+  });
+  window.addEventListener('popstate', render);
+  render();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+</script>
+<script src="contact.js?v=60aecad3"></script>
+<div class="dp-sheet-back" id="dpSheetBack" hidden></div>
+<div class="dp-toast" id="dpToast" role="status" aria-live="polite" hidden></div>
+<button type="button" class="dp-dock" id="dpDock" aria-controls="dpTripPanel" hidden>
+<span class="dp-dock-txt"><span class="dp-dock-label" id="dpDockLabel"></span><b class="dp-dock-price" id="dpDockPrice"></b></span>
+<span class="dp-dock-cta">Pogledaj</span>
+</button>
+<nav aria-label="Glavna navigacija" class="bottom-nav" id="bottomNav">
+<a href="index.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"></path></svg><span>Početna</span></a>
+<a href="index.html#popular-destinations" class="is-active" aria-current="page"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"></circle><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"></path></svg><span>Destinacije</span></a>
+<a href="vodici.html"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19V5M8 7h6"></path></svg><span>Vodiči</span></a>
+<a href="index.html#myTrip"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5 20c1.5-4 4.2-6 7-6s5.5 2 7 6"></path></svg><span>Moj put</span></a>
+</nav>
+</body>
+</html>
