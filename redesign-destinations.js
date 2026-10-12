@@ -2,7 +2,7 @@
    (POPULAR_FILTER_POOL / popularCardData u app-08), pa su cene i tagovi uvek usklađeni. */
 (function(){
   'use strict';
-  var SEASON={atina:'apr–jun, sep–okt',istanbul:'apr–jun, sep–nov',krf:'maj–jun, sep',pariz:'apr–jun, sep–okt',lisabon:'mar–jun, sep–okt',rim:'apr–jun, sep–okt',barselona:'maj–jun, sep',budva:'jun–sep',bec:'apr–okt',solun:'maj–okt',budimpesta:'apr–okt',prag:'apr–okt',zagreb:'apr–okt',dubrovnik:'maj–okt',split:'jun–sep',kopaonik:'dec–mar',jahorina:'dec–mar',bansko:'dec–mar',aspen:'dec–mar','kranjska gora':'dec–mar',kicbil:'dec–mar','st. anton am arlberg':'dec–apr',samoni:'dec–apr',cermat:'nov–apr',grindelvald:'dec–mar','garmisch-partenkirchen':'dec–mar'};
+  var SEASON={atina:'apr–jun, sep–okt',istanbul:'apr–jun, sep–nov',krf:'maj–jun, sep',pariz:'apr–jun, sep–okt',lisabon:'mar–jun, sep–okt',rim:'apr–jun, sep–okt',barselona:'maj–jun, sep',budva:'jun–sep',bec:'apr–okt',solun:'maj–okt',budimpesta:'apr–okt',prag:'apr–okt',zagreb:'apr–okt',dubrovnik:'maj–okt',split:'jun–sep',kopaonik:'dec–mar',jahorina:'dec–mar',bansko:'dec–mar',aspen:'dec–mar',vail:'nov–apr','stara planina':'dec–mar',kolasin:'dec–mar',"val d'izer":'dec–apr','kranjska gora':'dec–mar',kicbil:'dec–mar','st. anton am arlberg':'dec–apr',samoni:'dec–apr',cermat:'nov–apr',grindelvald:'dec–mar','garmisch-partenkirchen':'dec–mar'};
   var LOCAL={atina:'atina-akropolj',istanbul:'istanbul-plava-dzamija',krf:'krf-uvala',pariz:'pariz-nocu',lisabon:'lisabon-tramvaj',bec:'bec-schonbrunn',solun:'solun-ano-poli',budva:'budva-stari-grad',split:'split-riva',zagreb:'zagreb-gornji-grad',bled:'bled-jezero',dubrovnik:'dubrovnik-stari-grad',ohrid:'ohrid-sveti-jovan-kaneo',ljubljana:'ljubljana-tromostovlje',prag:'prag-karlov-most',budimpesta:'budimpesta-lancani-most-noc',santorini:'santorini-oija-kupole',barselona:'barselona-park-gvelj',kotor:'kotor-zaliv','plitvicka jezera':'plitvice-jezero'};
   var CHIPS=[['all','Sve'],['weekend','Vikend'],['sea','More'],['city','Grad'],['nature','Priroda'],['ski','Ski'],['europe','Evropa']];
   var SORTS=[['pop','Popularno'],['price','Cena'],['near','Najbliže']];
@@ -27,7 +27,7 @@
       var key=nk(d.dest);if(!d.dest||seen[key])return;seen[key]=1;
       var img=d.image;
       if(LOCAL[key])img='img/'+LOCAL[key]+'-560.webp';
-      items.push({key:key,dest:d.dest,name:d.name,country:String(d.meta||'').split(' · ')[0],flight:(String(d.meta||'').split(' · ')[1]||''),price:d.price,tags:String(d.category||'').split(/\s+/).filter(Boolean),img:img,idx:i,min:minutes(String(d.meta||'').split(' · ')[1]||''),pn:priceNum(d.price),season:SEASON[key]||''});
+      items.push({key:key,dest:d.dest,name:d.name,country:String(d.meta||'').split(' · ')[0],flight:(String(d.meta||'').split(' · ')[1]||''),price:d.price,tags:String(d.category||'').split(/\s+/).filter(Boolean),img:img,idx:i,min:minutes(String(d.meta||'').split(' · ')[1]||''),pn:priceNum(d.price),season:SEASON[key]||(typeof autoDestSeason==='function'?autoDestSeason(key):'')});
     });
     return items;
   }
