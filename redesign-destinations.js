@@ -50,7 +50,7 @@
     inp.addEventListener('input',function(){st.q=inp.value;clr.hidden=!inp.value;render();});
     clr.addEventListener('click',function(){inp.value='';st.q='';clr.hidden=true;render();inp.focus();});
     root.querySelector('.dx-chips').addEventListener('click',function(e){var b=e.target.closest('.dx-chip');if(!b)return;st.f=b.dataset.f;root.querySelectorAll('.dx-chip').forEach(function(x){x.classList.toggle('is-active',x===b);});render();});
-    root.querySelector('.dx-sort').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.s=b.dataset.s;root.querySelectorAll('.dx-sort button').forEach(function(x){x.classList.toggle('is-active',x===b);});render();});
+    root.querySelector('.dx-sort').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st.s=b.dataset.s;root.querySelectorAll('.dx-sort button').forEach(function(x){x.classList.toggle('is-active',x===b);});render();if(st.s==='near')startNear();});
     root.querySelector('#dxFind').addEventListener('click',function(){close(true);var m=document.getElementById('matchTriggerBtn');if(m)setTimeout(function(){m.click();},60);});
     root.querySelector('#dxList').addEventListener('click',function(e){
       var h=e.target.closest('.dx-heart');
@@ -67,6 +67,72 @@
     if(window.SKLOPI_showDestPlans)window.SKLOPI_showDestPlans();
   }
 
+  /* ---- „Najbliže“: udaljenost od korisnika ----
+     Polazna tačka: 1) lokacija uređaja (traži se tek kad korisnik tapne „Najbliže“; ostaje samo u pregledaču,
+     zaokružena na ~1 km, sessionStorage), 2) polje „Polazak“ (#origin), 3) Beograd.
+     Koordinate destinacija: poznati aerodrom / Open-Meteo pretraga (_tcGeocode iz transport.js), keš 30 dana. */
+  var POS_KEY='sklopi_dx_pos',GEO_KEY='sklopi_dx_geo_v1',GEO_TTL=30*864e5,pos=null,posSrc='',nearTok=0,geoMem=null;
+  function posLoad(){if(pos)return;try{var j=JSON.parse(sessionStorage.getItem(POS_KEY)||'null');if(j&&j.p&&j.p.length===2){pos=j.p;posSrc=j.s||'geo';}}catch(e){}}
+  function posSave(){try{sessionStorage.setItem(POS_KEY,JSON.stringify({p:pos,s:posSrc}));}catch(e){}}
+  function geoStore(){if(geoMem)return geoMem;try{geoMem=JSON.parse(localStorage.getItem(GEO_KEY)||'{}')||{};}catch(e){geoMem={};}return geoMem;}
+  function geoSave(){try{localStorage.setItem(GEO_KEY,JSON.stringify(geoMem));}catch(e){}}
+  function rad(x){return x*Math.PI/180;}
+  function distKm(a,b){var dl=rad(b[0]-a[0]),dn=rad(b[1]-a[1]),h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dn/2)*Math.sin(dn/2);return 12742*Math.asin(Math.sqrt(h));}
+  function kmLabel(k){var r=k<100?Math.round(k/5)*5:Math.round(k/10)*10;return String(r).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+' km';}
+  function srcLabel(){return posSrc==='geo'?'najbliže tebi':posSrc==='origin'?'od polazišta':'od Beograda';}
+  function askDevice(){
+    return new Promise(function(res){
+      if(!navigator.geolocation||!window.isSecureContext)return res(null);
+      var done=false,t=setTimeout(function(){if(!done){done=true;res(null);}},9000);
+      try{navigator.geolocation.getCurrentPosition(function(p){if(done)return;done=true;clearTimeout(t);res([Math.round(p.coords.latitude*100)/100,Math.round(p.coords.longitude*100)/100]);},function(){if(done)return;done=true;clearTimeout(t);res(null);},{enableHighAccuracy:false,timeout:8000,maximumAge:600000});}
+      catch(e){if(!done){done=true;clearTimeout(t);res(null);}}
+    });
+  }
+  function resolvePos(){
+    posLoad();if(pos)return Promise.resolve(pos);
+    return askDevice().then(function(p){
+      if(p){pos=p;posSrc='geo';posSave();return pos;}
+      var o=document.getElementById('origin'),name=o&&String(o.value||'').trim();
+      var q=name&&typeof _tcGeocode==='function'?Promise.resolve(_tcGeocode(name)).catch(function(){return null;}):Promise.resolve(null);
+      return q.then(function(g){
+        if(g&&typeof g.lat==='number'){pos=[g.lat,g.lon];posSrc='origin';}
+        else{pos=(typeof AIRPORT_COORDS!=='undefined'&&AIRPORT_COORDS.BEG)||[44.82,20.29];posSrc='default';}
+        posSave();return pos;
+      });
+    });
+  }
+  function destCoords(d){
+    var st0=geoStore(),e=st0[d];
+    if(e&&Date.now()-e[2]<GEO_TTL)return Promise.resolve(e[0]!=null?[e[0],e[1]]:null);
+    if(typeof _tcGeocode!=='function')return Promise.resolve(null);
+    return Promise.resolve(_tcGeocode(d)).then(function(g){
+      var ok=g&&typeof g.lat==='number';
+      st0[d]=ok?[g.lat,g.lon,Date.now()]:[null,null,Date.now()-GEO_TTL+864e5];   /* promašaj se ponovo pokušava za 1 dan */
+      geoSave();return ok?[g.lat,g.lon]:null;
+    }).catch(function(){return null;});
+  }
+  function startNear(){
+    var tok=++nearTok;
+    resolvePos().then(function(p){
+      if(tok!==nearTok||st.s!=='near')return;
+      var list=build(),i=0,left=0,since=0;
+      list.forEach(function(x){var e=geoStore()[x.dest];if(e&&e[0]!=null&&Date.now()-e[2]<GEO_TTL)x.km=distKm(p,[e[0],e[1]]);});
+      if(root&&!root.hidden)render();
+      function next(){
+        if(tok!==nearTok||st.s!=='near')return Promise.resolve();
+        while(i<list.length&&typeof list[i].km==='number')i++;
+        if(i>=list.length)return Promise.resolve();
+        var x=list[i++];
+        return destCoords(x.dest).then(function(c){
+          if(c)x.km=distKm(p,c);
+          if(++since>=8){since=0;if(tok===nearTok&&st.s==='near'&&root&&!root.hidden)render();}
+        }).then(next);
+      }
+      var w=[];for(var k=0;k<5;k++)w.push(next());
+      Promise.all(w).then(function(){if(tok===nearTok&&st.s==='near'&&root&&!root.hidden)render();});
+    });
+  }
+
   function filtered(){
     var q=nk(st.q);
     var a=build().filter(function(x){
@@ -75,7 +141,7 @@
       return true;
     });
     if(st.s==='price')a.sort(function(x,y){return x.pn-y.pn||x.idx-y.idx;});
-    else if(st.s==='near')a.sort(function(x,y){return x.min-y.min||x.idx-y.idx;});
+    else if(st.s==='near')a.sort(function(x,y){var kx=typeof x.km==='number'?x.km:1e9,ky=typeof y.km==='number'?y.km:1e9;return kx-ky||x.min-y.min||x.idx-y.idx;});
     return a;
   }
 
@@ -84,7 +150,7 @@
     return '<div class="dx-card" role="button" tabindex="0" data-dest="'+esc(x.dest)+'">'+thumb
       +(x.price?'<span class="dx-price">'+esc(x.price)+'</span>':'')
       +'<button type="button" class="dx-heart'+(saved.indexOf(x.key)>-1?' is-on':'')+'" data-k="'+x.key+'" aria-label="Sačuvaj '+esc(x.name)+'" aria-pressed="'+(saved.indexOf(x.key)>-1)+'"><i><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.2-9.3A5 5 0 0 1 12 6.6a5 5 0 0 1 9.2 4.6c-1.7 4.7-9.2 9.3-9.2 9.3Z"/></svg></i></button>'
-      +'<span class="dx-copy"><span class="dx-name">'+esc(x.name)+'</span><span class="dx-meta">'+esc(x.country+(x.flight?' · '+x.flight:''))+'</span>'
+      +'<span class="dx-copy"><span class="dx-name">'+esc(x.name)+'</span><span class="dx-meta">'+esc(x.country+(st.s==='near'&&typeof x.km==='number'?' · ≈ '+kmLabel(x.km):(x.flight?' · '+x.flight:'')))+'</span>'
       +(x.season?'<span class="dx-season">Sezona: '+esc(x.season)+'</span>':'')+'</span></div>';
   }
 
@@ -139,7 +205,7 @@
 
   function render(){
     var a=filtered(),list=root.querySelector('#dxList');
-    root.querySelector('#dxCount').textContent=a.length+(a.length===1?' destinacija':(a.length>1&&a.length<5?' destinacije':' destinacija'));
+    root.querySelector('#dxCount').textContent=a.length+(a.length===1?' destinacija':(a.length>1&&a.length<5?' destinacije':' destinacija'))+(st.s==='near'&&posSrc?' · '+srcLabel():'');
     if(!a.length){list.innerHTML='<div class="dx-empty">Nema rezultata. Probaj drugi naziv ili kategoriju.</div>';return;}
     var html='';
     if(st.f==='all'&&st.s==='pop'&&!st.q){
