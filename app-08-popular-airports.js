@@ -158,11 +158,11 @@ const POPULAR_DEST_TAGS = {
   'samoni':['nature','ski'], 'cermat':['nature','ski'], 'grindelvald':['nature','ski'],
   'garmisch-partenkirchen':['nature','ski'], 'aspen':['america','nature','ski'],
   'stara planina':['nature','ski','weekend'], 'kolasin':['nature','ski','weekend'],
-  "val d'izer":['nature','ski'], 'vail':['america','nature','ski']
+  "val d'izer":['nature','ski'], 'vejl':['america','nature','ski']
 };
 // Kontinent-oznake (čipovi Sve / Evropa / Azija / Amerika / Afrika): sve ostalo je evropsko, Istanbul i u Aziji.
 Object.keys(POPULAR_DEST_TAGS).forEach(k => {
-  if (!/^(dubai|bangkok|tokio|njujork|kankun|marakes|kairo|hurgada|aspen|vail)$/.test(k)) POPULAR_DEST_TAGS[k].push('europe');
+  if (!/^(dubai|bangkok|tokio|njujork|kankun|marakes|kairo|hurgada|aspen|vejl)$/.test(k)) POPULAR_DEST_TAGS[k].push('europe');
 });
 POPULAR_DEST_TAGS['istanbul'].push('asia');
 /* AUTOMATSKE OZNAKE: ako destinacije nema u POPULAR_DEST_TAGS / POPULAR_DEST_META, uzimaju se iz
@@ -209,7 +209,8 @@ function popularTagsFor(key){
 // Dodatne destinacije za filtere (kartice iz DEFAULT_POPULAR_DEST_POOL imaju slike; ove dobijaju
 // rezervnu sliku dok se ne doda prava — dopuni image/price kad budeš imao podatke).
 const EXTRA_POPULAR_DEST_POOL = ['Dubrovnik','Santorini','Kotor','Plitvička Jezera','Bled','Ohrid','Durmitor','Split','Ljubljana','Venecija','Dubai','Bangkok','Tokio','Njujork','Kankun','Marakeš','Kairo','Hurgada',
-  'Kopaonik','Jahorina','Bansko','Kranjska Gora','Kicbil','St. Anton am Arlberg','Šamoni','Cermat','Grindelvald','Garmisch-Partenkirchen','Aspen','Stara Planina','Kolašin',"Val d'Izer",'Vail']
+  'Kopaonik','Jahorina','Bansko','Kranjska Gora','Kicbil','St. Anton am Arlberg','Šamoni','Cermat','Grindelvald','Garmisch-Partenkirchen','Aspen','Stara Planina','Kolašin',"Val d'Izer",'Vejl',
+  'Borovec','Pamporovo','Vistler','Banf','Tulum','Plaja del Karmen']
   .map(n => ({dest:n, name:n}));
 const POPULAR_FILTER_POOL = DEFAULT_POPULAR_DEST_POOL.concat(
   ['Rim','Barselona','Budva','Beč','Solun','Budimpešta','Prag','Zagreb'].map(n => ({dest:n, name:n})),
@@ -239,7 +240,7 @@ const POPULAR_DEST_META = {
   'samoni':['Francuska','','nature'], 'cermat':['Švajcarska','','nature'], 'grindelvald':['Švajcarska','','nature'],
   'garmisch-partenkirchen':['Nemačka','','nature'], 'aspen':['SAD','','nature'],
   'stara planina':['Srbija','','nature'], 'kolasin':['Crna Gora','','nature'],
-  "val d'izer":['Francuska','','nature'], 'vail':['SAD','','nature']
+  "val d'izer":['Francuska','','nature'], 'vejl':['SAD','','nature']
 };
 // Kartice "Popularne destinacije": naziv države i "od" su fiksni na srpskom u podacima -- prevodi se pri prikazu.
 function popularMetaLabel(m){

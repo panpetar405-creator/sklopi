@@ -234,6 +234,8 @@ const AIRPORT_DB = {
   'perast': {nearest:'Tivat', note:'Perast nema svoj aerodrom — najbliži je Tivat (oko 20 min vožnje).', c:'Perast', k:'own', t:'20 min'},
   'risan': {nearest:'Tivat', note:'Risan nema svoj aerodrom — najbliži je Tivat (oko 25 min vožnje).', c:'Risan', k:'own', t:'25 min'},
   'kotor': {nearest:'Tivat', note:'Kotor nema svoj aerodrom — najbliži je Tivat (oko 15 min vožnje).', c:'Kotor', k:'own', t:'15 min'},
+  'stara planina': {nearest:'Niš', note:'Stara Planina nema svoj aerodrom — najbliži je Niš (oko 2h vožnje).', c:'Stara Planina', k:'own', t:'2h'},
+  "val d'izer": {nearest:'Lion', note:'Val d\'Izer nema svoj aerodrom — najbliži je Lion (oko 3h vožnje), Ženeva je alternativa.', c:'Val d\'Izer', k:'own', t:'3h', alt:'Ženeva'},
   'kolasin': {nearest:'Podgorica', note:'Kolašin nema svoj aerodrom — najbliži je Podgorica (oko 1h vožnje).', c:'Kolašin', k:'own', t:'1h'},
   'zabljak': {nearest:'Podgorica', note:'Žabljak nema svoj aerodrom — najbliži je Podgorica (oko 2h vožnje).', c:'Žabljak', k:'own', t:'2h'},
   // --- Crna Gora: priobalje (Bokokotorski zaliv i okolina) ---
@@ -2044,6 +2046,7 @@ const AIRPORT_DB = {
   'portland': {hasAirport:true},
   'maui': {hasAirport:true, limited:true},
   'aspen': {hasAirport:true, limited:true},
+  'vejl': {nearest:'Denver', note:'Vejl nema svoj aerodrom — najbliži je Denver (oko 2h vožnje).', c:'Vejl', k:'own', t:'2h'},
   'vejl': {hasAirport:true, limited:true},
   'dzekson houl': {hasAirport:true, limited:true},
   // --- SAD: bez sopstvenog aerodroma (ski) ---

@@ -244,7 +244,7 @@ const DEST_EN_NAMES = {
   'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town',
   'Kankun':'Cancún','Hurgada':'Hurghada',
   'Kicbil':'Kitzbühel','Šamoni':'Chamonix','Cermat':'Zermatt','Grindelvald':'Grindelwald','Bansko':'Bansko',
-  'Kranjska Gora':'Kranjska Gora','Kopaonik':'Kopaonik','Jahorina':'Jahorina','Aspen':'Aspen, Colorado',
+  'Kranjska Gora':'Kranjska Gora','Kopaonik':'Kopaonik','Jahorina':'Jahorina','Aspen':'Aspen, Colorado','Stara Planina':'Stara Planina','Kolašin':'Kolašin',"Val d'Izer":"Val d'Isère",'Vejl':'Vail, Colorado','Vistler':'Whistler, British Columbia','Banf':'Banff, Alberta','Borovec':'Borovets','Pamporovo':'Pamporovo','Tulum':'Tulum','Plaja del Karmen':'Playa del Carmen',
   'St. Anton am Arlberg':'St. Anton am Arlberg'
 };
 // Šta kartica nudi po vrsti slajdera: 'hotel' (Booking.com) ili 'activity' (Viator).

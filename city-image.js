@@ -34,7 +34,7 @@ const EN = {
   njujork: 'New York City', majami: 'Miami', bukurest: 'Bucharest', sofija: 'Sofia', skoplje: 'Skopje',
   beograd: 'Belgrade', ljubljana: 'Ljubljana', plitvicka: 'Plitvice Lakes National Park',
   'plitvicka jezera': 'Plitvice Lakes National Park', hurgada: 'Hurghada', kankun: 'Cancún',
-  kicbil: 'Kitzbühel', samoni: 'Chamonix', cermat: 'Zermatt', grindelvald: 'Grindelwald', aspen: 'Aspen, Colorado',
+  kicbil: 'Kitzbühel', samoni: 'Chamonix', cermat: 'Zermatt', grindelvald: 'Grindelwald', aspen: 'Aspen, Colorado', vejl: 'Vail, Colorado', vistler: 'Whistler, British Columbia', banf: 'Banff, Alberta', borovec: 'Borovets', pamporovo: 'Pamporovo', tulum: 'Tulum', 'plaja del karmen': 'Playa del Carmen', kolasin: 'Kolašin', 'stara planina': 'Stara Planina', "val d'izer": "Val d'Isère",
   kopaonik: 'Kopaonik', jahorina: 'Jahorina', bansko: 'Bansko', 'kranjska gora': 'Kranjska Gora',
   puket: 'Phuket', singapur: 'Singapore', sidnej: 'Sydney', kejptaun: 'Cape Town', antalija: 'Antalya',
   kapadokija: 'Cappadocia', mikonos: 'Mykonos', rodos: 'Rhodes', krit: 'Crete', nica: 'Nice',

@@ -681,6 +681,21 @@ const MATCH_DESTINATIONS_TAGS = [
   {name:'St. Anton am Arlberg', vibes:['ski'], months:[12,1,2,3], distance:'near', family:false, nightlife:true},
   {name:'Kranjska Gora', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
   {name:'Jahorina', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
+  // Dopuna: skijaški centri i vanevropske destinacije (država se povlači iz POPULAR_DESTINATIONS)
+  {name:'Aspen', vibes:['ski'], months:[12,1,2,3], distance:'far', family:true, nightlife:true},
+  {name:'Vejl', vibes:['ski'], months:[12,1,2,3,4], distance:'far', family:true, nightlife:true},
+  {name:'Vistler', vibes:['ski','nature'], months:[12,1,2,3,6,7,8], distance:'far', family:true, nightlife:true},
+  {name:'Banf', vibes:['nature','ski'], months:[12,1,2,3,6,7,8,9], distance:'far', family:true, nightlife:false},
+  {name:'Val d\'Izer', vibes:['ski','nature'], months:[12,1,2,3,4], distance:'medium', family:true, nightlife:true},
+  {name:'Bansko', vibes:['ski','nature'], months:[12,1,2,3,7,8], distance:'near', family:true, nightlife:true},
+  {name:'Borovec', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
+  {name:'Pamporovo', vibes:['ski','nature'], months:[12,1,2,3], distance:'near', family:true, nightlife:false},
+  {name:'Kolašin', vibes:['ski','nature'], months:[12,1,2,3,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Stara Planina', vibes:['ski','nature'], months:[12,1,2,3,6,7,8,9], distance:'near', family:true, nightlife:false},
+  {name:'Kankun', vibes:['sea'], months:[11,12,1,2,3,4], distance:'far', family:true, nightlife:true},
+  {name:'Plaja del Karmen', vibes:['sea'], months:[11,12,1,2,3,4], distance:'far', family:true, nightlife:true},
+  {name:'Tulum', vibes:['sea','nature'], months:[11,12,1,2,3,4], distance:'far', family:true, nightlife:true},
+  {name:'Hurgada', vibes:['sea'], months:[3,4,5,9,10,11], distance:'medium', family:true, nightlife:true},
 ];
 
 // Puna lista za kviz: spaja tagove sa državom iz POPULAR_DESTINATIONS.
