@@ -167,8 +167,8 @@ html,body{background:#0B1626;margin:0;}
 <link as="font" crossorigin="" href="fonts/sora-latin.woff2" rel="preload" type="font/woff2"/>
 <link rel="preload" as="image" href="hero-sklopi.webp" imagesrcset="hero-sklopi-800.webp 800w, hero-sklopi.webp 1400w" imagesizes="(max-width: 760px) 100vw, 1180px" type="image/webp" fetchpriority="high"/>
 <link href="fonts.css?v=0f858672" rel="stylesheet"/>
-<link href="styles.css?v=4e929605" rel="stylesheet"/>
-<link href="dest-info.css?v=f6705aa1" rel="stylesheet"/><link href="ux-refactor.css?v=9192cc00" rel="stylesheet"/><link href="theme-navy.css?v=aa40cbd1" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=c39b958d" rel="stylesheet"/><link href="redesign-home.css?v=07456bd5" rel="stylesheet"/><link href="redesign-destinations.css?v=1" rel="stylesheet"/>
+<link href="styles.css?v=412974dd" rel="stylesheet"/>
+<link href="dest-info.css?v=f6705aa1" rel="stylesheet"/><link href="ux-refactor.css?v=9192cc00" rel="stylesheet"/><link href="theme-navy.css?v=aa40cbd1" rel="stylesheet"/><link href="reservation.css?v=f76d78d6" rel="stylesheet"/><link href="notifications.css?v=563a3ebd" rel="stylesheet"/><link href="theme-navy-rest.css?v=c39b958d" rel="stylesheet"/><link href="redesign-home.css?v=1a66b042" rel="stylesheet"/><link href="redesign-destinations.css?v=4ea66ce4" rel="stylesheet"/>
 <!-- Leaflet (JS+CSS) i Supabase se učitavaju tek kad zatrebaju: mapa rute u transport.js (_tcLoadLeaflet), supabase-js u app-09-account.js (ensureSb). -->
 <link href="info-collapse.css?v=591c6f62" rel="stylesheet"/>
 </head>
@@ -1404,7 +1404,7 @@ html,body{background:#0B1626;margin:0;}
 </a>
 <script defer="" src="config.js?v=29e9b7fc"></script>
 <script defer="" src="affiliate.js?v=85396c00"></script>
-<script defer="" src="i18n-data.js?v=c760cf2f"></script>
+<script defer="" src="i18n-data.js?v=cf9d216f"></script>
 <script>
 /* Jezički fajl (i18n-<kod>.js) se učitava samo ako je izabran jezik različit od srpskog.
    Mapa kod → hash popunjava translate.mjs (ne menjaj ručno). Ostali jezici se učitavaju kasnije, iz loadLang() u app-01-core.js. */
@@ -1412,7 +1412,7 @@ window.I18N_V=/*I18N_V*/{"en":"6fb6a413","ru":"4b531382","de":"474bd4e9"}/*/I18N
 (function(){var l='sr',V=window.I18N_V;try{var u=new URLSearchParams(location.search).get('lang');if(u&&(u==='sr'||V[u]))l=u;else{var s=localStorage.getItem('sklopi_lang');if(s&&V[s])l=s}}catch(e){}
 if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/script>')})();
 </script>
-<script defer="" src="i18n-extra.js?v=7ff519f2"></script>
+<script defer="" src="i18n-extra.js?v=1e5be5d0"></script>
 <script defer="" src="dest-plans.js?v=23ab51ff"></script>
 <script defer="" src="app-01-core.js?v=56849d5c"></script>
 <script defer="" src="app-02-market-passengers.js?v=3eb1af24"></script>
@@ -1421,7 +1421,7 @@ if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/scri
 <script defer="" src="app-05-results.js?v=ded66817"></script>
 <script defer="" src="app-06-form.js?v=0535ab60"></script>
 <script defer="" src="app-07-package-detail.js?v=18b40523"></script>
-<script defer="" src="app-08-popular-airports.js?v=6090b648"></script>
+<script defer="" src="app-08-popular-airports.js?v=1db47031"></script>
 <script defer="" src="app-14-recent-searches.js?v=a0fa4fa6"></script>
 <script defer="" src="app-15-plan-select.js?v=e82434f8"></script>
 <script defer="" src="app-16-trip-prefs.js?v=f03a4be1"></script>
@@ -1434,10 +1434,10 @@ if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/scri
 <script defer="" src="app-23-reservation.js?v=08005ba1"></script>
 <script defer="" src="app-24-notifications.js?v=f8c346d9"></script>
 <script defer="" src="app-26-plan-customize.js?v=fe5d4a62"></script>
-<script defer="" src="app-09-account.js?v=c058eb8e"></script>
+<script defer="" src="app-09-account.js?v=c4fb89f5"></script>
 <script defer="" src="app-10-planner-init.js?v=3f5e04ee"></script>
-<script defer="" src="app-11-sections-hero.js?v=d63b2def"></script>
-<script defer="" src="dest-info.js?v=6c5828cb"></script>
+<script defer="" src="app-11-sections-hero.js?v=599fd62c"></script>
+<script defer="" src="dest-info.js?v=c1bc5dd1"></script>
 <script defer="" src="info-collapse.js?v=2b6be985"></script>
 <script defer="" src="price-mix.js?v=5e3c1012"></script>
 <script defer="" src="transport.js?v=dcc41813"></script>
@@ -1446,8 +1446,8 @@ if(l!=='sr')document.write('<script defer src="i18n-'+l+'.js?v='+V[l]+'"><\/scri
 <script defer="" src="cookies.js?v=ac951772"></script>
 <script defer="" src="app-12-ux-refactor.js?v=859e04c7"></script>
 <script defer="" src="redesign-home.js?v=39cfe210"></script>
-<script defer="" src="redesign-destinations.js?v=1"></script>
-<script defer="" src="redesign-trips.js?v=0c2209f2"></script>
+<script defer="" src="redesign-destinations.js?v=29fe8593"></script>
+<script defer="" src="redesign-trips.js?v=19104361"></script>
 <script defer="" src="app-13-destination-value.js?v=5285c82e"></script>
 <script defer="" src="app-28-single-page-flow.js?v=28a1d458"></script>
 </body>

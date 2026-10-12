@@ -3,7 +3,7 @@
 (function(){
   'use strict';
   var SEASON={atina:'apr–jun, sep–okt',istanbul:'apr–jun, sep–nov',krf:'maj–jun, sep',pariz:'apr–jun, sep–okt',lisabon:'mar–jun, sep–okt',rim:'apr–jun, sep–okt',barselona:'maj–jun, sep',budva:'jun–sep',bec:'apr–okt',solun:'maj–okt',budimpesta:'apr–okt',prag:'apr–okt',zagreb:'apr–okt',dubrovnik:'maj–okt',split:'jun–sep'};
-  var LOCAL={atina:'atina-akropolj',istanbul:'istanbul-plava-dzamija',krf:'krf-uvala',pariz:'pariz-nocu',lisabon:'lisabon-tramvaj',bec:'bec-schonbrunn',solun:'solun-ano-poli',budva:'budva-stari-grad',split:'split-riva',zagreb:'zagreb-gornji-grad',bled:'bled-jezero'};
+  var LOCAL={atina:'atina-akropolj',istanbul:'istanbul-plava-dzamija',krf:'krf-uvala',pariz:'pariz-nocu',lisabon:'lisabon-tramvaj',bec:'bec-schonbrunn',solun:'solun-ano-poli',budva:'budva-stari-grad',split:'split-riva',zagreb:'zagreb-gornji-grad',bled:'bled-jezero',dubrovnik:'dubrovnik-stari-grad',ohrid:'ohrid-sveti-jovan-kaneo',ljubljana:'ljubljana-tromostovlje',prag:'prag-karlov-most',budimpesta:'budimpesta-lancani-most-noc',santorini:'santorini-oija-kupole',barselona:'barselona-park-gvelj',kotor:'kotor-zaliv','plitvicka jezera':'plitvice-jezero'};
   var CHIPS=[['all','Sve'],['weekend','Vikend'],['sea','More'],['city','Grad'],['nature','Priroda'],['europe','Evropa']];
   var SORTS=[['pop','Popularno'],['price','Cena'],['near','Najbliže']];
   var SAVE_KEY='sklopi_saved_dests';
@@ -90,6 +90,53 @@
 
   function grid(a){return '<div class="dx-grid">'+a.map(card).join('')+'</div>';}
 
+  /* ---- automatske fotografije: bez ručnog unosa po gradu ----
+     Redosled: 1) tvoja lokalna slika (LOCAL, opciono), 2) keš u pregledaču (30 dana, promašaj 1 dan),
+     3) Worker /go/dest-image (Wikidata/Wikipedia, keširan na serveru), 4) Wikipedia direktno (fetchWikiImage iz app-11).
+     Traži se tek kad kartica uđe u vidno polje (+300px), da se ne šalje 30 zahteva odjednom. */
+  var IMG_KEY='sklopi_dx_img_v1',IMG_HIT=30*864e5,IMG_MISS=864e5,imgCache=null,imgBusy={},io=null;
+  function imgStore(){if(imgCache)return imgCache;try{imgCache=JSON.parse(localStorage.getItem(IMG_KEY)||'{}')||{};}catch(e){imgCache={};}return imgCache;}
+  function imgSave(){try{localStorage.setItem(IMG_KEY,JSON.stringify(imgCache));}catch(e){}}
+  function imgCached(d){var e=imgStore()[d];if(!e||!(Date.now()-e[1]<(e[0]?IMG_HIT:IMG_MISS)))return null;return e;}
+  function imgEndpoint(d){var b=window.SKLOPI_DEST_IMG_BASE||window.SKLOPI_ALERT_WORKER_URL||'';return String(b).replace(/\/$/,'')+'/go/dest-image?city='+encodeURIComponent(d);}
+  function imgLookup(d){
+    if(imgBusy[d])return imgBusy[d];
+    imgBusy[d]=fetch(imgEndpoint(d),{headers:{Accept:'application/json'}})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(j){return j&&j.url?String(j.url):'';})
+      .catch(function(){return '';})
+      .then(function(u){
+        if(u)return u;
+        try{if(typeof fetchWikiImage==='function'&&typeof destWikiTitle==='function')return Promise.resolve(fetchWikiImage(destWikiTitle({dest:d}))).then(function(x){return x||'';},function(){return '';});}catch(e){}
+        return '';
+      })
+      .then(function(u){imgStore()[d]=[u,Date.now()];imgSave();delete imgBusy[d];return u;});
+    return imgBusy[d];
+  }
+  function putPhoto(t,d,url){
+    if(!url||!t.isConnected)return;
+    var im=new Image();
+    im.onload=function(){if(!t.isConnected)return;t.classList.remove('thumb-fallback');t.removeAttribute('data-fb');t.innerHTML='';im.alt=d;t.appendChild(im);};
+    im.src=url;   /* ako se ne učita, kartica ostaje sa slovom */
+  }
+  function autoPhotos(list){
+    if(io){io.disconnect();io=null;}
+    var todo=[];
+    list.querySelectorAll('.dx-thumb').forEach(function(t){
+      if(t.querySelector('img'))return;
+      var c=t.closest('.dx-card'),d=c&&c.dataset.dest;if(!d)return;
+      var hit=imgCached(d);
+      if(hit){if(hit[0])putPhoto(t,d,hit[0]);return;}
+      todo.push([t,d]);
+    });
+    if(!todo.length)return;
+    var go=function(t,d){imgLookup(d).then(function(u){putPhoto(t,d,u);});};
+    if(!('IntersectionObserver' in window)){todo.forEach(function(x){go(x[0],x[1]);});return;}
+    var map=new Map();
+    io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;io.unobserve(e.target);var x=map.get(e.target);if(x)go(x[0],x[1]);});},{root:root,rootMargin:'300px 0px'});
+    todo.forEach(function(x){map.set(x[0],x);io.observe(x[0]);});
+  }
+
   function render(){
     var a=filtered(),list=root.querySelector('#dxList');
     root.querySelector('#dxCount').textContent=a.length+(a.length===1?' destinacija':(a.length>1&&a.length<5?' destinacije':' destinacija'));
@@ -102,6 +149,7 @@
     list.innerHTML=html;
     list.querySelectorAll('.dx-thumb img').forEach(function(im){im.addEventListener('error',function(){var d=im.closest('.dx-card').dataset.dest;var p=null;try{p=window.SKLOPI_destPhoto&&window.SKLOPI_destPhoto(d,500);}catch(e){}var t=im.parentNode;if(p&&im.src.indexOf(p)<0){im.src=p;return;}if(window.SKLOPI_thumbFallback)window.SKLOPI_thumbFallback(t,d);},{once:false});});
     list.querySelectorAll('.dx-thumb[data-fb]').forEach(function(t){var d=t.dataset.fb,p=null;try{p=window.SKLOPI_destPhoto&&window.SKLOPI_destPhoto(d,500);}catch(e){}if(p){t.innerHTML='<img src="'+esc(p)+'" alt="'+esc(d)+'" loading="lazy">';}else if(window.SKLOPI_thumbFallback)window.SKLOPI_thumbFallback(t,d);});
+    autoPhotos(list);
   }
 
   function setActive(on){

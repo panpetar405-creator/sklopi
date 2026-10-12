@@ -201,7 +201,7 @@ const POPULAR_LOCAL_IMG = {
   'kairo':'kairo-piramide', 'hurgada':'hurgada-more',
   'dubrovnik':'dubrovnik-stari-grad', 'ohrid':'ohrid-sveti-jovan-kaneo', 'ljubljana':'ljubljana-tromostovlje',
   'prag':'prag-karlov-most', 'budimpesta':'budimpesta-lancani-most-noc', 'santorini':'santorini-oija-kupole',
-  'barselona':'barselona-park-gvelj', 'kotor':'kotor-zaliv'
+  'barselona':'barselona-park-gvelj', 'kotor':'kotor-zaliv', 'plitvicka jezera':'plitvice-jezero'
 };
 function popularCardData(card){
   const key = normalizeSr(card.dest || '');
