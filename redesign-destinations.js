@@ -69,17 +69,17 @@
 
   /* ---- „Najbliže“: udaljenost od korisnika ----
      Polazna tačka: 1) lokacija uređaja (traži se tek kad korisnik tapne „Najbliže“; ostaje samo u pregledaču,
-     zaokružena na ~1 km, sessionStorage), 2) polje „Polazak“ (#origin), 3) Beograd.
+     zaokružena na ~1 km, sessionStorage), 2) polje „Polazak“ (#origin), 3) ništa: bez lokacije se ne računa udaljenost, ostaje redosled po popularnosti.
      Koordinate destinacija: poznati aerodrom / Open-Meteo pretraga (_tcGeocode iz transport.js), keš 30 dana. */
   var POS_KEY='sklopi_dx_pos',GEO_KEY='sklopi_dx_geo_v1',GEO_TTL=30*864e5,pos=null,posSrc='',nearTok=0,geoMem=null;
-  function posLoad(){if(pos)return;try{var j=JSON.parse(sessionStorage.getItem(POS_KEY)||'null');if(j&&j.p&&j.p.length===2){pos=j.p;posSrc=j.s||'geo';}}catch(e){}}
+  function posLoad(){if(pos)return;try{var j=JSON.parse(sessionStorage.getItem(POS_KEY)||'null');if(j&&j.p&&j.p.length===2&&(j.s==='geo'||j.s==='origin')){pos=j.p;posSrc=j.s;}}catch(e){}}
   function posSave(){try{sessionStorage.setItem(POS_KEY,JSON.stringify({p:pos,s:posSrc}));}catch(e){}}
   function geoStore(){if(geoMem)return geoMem;try{geoMem=JSON.parse(localStorage.getItem(GEO_KEY)||'{}')||{};}catch(e){geoMem={};}return geoMem;}
   function geoSave(){try{localStorage.setItem(GEO_KEY,JSON.stringify(geoMem));}catch(e){}}
   function rad(x){return x*Math.PI/180;}
   function distKm(a,b){var dl=rad(b[0]-a[0]),dn=rad(b[1]-a[1]),h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dn/2)*Math.sin(dn/2);return 12742*Math.asin(Math.sqrt(h));}
   function kmLabel(k){var r=k<100?Math.round(k/5)*5:Math.round(k/10)*10;return String(r).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+' km';}
-  function srcLabel(){return posSrc==='geo'?'najbliže tebi':posSrc==='origin'?'od polazišta':'od Beograda';}
+  function srcLabel(){return posSrc==='geo'?'najbliže tebi':posSrc==='origin'?'od polazišta':'uključi lokaciju ili unesi polazište';}
   function askDevice(){
     return new Promise(function(res){
       if(!navigator.geolocation||!window.isSecureContext)return res(null);
@@ -96,7 +96,7 @@
       var q=name&&typeof _tcGeocode==='function'?Promise.resolve(_tcGeocode(name)).catch(function(){return null;}):Promise.resolve(null);
       return q.then(function(g){
         if(g&&typeof g.lat==='number'){pos=[g.lat,g.lon];posSrc='origin';}
-        else{pos=(typeof AIRPORT_COORDS!=='undefined'&&AIRPORT_COORDS.BEG)||[44.82,20.29];posSrc='default';}
+        else{pos=null;posSrc='none';return null;}   /* bez lokacije i polazišta nema smisla računati udaljenost */
         posSave();return pos;
       });
     });
@@ -115,6 +115,7 @@
     var tok=++nearTok;
     resolvePos().then(function(p){
       if(tok!==nearTok||st.s!=='near')return;
+      if(!p){if(root&&!root.hidden)render();return;}
       var list=build(),i=0,left=0,since=0;
       list.forEach(function(x){var e=geoStore()[x.dest];if(e&&e[0]!=null&&Date.now()-e[2]<GEO_TTL)x.km=distKm(p,[e[0],e[1]]);});
       if(root&&!root.hidden)render();
@@ -141,7 +142,7 @@
       return true;
     });
     if(st.s==='price')a.sort(function(x,y){return x.pn-y.pn||x.idx-y.idx;});
-    else if(st.s==='near')a.sort(function(x,y){var kx=typeof x.km==='number'?x.km:1e9,ky=typeof y.km==='number'?y.km:1e9;return kx-ky||x.min-y.min||x.idx-y.idx;});
+    else if(st.s==='near'&&pos)a.sort(function(x,y){var kx=typeof x.km==='number'?x.km:1e9,ky=typeof y.km==='number'?y.km:1e9;return kx-ky||x.min-y.min||x.idx-y.idx;});
     return a;
   }
 
