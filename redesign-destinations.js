@@ -69,17 +69,17 @@
 
   /* ---- „Najbliže“: udaljenost od korisnika ----
      Polazna tačka: 1) lokacija uređaja (traži se tek kad korisnik tapne „Najbliže“; ostaje samo u pregledaču,
-     zaokružena na ~1 km, sessionStorage), 2) polje „Polazak“ (#origin), 3) ništa: bez lokacije se ne računa udaljenost, ostaje redosled po popularnosti.
+     zaokružena na ~1 km, sessionStorage), 2) polje „Polazak“ (#origin), 3) gruba lokacija grada sa Worker-a (/go/where), 4) ništa: ostaje redosled po popularnosti.
      Koordinate destinacija: poznati aerodrom / Open-Meteo pretraga (_tcGeocode iz transport.js), keš 30 dana. */
   var POS_KEY='sklopi_dx_pos',GEO_KEY='sklopi_dx_geo_v1',GEO_TTL=30*864e5,pos=null,posSrc='',nearTok=0,geoMem=null;
-  function posLoad(){if(pos)return;try{var j=JSON.parse(sessionStorage.getItem(POS_KEY)||'null');if(j&&j.p&&j.p.length===2&&(j.s==='geo'||j.s==='origin')){pos=j.p;posSrc=j.s;}}catch(e){}}
+  function posLoad(){if(pos)return;try{var j=JSON.parse(sessionStorage.getItem(POS_KEY)||'null');if(j&&j.p&&j.p.length===2&&(j.s==='geo'||j.s==='origin'||j.s==='ip')){pos=j.p;posSrc=j.s;}}catch(e){}}
   function posSave(){try{sessionStorage.setItem(POS_KEY,JSON.stringify({p:pos,s:posSrc}));}catch(e){}}
   function geoStore(){if(geoMem)return geoMem;try{geoMem=JSON.parse(localStorage.getItem(GEO_KEY)||'{}')||{};}catch(e){geoMem={};}return geoMem;}
   function geoSave(){try{localStorage.setItem(GEO_KEY,JSON.stringify(geoMem));}catch(e){}}
   function rad(x){return x*Math.PI/180;}
   function distKm(a,b){var dl=rad(b[0]-a[0]),dn=rad(b[1]-a[1]),h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dn/2)*Math.sin(dn/2);return 12742*Math.asin(Math.sqrt(h));}
   function kmLabel(k){var r=k<100?Math.round(k/5)*5:Math.round(k/10)*10;return String(r).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+' km';}
-  function srcLabel(){return posSrc==='geo'?'najbliže tebi':posSrc==='origin'?'od polazišta':'uključi lokaciju ili unesi polazište';}
+  function srcLabel(){return posSrc==='geo'?'najbliže tebi':posSrc==='origin'?'od polazišta':posSrc==='ip'?'približno prema tvom gradu':'uključi lokaciju ili unesi polazište';}
   function askDevice(){
     return new Promise(function(res){
       if(!navigator.geolocation||!window.isSecureContext)return res(null);
@@ -87,6 +87,13 @@
       try{navigator.geolocation.getCurrentPosition(function(p){if(done)return;done=true;clearTimeout(t);res([Math.round(p.coords.latitude*100)/100,Math.round(p.coords.longitude*100)/100]);},function(){if(done)return;done=true;clearTimeout(t);res(null);},{enableHighAccuracy:false,timeout:8000,maximumAge:600000});}
       catch(e){if(!done){done=true;clearTimeout(t);res(null);}}
     });
+  }
+  /* Treća rezerva: gruba lokacija (grad) sa Worker-a /go/where; bez dozvole i bez IP adrese u odgovoru. */
+  function ipLocate(){
+    var b=window.SKLOPI_DEST_IMG_BASE||window.SKLOPI_ALERT_WORKER_URL||'',u=String(b).replace(/\/$/,'')+'/go/where';
+    return fetch(u,{headers:{Accept:'application/json'}}).then(function(r){return r.ok?r.json():null;})
+      .then(function(j){return j&&typeof j.lat==='number'&&typeof j.lon==='number'?[j.lat,j.lon]:null;})
+      .catch(function(){return null;});
   }
   function resolvePos(){
     posLoad();if(pos)return Promise.resolve(pos);
@@ -96,7 +103,10 @@
       var q=name&&typeof _tcGeocode==='function'?Promise.resolve(_tcGeocode(name)).catch(function(){return null;}):Promise.resolve(null);
       return q.then(function(g){
         if(g&&typeof g.lat==='number'){pos=[g.lat,g.lon];posSrc='origin';}
-        else{pos=null;posSrc='none';return null;}   /* bez lokacije i polazišta nema smisla računati udaljenost */
+        else return ipLocate().then(function(g){
+          if(g){pos=g;posSrc='ip';posSave();return pos;}
+          pos=null;posSrc='none';return null;   /* bez lokacije, polazišta i IP procene nema smisla računati udaljenost */
+        });
         posSave();return pos;
       });
     });

@@ -377,10 +377,36 @@ async function destinationMeta(request, env, ctx, url) {
   return new Response(out.body, { status: out.status, headers: h });
 }
 
+// Gruba lokacija posetioca (nivo grada) iz Cloudflare-a, za „Najbliže“ kad korisnik ne dozvoli GPS i nema polazišta.
+// Ne zove nikakav spoljni servis i ništa ne čuva; vraća samo koordinate zaokružene na 0.1° (~11 km), bez IP adrese.
+async function handleWhere(request, env) {
+  const origin = request.headers.get('Origin') || '';
+  const allowed = String((env && env.ALLOWED_ORIGINS) || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const ok = !allowed.length || allowed.includes(origin);
+  const cors = {
+    'Access-Control-Allow-Origin': ok ? (allowed.length ? origin : '*') : allowed[0],
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
+    'Cache-Control': 'private, no-store',
+  };
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+  if (request.method !== 'GET') return new Response(JSON.stringify({ error: 'method' }), { status: 405, headers: Object.assign({ 'Content-Type': 'application/json' }, cors) });
+  const rl = await rateLimit(env, { binding: 'RL_WHERE_IP', name: 'where-ip', key: clientIp(request), limit: 20, windowSec: 60 });
+  if (!rl.ok) return tooManyRequests(rl.retryAfter, cors);
+  const cf = request.cf || {};
+  const lat = parseFloat(cf.latitude), lon = parseFloat(cf.longitude);
+  const body = (isFinite(lat) && isFinite(lon))
+    ? { lat: Math.round(lat * 10) / 10, lon: Math.round(lon * 10) / 10, country: String(cf.country || '') }
+    : { lat: null, lon: null, country: '' };
+  return new Response(JSON.stringify(body), { status: 200, headers: Object.assign({ 'Content-Type': 'application/json; charset=utf-8' }, cors) });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/dest-info') return handleDestInfo(request, env, ctx);
+    if (url.pathname === '/go/where') return handleWhere(request, env);
     // Slika grada (Wikidata/Wikipedia/Commons), keširana. Limit se računa samo kad slike nema u kešu.
     if (url.pathname === '/go/dest-image') {
       return handleCityImage(request, env, ctx, {
