@@ -243,6 +243,8 @@ const DEST_EN_NAMES = {
   'Njujork':'New York City','Majami':'Miami','Los Anđeles':'Los Angeles','Puket':'Phuket','Tokio':'Tokyo',
   'Singapur':'Singapore','Sidnej':'Sydney','Kejptaun':'Cape Town',
   'Kankun':'Cancún','Hurgada':'Hurghada',
+  'Kicbil':'Kitzbühel','Šamoni':'Chamonix','Cermat':'Zermatt','Grindelvald':'Grindelwald','Bansko':'Bansko',
+  'Kranjska Gora':'Kranjska Gora','Kopaonik':'Kopaonik','Jahorina':'Jahorina','Aspen':'Aspen, Colorado',
   'St. Anton am Arlberg':'St. Anton am Arlberg'
 };
 // Šta kartica nudi po vrsti slajdera: 'hotel' (Booking.com) ili 'activity' (Viator).

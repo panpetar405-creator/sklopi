@@ -151,17 +151,23 @@ const POPULAR_DEST_TAGS = {
   // vanevropske destinacije (čipovi Azija / Amerika / Afrika)
   'dubai':['asia','city'], 'bangkok':['asia','city'], 'tokio':['asia','city'],
   'njujork':['america','city'], 'kankun':['america','sea'],
-  'marakes':['africa','city'], 'kairo':['africa','city'], 'hurgada':['africa','sea']
+  'marakes':['africa','city'], 'kairo':['africa','city'], 'hurgada':['africa','sea'],
+  // skijaški centri (Priroda + Ski)
+  'kopaonik':['nature','ski','weekend'], 'jahorina':['nature','ski','weekend'], 'bansko':['nature','ski','weekend'],
+  'kranjska gora':['nature','ski','weekend'], 'kicbil':['nature','ski'], 'st. anton am arlberg':['nature','ski'],
+  'samoni':['nature','ski'], 'cermat':['nature','ski'], 'grindelvald':['nature','ski'],
+  'garmisch-partenkirchen':['nature','ski'], 'aspen':['america','nature','ski']
 };
 // Kontinent-oznake (čipovi Sve / Evropa / Azija / Amerika / Afrika): sve ostalo je evropsko, Istanbul i u Aziji.
 Object.keys(POPULAR_DEST_TAGS).forEach(k => {
-  if (!/^(dubai|bangkok|tokio|njujork|kankun|marakes|kairo|hurgada)$/.test(k)) POPULAR_DEST_TAGS[k].push('europe');
+  if (!/^(dubai|bangkok|tokio|njujork|kankun|marakes|kairo|hurgada|aspen)$/.test(k)) POPULAR_DEST_TAGS[k].push('europe');
 });
 POPULAR_DEST_TAGS['istanbul'].push('asia');
 function popularTagsFor(key){ return POPULAR_DEST_TAGS[normalizeSr(key || '')] || []; }
 // Dodatne destinacije za filtere (kartice iz DEFAULT_POPULAR_DEST_POOL imaju slike; ove dobijaju
 // rezervnu sliku dok se ne doda prava — dopuni image/price kad budeš imao podatke).
-const EXTRA_POPULAR_DEST_POOL = ['Dubrovnik','Santorini','Kotor','Plitvička Jezera','Bled','Ohrid','Durmitor','Split','Ljubljana','Venecija','Dubai','Bangkok','Tokio','Njujork','Kankun','Marakeš','Kairo','Hurgada']
+const EXTRA_POPULAR_DEST_POOL = ['Dubrovnik','Santorini','Kotor','Plitvička Jezera','Bled','Ohrid','Durmitor','Split','Ljubljana','Venecija','Dubai','Bangkok','Tokio','Njujork','Kankun','Marakeš','Kairo','Hurgada',
+  'Kopaonik','Jahorina','Bansko','Kranjska Gora','Kicbil','St. Anton am Arlberg','Šamoni','Cermat','Grindelvald','Garmisch-Partenkirchen','Aspen']
   .map(n => ({dest:n, name:n}));
 const POPULAR_FILTER_POOL = DEFAULT_POPULAR_DEST_POOL.concat(
   ['Rim','Barselona','Budva','Beč','Solun','Budimpešta','Prag','Zagreb'].map(n => ({dest:n, name:n})),
@@ -185,7 +191,11 @@ const POPULAR_DEST_META = {
   'venecija':['Italija','','city'],
   'dubai':['Ujedinjeni Arapski Emirati','','city'], 'bangkok':['Tajland','','city'], 'tokio':['Japan','','city'],
   'njujork':['SAD','','city'], 'kankun':['Meksiko','','sea'],
-  'marakes':['Maroko','','city'], 'kairo':['Egipat','','city'], 'hurgada':['Egipat','','sea']
+  'marakes':['Maroko','','city'], 'kairo':['Egipat','','city'], 'hurgada':['Egipat','','sea'],
+  'kopaonik':['Srbija','','nature'], 'jahorina':['Bosna i Hercegovina','','nature'], 'bansko':['Bugarska','','nature'],
+  'kranjska gora':['Slovenija','','nature'], 'kicbil':['Austrija','','nature'], 'st. anton am arlberg':['Austrija','','nature'],
+  'samoni':['Francuska','','nature'], 'cermat':['Švajcarska','','nature'], 'grindelvald':['Švajcarska','','nature'],
+  'garmisch-partenkirchen':['Nemačka','','nature'], 'aspen':['SAD','','nature']
 };
 // Kartice "Popularne destinacije": naziv države i "od" su fiksni na srpskom u podacima -- prevodi se pri prikazu.
 function popularMetaLabel(m){
